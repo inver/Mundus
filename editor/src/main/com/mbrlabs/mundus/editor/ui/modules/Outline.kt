@@ -44,6 +44,7 @@ import com.mbrlabs.mundus.editor.tools.ToolManager
 import com.mbrlabs.mundus.editor.ui.UI
 import com.mbrlabs.mundus.editor.utils.Log
 import com.mbrlabs.mundus.editor.utils.createTerrainGO
+import com.mbrlabs.mundus.editor.utils.createDirectionalLightGO
 
 /**
  * Outline shows overview about all game objects in the scene
@@ -362,9 +363,13 @@ class Outline : VisTable(),
 
         private val addEmpty: MenuItem = MenuItem("Add Empty")
         private val addTerrain: MenuItem = MenuItem("Add terrain")
+        private val addLight: MenuItem = MenuItem("Add light")
         private val duplicate: MenuItem = MenuItem("Duplicate")
         private val rename: MenuItem = MenuItem("Rename")
         private val delete: MenuItem = MenuItem("Delete")
+
+        private val lightsPopupMenu: PopupMenu = PopupMenu()
+        private val addDirectionalLight: MenuItem = MenuItem("Directional Light")
 
         private var selectedGO: GameObject? = null
 
@@ -456,8 +461,38 @@ class Outline : VisTable(),
                 }
             })
 
+            addDirectionalLight.addListener(object : ClickListener() {
+                override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                    val sceneGraph = projectManager.current().currScene.sceneGraph
+                    val id = projectManager.current().obtainID()
+                    val name = "Directional light " + id
+                    val go = createDirectionalLightGO(sceneGraph, id, name)
+
+                    // update outline
+                    if (selectedGO == null) {
+                        // update sceneGraph
+                        Log.trace(TAG, "Add directional light game object [{}] in root node.", go)
+                        sceneGraph.addGameObject(go)
+                        // update outline
+                        addGoToTree(null, go)
+                    } else {
+                        Log.trace(TAG, "Add directional light game object [{}] child in node [{}].", go, selectedGO)
+                        // update sceneGraph
+                        selectedGO!!.addChild(go)
+                        // update outline
+                        val n = tree.findNode(selectedGO!!)
+                        addGoToTree(n, go)
+                    }
+                    Mundus.postEvent(SceneGraphChangedEvent())
+                }
+            })
+
+            lightsPopupMenu.addItem(addDirectionalLight)
+            addLight.subMenu = lightsPopupMenu
+
             addItem(addEmpty)
             addItem(addTerrain)
+            addItem(addLight)
             addItem(rename)
             addItem(duplicate)
             addItem(delete)
