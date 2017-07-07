@@ -36,7 +36,7 @@ public class SunLight extends BaseLight {
     }
 
     @Override
-    public BaseLight copy() {
+    public SunLight copy() {
         return new SunLight(this);
     }
 }
