@@ -27,4 +27,15 @@ public class BaseLight {
     public final Color color = new Color(1, 1, 1, 1);
     public float intensity = 1f;
 
+    public BaseLight() {
+    }
+
+    public BaseLight(final BaseLight copyFrom) {
+        intensity = copyFrom.intensity;
+        color.set(copyFrom.color);
+    }
+
+    public BaseLight copy() {
+        return new BaseLight(this);
+    }
 }

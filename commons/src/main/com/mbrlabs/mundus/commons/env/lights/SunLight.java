@@ -26,4 +26,17 @@ public class SunLight extends BaseLight {
 
     public final Vector3 position = new Vector3();
 
+    public SunLight() {
+    }
+
+    public SunLight(final SunLight copyFrom) {
+        intensity = copyFrom.intensity;
+        color.set(copyFrom.color);
+        position.set(copyFrom.position);
+    }
+
+    @Override
+    public BaseLight copy() {
+        return new SunLight(this);
+    }
 }
