@@ -72,7 +72,7 @@ public class TranslateTool extends TransformTool {
     private TranslateCommand command;
 
     public TranslateTool(ProjectManager projectManager, GameObjectPicker goPicker, ToolHandlePicker handlePicker,
-            ModelBatch batch, CommandHistory history) {
+                         ModelBatch batch, CommandHistory history) {
 
         super(projectManager, goPicker, handlePicker, batch, history);
 
@@ -94,7 +94,7 @@ public class TranslateTool extends TransformTool {
         yHandle = new TranslateHandle(Y_HANDLE_ID, yHandleModel);
         zHandle = new TranslateHandle(Z_HANDLE_ID, zHandleModel);
         xzPlaneHandle = new TranslateHandle(XZ_HANDLE_ID, xzPlaneHandleModel);
-        handles = new TranslateHandle[] { xHandle, yHandle, zHandle, xzPlaneHandle };
+        handles = new TranslateHandle[]{xHandle, yHandle, zHandle, xzPlaneHandle};
 
         gameObjectModifiedEvent = new GameObjectModifiedEvent(null);
     }
@@ -303,7 +303,7 @@ public class TranslateTool extends TransformTool {
     }
 
     /**
-     * 
+     *
      */
     private class TranslateHandle extends ToolHandle {
 

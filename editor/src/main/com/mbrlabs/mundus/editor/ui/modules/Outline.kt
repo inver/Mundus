@@ -53,10 +53,10 @@ import com.mbrlabs.mundus.editor.utils.createTerrainGO
  */
 // TODO refactor...kind of messy spaghetti code!
 class Outline : VisTable(),
-        ProjectChangedEvent.ProjectChangedListener,
-        SceneChangedEvent.SceneChangedListener,
-        SceneGraphChangedEvent.SceneGraphChangedListener,
-        GameObjectSelectedEvent.GameObjectSelectedListener {
+    ProjectChangedEvent.ProjectChangedListener,
+    SceneChangedEvent.SceneChangedListener,
+    SceneGraphChangedEvent.SceneGraphChangedListener,
+    GameObjectSelectedEvent.GameObjectSelectedListener {
 
     private val content: VisTable
     private val tree: VisTree<OutlineNode, GameObject>
@@ -113,36 +113,46 @@ class Outline : VisTable(),
         // source
         dragAndDrop.addSource(object : DragAndDrop.Source(tree) {
             override fun dragStart(event: InputEvent, x: Float, y: Float, pointer: Int): DragAndDrop.Payload? {
-                val payload = DragAndDrop.Payload()
-                val node = tree.getNodeAt(y)
-                if (node != null) {
-                    payload.`object` = node
-                    return payload
-                }
+                val node = tree.getNodeAt(y) ?: return null
 
-                return null
+                val payload = DragAndDrop.Payload()
+                payload.`object` = node
+                return payload
             }
         })
 
         // target
         dragAndDrop.addTarget(object : DragAndDrop.Target(tree) {
-            override fun drag(source: DragAndDrop.Source, payload: DragAndDrop.Payload, x: Float, y: Float, pointer: Int): Boolean {
+            override fun drag(
+                source: DragAndDrop.Source,
+                payload: DragAndDrop.Payload,
+                x: Float,
+                y: Float,
+                pointer: Int
+            ): Boolean {
                 // Select node under mouse if not over the selection.
                 val overNode = tree.getNodeAt(y)
-                if (overNode == null && tree.getSelection().isEmpty) {
+                if (overNode == null && tree.selection.isEmpty) {
                     return true
                 }
-                if (overNode != null && !tree.getSelection().contains(overNode)) {
-                    tree.getSelection().set(overNode)
+                if (overNode != null && !tree.selection.contains(overNode)) {
+                    tree.selection.set(overNode)
                 }
                 return true
             }
 
-            override fun drop(source: DragAndDrop.Source, payload: DragAndDrop.Payload, x: Float, y: Float, pointer: Int) {
+            override fun drop(
+                source: DragAndDrop.Source,
+                payload: DragAndDrop.Payload,
+                x: Float,
+                y: Float,
+                pointer: Int
+            ) {
                 val context = projectManager.current()
                 val newParent = tree.getNodeAt(y)
 
-                val node: Tree.Node<OutlineNode, GameObject, VisTable> = (payload.`object` as? Tree.Node<OutlineNode, GameObject, VisTable>) ?: return
+                val node: Tree.Node<OutlineNode, GameObject, VisTable> =
+                    (payload.`object` as? Tree.Node<OutlineNode, GameObject, VisTable>) ?: return
                 val draggedGo: GameObject = node.value
 
                 // check if a go is dragged in one of its' children or
@@ -225,21 +235,19 @@ class Outline : VisTable(),
                 if (tapCount != 2)
                     return
 
-                val go = tree.getNodeAt(y)?.value
+                val go = tree.getNodeAt(y)?.value ?: return
 
-                if (go != null) {
-                    val context = projectManager.current()
-                    val pos = Vector3()
-                    go.transform.getTranslation(pos)
+                val pos = Vector3()
+                go.transform.getTranslation(pos)
 
-                    // just lerp in the direction of the object if certain distance away
-                    if (pos.dst(context.currScene.cam.position) > 100)
-                        context.currScene.cam.position.lerp(pos.cpy().add(0f,40f,0f), 0.5f)
-
-                    context.currScene.cam.lookAt(pos)
-                    context.currScene.cam.up.set(Vector3.Y)
+                val cam = projectManager.current().currScene.cam
+                // just lerp in the direction of the object if certain distance away
+                if (pos.dst(cam.position) > 100) {
+                    cam.position.lerp(pos.cpy().add(0f, 40f, 0f), 0.5f)
                 }
 
+                cam.lookAt(pos)
+                cam.up.set(Vector3.Y)
             }
 
             override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
@@ -268,8 +276,8 @@ class Outline : VisTable(),
 
         // select listener
         tree.addListener(object : ChangeListener() {
-            override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
-                val selection = tree.getSelection()
+            override fun changed(event: ChangeEvent, actor: Actor) {
+                val selection = tree.selection
                 if (selection != null && selection.size() > 0) {
                     val go = selection.first().value
                     projectManager.current().currScene.sceneGraph.selected = go
@@ -379,7 +387,8 @@ class Outline : VisTable(),
         }
     }
 
-    inner class OutlineNode(table: NodeTable, gameObject: GameObject) : Tree.Node<OutlineNode, GameObject, NodeTable>(table) {
+    inner class OutlineNode(table: NodeTable, gameObject: GameObject) :
+        Tree.Node<OutlineNode, GameObject, NodeTable>(table) {
 
         init {
             value = gameObject
@@ -433,16 +442,20 @@ class Outline : VisTable(),
                         Log.trace(TAG, "Add terrain game object in root node.")
                         val context = projectManager.current()
                         val sceneGraph = context.currScene.sceneGraph
-                        val goID = projectManager.current().obtainID()
-                        val name = "Terrain " + goID
+                        val goID = context.obtainID()
+                        val name = "Terrain $goID"
                         // create asset
-                        val asset = context.assetManager.createTerraAsset(name,
-                                Terrain.DEFAULT_VERTEX_RESOLUTION, Terrain.DEFAULT_SIZE)
+                        val asset = context.assetManager.createTerraAsset(
+                            name,
+                            Terrain.DEFAULT_VERTEX_RESOLUTION, Terrain.DEFAULT_SIZE
+                        )
                         asset.load()
                         asset.applyDependencies()
 
-                        val terrainGO = createTerrainGO(sceneGraph,
-                                Shaders.terrainShader, goID, name, asset)
+                        val terrainGO = createTerrainGO(
+                            sceneGraph,
+                            Shaders.terrainShader, goID, name, asset
+                        )
                         // update sceneGraph
                         sceneGraph.addGameObject(terrainGO)
                         // update outline
@@ -450,6 +463,7 @@ class Outline : VisTable(),
 
                         context.currScene.terrains.add(asset)
                         projectManager.saveProject(context)
+
                         Mundus.postEvent(AssetImportEvent(asset))
                         Mundus.postEvent(SceneGraphChangedEvent())
                     } catch (e: Exception) {
@@ -518,7 +532,8 @@ class Outline : VisTable(),
             }
 
             // terrainAsset can not be duplicated
-            duplicate.isDisabled = selectedGO == null || selectedGO!!.findComponentByType(Component.Type.TERRAIN) != null
+            duplicate.isDisabled =
+                selectedGO == null || selectedGO!!.findComponentByType(Component.Type.TERRAIN) != null
         }
 
         fun showRenameDialog() {
@@ -526,18 +541,18 @@ class Outline : VisTable(),
             val goNode = node.actor as NodeTable
 
             val renameDialog = Dialogs.showInputDialog(UI, "Rename", "",
-                    object : InputDialogAdapter() {
-                        override fun finished(input: String?) {
-                            Log.trace(TAG, "Rename game object [{}] to [{}].", selectedGO, input)
-                            // update sceneGraph
-                            selectedGO!!.name = input
-                            // update Outline
-                            //goNode.name.setText(input + " [" + selectedGO.id + "]");
-                            goNode.nameLabel.setText(input)
+                object : InputDialogAdapter() {
+                    override fun finished(input: String?) {
+                        Log.trace(TAG, "Rename game object [{}] to [{}].", selectedGO, input)
+                        // update sceneGraph
+                        selectedGO!!.name = input
+                        // update Outline
+                        //goNode.name.setText(input + " [" + selectedGO.id + "]");
+                        goNode.nameLabel.setText(input)
 
-                            Mundus.postEvent(SceneGraphChangedEvent())
-                        }
-                    })
+                        Mundus.postEvent(SceneGraphChangedEvent())
+                    }
+                })
             // set position of dialog to menuItem position
             val nodePosX = node.actor.x
             val nodePosY = node.actor.y

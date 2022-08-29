@@ -170,18 +170,10 @@ public class FbxConv {
     }
 
     public void execute(final Callback<FbxConvResult> callback) {
-        new Thread() {
-            @Override
-            public void run() {
-                final FbxConvResult result = execute();
-                Gdx.app.postRunnable(new Runnable() {
-                    @Override
-                    public void run() {
-                        callback.done(result);
-                    }
-                });
-            }
-        }.start();
+        new Thread(() -> {
+            final FbxConvResult result = execute();
+            Gdx.app.postRunnable(() -> callback.done(result));
+        }).start();
     }
 
     /**

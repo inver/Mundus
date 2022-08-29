@@ -85,7 +85,7 @@ public class PickerShader extends BaseShader {
         this.context.setDepthTest(GL20.GL_LEQUAL, 0f, 1f);
         this.context.setDepthMask(true);
 
-        program.begin();
+        program.bind();
 
         set(UNIFORM_PROJ_VIEW_MATRIX, camera.combined);
     }

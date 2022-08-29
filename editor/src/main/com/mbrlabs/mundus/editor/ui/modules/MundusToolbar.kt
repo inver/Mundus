@@ -40,7 +40,6 @@ import com.mbrlabs.mundus.editor.utils.Log
  * @version 24-11-2015
  */
 class MundusToolbar : Toolbar() {
-
     companion object {
         private val TAG = MundusToolbar::class.java.simpleName
     }
@@ -146,23 +145,23 @@ class MundusToolbar : Toolbar() {
         createMaterial.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 Dialogs.showInputDialog(UI, "Create new material", "Material name",
-                        object : InputDialogAdapter() {
-                            override fun finished(input: String?) {
-                                val assetManager = projectManager.current().assetManager
-                                try {
-                                    val mat = assetManager.createMaterialAsset(input!!)
-                                    Mundus.postEvent(AssetImportEvent(mat))
-                                } catch (e: Exception) {
-                                    Log.exception(TAG, e)
-                                    UI.toaster.error(e.toString())
-                                }
-
+                    object : InputDialogAdapter() {
+                        override fun finished(input: String?) {
+                            val assetManager = projectManager.current().assetManager
+                            try {
+                                val mat = assetManager.createMaterialAsset(input!!)
+                                Mundus.postEvent(AssetImportEvent(mat))
+                            } catch (e: Exception) {
+                                Log.exception(TAG, e)
+                                UI.toaster.error(e.toString())
                             }
 
-                            override fun canceled() {
-                                super.canceled()
-                            }
-                        })
+                        }
+
+                        override fun canceled() {
+                            super.canceled()
+                        }
+                    })
             }
         })
 

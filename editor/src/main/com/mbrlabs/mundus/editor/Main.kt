@@ -26,7 +26,7 @@ import com.mbrlabs.mundus.editor.utils.Log
 const private val TAG = "Main"
 const val TITLE = "Mundus v0.2.0"
 
-fun main(arg: Array<String>) {
+fun main() {
     Log.init()
     launchEditor()
 }

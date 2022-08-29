@@ -34,7 +34,7 @@ import com.mbrlabs.mundus.editor.utils.createDefaultSkybox
  * @version 10-01-2016
  */
 class SkyboxDialog : BaseDialog("Skybox"), ProjectChangedEvent.ProjectChangedListener,
-        SceneChangedEvent.SceneChangedListener {
+    SceneChangedEvent.SceneChangedListener {
 
     private val positiveX: ImageChooserField = ImageChooserField(100)
     private var negativeX: ImageChooserField = ImageChooserField(100)
@@ -44,7 +44,7 @@ class SkyboxDialog : BaseDialog("Skybox"), ProjectChangedEvent.ProjectChangedLis
     private var negativeZ: ImageChooserField = ImageChooserField(100)
 
     private var createBtn = VisTextButton("Create skybox")
-    private var defaultBtn  = VisTextButton("Create default skybox")
+    private var defaultBtn = VisTextButton("Create default skybox")
     private var deletBtn = VisTextButton("Remove Skybox")
 
     private val projectManager: ProjectManager = Mundus.inject()
@@ -93,8 +93,10 @@ class SkyboxDialog : BaseDialog("Skybox"), ProjectChangedEvent.ProjectChangedLis
                 val oldSkybox = projectContext.currScene.skybox
                 oldSkybox?.dispose()
 
-                projectContext.currScene.skybox = Skybox(positiveX.file, negativeX.file,
-                        positiveY.file, negativeY.file, positiveZ.file, negativeZ.file)
+                projectContext.currScene.skybox = Skybox(
+                    positiveX.file, negativeX.file,
+                    positiveY.file, negativeY.file, positiveZ.file, negativeZ.file
+                )
                 resetImages()
             }
         })

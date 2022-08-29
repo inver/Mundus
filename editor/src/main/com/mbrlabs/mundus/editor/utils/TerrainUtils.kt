@@ -31,8 +31,13 @@ import com.mbrlabs.mundus.editor.shader.Shaders
 
 private var tempVI = VertexInfo()
 
-fun createTerrainGO(sg: SceneGraph, shader: TerrainShader, goID: Int, goName: String,
-                    terrain: TerrainAsset): GameObject {
+fun createTerrainGO(
+    sg: SceneGraph,
+    shader: TerrainShader,
+    goID: Int,
+    goName: String,
+    terrain: TerrainAsset
+): GameObject {
     val terrainGO = GameObject(sg, null, goID)
     terrainGO.name = goName
 

@@ -36,9 +36,9 @@ import com.mbrlabs.mundus.editor.utils.Log
  * @version 19-01-2016
  */
 class Inspector : VisTable(),
-        GameObjectSelectedEvent.GameObjectSelectedListener,
-        GameObjectModifiedEvent.GameObjectModifiedListener,
-        AssetSelectedEvent.AssetSelectedListener {
+    GameObjectSelectedEvent.GameObjectSelectedListener,
+    GameObjectModifiedEvent.GameObjectModifiedListener,
+    AssetSelectedEvent.AssetSelectedListener {
 
     companion object {
         private val TAG = Inspector::class.java.simpleName

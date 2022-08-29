@@ -1,0 +1,59 @@
+package com.mbrlabs.mundus.commons.gltf;
+
+import com.badlogic.gdx.assets.loaders.ModelLoader;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
+import com.badlogic.gdx.utils.Json;
+import com.mbrlabs.mundus.commons.core.AppModelLoader;
+import com.mbrlabs.mundus.commons.core.ModelFiles;
+import net.mgsx.gltf.data.GLTF;
+import net.mgsx.gltf.loaders.gltf.GLTFLoader;
+import org.apache.commons.lang3.NotImplementedException;
+
+public class GltfLoaderWrapper extends ModelLoader<ModelLoader.ModelParameters> implements AppModelLoader {
+    public static final String MODEL_TYPE = "gltf";
+    private final GLTFLoader loader = new GLTFLoader();
+    private final Json json;
+
+    public GltfLoaderWrapper(Json json) {
+        super(null);
+        this.json = json;
+    }
+
+    @Override
+    public String getKey() {
+        return MODEL_TYPE;
+    }
+
+    @Override
+    public ModelFiles getFileWithDependencies(FileHandle file) {
+        var res = new ModelFiles(file);
+
+        var dto = json.fromJson(GLTF.class, file);
+        dto.images.forEach(i -> {
+            var depFile = new FileHandle(file.parent().path() + '/' + i.uri);
+            if (depFile.exists()) {
+                res.getDependencies().add(depFile);
+            }
+        });
+        dto.buffers.forEach(b -> {
+            var depFile = new FileHandle(file.parent().path() + '/' + b.uri);
+            if (depFile.exists()) {
+                res.getDependencies().add(depFile);
+            }
+        });
+
+        return res;
+    }
+
+    @Override
+    public Model loadModel(FileHandle fileHandle) {
+        return loader.load(fileHandle).scene.model;
+    }
+
+    @Override
+    public ModelData loadModelData(FileHandle fileHandle, ModelParameters parameters) {
+        throw new NotImplementedException();
+    }
+}

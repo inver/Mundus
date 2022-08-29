@@ -30,23 +30,24 @@ import com.kotcrab.vis.ui.VisUI
 import com.kotcrab.vis.ui.layout.GridGroup
 import com.kotcrab.vis.ui.widget.*
 import com.kotcrab.vis.ui.widget.tabbedpane.Tab
-import com.mbrlabs.mundus.commons.assets.*
+import com.mbrlabs.mundus.commons.assets.Asset
+import com.mbrlabs.mundus.commons.assets.ModelAsset
 import com.mbrlabs.mundus.editor.Mundus
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
-import com.mbrlabs.mundus.editor.events.AssetImportEvent
-import com.mbrlabs.mundus.editor.events.AssetSelectedEvent
-import com.mbrlabs.mundus.editor.events.GameObjectSelectedEvent
-import com.mbrlabs.mundus.editor.events.ProjectChangedEvent
+import com.mbrlabs.mundus.editor.events.*
+import com.mbrlabs.mundus.editor.shader.Shaders
 import com.mbrlabs.mundus.editor.ui.UI
+import com.mbrlabs.mundus.editor.utils.GameObjectUtils
+import com.mbrlabs.mundus.editor.utils.Log
 
 /**
  * @author Marcus Brummer
  * @version 08-12-2015
  */
 class AssetsDock : Tab(false, false),
-        ProjectChangedEvent.ProjectChangedListener,
-        AssetImportEvent.AssetImportListener,
-        GameObjectSelectedEvent.GameObjectSelectedListener {
+    ProjectChangedEvent.ProjectChangedListener,
+    AssetImportEvent.AssetImportListener,
+    GameObjectSelectedEvent.GameObjectSelectedListener {
 
     private val root = VisTable()
     private val filesViewContextContainer = VisTable(false)
@@ -57,6 +58,7 @@ class AssetsDock : Tab(false, false),
     private val assetOpsMenu = PopupMenu()
     private val renameAsset = MenuItem("Rename Asset")
     private val deleteAsset = MenuItem("Delete Asset")
+    private val addAssetToScene = MenuItem("Add Asset to Scene")
 
     private var currentSelection: AssetItem? = null
     private val projectManager: ProjectManager = Mundus.inject()
@@ -73,7 +75,7 @@ class AssetsDock : Tab(false, false),
         contentTable.add(VisLabel("Assets")).left().padLeft(3f).row()
         contentTable.add(Separator()).padTop(3f).expandX().fillX()
         contentTable.row()
-        contentTable.add<VisTable>(filesViewContextContainer).expandX().fillX()
+        contentTable.add(filesViewContextContainer).expandX().fillX()
         contentTable.row()
         contentTable.add(createScrollPane(filesView, true)).expand().fill()
 
@@ -86,6 +88,7 @@ class AssetsDock : Tab(false, false),
         // asset ops right click menu
         assetOpsMenu.addItem(renameAsset)
         assetOpsMenu.addItem(deleteAsset)
+        assetOpsMenu.addItem(addAssetToScene)
 
         registerListeners()
     }
@@ -96,6 +99,46 @@ class AssetsDock : Tab(false, false),
                 currentSelection?.asset?.let {
                     projectManager.current().assetManager.deleteAsset(it, projectManager)
                     reloadAssets()
+                }
+            }
+        })
+        addAssetToScene.addListener(object : ClickListener() {
+            override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                currentSelection?.asset?.let {
+                    try {
+                        //todo
+                        Log.trace(this@AssetsDock.javaClass.name, "Add terrain game object in root node.")
+                        val context = projectManager.current()
+                        val sceneGraph = context.currScene.sceneGraph
+                        val goID = context.obtainID()
+                        val name = "${it.meta.type} $goID"
+                        // create asset
+//                        val asset = context.assetManager.createModelAsset(it.file)
+
+//                        asset.load()
+//                        asset.applyDependencies()
+
+                        val modelGO = GameObjectUtils.createModelGO(
+                            sceneGraph, Shaders.modelShader, goID, name,
+                            it as ModelAsset?
+                        )
+//                        val terrainGO = createTerrainGO(
+//                            sceneGraph,
+//                            Shaders.terrainShader, goID, name, asset
+//                        )
+                        // update sceneGraph
+                        sceneGraph.addGameObject(modelGO)
+                        // update outline
+                        //todo
+//                        addGoToTree(null, terrainGO)
+
+//                        context.currScene..add(asset)
+                        projectManager.saveProject(context)
+                        Mundus.postEvent(AssetImportEvent(it))
+                        Mundus.postEvent(SceneGraphChangedEvent())
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
                 }
             }
         })
@@ -160,7 +203,7 @@ class AssetsDock : Tab(false, false),
             setBackground("menu-bg")
             align(Align.center)
             nameLabel = VisLabel(asset.toString(), "tiny")
-            nameLabel.setWrap(true)
+            nameLabel.wrap = true
             add(nameLabel).grow().top().row()
 
             addListener(object : InputListener() {
@@ -171,8 +214,10 @@ class AssetsDock : Tab(false, false),
                 override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                     if (event!!.button == Input.Buttons.RIGHT) {
                         setSelected()
-                        assetOpsMenu.showMenu(UI, Gdx.input.x.toFloat(),
-                                (Gdx.graphics.height - Gdx.input.y).toFloat())
+                        assetOpsMenu.showMenu(
+                            UI, Gdx.input.x.toFloat(),
+                            (Gdx.graphics.height - Gdx.input.y).toFloat()
+                        )
                     } else if (event.button == Input.Buttons.LEFT) {
                         setSelected()
                     }

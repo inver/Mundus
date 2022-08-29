@@ -96,7 +96,7 @@ class CommandHistory(private val limit: Int) {
 
     fun clear() {
         commands.filterIsInstance<DisposableCommand>()
-                .forEach { it.dispose() }
+            .forEach { it.dispose() }
         commands.clear()
         pointer = -1
     }

@@ -35,14 +35,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.Disposable
 import com.badlogic.gdx.utils.GdxRuntimeException
-import com.badlogic.gdx.utils.UBJsonReader
 import com.kotcrab.vis.ui.util.dialog.Dialogs
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.mbrlabs.mundus.commons.assets.ModelAsset
 import com.mbrlabs.mundus.commons.assets.meta.MetaModel
-import com.mbrlabs.mundus.commons.g3d.MG3dModelLoader
+import com.mbrlabs.mundus.commons.gltf.GltfLoaderWrapper
 import com.mbrlabs.mundus.editor.Mundus
 import com.mbrlabs.mundus.editor.assets.AssetAlreadyExistsException
 import com.mbrlabs.mundus.editor.assets.FileHandleWithDependencies
@@ -55,7 +54,6 @@ import com.mbrlabs.mundus.editor.ui.modules.dialogs.BaseDialog
 import com.mbrlabs.mundus.editor.ui.widgets.FileChooserField
 import com.mbrlabs.mundus.editor.ui.widgets.RenderWidget
 import com.mbrlabs.mundus.editor.utils.*
-import net.mgsx.gltf.loaders.gltf.GLTFLoader
 import java.io.IOException
 
 /**
@@ -210,13 +208,15 @@ class ImportModelDialog : BaseDialog("Import Mesh"), Disposable {
         }
 
         private fun loadAndShowPreview(model: FileHandle) {
-            this.importedModel = modelImporter.importToTempFolder(model)
+            importedModel = modelImporter.importToTempFolder(model)
 
             if (importedModel == null) {
-                if (isCollada(model) || isFBX(model)
-                        || isWavefont(model)) {
-                    Dialogs.showErrorDialog(stage, "Import error\nPlease make sure you specified the right "
-                            + "files & have set the correct fbc-conv binary in the settings menu.")
+                if (isCollada(model) || isFBX(model)//                    || isWavefont(model)
+                ) {
+                    Dialogs.showErrorDialog(
+                        stage, "Import error\nPlease make sure you specified the right "
+                                + "files & have set the correct fbc-conv binary in the settings menu."
+                    )
                 } else {
                     Dialogs.showErrorDialog(stage, "Import error\nPlease make sure you specified the right files")
                 }
@@ -225,13 +225,7 @@ class ImportModelDialog : BaseDialog("Import Mesh"), Disposable {
             // load and show preview
             if (importedModel != null) {
                 try {
-                    if (isG3DB(importedModel!!.file)) {
-                        previewModel = MG3dModelLoader(UBJsonReader()).loadModel(importedModel!!.file)
-                    } else if (isGLTF(importedModel!!.file)) {
-                        previewModel = GLTFLoader().load(importedModel!!.file).scene.model
-                    } else {
-                        throw GdxRuntimeException("Unsupported 3D format")
-                    }
+                    previewModel = modelImporter.loadModel(importedModel!!.file)
 
                     previewInstance = ModelInstance(previewModel!!)
                     showPreview()

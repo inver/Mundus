@@ -28,21 +28,18 @@ import com.mbrlabs.mundus.commons.assets.meta.Meta
 import com.mbrlabs.mundus.commons.assets.meta.MetaTerrain
 import com.mbrlabs.mundus.commons.scene3d.GameObject
 import com.mbrlabs.mundus.commons.scene3d.components.AssetUsage
-import com.mbrlabs.mundus.editor.Mundus
-import com.mbrlabs.mundus.editor.events.LogEvent
-import com.mbrlabs.mundus.editor.events.LogType
 import com.mbrlabs.mundus.commons.utils.FileFormatUtils
+import com.mbrlabs.mundus.editor.Mundus
 import com.mbrlabs.mundus.editor.core.EditorScene
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
+import com.mbrlabs.mundus.editor.events.LogEvent
+import com.mbrlabs.mundus.editor.events.LogType
 import com.mbrlabs.mundus.editor.ui.UI
 import com.mbrlabs.mundus.editor.utils.Log
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.FilenameUtils
 import java.io.*
 import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
-import kotlin.collections.HashSet
 
 /**
  * @author Marcus Brummer
@@ -87,7 +84,12 @@ class EditorAssetManager(assetsRoot: FileHandle) : AssetManager(assetsRoot) {
     @Throws(IOException::class, AssetAlreadyExistsException::class)
     fun createNewMetaFile(file: FileHandle, type: AssetType): Meta {
         if (file.exists()) {
-            Mundus.postEvent(LogEvent(LogType.ERROR, "Tried to create new Meta File that already exists: " + file.name()))
+            Mundus.postEvent(
+                LogEvent(
+                    LogType.ERROR,
+                    "Tried to create new Meta File that already exists: " + file.name()
+                )
+            )
             throw AssetAlreadyExistsException()
         }
 
@@ -140,7 +142,7 @@ class EditorAssetManager(assetsRoot: FileHandle) : AssetManager(assetsRoot) {
     @Throws(IOException::class, AssetAlreadyExistsException::class)
     fun createModelAsset(model: FileHandleWithDependencies): ModelAsset {
         val modelFilename = model.name()
-        val metaFilename = modelFilename + ".meta"
+        val metaFilename = "$modelFilename.meta"
 
         // create meta file
         val metaPath = FilenameUtils.concat(rootFolder.path(), metaFilename)
@@ -173,8 +175,8 @@ class EditorAssetManager(assetsRoot: FileHandle) : AssetManager(assetsRoot) {
      */
     @Throws(IOException::class, AssetAlreadyExistsException::class)
     fun createTerraAsset(name: String, vertexResolution: Int, size: Int): TerrainAsset {
-        val terraFilename = name + ".terra"
-        val metaFilename = terraFilename + ".meta"
+        val terraFilename = "$name.terra"
+        val metaFilename = "$terraFilename.meta"
 
         // create meta file
         val metaPath = FilenameUtils.concat(rootFolder.path(), metaFilename)
@@ -357,7 +359,10 @@ class EditorAssetManager(assetsRoot: FileHandle) : AssetManager(assetsRoot) {
     /**
      * Build a dialog displaying the usages for the asset trying to be deleted.
      */
-    private fun showUsagesFoundDialog(objectsWithAssets: HashMap<GameObject, String>, assetsUsingAsset: ArrayList<Asset>) {
+    private fun showUsagesFoundDialog(
+        objectsWithAssets: HashMap<GameObject, String>,
+        assetsUsingAsset: ArrayList<Asset>
+    ) {
         val iterator = objectsWithAssets.iterator()
         var details = "Scenes using asset:"
 
@@ -393,7 +398,12 @@ class EditorAssetManager(assetsRoot: FileHandle) : AssetManager(assetsRoot) {
                 details += "\n" + name
         }
 
-        Dialogs.showDetailsDialog(UI, "Before deleting an asset, remove usages of the asset and save. See details for usages.", "Asset deletion", details)
+        Dialogs.showDetailsDialog(
+            UI,
+            "Before deleting an asset, remove usages of the asset and save. See details for usages.",
+            "Asset deletion",
+            details
+        )
     }
 
     /**
@@ -427,7 +437,11 @@ class EditorAssetManager(assetsRoot: FileHandle) : AssetManager(assetsRoot) {
         return objectsWithAssets
     }
 
-    private fun checkSceneForAssetUsage(scene: EditorScene?, asset: Asset, objectsWithAssets: HashMap<GameObject, String>) {
+    private fun checkSceneForAssetUsage(
+        scene: EditorScene?,
+        asset: Asset,
+        objectsWithAssets: HashMap<GameObject, String>
+    ) {
         for (gameObject in scene!!.sceneGraph.gameObjects) {
             for (component in gameObject.components) {
                 if (component is AssetUsage) {

@@ -4,11 +4,11 @@
     <source path="mundus" />
 
     <!-- glsl shaders -->
-    <extend-configuration-property name="gdx.files.classpath" value="com/mbrlabs/mundus/commons/shaders/model.frag.glsl" />
-    <extend-configuration-property name="gdx.files.classpath" value="com/mbrlabs/mundus/commons/shaders/model.vert.glsl" />
-    <extend-configuration-property name="gdx.files.classpath" value="com/mbrlabs/mundus/commons/shaders/skybox.frag.glsl" />
-    <extend-configuration-property name="gdx.files.classpath" value="com/mbrlabs/mundus/commons/shaders/skybox.vert.glsl" />
-    <extend-configuration-property name="gdx.files.classpath" value="com/mbrlabs/mundus/commons/shaders/terrain.frag.glsl" />
-    <extend-configuration-property name="gdx.files.classpath" value="com/mbrlabs/mundus/commons/shaders/terrain.vert.glsl" />
+    <extend-configuration-property name="gdx.files.classpath" value="shaders/model.frag.glsl" />
+    <extend-configuration-property name="gdx.files.classpath" value="shaders/model.vert.glsl" />
+    <extend-configuration-property name="gdx.files.classpath" value="shaders/skybox.frag.glsl" />
+    <extend-configuration-property name="gdx.files.classpath" value="shaders/skybox.vert.glsl" />
+    <extend-configuration-property name="gdx.files.classpath" value="shaders/terrain.frag.glsl" />
+    <extend-configuration-property name="gdx.files.classpath" value="shaders/terrain.vert.glsl" />
 
 </module>
