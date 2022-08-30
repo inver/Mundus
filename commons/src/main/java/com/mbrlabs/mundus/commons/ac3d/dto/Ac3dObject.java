@@ -1,9 +1,9 @@
 package com.mbrlabs.mundus.commons.ac3d.dto;
 
-import com.mbrlabs.mundus.commons.ac3d.core.Matrix3;
-import com.mbrlabs.mundus.commons.ac3d.core.Vector2;
-import com.mbrlabs.mundus.commons.ac3d.core.Vector3;
-import com.mbrlabs.mundus.commons.ac3d.core.Vertex;
+import com.mbrlabs.mundus.commons.dto.Matrix3DTO;
+import com.mbrlabs.mundus.commons.dto.Vector2DTO;
+import com.mbrlabs.mundus.commons.dto.Vector3DTO;
+import com.mbrlabs.mundus.commons.dto.VertexDTO;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -20,8 +20,8 @@ public class Ac3dObject {
     private final List<String> data;
 
     private final String texturePath;
-    private final Vector2 textureOffset;
-    private final Vector2 textureRepeat;
+    private final Vector2DTO textureOffset;
+    private final Vector2DTO textureRepeat;
 
     //Optional - default 0. Change subdivision level. Also at the same time the mesh will be smoothed.
     private final int subdivisionLevel;
@@ -30,15 +30,15 @@ public class Ac3dObject {
 
     private final String url;
 
-    private Matrix3 rotation;
-    private Vector3 translation;
+    private Matrix3DTO rotation;
+    private Vector3DTO translation;
 
     private boolean hidden;
     private boolean locked;
     //if this object should be folded (collapsed) in the hierarchy dialog.
     private boolean folded;
 
-    private final List<Vertex> vertices;
+    private final List<VertexDTO> vertices;
 
     private final List<Ac3dSurface> surfaces;
 

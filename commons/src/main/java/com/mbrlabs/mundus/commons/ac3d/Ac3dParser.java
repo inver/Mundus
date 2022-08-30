@@ -1,7 +1,7 @@
 package com.mbrlabs.mundus.commons.ac3d;
 
-import com.mbrlabs.mundus.commons.ac3d.core.*;
 import com.mbrlabs.mundus.commons.ac3d.dto.*;
+import com.mbrlabs.mundus.commons.dto.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
@@ -124,8 +124,8 @@ public class Ac3dParser {
     }
 
 
-    private ColorDto createColor(String red, String green, String blue) {
-        return new ColorDto(Float.parseFloat(red), Float.parseFloat(green), Float.parseFloat(blue));
+    private ColorDTO createColor(String red, String green, String blue) {
+        return new ColorDTO(Float.parseFloat(red), Float.parseFloat(green), Float.parseFloat(blue));
     }
 
     public Ac3dObject parseObject(String line, BufferedReader br) throws IOException {
@@ -138,7 +138,7 @@ public class Ac3dParser {
         res.type(parseObjectType(token));
 
         List<Ac3dSurface> surfaces = Collections.emptyList();
-        var vertices = new ArrayList<Vertex>();
+        var vertices = new ArrayList<VertexDTO>();
         while (!Ac3dConstants.OBJECT_KIDS.equals(token)) {
             line = br.readLine();
             tokenizer = new StringTokenizer(line);
@@ -170,14 +170,14 @@ public class Ac3dParser {
                     break;
                 }
                 case Ac3dConstants.OBJECT_TEXTURE_OFFSET: {
-                    res.textureOffset(new Vector2(
+                    res.textureOffset(new Vector2DTO(
                             Float.parseFloat(tokenizer.nextToken()),
                             Float.parseFloat(tokenizer.nextToken())
                     ));
                     break;
                 }
                 case Ac3dConstants.OBJECT_TEXTURE_REPEAT: {
-                    res.textureRepeat(new Vector2(
+                    res.textureRepeat(new Vector2DTO(
                             Float.parseFloat(tokenizer.nextToken()),
                             Float.parseFloat(tokenizer.nextToken())
                     ));
@@ -193,7 +193,7 @@ public class Ac3dParser {
                 }
                 case Ac3dConstants.OBJECT_ROTATION_SCALE: {
                     //todo rotate matrix, bcz floats follow by columns
-                    res.rotation(new Matrix3(
+                    res.rotation(new Matrix3DTO(
                             Float.parseFloat(tokenizer.nextToken()), Float.parseFloat(tokenizer.nextToken()), Float.parseFloat(tokenizer.nextToken()),
                             Float.parseFloat(tokenizer.nextToken()), Float.parseFloat(tokenizer.nextToken()), Float.parseFloat(tokenizer.nextToken()),
                             Float.parseFloat(tokenizer.nextToken()), Float.parseFloat(tokenizer.nextToken()), Float.parseFloat(tokenizer.nextToken())
@@ -201,7 +201,7 @@ public class Ac3dParser {
                     break;
                 }
                 case Ac3dConstants.OBJECT_TRANSLATION: {
-                    res.translation(new Vector3(
+                    res.translation(new Vector3DTO(
                             Float.parseFloat(tokenizer.nextToken()),
                             Float.parseFloat(tokenizer.nextToken()),
                             Float.parseFloat(tokenizer.nextToken())
@@ -229,7 +229,7 @@ public class Ac3dParser {
                     for (int i = 0; i < count; i++) {
                         line = br.readLine();
                         tokenizer = new StringTokenizer(line, " ");
-                        vertices.add(new Vertex(
+                        vertices.add(new VertexDTO(
                                 Float.parseFloat(tokenizer.nextToken()),
                                 Float.parseFloat(tokenizer.nextToken()),
                                 Float.parseFloat(tokenizer.nextToken())
@@ -294,7 +294,7 @@ public class Ac3dParser {
             tokenizer = new StringTokenizer(line);
             token = tokenizer.nextToken();
 
-            var vertices = new ArrayList<Pair<Integer, Vector2>>();
+            var vertices = new ArrayList<Pair<Integer, Vector2DTO>>();
             if (Ac3dConstants.OBJECT_SURFACE_NUMBER_OF_VERTICES.equals(token)) {
                 var verticesCount = Integer.parseInt(tokenizer.nextToken());
                 for (int j = 0; j < verticesCount; j++) {
@@ -303,7 +303,7 @@ public class Ac3dParser {
 
                     vertices.add(Pair.of(
                             Integer.parseInt(tokenizer.nextToken()),
-                            new Vector2(
+                            new Vector2DTO(
                                     Float.parseFloat(tokenizer.nextToken()),
                                     Float.parseFloat(tokenizer.nextToken())
                             )

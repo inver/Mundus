@@ -1,11 +1,11 @@
-package com.mbrlabs.mundus.commons.ac3d.core;
+package com.mbrlabs.mundus.commons.dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public class Vertex {
+public class VertexDTO {
     private final float x, y, z;
 
 }

@@ -93,7 +93,7 @@ class ModelImporter(private val registry: Registry) : SettingsChangedEvent.Setti
             retFile = FileHandleWithDependencies(rawModelFile)
         } else if (isAC3D(rawModelFile)) {
             retFile = FileHandleWithDependencies(rawModelFile)
-        } else if(isOBJ(rawModelFile)) {
+        } else if (isOBJ(rawModelFile)) {
             retFile = FileHandleWithDependencies(rawModelFile)
         }
 

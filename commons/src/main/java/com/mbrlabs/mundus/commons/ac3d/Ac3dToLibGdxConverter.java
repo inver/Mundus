@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.g3d.model.data.*;
 import com.badlogic.gdx.math.Vector3;
-import com.mbrlabs.mundus.commons.ac3d.core.ColorDto;
+import com.mbrlabs.mundus.commons.dto.ColorDTO;
 import com.mbrlabs.mundus.commons.ac3d.dto.Ac3dMaterial;
 import com.mbrlabs.mundus.commons.ac3d.dto.Ac3dModel;
 import com.mbrlabs.mundus.commons.ac3d.dto.Ac3dObject;
@@ -78,7 +78,7 @@ public class Ac3dToLibGdxConverter {
                         part.indices[j] = surface.getVerticesRefs().get(j).getKey().shortValue();
                     }
                     if (surface.getVerticesRefs().size() == 4) {
-                        part.primitiveType = GL20.GL_TRIANGLE_STRIP;
+                        part.primitiveType = GL20.GL_TRIANGLE_FAN;
                     } else {
                         part.primitiveType = GL20.GL_TRIANGLES;
                     }
@@ -107,7 +107,7 @@ public class Ac3dToLibGdxConverter {
         return res;
     }
 
-    private Color fromDto(ColorDto input) {
+    private Color fromDto(ColorDTO input) {
         return new Color(input.getR(), input.getG(), input.getB(), input.getA());
     }
 }

@@ -27,8 +27,12 @@ import com.mbrlabs.mundus.editor.ui.UI
  * @author Marcus Brummer
  * @version 07-02-2016
  */
-class ShortcutController(registry: Registry, private val projectManager: ProjectManager, private val history: CommandHistory, private val toolManager: ToolManager)
-    : KeyboardLayoutInputAdapter(registry) {
+class ShortcutController(
+    registry: Registry,
+    private val projectManager: ProjectManager,
+    private val history: CommandHistory,
+    private val toolManager: ToolManager
+) : KeyboardLayoutInputAdapter(registry) {
 
     private var isCtrlPressed = false
 
@@ -36,7 +40,7 @@ class ShortcutController(registry: Registry, private val projectManager: Project
         val keycode = convertKeycode(code)
 
         // export
-        if(keycode == Input.Keys.F1) {
+        if (keycode == Input.Keys.F1) {
             UI.exportDialog.export()
             return true
         }
@@ -46,30 +50,40 @@ class ShortcutController(registry: Registry, private val projectManager: Project
         if (keycode == Input.Keys.CONTROL_LEFT) {
             isCtrlPressed = true
         }
-        if (!isCtrlPressed) return false
+        if (!isCtrlPressed) {
+            return false
+        }
 
-        if (keycode == Input.Keys.Z) {
-            history.goBack()
-            return true
-        } else if (keycode == Input.Keys.Y) {
-            history.goForward()
-            return true
-        } else if (keycode == Input.Keys.S) {
-            projectManager.saveCurrentProject()
-            UI.toaster.success("Project saved")
-            return true
-        } else if (keycode == Input.Keys.T) {
-            toolManager.activateTool(toolManager.translateTool)
-            UI.toolbar.updateActiveToolButton()
-        } else if (keycode == Input.Keys.R) {
-            toolManager.activateTool(toolManager.rotateTool)
-            UI.toolbar.updateActiveToolButton()
-        } else if (keycode == Input.Keys.G) {
-            toolManager.activateTool(toolManager.scaleTool)
-            UI.toolbar.updateActiveToolButton()
-        } else if (keycode == Input.Keys.F) {
-            toolManager.activateTool(toolManager.selectionTool)
-            UI.toolbar.updateActiveToolButton()
+        when (keycode) {
+            Input.Keys.Z -> {
+                history.goBack()
+                return true
+            }
+            Input.Keys.Y -> {
+                history.goForward()
+                return true
+            }
+            Input.Keys.S -> {
+                projectManager.saveCurrentProject()
+                UI.toaster.success("Project saved")
+                return true
+            }
+            Input.Keys.T -> {
+                toolManager.activateTool(toolManager.translateTool)
+                UI.toolbar.updateActiveToolButton()
+            }
+            Input.Keys.R -> {
+                toolManager.activateTool(toolManager.rotateTool)
+                UI.toolbar.updateActiveToolButton()
+            }
+            Input.Keys.G -> {
+                toolManager.activateTool(toolManager.scaleTool)
+                UI.toolbar.updateActiveToolButton()
+            }
+            Input.Keys.F -> {
+                toolManager.activateTool(toolManager.selectionTool)
+                UI.toolbar.updateActiveToolButton()
+            }
         }
 
         return false

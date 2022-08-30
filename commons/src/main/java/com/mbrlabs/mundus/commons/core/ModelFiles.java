@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 public class ModelFiles {
     private final FileHandle main;
-    private List<FileHandle> dependencies = new ArrayList<>();
+    private final List<FileHandle> dependencies = new ArrayList<>();
 
     public void copyTo(FileHandle dest) {
         main.copyTo(dest);
