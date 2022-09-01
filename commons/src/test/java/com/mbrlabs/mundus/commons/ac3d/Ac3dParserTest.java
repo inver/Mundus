@@ -2,6 +2,7 @@ package com.mbrlabs.mundus.commons.ac3d;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
+import com.mbrlabs.mundus.commons.loader.ac3d.Ac3dParser;
 import lombok.SneakyThrows;
 import org.junit.Assert;
 import org.junit.Test;

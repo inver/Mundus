@@ -1,4 +1,4 @@
-package com.mbrlabs.mundus.commons.ac3d;
+package com.mbrlabs.mundus.commons.loader.ac3d;
 
 public final class Ac3dConstants {
     public static final String HEADER = "AC3D";

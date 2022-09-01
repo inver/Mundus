@@ -1,4 +1,4 @@
-package com.mbrlabs.mundus.commons.gltf;
+package com.mbrlabs.mundus.commons.loader.gltf;
 
 import com.badlogic.gdx.assets.loaders.ModelLoader;
 import com.badlogic.gdx.files.FileHandle;

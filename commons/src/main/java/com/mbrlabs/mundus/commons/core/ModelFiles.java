@@ -17,4 +17,12 @@ public class ModelFiles {
         main.copyTo(dest);
         dependencies.forEach(dep -> dep.copyTo(dest));
     }
+
+    public String name() {
+        return main.name();
+    }
+
+    public boolean exists() {
+        return main.exists();
+    }
 }

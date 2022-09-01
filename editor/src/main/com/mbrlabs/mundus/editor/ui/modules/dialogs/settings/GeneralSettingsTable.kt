@@ -22,8 +22,8 @@ import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisSelectBox
 import com.mbrlabs.mundus.editor.Mundus
 import com.mbrlabs.mundus.editor.core.kryo.KryoManager
-import com.mbrlabs.mundus.editor.core.registry.KeyboardLayout
-import com.mbrlabs.mundus.editor.core.registry.Registry
+import com.mbrlabs.mundus.commons.core.registry.KeyboardLayout
+import com.mbrlabs.mundus.commons.core.registry.Registry
 import com.mbrlabs.mundus.editor.events.SettingsChangedEvent
 import com.mbrlabs.mundus.editor.ui.UI
 import com.mbrlabs.mundus.editor.ui.widgets.FileChooserField

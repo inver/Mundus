@@ -49,7 +49,7 @@ import com.mbrlabs.mundus.editor.utils.Fa;
  */
 public class TranslateTool extends TransformTool {
 
-    private final float ARROW_THIKNESS = 0.4f;
+    private final float ARROW_THIKNESS = 0.1f;
     private final float ARROW_CAP_SIZE = 0.15f;
     private final int ARROW_DIVISIONS = 12;
 
@@ -89,6 +89,8 @@ public class TranslateTool extends TransformTool {
                 VertexAttributes.Usage.Position);
         Model xzPlaneHandleModel = modelBuilder.createSphere(1, 1, 1, 20, 20,
                 new Material(ColorAttribute.createDiffuse(COLOR_XZ)), VertexAttributes.Usage.Position);
+
+
 
         xHandle = new TranslateHandle(X_HANDLE_ID, xHandleModel);
         yHandle = new TranslateHandle(Y_HANDLE_ID, yHandleModel);

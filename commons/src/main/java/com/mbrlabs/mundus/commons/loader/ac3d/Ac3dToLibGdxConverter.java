@@ -1,4 +1,4 @@
-package com.mbrlabs.mundus.commons.ac3d;
+package com.mbrlabs.mundus.commons.loader.ac3d;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -6,9 +6,9 @@ import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.g3d.model.data.*;
 import com.badlogic.gdx.math.Vector3;
 import com.mbrlabs.mundus.commons.dto.ColorDTO;
-import com.mbrlabs.mundus.commons.ac3d.dto.Ac3dMaterial;
-import com.mbrlabs.mundus.commons.ac3d.dto.Ac3dModel;
-import com.mbrlabs.mundus.commons.ac3d.dto.Ac3dObject;
+import com.mbrlabs.mundus.commons.loader.ac3d.dto.Ac3dMaterial;
+import com.mbrlabs.mundus.commons.loader.ac3d.dto.Ac3dModel;
+import com.mbrlabs.mundus.commons.loader.ac3d.dto.Ac3dObject;
 import org.apache.commons.collections4.CollectionUtils;
 
 public class Ac3dToLibGdxConverter {
@@ -94,8 +94,8 @@ public class Ac3dToLibGdxConverter {
         }
 
         if (CollectionUtils.isNotEmpty(obj.getChildren())) {
+            node.children = new ModelNode[obj.getChildren().size()];
             for (int i = 0; i < obj.getChildren().size(); i++) {
-                node.children = new ModelNode[obj.getChildren().size()];
                 convert(obj.getChildren().get(i), res, node, i);
             }
         }

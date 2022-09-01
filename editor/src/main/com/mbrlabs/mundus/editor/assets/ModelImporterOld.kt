@@ -16,8 +16,25 @@
 
 package com.mbrlabs.mundus.editor.assets
 
+import com.mbrlabs.mundus.commons.core.registry.Registry
+import com.mbrlabs.mundus.editor.Mundus
+import com.mbrlabs.mundus.editor.events.SettingsChangedEvent
+
 /**
  * @author Marcus Brummer
- * @version 24-11-2015
+ * @version 12-12-2015
  */
-class FormatNotSupportedException : RuntimeException()
+@Deprecated("Use Model importer from common module")
+class ModelImporterOld(private val registry: Registry) : SettingsChangedEvent.SettingsChangedListener {
+
+    private val fbxConv: FbxConv
+
+    init {
+        Mundus.registerEventListener(this)
+        fbxConv = FbxConv(registry.settings.fbxConvBinary)
+    }
+
+    override fun onSettingsChanged(event: SettingsChangedEvent) {
+        fbxConv.setFbxBinary(event.settings.fbxConvBinary)
+    }
+}

@@ -40,7 +40,7 @@ public class SelectionTool extends Tool {
     private GameObjectPicker goPicker;
 
     public SelectionTool(ProjectManager projectManager, GameObjectPicker goPicker, ModelBatch batch,
-            CommandHistory history) {
+                         CommandHistory history) {
         super(projectManager, batch, history);
         this.goPicker = goPicker;
     }
@@ -110,6 +110,9 @@ public class SelectionTool extends Tool {
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
+        //todo
+//        projectManager.current().currScene.viewport.getScreenHeight();
+
         return false;
     }
 
@@ -120,7 +123,6 @@ public class SelectionTool extends Tool {
 
     @Override
     public void onActivated() {
-
     }
 
     @Override

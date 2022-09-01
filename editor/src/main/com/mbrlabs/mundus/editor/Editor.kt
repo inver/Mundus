@@ -17,7 +17,6 @@
 package com.mbrlabs.mundus.editor
 
 import com.badlogic.gdx.ApplicationListener
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowAdapter
 import com.badlogic.gdx.graphics.Color
@@ -26,7 +25,7 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance
 import com.badlogic.gdx.utils.GdxRuntimeException
 import com.mbrlabs.mundus.editor.core.project.ProjectContext
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
-import com.mbrlabs.mundus.editor.core.registry.Registry
+import com.mbrlabs.mundus.commons.core.registry.Registry
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent
 import com.mbrlabs.mundus.editor.events.SceneChangedEvent
 import com.mbrlabs.mundus.editor.input.FreeCamController

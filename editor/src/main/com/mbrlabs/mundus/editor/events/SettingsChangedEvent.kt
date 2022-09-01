@@ -16,7 +16,7 @@
 
 package com.mbrlabs.mundus.editor.events
 
-import com.mbrlabs.mundus.editor.core.registry.Settings
+import com.mbrlabs.mundus.commons.core.registry.Settings
 
 /**
  * @author Marcus Brummer

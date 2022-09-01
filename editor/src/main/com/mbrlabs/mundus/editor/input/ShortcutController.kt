@@ -18,7 +18,7 @@ package com.mbrlabs.mundus.editor.input
 
 import com.badlogic.gdx.Input
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
-import com.mbrlabs.mundus.editor.core.registry.Registry
+import com.mbrlabs.mundus.commons.core.registry.Registry
 import com.mbrlabs.mundus.editor.history.CommandHistory
 import com.mbrlabs.mundus.editor.tools.ToolManager
 import com.mbrlabs.mundus.editor.ui.UI

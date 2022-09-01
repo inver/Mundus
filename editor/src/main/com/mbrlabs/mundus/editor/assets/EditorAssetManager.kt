@@ -26,6 +26,7 @@ import com.kotcrab.vis.ui.util.dialog.Dialogs
 import com.mbrlabs.mundus.commons.assets.*
 import com.mbrlabs.mundus.commons.assets.meta.Meta
 import com.mbrlabs.mundus.commons.assets.meta.MetaTerrain
+import com.mbrlabs.mundus.commons.core.ModelFiles
 import com.mbrlabs.mundus.commons.scene3d.GameObject
 import com.mbrlabs.mundus.commons.scene3d.components.AssetUsage
 import com.mbrlabs.mundus.commons.utils.FileFormatUtils
@@ -140,7 +141,7 @@ class EditorAssetManager(assetsRoot: FileHandle) : AssetManager(assetsRoot) {
      * @throws IOException
      */
     @Throws(IOException::class, AssetAlreadyExistsException::class)
-    fun createModelAsset(model: FileHandleWithDependencies): ModelAsset {
+    fun createModelAsset(model: ModelFiles): ModelAsset {
         val modelFilename = model.name()
         val metaFilename = "$modelFilename.meta"
 

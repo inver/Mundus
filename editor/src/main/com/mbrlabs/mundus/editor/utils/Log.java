@@ -23,7 +23,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.mbrlabs.mundus.editor.core.registry.Registry;
+import com.mbrlabs.mundus.commons.core.registry.Registry;
 
 /**
  * Log messages with different log levels. To save performance during runtime,

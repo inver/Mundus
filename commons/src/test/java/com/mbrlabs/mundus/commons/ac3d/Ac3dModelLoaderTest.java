@@ -2,6 +2,8 @@ package com.mbrlabs.mundus.commons.ac3d;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.files.FileHandle;
+import com.mbrlabs.mundus.commons.loader.ac3d.Ac3dModelLoader;
+import com.mbrlabs.mundus.commons.loader.ac3d.Ac3dParser;
 import org.junit.Assert;
 import org.junit.Test;
 

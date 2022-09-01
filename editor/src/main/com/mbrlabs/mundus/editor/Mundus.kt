@@ -26,11 +26,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.Json
 import com.kotcrab.vis.ui.VisUI
 import com.mbrlabs.mundus.commons.assets.meta.MetaLoader
+import com.mbrlabs.mundus.commons.core.registry.Registry
+import com.mbrlabs.mundus.commons.loader.ModelImporter
 import com.mbrlabs.mundus.editor.assets.MetaSaver
-import com.mbrlabs.mundus.editor.assets.ModelImporter
 import com.mbrlabs.mundus.editor.core.kryo.KryoManager
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
-import com.mbrlabs.mundus.editor.core.registry.Registry
 import com.mbrlabs.mundus.editor.events.EventBus
 import com.mbrlabs.mundus.editor.history.CommandHistory
 import com.mbrlabs.mundus.editor.input.FreeCamController
@@ -100,8 +100,10 @@ object Mundus {
         commandHistory = CommandHistory(CommandHistory.DEFAULT_LIMIT)
         modelImporter = ModelImporter(registry)
         projectManager = ProjectManager(kryoManager, registry, modelBatch)
-        toolManager = ToolManager(input, projectManager, goPicker, handlePicker, modelBatch, shapeRenderer,
-                commandHistory)
+        toolManager = ToolManager(
+            input, projectManager, goPicker, handlePicker, modelBatch, shapeRenderer,
+            commandHistory
+        )
         shortcutController = ShortcutController(registry, projectManager, commandHistory, toolManager)
         json = Json()
 
@@ -132,7 +134,8 @@ object Mundus {
      */
     private fun initStyle() {
         val generator = FreeTypeFontGenerator(
-                Gdx.files.internal("fonts/OpenSans/OpenSans-Regular.ttf"))
+            Gdx.files.internal("fonts/OpenSans/OpenSans-Regular.ttf")
+        )
         val params = FreeTypeFontGenerator.FreeTypeFontParameter()
         params.kerning = true
         params.borderStraight = false
@@ -168,11 +171,10 @@ object Mundus {
         faBuilder.generatorParameter.size = (Gdx.graphics.height * 0.02f).toInt()
         faBuilder.generatorParameter.kerning = true
         faBuilder.generatorParameter.borderStraight = false
-        fa = faBuilder.addIcon(Fa.SAVE).addIcon(Fa.DOWNLOAD).addIcon(Fa.GIFT).
-                addIcon(Fa.PLAY).addIcon(Fa.MOUSE_POINTER).addIcon(Fa.ARROWS).
-                addIcon(Fa.CIRCLE_O).addIcon(Fa.CIRCLE).addIcon(Fa.MINUS).addIcon(Fa.CARET_DOWN).
-                addIcon(Fa.CARET_UP).addIcon(Fa.TIMES).addIcon(Fa.SORT).addIcon(Fa.HASHTAG).
-                addIcon(Fa.PAINT_BRUSH).addIcon(Fa.STAR).addIcon(Fa.REFRESH).addIcon(Fa.EXPAND).build()
+        fa = faBuilder.addIcon(Fa.SAVE).addIcon(Fa.DOWNLOAD).addIcon(Fa.GIFT).addIcon(Fa.PLAY).addIcon(Fa.MOUSE_POINTER)
+            .addIcon(Fa.ARROWS).addIcon(Fa.CIRCLE_O).addIcon(Fa.CIRCLE).addIcon(Fa.MINUS).addIcon(Fa.CARET_DOWN)
+            .addIcon(Fa.CARET_UP).addIcon(Fa.TIMES).addIcon(Fa.SORT).addIcon(Fa.HASHTAG).addIcon(Fa.PAINT_BRUSH)
+            .addIcon(Fa.STAR).addIcon(Fa.REFRESH).addIcon(Fa.EXPAND).build()
     }
 
     /**

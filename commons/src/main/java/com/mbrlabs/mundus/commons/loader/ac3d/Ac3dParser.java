@@ -1,7 +1,7 @@
-package com.mbrlabs.mundus.commons.ac3d;
+package com.mbrlabs.mundus.commons.loader.ac3d;
 
-import com.mbrlabs.mundus.commons.ac3d.dto.*;
 import com.mbrlabs.mundus.commons.dto.*;
+import com.mbrlabs.mundus.commons.loader.ac3d.dto.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;

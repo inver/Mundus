@@ -1,4 +1,4 @@
-package com.mbrlabs.mundus.commons.ac3d.dto;
+package com.mbrlabs.mundus.commons.loader.ac3d.dto;
 
 import com.mbrlabs.mundus.commons.dto.Matrix3DTO;
 import com.mbrlabs.mundus.commons.dto.Vector2DTO;

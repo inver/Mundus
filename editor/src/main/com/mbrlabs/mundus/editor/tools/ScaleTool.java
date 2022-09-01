@@ -417,6 +417,7 @@ public class ScaleTool extends TransformTool {
 
         @Override
         public void act() {
+
         }
 
         @Override

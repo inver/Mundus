@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mbrlabs.mundus.editor.core.registry;
+package com.mbrlabs.mundus.commons.core.registry;
 
 /**
  * A reference to a Mundus project, stored in the registry.

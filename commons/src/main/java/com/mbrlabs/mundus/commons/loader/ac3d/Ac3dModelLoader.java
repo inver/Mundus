@@ -1,10 +1,10 @@
-package com.mbrlabs.mundus.commons.ac3d;
+package com.mbrlabs.mundus.commons.loader.ac3d;
 
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.ModelLoader;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
-import com.mbrlabs.mundus.commons.ac3d.dto.Ac3dModel;
+import com.mbrlabs.mundus.commons.loader.ac3d.dto.Ac3dModel;
 import com.mbrlabs.mundus.commons.core.AppModelLoader;
 import com.mbrlabs.mundus.commons.core.ModelFiles;
 import lombok.extern.slf4j.Slf4j;

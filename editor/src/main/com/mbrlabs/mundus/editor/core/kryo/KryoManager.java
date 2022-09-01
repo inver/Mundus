@@ -31,11 +31,9 @@ import com.esotericsoftware.kryo.serializers.TaggedFieldSerializer;
 import com.mbrlabs.mundus.editor.core.kryo.descriptors.*;
 import com.mbrlabs.mundus.editor.core.project.ProjectContext;
 import com.mbrlabs.mundus.editor.core.project.ProjectManager;
-import com.mbrlabs.mundus.editor.core.registry.KeyboardLayout;
-import com.mbrlabs.mundus.editor.core.registry.ProjectRef;
-import com.mbrlabs.mundus.editor.core.registry.Registry;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
+import com.mbrlabs.mundus.commons.core.registry.KeyboardLayout;
+import com.mbrlabs.mundus.commons.core.registry.ProjectRef;
+import com.mbrlabs.mundus.commons.core.registry.Registry;
 
 /**
  * Manages descriptor object <-> file io.

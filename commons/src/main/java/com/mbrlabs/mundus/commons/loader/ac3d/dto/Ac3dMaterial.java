@@ -1,4 +1,4 @@
-package com.mbrlabs.mundus.commons.ac3d.dto;
+package com.mbrlabs.mundus.commons.loader.ac3d.dto;
 
 import com.mbrlabs.mundus.commons.dto.ColorDTO;
 import lombok.Builder;

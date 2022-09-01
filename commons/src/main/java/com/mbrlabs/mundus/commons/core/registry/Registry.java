@@ -14,22 +14,20 @@
  * limitations under the License.
  */
 
-package com.mbrlabs.mundus.editor.core.registry;
+package com.mbrlabs.mundus.commons.core.registry;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
-import com.mbrlabs.mundus.editor.core.kryo.KryoManager;
-
 /**
  * Manages global settings.
- *
+ * <p>
  * Files are stored in ~/.mundus/
  *
  * @author Marcus Brummer
@@ -42,14 +40,11 @@ public class Registry {
     public static final String TEMP_DIR = FilenameUtils.concat(HOME_DIR, "temp/");
     public static final String HOME_DATA_FILE = FilenameUtils.concat(HOME_DIR, "mundus.registry");
 
-    private List<ProjectRef> projects;
+    private final List<ProjectRef> projects = new ArrayList<>();
     private ProjectRef lastProject;
     private Settings settings;
 
-    private KryoManager kryoManager;
-
     public Registry() {
-        projects = new ArrayList<>();
         settings = new Settings();
     }
 

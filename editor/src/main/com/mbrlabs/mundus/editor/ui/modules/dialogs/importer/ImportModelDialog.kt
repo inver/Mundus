@@ -41,19 +41,20 @@ import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.mbrlabs.mundus.commons.assets.ModelAsset
 import com.mbrlabs.mundus.commons.assets.meta.MetaModel
-import com.mbrlabs.mundus.commons.gltf.GltfLoaderWrapper
+import com.mbrlabs.mundus.commons.core.ModelFiles
+import com.mbrlabs.mundus.commons.loader.ModelImporter
 import com.mbrlabs.mundus.editor.Mundus
 import com.mbrlabs.mundus.editor.assets.AssetAlreadyExistsException
-import com.mbrlabs.mundus.editor.assets.FileHandleWithDependencies
 import com.mbrlabs.mundus.editor.assets.MetaSaver
-import com.mbrlabs.mundus.editor.assets.ModelImporter
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.events.AssetImportEvent
 import com.mbrlabs.mundus.editor.ui.UI
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.BaseDialog
 import com.mbrlabs.mundus.editor.ui.widgets.FileChooserField
 import com.mbrlabs.mundus.editor.ui.widgets.RenderWidget
-import com.mbrlabs.mundus.editor.utils.*
+import com.mbrlabs.mundus.editor.utils.Log
+import com.mbrlabs.mundus.editor.utils.isCollada
+import com.mbrlabs.mundus.editor.utils.isFBX
 import java.io.IOException
 
 /**
@@ -98,7 +99,7 @@ class ImportModelDialog : BaseDialog("Import Mesh"), Disposable {
         private var previewModel: Model? = null
         private var previewInstance: ModelInstance? = null
 
-        private var importedModel: FileHandleWithDependencies? = null
+        private var importedModel: ModelFiles? = null
 
         private var modelBatch: ModelBatch? = null
         private val cam: PerspectiveCamera = PerspectiveCamera()
@@ -211,8 +212,7 @@ class ImportModelDialog : BaseDialog("Import Mesh"), Disposable {
             importedModel = modelImporter.importToTempFolder(model)
 
             if (importedModel == null) {
-                if (isCollada(model) || isFBX(model)//                    || isWavefont(model)
-                ) {
+                if (isCollada(model) || isFBX(model)) {
                     Dialogs.showErrorDialog(
                         stage, "Import error\nPlease make sure you specified the right "
                                 + "files & have set the correct fbc-conv binary in the settings menu."
@@ -225,7 +225,7 @@ class ImportModelDialog : BaseDialog("Import Mesh"), Disposable {
             // load and show preview
             if (importedModel != null) {
                 try {
-                    previewModel = modelImporter.loadModel(importedModel!!.file)
+                    previewModel = modelImporter.loadModel(importedModel!!.main)
 
                     previewInstance = ModelInstance(previewModel!!)
                     showPreview()

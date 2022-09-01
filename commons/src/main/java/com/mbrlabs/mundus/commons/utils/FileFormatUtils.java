@@ -23,7 +23,30 @@ public final class FileFormatUtils {
     public static final String FORMAT_3D_G3DB = "g3db";
     public static final String FORMAT_3D_GLTF = "gltf";
     public static final String FORMAT_3D_AC3D = "ac";
-    public static final String FORMAT_3D_OBJ = "obj";
+    public static final String FORMAT_3D_WAVEFONT = "obj";
+
+    public static final String FORMAT_3D_G3DJ = "g3dj";
+    public static final String FORMAT_3D_COLLADA = "dae";
+    public static final String FORMAT_3D_FBX = "fbx";
+
+    public static final String FORMAT_IMG_PNG = "png";
+    public static final String FORMAT_IMG_JPG = "jpg";
+    public static final String FORMAT_IMG_JPEG = "jpeg";
+    public static final String FORMAT_IMG_TGA = "tga";
+
+
+    public static String getFileExtension(FileHandle file) {
+        var name = file.name();
+        return name.substring(name.lastIndexOf(".") + 1);
+    }
+
+    public static boolean isFBX(FileHandle file) {
+        return getFileExtension(file).equals(FORMAT_3D_FBX);
+    }
+
+    public static boolean isCollada(FileHandle file) {
+        return getFileExtension(file).equals(FORMAT_3D_COLLADA);
+    }
 
     public static boolean isG3DB(String filename) {
         return filename.toLowerCase().endsWith(FORMAT_3D_G3DB);
@@ -50,7 +73,7 @@ public final class FileFormatUtils {
     }
 
     public static boolean isOBJ(String filename) {
-        return filename.toLowerCase().endsWith(FORMAT_3D_OBJ);
+        return filename.toLowerCase().endsWith(FORMAT_3D_WAVEFONT);
     }
 
     public static boolean isOBJ(FileHandle file) {

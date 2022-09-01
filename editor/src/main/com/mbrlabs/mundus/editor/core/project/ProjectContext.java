@@ -25,9 +25,9 @@ import com.mbrlabs.mundus.editor.utils.Log;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * A project context represents an loaded and opened project.
+ * A project context represents a loaded and opened project.
  * <p>
- * A project context can have many scenes, nut only one scene at a time can be
+ * A project context can have many scenes, not only one scene at a time can be
  * active.
  *
  * @author Marcus Brummer

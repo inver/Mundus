@@ -30,7 +30,7 @@ import com.mbrlabs.mundus.editor.Mundus
 import com.mbrlabs.mundus.editor.core.project.ProjectAlreadyImportedException
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.core.project.ProjectOpenException
-import com.mbrlabs.mundus.editor.core.registry.Registry
+import com.mbrlabs.mundus.commons.core.registry.Registry
 import com.mbrlabs.mundus.editor.ui.UI
 
 /**
