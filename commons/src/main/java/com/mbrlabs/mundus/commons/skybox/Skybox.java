@@ -37,7 +37,6 @@ public class Skybox implements Disposable {
 
     private Model boxModel;
     private ModelInstance boxInstance;
-
     private Cubemap cubemap;
     private FileHandle positiveX;
     private FileHandle negativeX;

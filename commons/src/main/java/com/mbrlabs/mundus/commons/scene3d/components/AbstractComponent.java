@@ -51,4 +51,8 @@ public abstract class AbstractComponent implements Component {
         gameObject.removeComponent(this);
     }
 
+    @Override
+    public void update(float delta) {
+
+    }
 }

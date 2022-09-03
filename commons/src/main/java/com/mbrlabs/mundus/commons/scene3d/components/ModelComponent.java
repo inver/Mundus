@@ -97,11 +97,6 @@ public class ModelComponent extends AbstractComponent implements AssetUsage {
     }
 
     @Override
-    public void update(float delta) {
-
-    }
-
-    @Override
     public Component clone(GameObject go) {
         ModelComponent mc = new ModelComponent(go, shader);
         mc.modelAsset = this.modelAsset;

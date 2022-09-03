@@ -35,7 +35,7 @@ import com.mbrlabs.mundus.editor.ui.widgets.ColorPickerField
  * @version 04-03-2016
  */
 class AmbientLightDialog : BaseDialog("Ambient Light"), ProjectChangedEvent.ProjectChangedListener,
-        SceneChangedEvent.SceneChangedListener {
+    SceneChangedEvent.SceneChangedListener {
 
     private val intensity = VisTextField("0")
     private val colorPickerField = ColorPickerField()
@@ -66,7 +66,7 @@ class AmbientLightDialog : BaseDialog("Ambient Light"), ProjectChangedEvent.Proj
 
         // intensity
         intensity.addListener(object : ChangeListener() {
-            override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
+            override fun changed(event: ChangeEvent, actor: Actor) {
                 val d = convert(intensity.text)
                 if (d != null) {
                     projectContext.currScene.environment.ambientLight.intensity = d
@@ -75,7 +75,7 @@ class AmbientLightDialog : BaseDialog("Ambient Light"), ProjectChangedEvent.Proj
         })
 
         // color
-        colorPickerField.colorAdapter = object: ColorPickerAdapter() {
+        colorPickerField.colorAdapter = object : ColorPickerAdapter() {
             override fun finished(newColor: Color) {
                 projectContext.currScene.environment.ambientLight.color.set(color)
             }

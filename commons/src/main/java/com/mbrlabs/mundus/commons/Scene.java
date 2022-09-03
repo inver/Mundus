@@ -52,7 +52,7 @@ public class Scene implements Disposable {
     public Scene() {
         environment = new MundusEnvironment();
         currentSelection = null;
-        terrains = new Array<TerrainAsset>();
+        terrains = new Array<>();
 
         cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         cam.position.set(0, 1, -3);

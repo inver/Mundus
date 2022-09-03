@@ -34,6 +34,11 @@ Below are some of the more interesting features, that already work
 - Highly accurate game object picking system, based on id color coding & offscreen framebuffer rendering.
   Basic concept: http://www.opengl-tutorial.org/miscellaneous/clicking-on-objects/picking-with-an-opengl-hack/
   
+## Backlog
+- IBL sky box
+- Cloud shader
+- Shader editor
+
 ## Things to consider
 - Mundus is constantly changing. Especially the internal representation of save files. At this stage of the project i don't care 
 very much for backward compatibility, so don't fall to much in love with your creations if you want to stay up to date ;)

@@ -31,11 +31,13 @@ class EnvironmentMenu : Menu("Environment") {
 
     val ambientLight = MenuItem("Ambient Light")
     val skybox = MenuItem("Skybox")
+    val iblImage = MenuItem("IBL Image")
     val fog = MenuItem("Fog")
 
     init {
-       // addItem(ambientLight)
+        addItem(ambientLight)
         addItem(skybox)
+        addItem(iblImage)
         addItem(fog)
 
         setupListeners()
@@ -60,6 +62,12 @@ class EnvironmentMenu : Menu("Environment") {
         skybox.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 UI.showDialog(UI.skyboxDialog)
+            }
+        })
+
+        iblImage.addListener(object : ClickListener() {
+            override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                UI.showDialog(UI.iblImageDialog)
             }
         })
 

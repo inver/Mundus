@@ -22,15 +22,13 @@ import com.mbrlabs.mundus.commons.scene3d.GameObject;
  * @author Marcus Brummer
  * @version 16-01-2016
  */
-public interface Component {
+public interface Component extends Renderable {
 
     enum Type {
         MODEL, TERRAIN, LIGHT, PARTICLE_SYSTEM
     }
 
     GameObject getGameObject();
-
-    void render(float delta);
 
     void update(float delta);
 

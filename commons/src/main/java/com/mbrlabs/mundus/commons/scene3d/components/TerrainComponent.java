@@ -67,11 +67,6 @@ public class TerrainComponent extends AbstractComponent implements AssetUsage {
     }
 
     @Override
-    public void update(float delta) {
-
-    }
-
-    @Override
     public Component clone(GameObject go) {
         // Cant be cloned right now
         return null;

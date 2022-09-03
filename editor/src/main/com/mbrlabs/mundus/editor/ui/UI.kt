@@ -79,6 +79,7 @@ object UI : Stage(ScreenViewport()) {
     val importTextureDialog: ImportTextureDialog = ImportTextureDialog()
     val fogDialog: FogDialog = FogDialog()
     val skyboxDialog: SkyboxDialog = SkyboxDialog()
+    val iblImageDialog = IBLBoxDialog()
     val ambientLightDialog: AmbientLightDialog = AmbientLightDialog()
     val exitDialog: ExitDialog = ExitDialog()
 
