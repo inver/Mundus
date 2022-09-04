@@ -1,6 +1,6 @@
 package com.mbrlabs.mundus.editor.utils;
 
-import com.mbrlabs.mundus.commons.assets.ModelAsset;
+import com.mbrlabs.mundus.commons.assets.model.ModelAsset;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.scene3d.SceneGraph;
 import com.mbrlabs.mundus.commons.shaders.ModelShader;

@@ -20,34 +20,41 @@ import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisSelectBox
-import com.mbrlabs.mundus.editor.Mundus
-import com.mbrlabs.mundus.editor.core.kryo.KryoManager
+import com.kotcrab.vis.ui.widget.file.FileChooser
 import com.mbrlabs.mundus.commons.core.registry.KeyboardLayout
 import com.mbrlabs.mundus.commons.core.registry.Registry
+import com.mbrlabs.mundus.editor.core.kryo.KryoManager
+import com.mbrlabs.mundus.editor.events.EventBus
 import com.mbrlabs.mundus.editor.events.SettingsChangedEvent
-import com.mbrlabs.mundus.editor.ui.UI
+import com.mbrlabs.mundus.editor.ui.AppUi
+import com.mbrlabs.mundus.editor.ui.UiConstants
 import com.mbrlabs.mundus.editor.ui.widgets.FileChooserField
+import com.mbrlabs.mundus.editor.utils.Toaster
 
 /**
  * @author Marcus Brummer
  * @version 29-02-2016
  */
-class GeneralSettingsTable : BaseSettingsTable() {
+class GeneralSettingsTable(
+    private val kryoManager: KryoManager,
+    private val registry: Registry,
+    private val eventBus: EventBus,
+    private val toaster: Toaster,
+    private val appUi: AppUi,
+    private val fileChooser: FileChooser
+) : BaseSettingsTable() {
 
-    private val fbxBinary = FileChooserField(500)
+    private val fbxBinary = FileChooserField(appUi, fileChooser, 500)
     private val keyboardLayouts = VisSelectBox<KeyboardLayout>()
-
-    private val kryoManager: KryoManager = Mundus.inject()
-    private val registry: Registry = Mundus.inject()
 
     init {
         top().left()
-        padRight(UI.PAD_SIDE).padLeft(UI.PAD_SIDE)
+        padRight(UiConstants.PAD_SIDE).padLeft(UiConstants.PAD_SIDE)
 
         add(VisLabel("General Settings")).left().row()
-        addSeparator().padBottom(UI.PAD_SIDE*2)
+        addSeparator().padBottom(UiConstants.PAD_SIDE * 2)
         add(VisLabel("fbx-conv binary")).left().row()
-        add(fbxBinary).growX().padBottom(UI.PAD_BOTTOM).row()
+        add(fbxBinary).growX().padBottom(UiConstants.PAD_BOTTOM).row()
 
         keyboardLayouts.setItems(KeyboardLayout.QWERTY, KeyboardLayout.QWERTZ)
         keyboardLayouts.selected = registry.settings.keyboardLayout
@@ -58,7 +65,6 @@ class GeneralSettingsTable : BaseSettingsTable() {
         addHandlers()
         reloadSettings()
     }
-
 
 
     fun reloadSettings() {
@@ -78,8 +84,8 @@ class GeneralSettingsTable : BaseSettingsTable() {
         val fbxPath = fbxBinary.path
         registry.settings.fbxConvBinary = fbxPath
         kryoManager.saveRegistry(registry)
-        Mundus.postEvent(SettingsChangedEvent(registry.settings))
-        UI.toaster.success("Settings saved")
+        eventBus.post(SettingsChangedEvent(registry.settings))
+        toaster.success("Settings saved")
     }
 
 }

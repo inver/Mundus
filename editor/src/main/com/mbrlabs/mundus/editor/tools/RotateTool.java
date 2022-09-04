@@ -86,7 +86,7 @@ public class RotateTool extends TransformTool {
         super.render();
         GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
 
-        ProjectContext projectContext = getProjectManager().current();
+        ProjectContext projectContext = getProjectManager().getCurrent();
         if (state == TransformState.IDLE && projectContext.currScene.currentSelection != null) {
             getBatch().begin(projectContext.currScene.cam);
             xHandle.render(getBatch());
@@ -143,7 +143,7 @@ public class RotateTool extends TransformTool {
     public void act() {
         super.act();
 
-        ProjectContext projectContext = getProjectManager().current();
+        ProjectContext projectContext = getProjectManager().getCurrent();
         if (projectContext.currScene.currentSelection != null) {
             translateHandles();
             if (state == TransformState.IDLE) {
@@ -187,7 +187,7 @@ public class RotateTool extends TransformTool {
     }
 
     private float getCurrentAngle() {
-        ProjectContext projectContext = getProjectManager().current();
+        ProjectContext projectContext = getProjectManager().getCurrent();
         if (projectContext.currScene.currentSelection != null) {
             projectContext.currScene.currentSelection.getPosition(temp0);
             Vector3 pivot = projectContext.currScene.cam.project(temp0);
@@ -203,7 +203,7 @@ public class RotateTool extends TransformTool {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         super.touchDown(screenX, screenY, pointer, button);
 
-        ProjectContext projectContext = getProjectManager().current();
+        ProjectContext projectContext = getProjectManager().getCurrent();
         if (button == Input.Buttons.LEFT && projectContext.currScene.currentSelection != null) {
             lastRot = getCurrentAngle();
 
@@ -238,7 +238,7 @@ public class RotateTool extends TransformTool {
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         state = TransformState.IDLE;
         if (currentRotateCommand != null) {
-            ProjectContext projectContext = getProjectManager().current();
+            ProjectContext projectContext = getProjectManager().getCurrent();
             currentRotateCommand.setAfter(projectContext.currScene.currentSelection.getLocalRotation(tempQuat));
             getHistory().add(currentRotateCommand);
             currentRotateCommand = null;
@@ -266,7 +266,7 @@ public class RotateTool extends TransformTool {
 
     @Override
     protected void translateHandles() {
-        ProjectContext projectContext = getProjectManager().current();
+        ProjectContext projectContext = getProjectManager().getCurrent();
         final Vector3 pos = projectContext.currScene.currentSelection.getTransform().getTranslation(temp0);
         xHandle.getPosition().set(pos);
         xHandle.applyTransform();
@@ -279,7 +279,7 @@ public class RotateTool extends TransformTool {
     @Override
     protected void scaleHandles() {
 
-        ProjectContext projectContext = getProjectManager().current();
+        ProjectContext projectContext = getProjectManager().getCurrent();
         Vector3 pos = projectContext.currScene.currentSelection.getPosition(temp0);
         float scaleFactor = projectContext.currScene.cam.position.dst(pos) * 0.005f;
         xHandle.getScale().set(scaleFactor, scaleFactor, scaleFactor);

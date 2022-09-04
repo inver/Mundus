@@ -23,14 +23,15 @@ import com.kotcrab.vis.ui.widget.VisTextButton
 import com.kotcrab.vis.ui.widget.VisTextField
 import com.mbrlabs.mundus.commons.assets.Asset
 import com.mbrlabs.mundus.editor.assets.AssetFilter
-import com.mbrlabs.mundus.editor.ui.UI
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
 
 /**
  * @author Marcus Brummer
  * @version 13-10-2016
  */
-class AssetSelectionField : VisTable() {
+class AssetSelectionField(
+    private val assetSelectionDialog: AssetPickerDialog
+) : VisTable() {
 
     private val textField: VisTextField
     private val btn: VisTextButton
@@ -48,7 +49,7 @@ class AssetSelectionField : VisTable() {
         add(textField).grow()
         add(btn).padLeft(5f).row()
 
-        internalListener = object: AssetPickerDialog.AssetPickerListener {
+        internalListener = object : AssetPickerDialog.AssetPickerListener {
             override fun onSelected(asset: Asset?) {
                 setAsset(asset)
                 pickerListener?.onSelected(asset)
@@ -57,7 +58,7 @@ class AssetSelectionField : VisTable() {
 
         btn.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                UI.assetSelectionDialog.show(true, assetFilter, internalListener)
+                assetSelectionDialog.show(true, assetFilter, internalListener)
             }
         })
     }

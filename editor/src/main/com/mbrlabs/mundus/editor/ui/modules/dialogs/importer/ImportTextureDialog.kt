@@ -23,30 +23,37 @@ import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Disposable
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
+import com.kotcrab.vis.ui.widget.file.FileChooser
+import com.mbrlabs.mundus.commons.assets.exceptions.AssetAlreadyExistsException
 import com.mbrlabs.mundus.editor.Mundus
-import com.mbrlabs.mundus.editor.assets.AssetAlreadyExistsException
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.events.AssetImportEvent
-import com.mbrlabs.mundus.editor.ui.UI
+import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.BaseDialog
 import com.mbrlabs.mundus.editor.ui.widgets.ImageChooserField
 import com.mbrlabs.mundus.editor.utils.Log
+import com.mbrlabs.mundus.editor.utils.Toaster
 import com.mbrlabs.mundus.editor.utils.isImage
+import org.springframework.stereotype.Component
 import java.io.IOException
 
 /**
  * @author Marcus Brummer
  * @version 07-06-2016
  */
-class ImportTextureDialog : BaseDialog("Import Texture"), Disposable {
+@Component
+class ImportTextureDialog(
+    private val appUi: AppUi,
+    private val fileChooser: FileChooser,
+    private val toaster: Toaster,
+    private val projectManager: ProjectManager
+) : BaseDialog("Import Texture"), Disposable {
 
     companion object {
         private val TAG = ImportTextureDialog::class.java.simpleName
     }
 
     private val importTextureTable: ImportTextureTable
-
-    private val projectManager: ProjectManager = Mundus.inject()
 
     init {
         isModal = true
@@ -74,7 +81,7 @@ class ImportTextureDialog : BaseDialog("Import Texture"), Disposable {
     private inner class ImportTextureTable : VisTable(), Disposable {
         // UI elements
         private val importBtn = VisTextButton("IMPORT")
-        private val imageChooserField = ImageChooserField(300)
+        private val imageChooserField = ImageChooserField(appUi, 300, fileChooser)
 
         init {
             this.setupUI()
@@ -95,20 +102,20 @@ class ImportTextureDialog : BaseDialog("Import Texture"), Disposable {
                     try {
                         val texture = imageChooserField.file
                         if (texture != null && texture.exists() && isImage(texture)) {
-                            val assetManager = projectManager.current().assetManager
+                            val assetManager = projectManager.current.assetManager
                             val asset = assetManager.createTextureAsset(texture)
                             Mundus.postEvent(AssetImportEvent(asset))
                             close()
-                            UI.toaster.success("Texture imported")
+                            toaster.success("Texture imported")
                         } else {
-                            UI.toaster.error("There is nothing to import")
+                            toaster.error("There is nothing to import")
                         }
                     } catch (e: IOException) {
                         Log.exception(TAG, e)
-                        UI.toaster.error("IO error")
+                        toaster.error("IO error")
                     } catch (ee: AssetAlreadyExistsException) {
                         Log.exception(TAG, ee)
-                        UI.toaster.error("Error: There already exists a texture with the same name")
+                        toaster.error("Error: There already exists a texture with the same name")
                     }
 
                 }

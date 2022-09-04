@@ -39,38 +39,45 @@ import com.kotcrab.vis.ui.util.dialog.Dialogs
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
-import com.mbrlabs.mundus.commons.assets.ModelAsset
+import com.kotcrab.vis.ui.widget.file.FileChooser
+import com.mbrlabs.mundus.commons.assets.exceptions.AssetAlreadyExistsException
 import com.mbrlabs.mundus.commons.assets.meta.MetaModel
+import com.mbrlabs.mundus.commons.assets.model.ModelAsset
 import com.mbrlabs.mundus.commons.core.ModelFiles
 import com.mbrlabs.mundus.commons.loader.ModelImporter
 import com.mbrlabs.mundus.editor.Mundus
-import com.mbrlabs.mundus.editor.assets.AssetAlreadyExistsException
 import com.mbrlabs.mundus.editor.assets.MetaSaver
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.events.AssetImportEvent
-import com.mbrlabs.mundus.editor.ui.UI
+import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.BaseDialog
 import com.mbrlabs.mundus.editor.ui.widgets.FileChooserField
 import com.mbrlabs.mundus.editor.ui.widgets.RenderWidget
 import com.mbrlabs.mundus.editor.utils.Log
+import com.mbrlabs.mundus.editor.utils.Toaster
 import com.mbrlabs.mundus.editor.utils.isCollada
 import com.mbrlabs.mundus.editor.utils.isFBX
+import org.springframework.stereotype.Component
 import java.io.IOException
 
 /**
  * @author Marcus Brummer
  * @version 07-06-2016
  */
-class ImportModelDialog : BaseDialog("Import Mesh"), Disposable {
+@Component
+class ImportModelDialog(
+    private val appUi: AppUi,
+    private val fileChooser: FileChooser,
+    private val toaster: Toaster,
+    private val modelImporter: ModelImporter,
+    private val projectManager: ProjectManager
+) : BaseDialog("Import Mesh"), Disposable {
 
     companion object {
         private val TAG = ImportModelDialog::class.java.simpleName
     }
 
     private val importMeshTable: ImportModelTable
-
-    private val modelImporter: ModelImporter = Mundus.inject()
-    private val projectManager: ProjectManager = Mundus.inject()
 
     init {
         isModal = true
@@ -93,7 +100,7 @@ class ImportModelDialog : BaseDialog("Import Mesh"), Disposable {
         // UI elements
         private var renderWidget: RenderWidget? = null
         private val importBtn = VisTextButton("IMPORT")
-        private val modelInput = FileChooserField(300)
+        private val modelInput = FileChooserField(appUi, fileChooser, 300)
 
         // preview model + instance
         private var previewModel: Model? = null
@@ -166,19 +173,19 @@ class ImportModelDialog : BaseDialog("Import Mesh"), Disposable {
                         try {
                             val modelAsset = importModel()
                             Mundus.postEvent(AssetImportEvent(modelAsset))
-                            UI.toaster.success("Mesh imported")
+                            toaster.success("Mesh imported")
                         } catch (e: IOException) {
                             e.printStackTrace()
-                            UI.toaster.error("Error while creating a ModelAsset")
+                            toaster.error("Error while creating a ModelAsset")
                         } catch (ee: AssetAlreadyExistsException) {
                             Log.exception(TAG, ee)
-                            UI.toaster.error("Error: There already exists a model with the same name")
+                            toaster.error("Error: There already exists a model with the same name")
                         }
 
                         dispose()
                         close()
                     } else {
-                        UI.toaster.error("There is nothing to import")
+                        toaster.error("There is nothing to import")
                     }
                 }
             })
@@ -188,7 +195,7 @@ class ImportModelDialog : BaseDialog("Import Mesh"), Disposable {
         private fun importModel(): ModelAsset {
 
             // create model asset
-            val assetManager = projectManager.current().assetManager
+            val assetManager = projectManager.current.assetManager
             val modelAsset = assetManager.createModelAsset(importedModel!!)
 
             // create materials

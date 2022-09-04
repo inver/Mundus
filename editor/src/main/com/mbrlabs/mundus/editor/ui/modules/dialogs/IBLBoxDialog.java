@@ -2,21 +2,26 @@ package com.mbrlabs.mundus.editor.ui.modules.dialogs;
 
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
+import com.kotcrab.vis.ui.widget.file.FileChooser;
 import com.mbrlabs.mundus.editor.Mundus;
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent;
 import com.mbrlabs.mundus.editor.events.SceneChangedEvent;
+import com.mbrlabs.mundus.editor.ui.AppUi;
 import com.mbrlabs.mundus.editor.ui.widgets.ImageChooserField;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Component;
 
+@Component
 public class IBLBoxDialog extends BaseDialog
         implements ProjectChangedEvent.ProjectChangedListener, SceneChangedEvent.SceneChangedListener {
 
-    private final ImageChooserField iblImageField = new ImageChooserField(300);
+    private final ImageChooserField iblImageField;
     private final VisTextButton applyButton = new VisTextButton("Apply");
 
-    public IBLBoxDialog() {
+    public IBLBoxDialog(AppUi appUi, FileChooser fileChooser) {
         super("IBLBox");
 
+        iblImageField = new ImageChooserField(appUi, 300, fileChooser);
         Mundus.INSTANCE.registerEventListener(this);
         setupUI();
     }

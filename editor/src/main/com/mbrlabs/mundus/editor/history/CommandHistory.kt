@@ -17,6 +17,7 @@
 package com.mbrlabs.mundus.editor.history
 
 import com.badlogic.gdx.utils.Array
+import org.springframework.stereotype.Component
 
 /**
  * Add commands to undo/redo a previously called process.

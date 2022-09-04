@@ -21,9 +21,9 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.mbrlabs.mundus.commons.assets.Asset;
-import com.mbrlabs.mundus.commons.assets.MaterialAsset;
-import com.mbrlabs.mundus.commons.assets.ModelAsset;
-import com.mbrlabs.mundus.commons.assets.TextureAsset;
+import com.mbrlabs.mundus.commons.assets.material.MaterialAsset;
+import com.mbrlabs.mundus.commons.assets.model.ModelAsset;
+import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 
 import java.util.Objects;

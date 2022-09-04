@@ -24,6 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mbrlabs.mundus.editor.ui.UI;
+import org.springframework.stereotype.Component;
 
 /**
  * @author Marcus Brummer

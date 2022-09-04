@@ -17,19 +17,15 @@
 package com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain
 
 import com.badlogic.gdx.scenes.scene2d.Actor
-import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.Align
 import com.kotcrab.vis.ui.layout.GridGroup
-import com.kotcrab.vis.ui.util.dialog.Dialogs
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.mbrlabs.mundus.editor.Mundus
 import com.mbrlabs.mundus.editor.events.GlobalBrushSettingsChangedEvent
 import com.mbrlabs.mundus.editor.tools.ToolManager
 import com.mbrlabs.mundus.editor.tools.brushes.TerrainBrush
-import com.mbrlabs.mundus.editor.ui.UI
 import com.mbrlabs.mundus.editor.ui.widgets.FaTextButton
 import com.mbrlabs.mundus.editor.ui.widgets.ImprovedSlider
 
@@ -38,14 +34,12 @@ import com.mbrlabs.mundus.editor.ui.widgets.ImprovedSlider
  * @version 30-01-2016
  */
 class TerrainBrushGrid(private val parent: TerrainComponentWidget) : VisTable(),
-        GlobalBrushSettingsChangedEvent.GlobalBrushSettingsChangedListener {
+    GlobalBrushSettingsChangedEvent.GlobalBrushSettingsChangedListener {
 
     var brushMode: TerrainBrush.BrushMode? = null
 
-    private val grid = GridGroup(40f, 0f)
+    val grid = GridGroup(40f, 0f)
     private val strengthSlider = ImprovedSlider(0f, 1f, 0.1f)
-
-    private val toolManager: ToolManager = Mundus.inject()
 
     init {
         Mundus.registerEventListener(this)
@@ -54,11 +48,6 @@ class TerrainBrushGrid(private val parent: TerrainComponentWidget) : VisTable(),
 
         val brushGridContainerTable = VisTable()
         brushGridContainerTable.setBackground("menu-bg")
-
-        // grid
-        for (brush in toolManager.terrainBrushes) {
-            grid.addActor(BrushItem(brush))
-        }
         brushGridContainerTable.add(grid).expand().fill().row()
 
         // brush settings
@@ -67,7 +56,7 @@ class TerrainBrushGrid(private val parent: TerrainComponentWidget) : VisTable(),
         strengthSlider.value = TerrainBrush.getStrength()
         settingsTable.add(strengthSlider).expandX().fillX().row()
         strengthSlider.addListener(object : ChangeListener() {
-            override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
+            override fun changed(event: ChangeEvent, actor: Actor) {
                 TerrainBrush.setStrength(strengthSlider.value)
             }
         })
@@ -81,31 +70,25 @@ class TerrainBrushGrid(private val parent: TerrainComponentWidget) : VisTable(),
     }
 
     fun activateBrush(brush: TerrainBrush) {
-        try {
-            brush.mode = brushMode
-            toolManager.activateTool(brush)
-            brush.terrainAsset = parent.component.terrain
-        } catch (e: TerrainBrush.ModeNotSupportedException) {
-            e.printStackTrace()
-            Dialogs.showErrorDialog(UI, e.message)
-        }
-
+        brush.mode = brushMode
+        brush.terrainAsset = parent.component.terrain
     }
 
     override fun onSettingsChanged(event: GlobalBrushSettingsChangedEvent) {
         strengthSlider.value = TerrainBrush.getStrength()
     }
 
+    fun addBrush(brush: TerrainBrush): BrushItem {
+        val res = BrushItem(brush)
+        grid.addActor(res)
+        return res
+    }
+
     /**
      */
-    private inner class BrushItem(brush: TerrainBrush) : VisTable() {
+    inner class BrushItem(brush: TerrainBrush) : VisTable() {
         init {
             add(FaTextButton(brush.iconFont))
-            addListener(object : ClickListener() {
-                override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                    activateBrush(brush)
-                }
-            })
         }
     }
 

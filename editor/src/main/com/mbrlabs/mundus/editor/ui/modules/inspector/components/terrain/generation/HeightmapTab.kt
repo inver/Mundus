@@ -9,26 +9,31 @@ import com.badlogic.gdx.utils.Align
 import com.kotcrab.vis.ui.util.dialog.Dialogs
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
+import com.kotcrab.vis.ui.widget.file.FileChooser
 import com.kotcrab.vis.ui.widget.tabbedpane.Tab
-import com.mbrlabs.mundus.commons.assets.TerrainAsset
+import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset
 import com.mbrlabs.mundus.editor.Mundus
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.history.CommandHistory
 import com.mbrlabs.mundus.editor.history.commands.TerrainHeightCommand
 import com.mbrlabs.mundus.editor.terrain.Terraformer
+import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.UI
 import com.mbrlabs.mundus.editor.ui.widgets.FileChooserField
 import com.mbrlabs.mundus.editor.utils.isImage
 
-class HeightmapTab(private val terrainAsset: TerrainAsset) : Tab(false, false) {
+class HeightmapTab(
+    private val terrainAsset: TerrainAsset,
+    private val appUi: AppUi,
+    private val fileChooser: FileChooser,
+    private val projectManager: ProjectManager,
+    private val history: CommandHistory
+) : Tab(false, false) {
 
     private val root = VisTable()
 
-    private val hmInput = FileChooserField()
+    private val hmInput = FileChooserField(appUi, fileChooser)
     private val loadHeightMapBtn = VisTextButton("Load heightmap")
-
-    private val history: CommandHistory = Mundus.inject()
-    private val projectManager: ProjectManager = Mundus.inject()
 
     init {
         root.align(Align.left)
@@ -49,7 +54,7 @@ class HeightmapTab(private val terrainAsset: TerrainAsset) : Tab(false, false) {
                 val hm = hmInput.file
                 if (hm != null && hm.exists() && isImage(hm)) {
                     loadHeightMap(hm)
-                    projectManager.current().assetManager.addDirtyAsset(terrainAsset)
+                    projectManager.current.assetManager.dirty(terrainAsset)
                 } else {
                     Dialogs.showErrorDialog(UI, "Please select a heightmap image")
                 }
@@ -66,10 +71,14 @@ class HeightmapTab(private val terrainAsset: TerrainAsset) : Tab(false, false) {
 
         // scale pixmap if it doesn't fit the terrainAsset
         if (originalMap.width != terrain.vertexResolution || originalMap.height != terrain.vertexResolution) {
-            val scaledPixmap = Pixmap(terrain.vertexResolution, terrain.vertexResolution,
-                    originalMap.format)
-            scaledPixmap.drawPixmap(originalMap, 0, 0, originalMap.width, originalMap.height, 0, 0,
-                    scaledPixmap.width, scaledPixmap.height)
+            val scaledPixmap = Pixmap(
+                terrain.vertexResolution, terrain.vertexResolution,
+                originalMap.format
+            )
+            scaledPixmap.drawPixmap(
+                originalMap, 0, 0, originalMap.width, originalMap.height, 0, 0,
+                scaledPixmap.width, scaledPixmap.height
+            )
 
             originalMap.dispose()
             Terraformer.heightMap(terrain).maxHeight(terrain.terrainWidth * 0.17f).map(scaledPixmap).terraform()

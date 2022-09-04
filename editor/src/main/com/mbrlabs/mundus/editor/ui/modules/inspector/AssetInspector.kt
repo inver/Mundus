@@ -17,8 +17,18 @@
 package com.mbrlabs.mundus.editor.ui.modules.inspector
 
 import com.badlogic.gdx.utils.Align
+import com.kotcrab.vis.ui.widget.Separator
 import com.kotcrab.vis.ui.widget.VisTable
-import com.mbrlabs.mundus.commons.assets.*
+import com.mbrlabs.mundus.commons.assets.Asset
+import com.mbrlabs.mundus.commons.assets.material.MaterialAsset
+import com.mbrlabs.mundus.commons.assets.model.ModelAsset
+import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset
+import com.mbrlabs.mundus.commons.assets.texture.TextureAsset
+import com.mbrlabs.mundus.editor.config.UiWidgetsHolder
+import com.mbrlabs.mundus.editor.core.project.ProjectManager
+import com.mbrlabs.mundus.editor.tools.ToolManager
+import com.mbrlabs.mundus.editor.ui.AppUi
+import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
 import com.mbrlabs.mundus.editor.ui.modules.inspector.assets.MaterialAssetInspectorWidget
 import com.mbrlabs.mundus.editor.ui.modules.inspector.assets.ModelAssetInspectorWidget
 import com.mbrlabs.mundus.editor.ui.modules.inspector.assets.TerrainAssetInspectorWidget
@@ -28,12 +38,27 @@ import com.mbrlabs.mundus.editor.ui.modules.inspector.assets.TextureAssetInspect
  * @author Marcus Brummer
  * @version 13-10-2016
  */
-class AssetInspector : VisTable() {
+class AssetInspector(
+    separatorStyle: Separator.SeparatorStyle,
+    private val appUi: AppUi,
+    private val uiWidgetsHolder: UiWidgetsHolder,
+    private val assetSelectionDialog: AssetPickerDialog,
+    private val toolManager: ToolManager,
+    private val projectManager: ProjectManager
+) : VisTable() {
 
-    private val materialWidget = MaterialAssetInspectorWidget()
-    private val modelWidget = ModelAssetInspectorWidget()
-    private val textureWidget = TextureAssetInspectorWidget()
-    private val terrainWidget = TerrainAssetInspectorWidget()
+    private val materialWidget =
+        MaterialAssetInspectorWidget(separatorStyle, appUi, uiWidgetsHolder, assetSelectionDialog, projectManager)
+    private val modelWidget = ModelAssetInspectorWidget(
+        separatorStyle,
+        appUi,
+        uiWidgetsHolder,
+        assetSelectionDialog,
+        toolManager,
+        projectManager
+    )
+    private val textureWidget = TextureAssetInspectorWidget(separatorStyle)
+    private val terrainWidget = TerrainAssetInspectorWidget(separatorStyle)
 
     var asset: Asset? = null
         set(value) {

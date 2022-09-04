@@ -22,19 +22,21 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.mbrlabs.mundus.editor.utils.ReflectionUtils;
+import org.springframework.stereotype.Component;
 
 /**
  * Simple Event bus via reflection.
- *
+ * <p>
  * Subscribers need to provide a public method, annotated with @Subscribe and 1
  * parameter as event type.
- *
+ * <p>
  * Inspired by the Otto Event Bus for Android.
  *
  * @author Marcus Brummer
  * @version 12-12-2015
  */
 // TODO improve/test performance might not be that great
+@Component
 public class EventBus {
 
     private class EventBusExcetion extends RuntimeException {

@@ -22,6 +22,7 @@ import com.kotcrab.vis.ui.widget.VisTextButton
 import com.kotcrab.vis.ui.widget.tabbedpane.Tab
 import com.kotcrab.vis.ui.widget.tabbedpane.TabbedPane
 import com.kotcrab.vis.ui.widget.tabbedpane.TabbedPaneListener
+import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.ui.modules.dock.assets.AssetsDock
 import com.mbrlabs.mundus.editor.ui.widgets.MundusSplitPane
 
@@ -29,18 +30,18 @@ import com.mbrlabs.mundus.editor.ui.widgets.MundusSplitPane
  * @author Marcus Brummer
  * @version 08-12-2015
  */
-class DockBar(private val splitPane: MundusSplitPane) : VisTable(), TabbedPaneListener {
+class DockBar(private val splitPane: MundusSplitPane, private val projectManager: ProjectManager) : VisTable(),
+    TabbedPaneListener {
 
-    private val assetsDock = AssetsDock()
+    private val assetsDock = AssetsDock(projectManager)
     private val logBar = LogBar()
     private val tabbedPane: TabbedPane
 
-
     init {
-        val style = TabbedPane.TabbedPaneStyle(
-                VisUI.getSkin().get(TabbedPane.TabbedPaneStyle::class.java))
+        val style = TabbedPane.TabbedPaneStyle(VisUI.getSkin().get(TabbedPane.TabbedPaneStyle::class.java))
         style.buttonStyle = VisTextButton.VisTextButtonStyle(
-                VisUI.getSkin().get("toggle", VisTextButton.VisTextButtonStyle::class.java))
+            VisUI.getSkin().get("toggle", VisTextButton.VisTextButtonStyle::class.java)
+        )
 
         tabbedPane = TabbedPane(style)
         tabbedPane.isAllowTabDeselect = true

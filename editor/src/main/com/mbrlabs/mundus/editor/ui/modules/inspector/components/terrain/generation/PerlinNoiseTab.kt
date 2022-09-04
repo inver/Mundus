@@ -7,8 +7,7 @@ import com.badlogic.gdx.utils.Align
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.kotcrab.vis.ui.widget.tabbedpane.Tab
-import com.mbrlabs.mundus.commons.assets.TerrainAsset
-import com.mbrlabs.mundus.editor.Mundus
+import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.history.CommandHistory
 import com.mbrlabs.mundus.editor.history.commands.TerrainHeightCommand
@@ -16,7 +15,11 @@ import com.mbrlabs.mundus.editor.terrain.Terraformer
 import com.mbrlabs.mundus.editor.ui.widgets.FloatFieldWithLabel
 import com.mbrlabs.mundus.editor.ui.widgets.IntegerFieldWithLabel
 
-class PerlinNoiseTab(private val terrainAsset: TerrainAsset) : Tab(false, false) {
+class PerlinNoiseTab(
+    private val terrainAsset: TerrainAsset,
+    private val history: CommandHistory,
+    private val projectManager: ProjectManager
+) : Tab(false, false) {
 
     private val root = VisTable()
 
@@ -24,9 +27,6 @@ class PerlinNoiseTab(private val terrainAsset: TerrainAsset) : Tab(false, false)
     private val perlinNoiseSeed = IntegerFieldWithLabel("Seed", -1, false)
     private val perlinNoiseMinHeight = FloatFieldWithLabel("Min height", -1, true)
     private val perlinNoiseMaxHeight = FloatFieldWithLabel("Max height", -1, true)
-
-    private val history: CommandHistory = Mundus.inject()
-    private val projectManager: ProjectManager = Mundus.inject()
 
     init {
         root.align(Align.left)
@@ -50,7 +50,7 @@ class PerlinNoiseTab(private val terrainAsset: TerrainAsset) : Tab(false, false)
                 val min = perlinNoiseMinHeight.float
                 val max = perlinNoiseMaxHeight.float
                 generatePerlinNoise(seed, min, max)
-                projectManager.current().assetManager.addDirtyAsset(terrainAsset)
+                projectManager.current.assetManager.dirty(terrainAsset)
             }
         })
     }

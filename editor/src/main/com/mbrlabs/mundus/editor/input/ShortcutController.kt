@@ -17,21 +17,28 @@
 package com.mbrlabs.mundus.editor.input
 
 import com.badlogic.gdx.Input
-import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.commons.core.registry.Registry
+import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.history.CommandHistory
 import com.mbrlabs.mundus.editor.tools.ToolManager
-import com.mbrlabs.mundus.editor.ui.UI
+import com.mbrlabs.mundus.editor.ui.modules.dialogs.ExportDialog
+import com.mbrlabs.mundus.editor.ui.modules.toolbar.MundusToolbar
+import com.mbrlabs.mundus.editor.utils.Toaster
+import org.springframework.stereotype.Component
 
 /**
  * @author Marcus Brummer
  * @version 07-02-2016
  */
+@Component
 class ShortcutController(
     registry: Registry,
     private val projectManager: ProjectManager,
     private val history: CommandHistory,
-    private val toolManager: ToolManager
+    private val toolManager: ToolManager,
+    private val exportDialog: ExportDialog,
+    private val toaster: Toaster,
+    private val toolbar: MundusToolbar
 ) : KeyboardLayoutInputAdapter(registry) {
 
     private var isCtrlPressed = false
@@ -41,7 +48,7 @@ class ShortcutController(
 
         // export
         if (keycode == Input.Keys.F1) {
-            UI.exportDialog.export()
+            exportDialog.export()
             return true
         }
 
@@ -59,30 +66,36 @@ class ShortcutController(
                 history.goBack()
                 return true
             }
+
             Input.Keys.Y -> {
                 history.goForward()
                 return true
             }
+
             Input.Keys.S -> {
                 projectManager.saveCurrentProject()
-                UI.toaster.success("Project saved")
+                toaster.success("Project saved")
                 return true
             }
+
             Input.Keys.T -> {
                 toolManager.activateTool(toolManager.translateTool)
-                UI.toolbar.updateActiveToolButton()
+                toolbar.updateActiveToolButton()
             }
+
             Input.Keys.R -> {
                 toolManager.activateTool(toolManager.rotateTool)
-                UI.toolbar.updateActiveToolButton()
+                toolbar.updateActiveToolButton()
             }
+
             Input.Keys.G -> {
                 toolManager.activateTool(toolManager.scaleTool)
-                UI.toolbar.updateActiveToolButton()
+                toolbar.updateActiveToolButton()
             }
+
             Input.Keys.F -> {
                 toolManager.activateTool(toolManager.selectionTool)
-                UI.toolbar.updateActiveToolButton()
+                toolbar.updateActiveToolButton()
             }
         }
 

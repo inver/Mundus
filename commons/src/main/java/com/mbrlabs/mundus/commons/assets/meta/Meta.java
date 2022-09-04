@@ -21,7 +21,6 @@ import com.badlogic.gdx.files.FileHandle;
 import com.mbrlabs.mundus.commons.assets.AssetType;
 
 /**
- *
  * @author Marcus Brummer
  * @version 26-10-2016
  */

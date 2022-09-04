@@ -29,6 +29,16 @@ public enum AssetType {
      * A Texture, backed by a pixmap. Can be pretty much any type of image.
      */
     PIXMAP_TEXTURE,
+
+    /**
+     * Skybox asset
+     */
+    SKYBOX,
+
+    /**
+     * Skybox hdr asset
+     */
+    SKYBOX_HDR,
     /**
      * 3D file. Can be g3db, g3dbj, dae, obj, fbx.
      */

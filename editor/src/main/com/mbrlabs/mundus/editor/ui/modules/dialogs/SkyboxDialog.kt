@@ -21,33 +21,40 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
+import com.kotcrab.vis.ui.widget.file.FileChooser
 import com.mbrlabs.mundus.commons.skybox.Skybox
 import com.mbrlabs.mundus.editor.Mundus
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent
 import com.mbrlabs.mundus.editor.events.SceneChangedEvent
+import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.widgets.ImageChooserField
 import com.mbrlabs.mundus.editor.utils.createDefaultSkybox
+import org.springframework.stereotype.Component
 
 /**
  * @author Marcus Brummer
  * @version 10-01-2016
  */
-class SkyboxDialog : BaseDialog("Skybox"), ProjectChangedEvent.ProjectChangedListener,
+@Component
+class SkyboxDialog(
+    private val projectManager: ProjectManager,
+    private val appUi: AppUi,
+    private val fileChooser: FileChooser
+) : BaseDialog("Skybox"),
+    ProjectChangedEvent.ProjectChangedListener,
     SceneChangedEvent.SceneChangedListener {
 
-    private val positiveX: ImageChooserField = ImageChooserField(100)
-    private var negativeX: ImageChooserField = ImageChooserField(100)
-    private var positiveY: ImageChooserField = ImageChooserField(100)
-    private var negativeY: ImageChooserField = ImageChooserField(100)
-    private var positiveZ: ImageChooserField = ImageChooserField(100)
-    private var negativeZ: ImageChooserField = ImageChooserField(100)
+    private val positiveX: ImageChooserField = ImageChooserField(appUi, 100, fileChooser)
+    private var negativeX: ImageChooserField = ImageChooserField(appUi, 100, fileChooser)
+    private var positiveY: ImageChooserField = ImageChooserField(appUi, 100, fileChooser)
+    private var negativeY: ImageChooserField = ImageChooserField(appUi, 100, fileChooser)
+    private var positiveZ: ImageChooserField = ImageChooserField(appUi, 100, fileChooser)
+    private var negativeZ: ImageChooserField = ImageChooserField(appUi, 100, fileChooser)
 
     private var createBtn = VisTextButton("Create skybox")
     private var defaultBtn = VisTextButton("Create default skybox")
     private var deletBtn = VisTextButton("Remove Skybox")
-
-    private val projectManager: ProjectManager = Mundus.inject()
 
     init {
         Mundus.registerEventListener(this)
@@ -73,19 +80,19 @@ class SkyboxDialog : BaseDialog("Skybox"), ProjectChangedEvent.ProjectChangedLis
         root.add(positiveX)
         root.add(negativeX)
         root.add(positiveY).row()
-        root.add<ImageChooserField>(negativeY)
-        root.add<ImageChooserField>(positiveZ)
-        root.add<ImageChooserField>(negativeZ).row()
-        root.add<VisTextButton>(createBtn).padTop(15f).padLeft(6f).padRight(6f).expandX().fillX().colspan(3).row()
+        root.add(negativeY)
+        root.add(positiveZ)
+        root.add(negativeZ).row()
+        root.add(createBtn).padTop(15f).padLeft(6f).padRight(6f).expandX().fillX().colspan(3).row()
 
         val tab = VisTable()
-        tab.add<VisTextButton>(defaultBtn).expandX().padRight(3f).fillX()
-        tab.add<VisTextButton>(deletBtn).expandX().fillX().padLeft(3f).row()
+        tab.add(defaultBtn).expandX().padRight(3f).fillX()
+        tab.add(deletBtn).expandX().fillX().padLeft(3f).row()
         root.add(tab).fillX().expandX().padTop(5f).padLeft(6f).padRight(6f).colspan(3).row()
     }
 
     private fun setupListeners() {
-        val projectContext = projectManager.current()
+        val projectContext = projectManager.current
 
         // create btn
         createBtn.addListener(object : ClickListener() {
@@ -124,7 +131,7 @@ class SkyboxDialog : BaseDialog("Skybox"), ProjectChangedEvent.ProjectChangedLis
     }
 
     private fun resetImages() {
-        val skybox = projectManager.current().currScene.skybox
+        val skybox = projectManager.current.currScene.skybox
         if (skybox != null) {
             positiveX.setImage(skybox.positiveX)
             negativeX.setImage(skybox.negativeX)

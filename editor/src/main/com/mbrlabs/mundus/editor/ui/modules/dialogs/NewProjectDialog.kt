@@ -22,22 +22,27 @@ import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.kotcrab.vis.ui.widget.VisTextField
 import com.kotcrab.vis.ui.widget.file.FileChooser
-import com.mbrlabs.mundus.editor.Mundus
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
-import com.mbrlabs.mundus.editor.ui.UI
+import com.mbrlabs.mundus.editor.ui.AppUi
+import com.mbrlabs.mundus.editor.ui.UiConstants
 import com.mbrlabs.mundus.editor.ui.widgets.FileChooserField
+import org.springframework.stereotype.Component
 
 /**
  * @author Marcus Brummer
  * @version 28-11-2015
  */
-class NewProjectDialog : BaseDialog("Create New Project") {
+@Component
+class NewProjectDialog(
+    private val projectManager: ProjectManager,
+    private val loadingProjectDialog: LoadingProjectDialog,
+    private val appUi: AppUi,
+    private val fileChooser: FileChooser
+) : BaseDialog("Create New Project") {
 
     private val projectName = VisTextField()
     private val createBtn = VisTextButton("Create project")
-    private val locationPath = FileChooserField(300)
-
-    private val projectManager: ProjectManager = Mundus.inject()
+    private val locationPath = FileChooserField(appUi, fileChooser, 300)
 
     init {
         isModal = true
@@ -45,9 +50,9 @@ class NewProjectDialog : BaseDialog("Create New Project") {
 
 
         contentTable.add(VisLabel("Project Name")).left().row()
-        contentTable.add(this.projectName).padBottom(UI.PAD_BOTTOM).width(300f).fillX().row()
+        contentTable.add(this.projectName).padBottom(UiConstants.PAD_BOTTOM).width(300f).fillX().row()
         contentTable.add(VisLabel("Location")).left().row()
-        contentTable.add(locationPath).padBottom(UI.PAD_BOTTOM_X2).growX().row()
+        contentTable.add(locationPath).padBottom(UiConstants.PAD_BOTTOM_X2).growX().row()
         contentTable.add(createBtn).growX().row()
 
         setupListeners()
@@ -66,7 +71,7 @@ class NewProjectDialog : BaseDialog("Create New Project") {
                     }
                     val projectContext = projectManager.createProject(name, path)
                     close()
-                    UI.loadingProjectDialog.loadProjectAsync(projectContext)
+                    loadingProjectDialog.loadProjectAsync(projectContext)
                 }
 
             }

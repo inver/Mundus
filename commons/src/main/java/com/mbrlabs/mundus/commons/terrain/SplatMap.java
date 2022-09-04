@@ -19,7 +19,7 @@ package com.mbrlabs.mundus.commons.terrain;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.mbrlabs.mundus.commons.assets.PixmapTextureAsset;
+import com.mbrlabs.mundus.commons.assets.pixmap.PixmapTextureAsset;
 
 /**
  * @author Marcus Brummer

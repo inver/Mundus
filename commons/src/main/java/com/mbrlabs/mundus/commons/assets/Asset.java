@@ -20,6 +20,8 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Disposable;
 import com.mbrlabs.mundus.commons.assets.meta.Meta;
 import com.mbrlabs.mundus.commons.scene3d.components.AssetUsage;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Map;
 
@@ -34,30 +36,20 @@ import java.util.Map;
  * @author Marcus Brummer
  * @version 01-10-2016
  */
+@RequiredArgsConstructor
 public abstract class Asset implements Disposable, AssetUsage {
 
-    protected FileHandle file;
-    protected Meta meta;
+    @Getter
+    protected final Meta meta;
+    @Getter
+    protected final FileHandle file;
 
-    /**
-     * @param meta
-     * @param assetFile
-     */
-    public Asset(Meta meta, FileHandle assetFile) {
-        this.meta = meta;
-        this.file = assetFile;
-    }
-
-    public Meta getMeta() {
-        return meta;
+    public AssetType getType() {
+        return meta.getType();
     }
 
     public String getName() {
         return file.name();
-    }
-
-    public FileHandle getFile() {
-        return file;
     }
 
     public String getID() {

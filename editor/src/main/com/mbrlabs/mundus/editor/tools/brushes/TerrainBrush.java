@@ -25,7 +25,7 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
-import com.mbrlabs.mundus.commons.assets.TerrainAsset;
+import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset;
 import com.mbrlabs.mundus.commons.terrain.SplatMap;
 import com.mbrlabs.mundus.commons.terrain.SplatTexture;
 import com.mbrlabs.mundus.commons.terrain.Terrain;
@@ -41,7 +41,7 @@ import com.mbrlabs.mundus.editor.tools.Tool;
 
 /**
  * A Terrain Brush can modify the terrainAsset in various ways (BrushMode).
- *
+ * <p>
  * This includes the height of every vertex in the terrainAsset grid & according
  * splatmap.
  *
@@ -54,20 +54,28 @@ public abstract class TerrainBrush extends Tool {
      * Defines the draw mode of a brush.
      */
     public enum BrushMode {
-        /** Raises or lowers the terrainAsset height. */
+        /**
+         * Raises or lowers the terrainAsset height.
+         */
         RAISE_LOWER,
-        /** Sets all vertices of the selection to a specified height. */
+        /**
+         * Sets all vertices of the selection to a specified height.
+         */
         FLATTEN,
-        /** TBD */
+        /**
+         * TBD
+         */
         SMOOTH,
-        /** Paints on the splatmap of the terrainAsset. */
+        /**
+         * Paints on the splatmap of the terrainAsset.
+         */
         PAINT
     }
 
     /**
      * Defines two actions (and it's key codes) every brush and every mode can
      * have.
-     *
+     * <p>
      * For instance the RAISE_LOWER mode has 'raise' has PRIMARY action and
      * 'lower' as secondary. Pressing the keycode of the secondary & the primary
      * key enables the secondary action.
@@ -87,7 +95,7 @@ public abstract class TerrainBrush extends Tool {
      * Thrown if a the brush is set to a mode, which it currently does not
      * support.
      */
-    public class ModeNotSupportedException extends Exception {
+    public static class ModeNotSupportedException extends RuntimeException {
         public ModeNotSupportedException(String message) {
             super(message);
         }
@@ -127,7 +135,7 @@ public abstract class TerrainBrush extends Tool {
     private boolean splatmapModified = false;
 
     public TerrainBrush(ProjectManager projectManager, ModelBatch batch, CommandHistory history,
-            FileHandle pixmapBrush) {
+                        FileHandle pixmapBrush) {
         super(projectManager, batch, history);
 
         brushPixmap = new Pixmap(pixmapBrush);
@@ -182,7 +190,7 @@ public abstract class TerrainBrush extends Tool {
 
         sm.updateTexture();
         splatmapModified = true;
-        getProjectManager().current().assetManager.addDirtyAsset(terrainAsset);
+        getProjectManager().getCurrent().assetManager.dirty(terrainAsset);
     }
 
     private void flatten() {
@@ -204,11 +212,11 @@ public abstract class TerrainBrush extends Tool {
                         final float elevation = getValueOfBrushPixmap(brushPos.x, brushPos.z, vertexPos.x, vertexPos.z,
                                 radius);
                         // current height is lower than sample
-                        if(heightSample > terrain.heightData[index]) {
+                        if (heightSample > terrain.heightData[index]) {
                             terrain.heightData[index] += elevation * strength;
                         } else {
                             float newHeight = terrain.heightData[index] - elevation * strength;
-                            if(diff > Math.abs(newHeight) || terrain.heightData[index] > heightSample) {
+                            if (diff > Math.abs(newHeight) || terrain.heightData[index] > heightSample) {
                                 terrain.heightData[index] = newHeight;
                             }
 
@@ -220,7 +228,7 @@ public abstract class TerrainBrush extends Tool {
 
         terrain.update();
         terrainHeightModified = true;
-        getProjectManager().current().assetManager.addDirtyAsset(terrainAsset);
+        getProjectManager().getCurrent().assetManager.dirty(terrainAsset);
     }
 
     private void raiseLower(BrushAction action) {
@@ -243,14 +251,14 @@ public abstract class TerrainBrush extends Tool {
 
         terrain.update();
         terrainHeightModified = true;
-        getProjectManager().current().assetManager.addDirtyAsset(terrainAsset);
+        getProjectManager().getCurrent().assetManager.dirty(terrainAsset);
     }
 
     /**
      * Interpolates the brush texture in the range of centerX - radius to
      * centerX + radius and centerZ - radius to centerZ + radius. PointZ &
      * pointX lies between these ranges.
-     *
+     * <p>
      * Interpolation is necessary, since the brush pixmap is fixed sized,
      * whereas the input values can scale. (Input points can be vertices or
      * splatmap texture coordinates)
@@ -260,10 +268,9 @@ public abstract class TerrainBrush extends Tool {
      * @param pointX
      * @param pointZ
      * @param radius
-     *
      * @return the interpolated r-channel value of brush pixmap at pointX,
-     *         pointZ, which can be interpreted as terrainAsset height
-     *         (raise/lower) or opacity (paint)
+     * pointZ, which can be interpreted as terrainAsset height
+     * (raise/lower) or opacity (paint)
      */
     private float getValueOfBrushPixmap(float centerX, float centerZ, float pointX, float pointZ, float radius) {
         c.set(centerX, centerZ);
@@ -332,10 +339,10 @@ public abstract class TerrainBrush extends Tool {
 
     public boolean supportsMode(BrushMode mode) {
         switch (mode) {
-        case RAISE_LOWER:
-        case FLATTEN:
-        case PAINT:
-            return true;
+            case RAISE_LOWER:
+            case FLATTEN:
+            case PAINT:
+                return true;
         }
 
         return false;
@@ -416,7 +423,7 @@ public abstract class TerrainBrush extends Tool {
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
         if (terrainAsset != null) {
-            Ray ray = getProjectManager().current().currScene.viewport.getPickRay(screenX, screenY);
+            Ray ray = getProjectManager().getCurrent().currScene.viewport.getPickRay(screenX, screenY);
             terrainAsset.getTerrain().getRayIntersection(brushPos, ray);
         }
 

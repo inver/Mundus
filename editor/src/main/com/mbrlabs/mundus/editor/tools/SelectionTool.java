@@ -46,7 +46,7 @@ public class SelectionTool extends Tool {
     }
 
     public void gameObjectSelected(GameObject selection) {
-        getProjectManager().current().currScene.currentSelection = selection;
+        getProjectManager().getCurrent().currScene.currentSelection = selection;
     }
 
     @Override
@@ -66,9 +66,9 @@ public class SelectionTool extends Tool {
 
     @Override
     public void render() {
-        if (getProjectManager().current().currScene.currentSelection != null) {
-            getBatch().begin(getProjectManager().current().currScene.cam);
-            for (GameObject go : getProjectManager().current().currScene.currentSelection) {
+        if (getProjectManager().getCurrent().currScene.currentSelection != null) {
+            getBatch().begin(getProjectManager().getCurrent().currScene.cam);
+            for (GameObject go : getProjectManager().getCurrent().currScene.currentSelection) {
                 // model component
                 ModelComponent mc = (ModelComponent) go.findComponentByType(Component.Type.MODEL);
                 if (mc != null) {
@@ -93,8 +93,8 @@ public class SelectionTool extends Tool {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         if (button == Input.Buttons.RIGHT) {
-            GameObject selection = goPicker.pick(getProjectManager().current().currScene, screenX, screenY);
-            if (selection != null && !selection.equals(getProjectManager().current().currScene.currentSelection)) {
+            GameObject selection = goPicker.pick(getProjectManager().getCurrent().currScene, screenX, screenY);
+            if (selection != null && !selection.equals(getProjectManager().getCurrent().currScene.currentSelection)) {
                 gameObjectSelected(selection);
                 Mundus.INSTANCE.postEvent(new GameObjectSelectedEvent(selection));
             }
@@ -111,7 +111,7 @@ public class SelectionTool extends Tool {
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
         //todo
-//        projectManager.current().currScene.viewport.getScreenHeight();
+//        projectManager.current.currScene.viewport.getScreenHeight();
 
         return false;
     }
@@ -127,7 +127,7 @@ public class SelectionTool extends Tool {
 
     @Override
     public void onDisabled() {
-        getProjectManager().current().currScene.currentSelection = null;
+        getProjectManager().getCurrent().currScene.currentSelection = null;
     }
 
 }

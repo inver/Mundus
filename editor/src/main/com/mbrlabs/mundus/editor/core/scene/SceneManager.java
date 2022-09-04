@@ -35,7 +35,7 @@ public class SceneManager {
      * Saves a scene.
      *
      * @param context project context of the scene
-     * @param scene scene to save
+     * @param scene   scene to save
      */
     public static void saveScene(ProjectContext context, Scene scene) {
         String sceneDir = getScenePath(context, scene.getName());
@@ -48,10 +48,10 @@ public class SceneManager {
 
     /**
      * Loads a scene.
-     *
+     * <p>
      * Does however not initialize ModelInstances, Terrains, ... -> ProjectManager
      *
-     * @param context project context of the scene
+     * @param context   project context of the scene
      * @param sceneName name of the scene to load
      * @return loaded scene
      * @throws FileNotFoundException

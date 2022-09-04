@@ -32,12 +32,11 @@ import com.mbrlabs.mundus.editor.ui.widgets.ImprovedSlider
  * @author Marcus Brummer
  * @version 30-01-2016
  */
-class TerrainSettingsTab(private val parentWidget: TerrainComponentWidget) : Tab(false, false) {
+class TerrainSettingsTab(private val parentWidget: TerrainComponentWidget, private val projectManager: ProjectManager) :
+    Tab(false, false) {
 
     private val table = VisTable()
     private val uvSlider = ImprovedSlider(.5f, 120f, .5f)
-
-    private val projectManager: ProjectManager = Mundus.inject()
 
     init {
         table.align(Align.left)
@@ -48,8 +47,8 @@ class TerrainSettingsTab(private val parentWidget: TerrainComponentWidget) : Tab
         table.add(uvSlider).expandX().fillX().row()
         uvSlider.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                val assetManager = projectManager.current().assetManager
-                assetManager.addDirtyAsset(parentWidget.component.terrain)
+                val assetManager = projectManager.current.assetManager
+                assetManager.dirty(parentWidget.component.terrain)
                 parentWidget.component.updateUVs(Vector2(uvSlider.value, uvSlider.value))
             }
         })

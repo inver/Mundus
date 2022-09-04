@@ -20,10 +20,10 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.Cell
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.kotcrab.vis.ui.widget.Separator
+import com.kotcrab.vis.ui.widget.Separator.SeparatorStyle
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.mbrlabs.mundus.commons.scene3d.GameObject
-import com.mbrlabs.mundus.editor.ui.UI
 import com.mbrlabs.mundus.editor.ui.widgets.CollapseWidget
 import com.mbrlabs.mundus.editor.ui.widgets.FaTextButton
 import com.mbrlabs.mundus.editor.utils.Fa
@@ -32,7 +32,10 @@ import com.mbrlabs.mundus.editor.utils.Fa
  * @author Marcus Brummer
  * @version 19-01-2016
  */
-abstract class BaseInspectorWidget(title: String) : VisTable() {
+abstract class BaseInspectorWidget(
+    private val separatorStyle: SeparatorStyle,
+    title: String
+) : VisTable() {
 
     companion object {
         private val COLLAPSE_BTN_DOWN = Fa.CARET_UP
@@ -91,8 +94,8 @@ abstract class BaseInspectorWidget(title: String) : VisTable() {
         header.add(titleLabel)
         header.add(collapseBtn).right().top().width(20f).height(20f).expand().row()
 
-        // add seperator
-        header.add(Separator(UI.greenSeperatorStyle)).fillX().expandX().colspan(3).row()
+        // add separator
+        header.add(Separator(separatorStyle)).fillX().expandX().colspan(3).row()
 
         // add everything to root
         add(header).expand().fill().padBottom(10f).row()

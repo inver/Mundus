@@ -26,12 +26,12 @@ import com.kotcrab.vis.ui.util.dialog.Dialogs
 import com.kotcrab.vis.ui.widget.*
 import com.kotcrab.vis.ui.widget.tabbedpane.Tab
 import com.mbrlabs.mundus.commons.assets.Asset
-import com.mbrlabs.mundus.commons.assets.TextureAsset
+import com.mbrlabs.mundus.commons.assets.exceptions.AssetAlreadyExistsException
+import com.mbrlabs.mundus.commons.assets.meta.MetaService
+import com.mbrlabs.mundus.commons.assets.texture.TextureAsset
 import com.mbrlabs.mundus.commons.terrain.SplatTexture
 import com.mbrlabs.mundus.editor.Mundus
-import com.mbrlabs.mundus.editor.assets.AssetAlreadyExistsException
 import com.mbrlabs.mundus.editor.assets.AssetTextureFilter
-import com.mbrlabs.mundus.editor.assets.MetaSaver
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.events.AssetImportEvent
 import com.mbrlabs.mundus.editor.tools.brushes.TerrainBrush
@@ -39,13 +39,20 @@ import com.mbrlabs.mundus.editor.ui.UI
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
 import com.mbrlabs.mundus.editor.ui.widgets.TextureGrid
 import com.mbrlabs.mundus.editor.utils.Log
+import com.mbrlabs.mundus.editor.utils.Toaster
 import java.io.IOException
 
 /**
  * @author Marcus Brummer
  * @version 30-01-2016
  */
-class TerrainPaintTab(private val parentWidget: TerrainComponentWidget) : Tab(false, false) {
+class TerrainPaintTab(
+    private val parentWidget: TerrainComponentWidget,
+    private val assetSelectionDialog: AssetPickerDialog,
+    private val toaster: Toaster,
+    private val projectManager: ProjectManager,
+    private val metaService: MetaService
+) : Tab(false, false) {
 
     companion object {
         private val TAG = TerrainPaintTab::class.java.simpleName
@@ -56,14 +63,13 @@ class TerrainPaintTab(private val parentWidget: TerrainComponentWidget) : Tab(fa
     private val textureGrid = TextureGrid<SplatTexture>(40, 5)
     private val rightClickMenu = TextureRightClickMenu()
 
-    private val projectManager: ProjectManager = Mundus.inject()
-    private val metaSaver: MetaSaver = Mundus.inject()
+    val grid = TerrainBrushGrid(parentWidget, TerrainBrush.BrushMode.PAINT)
 
     init {
         root.align(Align.left)
 
         // brushes
-        root.add(TerrainBrushGrid(parentWidget, TerrainBrush.BrushMode.PAINT)).expand().fill().padBottom(5f).row()
+        root.add(grid).expand().fill().padBottom(5f).row()
 
         // textures
         root.add(VisLabel("Textures:")).padLeft(5f).left().row()
@@ -80,16 +86,19 @@ class TerrainPaintTab(private val parentWidget: TerrainComponentWidget) : Tab(fa
     fun setupAddTextureBrowser() {
         addTextureBtn.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                UI.assetSelectionDialog.show(false, AssetTextureFilter(), object: AssetPickerDialog.AssetPickerListener {
-                    override fun onSelected(asset: Asset?) {
-                        try {
-                            addTexture(asset as TextureAsset)
-                        } catch (e: IOException) {
-                            e.printStackTrace()
-                            UI.toaster.error("Error while creating the splatmap")
+                assetSelectionDialog.show(
+                    false,
+                    AssetTextureFilter(),
+                    object : AssetPickerDialog.AssetPickerListener {
+                        override fun onSelected(asset: Asset?) {
+                            try {
+                                addTexture(asset as TextureAsset)
+                            } catch (e: IOException) {
+                                e.printStackTrace()
+                                toaster.error("Error while creating the splatmap")
+                            }
                         }
-                    }
-                })
+                    })
 
             }
         })
@@ -97,12 +106,12 @@ class TerrainPaintTab(private val parentWidget: TerrainComponentWidget) : Tab(fa
 
     @Throws(IOException::class)
     private fun addTexture(textureAsset: TextureAsset) {
-        val assetManager = projectManager.current().assetManager
+        val assetManager = projectManager.current.assetManager
 
         val terrainAsset = this@TerrainPaintTab.parentWidget.component.terrain
         val terrainTexture = terrainAsset.terrain.terrainTexture
 
-        assetManager.addDirtyAsset(terrainAsset)
+        assetManager.dirty(terrainAsset)
 
         // channel base
         if (terrainAsset.splatBase == null) {
@@ -118,7 +127,7 @@ class TerrainPaintTab(private val parentWidget: TerrainComponentWidget) : Tab(fa
                 val splatmap = assetManager.createPixmapTextureAsset(512)
                 terrainAsset.splatmap = splatmap
                 terrainAsset.applyDependencies()
-                metaSaver.save(terrainAsset.meta)
+                metaService.save(terrainAsset.meta)
                 Mundus.postEvent(AssetImportEvent(splatmap))
             } catch (e: AssetAlreadyExistsException) {
                 Log.exception(TAG, e)
@@ -231,13 +240,13 @@ class TerrainPaintTab(private val parentWidget: TerrainComponentWidget) : Tab(fa
                         } else if (channel == SplatTexture.Channel.A) {
                             terrain.splatA = null
                         } else {
-                            UI.toaster.error("Can't remove the base texture")
+                            toaster.error("Can't remove the base texture")
                             return
                         }
 
                         terrain.applyDependencies()
                         setTexturesInUiGrid()
-                        projectManager.current().assetManager.addDirtyAsset(terrain)
+                        projectManager.current.assetManager.dirty(terrain)
                     }
                 }
             })
@@ -246,27 +255,30 @@ class TerrainPaintTab(private val parentWidget: TerrainComponentWidget) : Tab(fa
                 override fun clicked(event: InputEvent?, x: Float, y: Float) {
                     if (channel != null) {
 
-                        UI.assetSelectionDialog.show(false, AssetTextureFilter(), object: AssetPickerDialog.AssetPickerListener {
-                            override fun onSelected(asset: Asset?) {
-                                if (channel != null) {
-                                    val terrain = parentWidget.component.terrain
-                                    if (channel == SplatTexture.Channel.BASE) {
-                                        terrain.splatBase = asset as TextureAsset
-                                    } else if (channel == SplatTexture.Channel.R) {
-                                        terrain.splatR = asset as TextureAsset
-                                    } else if (channel == SplatTexture.Channel.G) {
-                                        terrain.splatG = asset as TextureAsset
-                                    } else if (channel == SplatTexture.Channel.B) {
-                                        terrain.splatB = asset as TextureAsset
-                                    } else if (channel == SplatTexture.Channel.A) {
-                                        terrain.splatA = asset as TextureAsset
+                        assetSelectionDialog.show(
+                            false,
+                            AssetTextureFilter(),
+                            object : AssetPickerDialog.AssetPickerListener {
+                                override fun onSelected(asset: Asset?) {
+                                    if (channel != null) {
+                                        val terrain = parentWidget.component.terrain
+                                        if (channel == SplatTexture.Channel.BASE) {
+                                            terrain.splatBase = asset as TextureAsset
+                                        } else if (channel == SplatTexture.Channel.R) {
+                                            terrain.splatR = asset as TextureAsset
+                                        } else if (channel == SplatTexture.Channel.G) {
+                                            terrain.splatG = asset as TextureAsset
+                                        } else if (channel == SplatTexture.Channel.B) {
+                                            terrain.splatB = asset as TextureAsset
+                                        } else if (channel == SplatTexture.Channel.A) {
+                                            terrain.splatA = asset as TextureAsset
+                                        }
+                                        terrain.applyDependencies()
+                                        setTexturesInUiGrid()
+                                        projectManager.current.assetManager.dirty(terrain)
                                     }
-                                    terrain.applyDependencies()
-                                    setTexturesInUiGrid()
-                                    projectManager.current().assetManager.addDirtyAsset(terrain)
                                 }
-                            }
-                        })
+                            })
 
                     }
                 }

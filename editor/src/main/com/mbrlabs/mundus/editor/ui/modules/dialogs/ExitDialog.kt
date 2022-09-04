@@ -22,24 +22,19 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTextButton
-import com.mbrlabs.mundus.editor.Mundus
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
+import org.springframework.stereotype.Component
 
 /**
  * @version 09-10-2016
  * @author attilabo
  */
-class ExitDialog : BaseDialog(ExitDialog.TITLE) {
-
-    companion object {
-        private val TITLE = "Confirm exit"
-    }
+@Component
+class ExitDialog(private val projectManager: ProjectManager) : BaseDialog("Confirm exit") {
 
     private val exit = VisTextButton("Exit")
     private val saveExit = VisTextButton("Save and Exit")
     private val cancel = VisTextButton("Cancel")
-
-    private val projectManager: ProjectManager = Mundus.inject()
 
     init {
         setupUI()
@@ -52,9 +47,9 @@ class ExitDialog : BaseDialog(ExitDialog.TITLE) {
         add(root)
 
         root.add(VisLabel("Do you really want to close Mundus?")).grow().center().colspan(3).padBottom(10f).row()
-        root.add<VisTextButton>(cancel).padRight(5f).grow()
-        root.add<VisTextButton>(exit).padRight(5f).grow()
-        root.add<VisTextButton>(saveExit).grow().row()
+        root.add(cancel).padRight(5f).grow()
+        root.add(exit).padRight(5f).grow()
+        root.add(saveExit).grow().row()
     }
 
     private fun setupListeners() {

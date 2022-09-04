@@ -30,8 +30,9 @@ import com.mbrlabs.mundus.editor.assets.AssetFilter
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.events.AssetImportEvent
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent
-import com.mbrlabs.mundus.editor.ui.UI
+import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.BaseDialog
+import org.springframework.stereotype.Component
 
 /**
  * A filterable list of materials.
@@ -42,9 +43,13 @@ import com.mbrlabs.mundus.editor.ui.modules.dialogs.BaseDialog
  * @author Marcus Brummer
  * @version 02-10-2016
  */
-class AssetPickerDialog : BaseDialog(AssetPickerDialog.TITLE),
-        AssetImportEvent.AssetImportListener,
-        ProjectChangedEvent.ProjectChangedListener {
+@Component
+class AssetPickerDialog(
+    private val projectManager: ProjectManager,
+    private val appUi: AppUi
+) : BaseDialog(TITLE),
+    AssetImportEvent.AssetImportListener,
+    ProjectChangedEvent.ProjectChangedListener {
 
     private companion object {
         private val TITLE = "Select an asset"
@@ -57,8 +62,6 @@ class AssetPickerDialog : BaseDialog(AssetPickerDialog.TITLE),
 
     private var filter: AssetFilter? = null
     private var listener: AssetPickerListener? = null
-
-    private val projectManager: ProjectManager = Mundus.inject()
 
     init {
         Mundus.registerEventListener(this)
@@ -100,7 +103,7 @@ class AssetPickerDialog : BaseDialog(AssetPickerDialog.TITLE),
     }
 
     private fun reloadData() {
-        val assetManager = projectManager.current().assetManager
+        val assetManager = projectManager.current.assetManager
         listAdapter.clear()
 
         // filter assets
@@ -134,7 +137,7 @@ class AssetPickerDialog : BaseDialog(AssetPickerDialog.TITLE),
             noneBtn.touchable = Touchable.disabled
         }
         reloadData()
-        UI.showDialog(this)
+        appUi.showDialog(this)
     }
 
     /**

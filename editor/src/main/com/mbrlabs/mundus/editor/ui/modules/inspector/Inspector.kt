@@ -24,18 +24,40 @@ import com.badlogic.gdx.utils.Align
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisScrollPane
 import com.kotcrab.vis.ui.widget.VisTable
+import com.kotcrab.vis.ui.widget.file.FileChooser
+import com.mbrlabs.mundus.commons.assets.meta.MetaService
 import com.mbrlabs.mundus.editor.Mundus
+import com.mbrlabs.mundus.editor.config.UiWidgetsHolder
+import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.events.AssetSelectedEvent
 import com.mbrlabs.mundus.editor.events.GameObjectModifiedEvent
 import com.mbrlabs.mundus.editor.events.GameObjectSelectedEvent
+import com.mbrlabs.mundus.editor.history.CommandHistory
+import com.mbrlabs.mundus.editor.tools.ToolManager
+import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.UI
+import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
+import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.TerrainWidgetPresenter
 import com.mbrlabs.mundus.editor.utils.Log
+import com.mbrlabs.mundus.editor.utils.Toaster
+import org.springframework.stereotype.Component
 
 /**
  * @author Marcus Brummer
  * @version 19-01-2016
  */
-class Inspector : VisTable(),
+@Component
+class Inspector(
+    appUi: AppUi, fileChooser: FileChooser,
+    private val uiWidgetsHolder: UiWidgetsHolder,
+    private val assetPickerDialog: AssetPickerDialog,
+    private val toaster: Toaster,
+    private val toolManager: ToolManager,
+    private val projectManager: ProjectManager,
+    private val terrainWidgetPresenter: TerrainWidgetPresenter,
+    private val history: CommandHistory,
+    private val metaService: MetaService
+) : VisTable(),
     GameObjectSelectedEvent.GameObjectSelectedListener,
     GameObjectModifiedEvent.GameObjectModifiedListener,
     AssetSelectedEvent.AssetSelectedListener {
@@ -58,8 +80,27 @@ class Inspector : VisTable(),
     init {
         Mundus.registerEventListener(this)
 
-        goInspector = GameObjectInspector()
-        assetInspector = AssetInspector()
+        goInspector =
+            GameObjectInspector(
+                appUi,
+                uiWidgetsHolder,
+                fileChooser,
+                assetPickerDialog,
+                toaster,
+                projectManager,
+                history,
+                metaService,
+                terrainWidgetPresenter
+            )
+        assetInspector =
+            AssetInspector(
+                uiWidgetsHolder.separatorStyle,
+                appUi,
+                uiWidgetsHolder,
+                assetPickerDialog,
+                toolManager,
+                projectManager
+            )
 
         init()
     }

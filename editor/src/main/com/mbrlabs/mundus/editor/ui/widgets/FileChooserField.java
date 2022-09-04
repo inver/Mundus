@@ -24,7 +24,7 @@ import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.VisTextField;
 import com.kotcrab.vis.ui.widget.file.FileChooser;
 import com.kotcrab.vis.ui.widget.file.SingleFileChooserListener;
-import com.mbrlabs.mundus.editor.ui.UI;
+import com.mbrlabs.mundus.editor.ui.AppUi;
 
 /**
  * @author Marcus Brummer
@@ -46,8 +46,13 @@ public class FileChooserField extends VisTable {
     private String path;
     private FileHandle fileHandle;
 
-    public FileChooserField(int width) {
+    private final FileChooser fileChooser;
+    private final AppUi appUi;
+
+    public FileChooserField(AppUi appUi, FileChooser fileChooser, int width) {
         super();
+        this.appUi = appUi;
+        this.fileChooser = fileChooser;
         this.width = width;
         textField = new VisTextField();
         fcBtn = new VisTextButton("Select");
@@ -56,8 +61,8 @@ public class FileChooserField extends VisTable {
         setupListeners();
     }
 
-    public FileChooserField() {
-        this(-1);
+    public FileChooserField(AppUi appUi, FileChooser fileChooser) {
+        this(appUi, fileChooser, -1);
     }
 
     public void setEditable(boolean editable) {
@@ -105,7 +110,6 @@ public class FileChooserField extends VisTable {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                FileChooser fileChooser = UI.INSTANCE.getFileChooser();
                 fileChooser.setSelectionMode(mode);
                 fileChooser.setListener(new SingleFileChooserListener() {
                     @Override
@@ -119,7 +123,7 @@ public class FileChooserField extends VisTable {
                         }
                     }
                 });
-                UI.INSTANCE.addActor(fileChooser.fadeIn());
+                appUi.addActor(fileChooser.fadeIn());
             }
         });
 

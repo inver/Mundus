@@ -20,7 +20,7 @@ import com.mbrlabs.mundus.commons.scene3d.GameObject
 import com.mbrlabs.mundus.editor.Mundus
 import com.mbrlabs.mundus.editor.events.SceneGraphChangedEvent
 import com.mbrlabs.mundus.editor.history.Command
-import com.mbrlabs.mundus.editor.ui.modules.Outline
+import com.mbrlabs.mundus.editor.ui.modules.outline.Outline
 import com.mbrlabs.mundus.editor.utils.Log
 
 /**

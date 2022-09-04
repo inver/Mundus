@@ -17,7 +17,7 @@
 package com.mbrlabs.mundus.commons.terrain;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.mbrlabs.mundus.commons.assets.TextureAsset;
+import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
 import com.mbrlabs.mundus.commons.utils.TextureProvider;
 
 /**

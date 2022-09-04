@@ -21,6 +21,7 @@ package com.mbrlabs.mundus.editor
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration
 import com.kotcrab.vis.ui.util.OsUtils
+import com.mbrlabs.mundus.editor.config.InitListener
 import com.mbrlabs.mundus.editor.utils.Log
 
 const private val TAG = "Main"
@@ -33,8 +34,8 @@ fun main() {
 
 private fun launchEditor() {
     val config = Lwjgl3ApplicationConfiguration()
-    val editor = Editor()
-    config.setWindowListener(editor)
+    val listener = InitListener()
+    config.setWindowListener(listener)
 
     // Set initial window size. See https://github.com/mbrlabs/Mundus/issues/11
     val dm = Lwjgl3ApplicationConfiguration.getDisplayMode()
@@ -49,7 +50,7 @@ private fun launchEditor() {
     config.setWindowPosition(-1, -1)
     config.setWindowIcon("icon/logo.png")
 
-    Lwjgl3Application(editor, config)
+    Lwjgl3Application(listener, config)
     Log.info(TAG, "Shutting down [{}]", TITLE)
 }
 

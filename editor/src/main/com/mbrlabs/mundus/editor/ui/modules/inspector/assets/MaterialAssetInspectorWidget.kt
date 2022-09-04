@@ -16,8 +16,13 @@
 
 package com.mbrlabs.mundus.editor.ui.modules.inspector.assets
 
-import com.mbrlabs.mundus.commons.assets.MaterialAsset
+import com.kotcrab.vis.ui.widget.Separator.SeparatorStyle
+import com.mbrlabs.mundus.commons.assets.material.MaterialAsset
 import com.mbrlabs.mundus.commons.scene3d.GameObject
+import com.mbrlabs.mundus.editor.config.UiWidgetsHolder
+import com.mbrlabs.mundus.editor.core.project.ProjectManager
+import com.mbrlabs.mundus.editor.ui.AppUi
+import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
 import com.mbrlabs.mundus.editor.ui.modules.inspector.BaseInspectorWidget
 import com.mbrlabs.mundus.editor.ui.widgets.MaterialWidget
 
@@ -25,14 +30,18 @@ import com.mbrlabs.mundus.editor.ui.widgets.MaterialWidget
  * @author Marcus Brummer
  * @version 13-10-2016
  */
-class MaterialAssetInspectorWidget : BaseInspectorWidget(MaterialAssetInspectorWidget.TITLE) {
-
-    companion object {
-        private val TITLE = "Material Asset"
-    }
+class MaterialAssetInspectorWidget(
+    separatorStyle: SeparatorStyle,
+    private val appUi: AppUi,
+    private val uiWidgetsHolder: UiWidgetsHolder,
+    private val assetSelectionDialog: AssetPickerDialog,
+    private val projectManager: ProjectManager
+) :
+    BaseInspectorWidget(separatorStyle, "Material Asset") {
 
     private var material: MaterialAsset? = null
-    private val materialWidget = MaterialWidget()
+    private val materialWidget =
+        MaterialWidget(uiWidgetsHolder.colorPicker, appUi, assetSelectionDialog, projectManager)
 
     init {
         isDeletable = false

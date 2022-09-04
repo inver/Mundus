@@ -20,20 +20,22 @@ import com.kotcrab.vis.ui.util.dialog.Dialogs
 import com.kotcrab.vis.ui.widget.VisDialog
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
-import com.mbrlabs.mundus.editor.Mundus
 import com.mbrlabs.mundus.editor.core.project.ProjectContext
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.ui.UI
+import org.springframework.stereotype.Component
 import java.io.File
 
 /**
  * @author Marcus Brummer
  * @version 08-12-2015
  */
-class LoadingProjectDialog : VisDialog("Loading Project") {
+@Component
+class LoadingProjectDialog(
+    private val projectManager: ProjectManager
+) : VisDialog("Loading Project") {
 
     private val projectName = VisLabel("Project Folder:")
-    private val projectManager: ProjectManager = Mundus.inject()
 
     init {
         isModal = true

@@ -25,19 +25,21 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.Json
 import com.kotcrab.vis.ui.VisUI
-import com.mbrlabs.mundus.commons.assets.meta.MetaLoader
+import com.mbrlabs.mundus.commons.assets.material.MaterialService
+import com.mbrlabs.mundus.commons.assets.meta.MetaService
+import com.mbrlabs.mundus.commons.assets.model.ModelService
+import com.mbrlabs.mundus.commons.assets.pixmap.PixmapTextureService
+import com.mbrlabs.mundus.commons.assets.terrain.TerrainService
+import com.mbrlabs.mundus.commons.assets.texture.TextureService
 import com.mbrlabs.mundus.commons.core.registry.Registry
 import com.mbrlabs.mundus.commons.loader.ModelImporter
 import com.mbrlabs.mundus.editor.assets.MetaSaver
 import com.mbrlabs.mundus.editor.core.kryo.KryoManager
-import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.events.EventBus
 import com.mbrlabs.mundus.editor.history.CommandHistory
 import com.mbrlabs.mundus.editor.input.FreeCamController
 import com.mbrlabs.mundus.editor.input.InputManager
-import com.mbrlabs.mundus.editor.input.ShortcutController
 import com.mbrlabs.mundus.editor.shader.Shaders
-import com.mbrlabs.mundus.editor.tools.ToolManager
 import com.mbrlabs.mundus.editor.tools.picker.GameObjectPicker
 import com.mbrlabs.mundus.editor.tools.picker.ToolHandlePicker
 import com.mbrlabs.mundus.editor.utils.Fa
@@ -62,19 +64,29 @@ object Mundus {
     lateinit var fa: BitmapFont
 
     private val modelBatch: ModelBatch
-    private val toolManager: ToolManager
+
+    //    private val toolManager: ToolManager
     private val input: InputManager
     private val freeCamController: FreeCamController
-    private val shortcutController: ShortcutController
+
+    //    private val shortcutController: ShortcutController!
     private val shapeRenderer: ShapeRenderer
     private val kryoManager: KryoManager
-    private val projectManager: ProjectManager
+
+    //    private val projectManager: ProjectManager
     private val registry: Registry
     private val modelImporter: ModelImporter
     private val commandHistory: CommandHistory
     private val goPicker: GameObjectPicker
     private val handlePicker: ToolHandlePicker
     private val json: Json
+
+    private val metaService: MetaService
+    private val textureService: TextureService
+    private val terrainService: TerrainService
+    private val materialService: MaterialService
+    private val pixmapTextureService: PixmapTextureService
+    private val modelService: ModelService
 
     init {
         // create home dir
@@ -99,12 +111,27 @@ object Mundus {
         freeCamController = FreeCamController()
         commandHistory = CommandHistory(CommandHistory.DEFAULT_LIMIT)
         modelImporter = ModelImporter(registry)
-        projectManager = ProjectManager(kryoManager, registry, modelBatch)
-        toolManager = ToolManager(
-            input, projectManager, goPicker, handlePicker, modelBatch, shapeRenderer,
-            commandHistory
-        )
-        shortcutController = ShortcutController(registry, projectManager, commandHistory, toolManager)
+        metaService = MetaService()
+        terrainService = TerrainService()
+        textureService = TextureService()
+        materialService = MaterialService(metaService)
+        pixmapTextureService = PixmapTextureService()
+        modelService = ModelService()
+//        projectManager = ProjectManager(
+//            registry,
+//            kryoManager,
+//            modelBatch,
+//            metaService,
+//            textureService,
+//            terrainService,
+//            materialService,
+//            pixmapTextureService,
+//            modelService
+//        )
+//        toolManager = ToolManager(
+//            input, projectManager, goPicker, handlePicker, modelBatch, shapeRenderer, commandHistory
+//        )
+//        shortcutController = ShortcutController(registry, projectManager, commandHistory, toolManager)
         json = Json()
 
         // add to DI container
@@ -118,14 +145,14 @@ object Mundus {
             bindSingleton(registry)
             bindSingleton(commandHistory)
             bindSingleton(modelImporter)
-            bindSingleton(projectManager)
-            bindSingleton(toolManager)
-            bindSingleton(shortcutController)
+//            bindSingleton(projectManager)
+//            bindSingleton(toolManager)
+//            bindSingleton(shortcutController)
             bindSingleton(freeCamController)
             bindSingleton(json)
 
             bindSingleton(MetaSaver())
-            bindSingleton(MetaLoader())
+            bindSingleton(MetaService())
         }
     }
 
@@ -163,7 +190,7 @@ object Mundus {
 
         skin.addRegions(TextureAtlas(Gdx.files.internal("ui/skin/uiskin.atlas")))
         skin.load(Gdx.files.internal("ui/skin/uiskin.json"))
-        VisUI.load(skin)
+//        VisUI.load(skin)
     }
 
     private fun initFontAwesome() {
@@ -176,11 +203,6 @@ object Mundus {
             .addIcon(Fa.CARET_UP).addIcon(Fa.TIMES).addIcon(Fa.SORT).addIcon(Fa.HASHTAG).addIcon(Fa.PAINT_BRUSH)
             .addIcon(Fa.STAR).addIcon(Fa.REFRESH).addIcon(Fa.EXPAND).build()
     }
-
-    /**
-     *
-     */
-    inline fun <reified Type : Any> inject(): Type = context.inject()
 
     /**
      * Posts an event.

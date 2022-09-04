@@ -138,8 +138,8 @@ public class TranslateTool extends TransformTool {
     @Override
     public void render() {
         super.render();
-        if (getProjectManager().current().currScene.currentSelection != null) {
-            getBatch().begin(getProjectManager().current().currScene.cam);
+        if (getProjectManager().getCurrent().currScene.currentSelection != null) {
+            getBatch().begin(getProjectManager().getCurrent().currScene.cam);
             GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
             xHandle.render(getBatch());
             yHandle.render(getBatch());
@@ -154,13 +154,13 @@ public class TranslateTool extends TransformTool {
     public void act() {
         super.act();
 
-        if (getProjectManager().current().currScene.currentSelection != null) {
+        if (getProjectManager().getCurrent().currScene.currentSelection != null) {
             translateHandles();
             if (state == TransformState.IDLE) return;
 
-            Ray ray = getProjectManager().current().currScene.viewport.getPickRay(Gdx.input.getX(), Gdx.input.getY());
-            Vector3 rayEnd = getProjectManager().current().currScene.currentSelection.getLocalPosition(temp0);
-            float dst = getProjectManager().current().currScene.cam.position.dst(rayEnd);
+            Ray ray = getProjectManager().getCurrent().currScene.viewport.getPickRay(Gdx.input.getX(), Gdx.input.getY());
+            Vector3 rayEnd = getProjectManager().getCurrent().currScene.currentSelection.getLocalPosition(temp0);
+            float dst = getProjectManager().getCurrent().currScene.cam.position.dst(rayEnd);
             rayEnd = ray.getEndPoint(rayEnd, dst);
 
             if (initTranslate) {
@@ -168,7 +168,7 @@ public class TranslateTool extends TransformTool {
                 lastPos.set(rayEnd);
             }
 
-            GameObject go = getProjectManager().current().currScene.currentSelection;
+            GameObject go = getProjectManager().getCurrent().currScene.currentSelection;
 
             boolean modified = false;
             Vector3 vec = new Vector3();
@@ -195,7 +195,7 @@ public class TranslateTool extends TransformTool {
             go.translate(vec);
 
             if (modified) {
-                gameObjectModifiedEvent.setGameObject(getProjectManager().current().currScene.currentSelection);
+                gameObjectModifiedEvent.setGameObject(getProjectManager().getCurrent().currScene.currentSelection);
                 Mundus.INSTANCE.postEvent(gameObjectModifiedEvent);
             }
 
@@ -205,8 +205,8 @@ public class TranslateTool extends TransformTool {
 
     @Override
     protected void scaleHandles() {
-        Vector3 pos = getProjectManager().current().currScene.currentSelection.getPosition(temp0);
-        float scaleFactor = getProjectManager().current().currScene.cam.position.dst(pos) * 0.25f;
+        Vector3 pos = getProjectManager().getCurrent().currScene.currentSelection.getPosition(temp0);
+        float scaleFactor = getProjectManager().getCurrent().currScene.cam.position.dst(pos) * 0.25f;
         xHandle.getScale().set(scaleFactor * 0.7f, scaleFactor / 2, scaleFactor / 2);
         xHandle.applyTransform();
 
@@ -222,7 +222,7 @@ public class TranslateTool extends TransformTool {
 
     @Override
     protected void translateHandles() {
-        final Vector3 pos = getProjectManager().current().currScene.currentSelection.getTransform()
+        final Vector3 pos = getProjectManager().getCurrent().currScene.currentSelection.getTransform()
                 .getTranslation(temp0);
         xHandle.getPosition().set(pos);
         xHandle.applyTransform();
@@ -243,9 +243,9 @@ public class TranslateTool extends TransformTool {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         super.touchDown(screenX, screenY, pointer, button);
 
-        if (button == Input.Buttons.LEFT && getProjectManager().current().currScene.currentSelection != null) {
+        if (button == Input.Buttons.LEFT && getProjectManager().getCurrent().currScene.currentSelection != null) {
             TranslateHandle handle = (TranslateHandle) handlePicker.pick(handles,
-                    getProjectManager().current().currScene, screenX, screenY);
+                    getProjectManager().getCurrent().currScene, screenX, screenY);
             if (handle == null) {
                 state = TransformState.IDLE;
                 return false;
@@ -271,8 +271,8 @@ public class TranslateTool extends TransformTool {
         }
 
         if (state != TransformState.IDLE) {
-            command = new TranslateCommand(getProjectManager().current().currScene.currentSelection);
-            command.setBefore(getProjectManager().current().currScene.currentSelection.getLocalPosition(temp0));
+            command = new TranslateCommand(getProjectManager().getCurrent().currScene.currentSelection);
+            command.setBefore(getProjectManager().getCurrent().currScene.currentSelection.getLocalPosition(temp0));
         }
 
         return false;
@@ -287,7 +287,7 @@ public class TranslateTool extends TransformTool {
             zHandle.changeColor(COLOR_Z);
             xzPlaneHandle.changeColor(COLOR_XZ);
 
-            command.setAfter(getProjectManager().current().currScene.currentSelection.getLocalPosition(temp0));
+            command.setAfter(getProjectManager().getCurrent().currScene.currentSelection.getLocalPosition(temp0));
             getHistory().add(command);
             command = null;
             state = TransformState.IDLE;
