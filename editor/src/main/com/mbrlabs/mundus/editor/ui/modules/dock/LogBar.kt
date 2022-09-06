@@ -10,7 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.kotcrab.vis.ui.widget.*
 import com.kotcrab.vis.ui.widget.tabbedpane.Tab
-import com.mbrlabs.mundus.editor.Mundus
 import com.mbrlabs.mundus.editor.events.LogEvent
 import com.mbrlabs.mundus.editor.events.LogType
 import com.mbrlabs.mundus.editor.ui.UI
@@ -33,13 +32,12 @@ class LogBar : Tab(false, false), LogEvent.LogEventListener {
     private val dateFormat = SimpleDateFormat("HH:mm:ss")
 
     private val logTextPadding = 4f;
-    private var errorColor = Color(222f / 255f, 67f / 255f,67f / 255f, 1f);
+    private var errorColor = Color(222f / 255f, 67f / 255f, 67f / 255f, 1f);
 
     // True when new entries are in the log and log is not the active tab
     var newEntries = false
 
     init {
-        Mundus.registerEventListener(this)
         initUi()
     }
 
@@ -63,8 +61,10 @@ class LogBar : Tab(false, false), LogEvent.LogEventListener {
 
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 if (event!!.button == Input.Buttons.RIGHT) {
-                    logOpsMenu.showMenu(UI, Gdx.input.x.toFloat(),
-                            (Gdx.graphics.height - Gdx.input.y).toFloat())
+                    logOpsMenu.showMenu(
+                        UI, Gdx.input.x.toFloat(),
+                        (Gdx.graphics.height - Gdx.input.y).toFloat()
+                    )
                 }
             }
 
@@ -127,7 +127,7 @@ class LogBar : Tab(false, false), LogEvent.LogEventListener {
             append(event.logMessage)
         }
 
-        val visLabel: VisLabel = when(event.logType) {
+        val visLabel: VisLabel = when (event.logType) {
             LogType.INFO -> VisLabel(logString)
             LogType.ERROR -> VisLabel(logString, errorColor)
         }

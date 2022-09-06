@@ -18,20 +18,13 @@ package com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain
 
 import com.kotcrab.vis.ui.widget.Separator.SeparatorStyle
 import com.kotcrab.vis.ui.widget.VisTable
-import com.kotcrab.vis.ui.widget.file.FileChooser
 import com.kotcrab.vis.ui.widget.tabbedpane.Tab
 import com.kotcrab.vis.ui.widget.tabbedpane.TabbedPane
 import com.kotcrab.vis.ui.widget.tabbedpane.TabbedPaneListener
-import com.mbrlabs.mundus.commons.assets.meta.MetaService
 import com.mbrlabs.mundus.commons.scene3d.GameObject
 import com.mbrlabs.mundus.commons.scene3d.components.Component
 import com.mbrlabs.mundus.commons.scene3d.components.TerrainComponent
-import com.mbrlabs.mundus.editor.core.project.ProjectManager
-import com.mbrlabs.mundus.editor.history.CommandHistory
-import com.mbrlabs.mundus.editor.ui.AppUi
-import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.ComponentWidget
-import com.mbrlabs.mundus.editor.utils.Toaster
 
 /**
  * @author Marcus Brummer
@@ -40,13 +33,6 @@ import com.mbrlabs.mundus.editor.utils.Toaster
 class TerrainComponentWidget(
     separatorStyle: SeparatorStyle,
     terrainComponent: TerrainComponent,
-    private val appUi: AppUi,
-    fileChooser: FileChooser,
-    private val assertPickerDialog: AssetPickerDialog,
-    toaster: Toaster,
-    projectManager: ProjectManager,
-    history: CommandHistory,
-    metaService: MetaService,
     private val terrainWidgetPresenter: TerrainWidgetPresenter
 ) :
     ComponentWidget<TerrainComponent>(separatorStyle, "Terrain Component", terrainComponent), TabbedPaneListener {
@@ -56,9 +42,9 @@ class TerrainComponentWidget(
 
     private val raiseLowerTab = TerrainUpDownTab(this)
     private val flattenTab = TerrainFlattenTab(this)
-    private val paintTab = TerrainPaintTab(this, assertPickerDialog, toaster, projectManager, metaService)
-    private val genTab = TerrainGenTab(this, appUi, fileChooser, projectManager, history)
-    private val settingsTab = TerrainSettingsTab(this, projectManager)
+    private val paintTab = TerrainPaintTab(this)
+    private val genTab = TerrainGenTab(this)
+    private val settingsTab = TerrainSettingsTab(this)
 
     init {
         tabbedPane.addListener(this)
@@ -66,18 +52,28 @@ class TerrainComponentWidget(
         initRaiseLowerTab()
         initFlattenTab()
         initPaintTab()
-
-        tabbedPane.add(genTab)
-        tabbedPane.add(settingsTab)
+        initGenTab()
+        initSettingsTab()
 
         collapsibleContent.add(tabbedPane.table).growX().row()
         collapsibleContent.add(tabContainer).expand().fill().row()
         tabbedPane.switchTab(0)
     }
 
+    private fun initSettingsTab() {
+        tabbedPane.add(settingsTab)
+        terrainWidgetPresenter.initSettingsTab(settingsTab)
+    }
+
+    private fun initGenTab() {
+        tabbedPane.add(genTab)
+        terrainWidgetPresenter.initGenTab(this, genTab)
+    }
+
     private fun initPaintTab() {
         tabbedPane.add(paintTab)
         terrainWidgetPresenter.initBrushGrid(paintTab.grid)
+        terrainWidgetPresenter.initPaintTab(this, paintTab)
     }
 
     private fun initFlattenTab() {

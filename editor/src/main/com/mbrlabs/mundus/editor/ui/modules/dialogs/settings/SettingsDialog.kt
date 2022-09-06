@@ -23,12 +23,6 @@ import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.kotcrab.vis.ui.widget.VisTree
-import com.kotcrab.vis.ui.widget.file.FileChooser
-import com.mbrlabs.mundus.commons.core.registry.Registry
-import com.mbrlabs.mundus.editor.core.kryo.KryoManager
-import com.mbrlabs.mundus.editor.core.project.ProjectManager
-import com.mbrlabs.mundus.editor.events.EventBus
-import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.UiConstants
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.BaseDialog
 import com.mbrlabs.mundus.editor.utils.Toaster
@@ -39,24 +33,16 @@ import org.springframework.stereotype.Component
  * @version 24-11-2015
  */
 @Component
-class SettingsDialog(
-    private val projectManager: ProjectManager,
-    private val kryoManager: KryoManager,
-    private val registry: Registry,
-    private val eventBus: EventBus,
-    private val toaster: Toaster,
-    private val appUi: AppUi,
-    private val fileChooser: FileChooser
-) : BaseDialog("Settings") {
+class SettingsDialog(settingsDialogPresenter: SettingsDialogPresenter) : BaseDialog("Settings") {
 
     private val settingsTree = VisTree<SettingsNode, BaseSettingsTable>()
     private val content = VisTable()
     private val saveBtn = VisTextButton("Save")
     private var listener: ClickListener? = null
 
-    private val generalSettings = GeneralSettingsTable(kryoManager, registry, eventBus, toaster, appUi, fileChooser)
-    private val exportSettings = ExportSettingsTable(projectManager, kryoManager, toaster, appUi, fileChooser)
-    private val appearenceSettings = AppearanceSettingsTable()
+    private val generalSettings = GeneralSettingsTable()
+    private val exportSettings = ExportSettingsTable()
+    private val appearanceSettings = AppearanceSettingsTable()
 
     init {
         val width = 700f
@@ -73,16 +59,18 @@ class SettingsDialog(
         val generalSettingsNode = SettingsNode(VisLabel("General"))
         generalSettingsNode.value = generalSettings
         settingsTree.add(generalSettingsNode)
+        settingsDialogPresenter.initGeneralSettings(generalSettings)
 
         // export
         val exportSettingsNode = SettingsNode(VisLabel("Export"))
         exportSettingsNode.value = exportSettings
         settingsTree.add(exportSettingsNode)
+        settingsDialogPresenter.initExportSettings(exportSettings)
 
         // appearance
-        val appearenceNode = SettingsNode(VisLabel("Appearance"))
-        appearenceNode.value = appearenceSettings
-        settingsTree.add(appearenceNode)
+        val appearanceNode = SettingsNode(VisLabel("Appearance"))
+        appearanceNode.value = appearanceSettings
+        settingsTree.add(appearanceNode)
 
         // listener
         settingsTree.addListener(object : ClickListener() {
@@ -108,14 +96,11 @@ class SettingsDialog(
         }
         listener = object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                table.onSave()
+                table.save()
             }
         }
         saveBtn.addListener(listener)
     }
 
-    inner class SettingsNode(label: VisLabel) : Tree.Node<SettingsNode, BaseSettingsTable, VisLabel>(label) {
-
-    }
-
+    inner class SettingsNode(label: VisLabel) : Tree.Node<SettingsNode, BaseSettingsTable, VisLabel>(label)
 }

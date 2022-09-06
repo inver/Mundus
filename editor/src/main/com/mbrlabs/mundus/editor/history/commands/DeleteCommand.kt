@@ -41,8 +41,8 @@ class DeleteCommand(private var go: GameObject?, private var node: Outline.Outli
 
     init {
         this.parentGO = go!!.parent
-        this.parentNode = node!!.parent
-        this.tree = node!!.tree
+        this.parentNode = node.parent
+        this.tree = node.tree
     }
 
     override fun execute() {
@@ -50,8 +50,7 @@ class DeleteCommand(private var go: GameObject?, private var node: Outline.Outli
         // remove go from sceneGraph
         go!!.remove()
         // remove from outline tree
-        tree!!.remove(node!!)
-        Mundus.postEvent(SceneGraphChangedEvent())
+        tree!!.remove(node)
     }
 
     override fun undo() {
@@ -63,8 +62,7 @@ class DeleteCommand(private var go: GameObject?, private var node: Outline.Outli
             tree!!.add(node)
         else
             parentNode!!.add(node)
-        node!!.expandTo()
-        Mundus.postEvent(SceneGraphChangedEvent())
+        node.expandTo()
     }
 
 }

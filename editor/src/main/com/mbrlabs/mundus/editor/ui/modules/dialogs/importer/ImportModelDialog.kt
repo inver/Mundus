@@ -49,10 +49,12 @@ import com.mbrlabs.mundus.editor.Mundus
 import com.mbrlabs.mundus.editor.assets.MetaSaver
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.events.AssetImportEvent
+import com.mbrlabs.mundus.editor.events.EventBus
 import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.BaseDialog
 import com.mbrlabs.mundus.editor.ui.widgets.FileChooserField
 import com.mbrlabs.mundus.editor.ui.widgets.RenderWidget
+import com.mbrlabs.mundus.editor.ui.widgets.presenter.FileChooserFieldPresenter
 import com.mbrlabs.mundus.editor.utils.Log
 import com.mbrlabs.mundus.editor.utils.Toaster
 import com.mbrlabs.mundus.editor.utils.isCollada
@@ -70,7 +72,9 @@ class ImportModelDialog(
     private val fileChooser: FileChooser,
     private val toaster: Toaster,
     private val modelImporter: ModelImporter,
-    private val projectManager: ProjectManager
+    private val projectManager: ProjectManager,
+    private val eventBus: EventBus,
+    private val fileChooserFieldPresenter: FileChooserFieldPresenter
 ) : BaseDialog("Import Mesh"), Disposable {
 
     companion object {
@@ -86,7 +90,7 @@ class ImportModelDialog(
         val root = VisTable()
         add<Table>(root).expand().fill()
         importMeshTable = ImportModelTable()
-
+        fileChooserFieldPresenter.initFileChooserField(importMeshTable.modelInput)
         root.add(importMeshTable).minWidth(600f).expand().fill().left().top()
     }
 
@@ -100,7 +104,7 @@ class ImportModelDialog(
         // UI elements
         private var renderWidget: RenderWidget? = null
         private val importBtn = VisTextButton("IMPORT")
-        private val modelInput = FileChooserField(appUi, fileChooser, 300)
+        val modelInput = FileChooserField(300)
 
         // preview model + instance
         private var previewModel: Model? = null
@@ -162,7 +166,7 @@ class ImportModelDialog(
             // model chooser
             modelInput.setCallback { fileHandle ->
                 if (fileHandle.exists()) {
-                    loadAndShowPreview(modelInput.file)
+                    loadAndShowPreview(fileHandle)
                 }
             }
 
@@ -172,7 +176,7 @@ class ImportModelDialog(
                     if (previewModel != null && previewInstance != null) {
                         try {
                             val modelAsset = importModel()
-                            Mundus.postEvent(AssetImportEvent(modelAsset))
+                            eventBus.post(AssetImportEvent(modelAsset))
                             toaster.success("Mesh imported")
                         } catch (e: IOException) {
                             e.printStackTrace()

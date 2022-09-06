@@ -16,6 +16,7 @@
 
 package com.mbrlabs.mundus.editor.tools;
 
+import com.mbrlabs.mundus.editor.events.EventBus;
 import org.lwjgl.opengl.GL11;
 
 import com.badlogic.gdx.Gdx;
@@ -72,9 +73,9 @@ public class TranslateTool extends TransformTool {
     private TranslateCommand command;
 
     public TranslateTool(ProjectManager projectManager, GameObjectPicker goPicker, ToolHandlePicker handlePicker,
-                         ModelBatch batch, CommandHistory history) {
+                         ModelBatch batch, CommandHistory history, EventBus eventBus) {
 
-        super(projectManager, goPicker, handlePicker, batch, history);
+        super(projectManager, goPicker, handlePicker, batch, history, eventBus);
 
         ModelBuilder modelBuilder = new ModelBuilder();
 
@@ -89,7 +90,6 @@ public class TranslateTool extends TransformTool {
                 VertexAttributes.Usage.Position);
         Model xzPlaneHandleModel = modelBuilder.createSphere(1, 1, 1, 20, 20,
                 new Material(ColorAttribute.createDiffuse(COLOR_XZ)), VertexAttributes.Usage.Position);
-
 
 
         xHandle = new TranslateHandle(X_HANDLE_ID, xHandleModel);
@@ -196,7 +196,7 @@ public class TranslateTool extends TransformTool {
 
             if (modified) {
                 gameObjectModifiedEvent.setGameObject(getProjectManager().getCurrent().currScene.currentSelection);
-                Mundus.INSTANCE.postEvent(gameObjectModifiedEvent);
+                eventBus.post(gameObjectModifiedEvent);
             }
 
             lastPos.set(rayEnd);

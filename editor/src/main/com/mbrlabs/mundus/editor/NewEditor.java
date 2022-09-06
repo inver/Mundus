@@ -21,8 +21,9 @@ import com.mbrlabs.mundus.editor.ui.AppUi;
 import com.mbrlabs.mundus.editor.ui.modules.StatusBar;
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.ExitDialog;
 import com.mbrlabs.mundus.editor.ui.modules.dock.DockBar;
+import com.mbrlabs.mundus.editor.ui.modules.dock.DockBarPresenter;
 import com.mbrlabs.mundus.editor.ui.modules.inspector.Inspector;
-import com.mbrlabs.mundus.editor.ui.modules.menubar.MenuBarController;
+import com.mbrlabs.mundus.editor.ui.modules.menubar.MenuBarPresenter;
 import com.mbrlabs.mundus.editor.ui.modules.menubar.MundusMenuBar;
 import com.mbrlabs.mundus.editor.ui.modules.outline.Outline;
 import com.mbrlabs.mundus.editor.ui.modules.toolbar.MundusToolbar;
@@ -54,8 +55,8 @@ public class NewEditor implements ProjectChangedEvent.ProjectChangedListener, Sc
     private final AppUi appUi;
     private final ExitDialog exitDialog;
 
-    private final MenuBarController menuBarController;
-
+    private final MenuBarPresenter menuBarPresenter;
+    private final DockBarPresenter dockBarPresenter;
     private Compass compass;
     private MundusMenuBar menuBar;
     private final Outline outline;
@@ -99,7 +100,7 @@ public class NewEditor implements ProjectChangedEvent.ProjectChangedListener, Sc
 
 
     private void setupUI() {
-        menuBar = new MundusMenuBar(registry, menuBarController);
+        menuBar = new MundusMenuBar(registry, menuBarPresenter);
 //        toolbar = new MundusToolbar();
 //        outline = new Outline();
 //        this.toolbar = toolbar;
@@ -132,7 +133,7 @@ public class NewEditor implements ProjectChangedEvent.ProjectChangedListener, Sc
         root.add(splitPane).grow().row();
 
         // row 4: DOCKER
-        dockBar = new DockBar(splitPane, projectManager);
+        dockBar = new DockBar(splitPane, dockBarPresenter);
         root.add(dockBar).bottom().expandX().fillX().height(30f).row();
 
         // row 5: status bar

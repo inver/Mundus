@@ -50,13 +50,11 @@ class TranslateCommand(private var go: GameObject?) : Command {
     override fun execute() {
         go!!.setLocalPosition(after.x, after.y, after.z)
         modEvent.gameObject = go
-        Mundus.postEvent(modEvent)
     }
 
     override fun undo() {
         go!!.setLocalPosition(before.x, before.y, before.z)
         modEvent.gameObject = go
-        Mundus.postEvent(modEvent)
     }
 
 }

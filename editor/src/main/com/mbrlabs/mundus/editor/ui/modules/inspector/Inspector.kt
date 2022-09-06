@@ -26,10 +26,10 @@ import com.kotcrab.vis.ui.widget.VisScrollPane
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.file.FileChooser
 import com.mbrlabs.mundus.commons.assets.meta.MetaService
-import com.mbrlabs.mundus.editor.Mundus
 import com.mbrlabs.mundus.editor.config.UiWidgetsHolder
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.events.AssetSelectedEvent
+import com.mbrlabs.mundus.editor.events.EventBus
 import com.mbrlabs.mundus.editor.events.GameObjectModifiedEvent
 import com.mbrlabs.mundus.editor.events.GameObjectSelectedEvent
 import com.mbrlabs.mundus.editor.history.CommandHistory
@@ -48,7 +48,9 @@ import org.springframework.stereotype.Component
  */
 @Component
 class Inspector(
-    appUi: AppUi, fileChooser: FileChooser,
+    eventBus: EventBus,
+    appUi: AppUi,
+    fileChooser: FileChooser,
     private val uiWidgetsHolder: UiWidgetsHolder,
     private val assetPickerDialog: AssetPickerDialog,
     private val toaster: Toaster,
@@ -78,29 +80,24 @@ class Inspector(
     private val assetInspector: AssetInspector
 
     init {
-        Mundus.registerEventListener(this)
+        eventBus.register(this)
 
-        goInspector =
-            GameObjectInspector(
-                appUi,
-                uiWidgetsHolder,
-                fileChooser,
-                assetPickerDialog,
-                toaster,
-                projectManager,
-                history,
-                metaService,
-                terrainWidgetPresenter
-            )
-        assetInspector =
-            AssetInspector(
-                uiWidgetsHolder.separatorStyle,
-                appUi,
-                uiWidgetsHolder,
-                assetPickerDialog,
-                toolManager,
-                projectManager
-            )
+        goInspector = GameObjectInspector(
+            appUi,
+            uiWidgetsHolder,
+            assetPickerDialog,
+            projectManager,
+            history,
+            terrainWidgetPresenter
+        )
+        assetInspector = AssetInspector(
+            uiWidgetsHolder.separatorStyle,
+            appUi,
+            uiWidgetsHolder,
+            assetPickerDialog,
+            toolManager,
+            projectManager
+        )
 
         init()
     }

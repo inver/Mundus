@@ -27,6 +27,7 @@ import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter
 import com.mbrlabs.mundus.editor.Mundus
 import com.mbrlabs.mundus.editor.config.UiWidgetsHolder
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
+import com.mbrlabs.mundus.editor.events.EventBus
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent
 import com.mbrlabs.mundus.editor.events.SceneChangedEvent
 import com.mbrlabs.mundus.editor.ui.AppUi
@@ -40,6 +41,7 @@ import org.springframework.stereotype.Component
  */
 @Component
 class AmbientLightDialog(
+    eventBus: EventBus,
     private val projectManager: ProjectManager,
     appUi: AppUi,
     uiWidgetsHolder: UiWidgetsHolder
@@ -51,7 +53,7 @@ class AmbientLightDialog(
     private val colorPickerField = ColorPickerField(uiWidgetsHolder.getColorPicker(), appUi)
 
     init {
-        Mundus.registerEventListener(this)
+        eventBus.register(this)
 
         setupUI()
         setupListeners()

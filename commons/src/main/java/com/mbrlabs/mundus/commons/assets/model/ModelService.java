@@ -2,6 +2,7 @@ package com.mbrlabs.mundus.commons.assets.model;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.mbrlabs.mundus.commons.assets.AssetService;
+import com.mbrlabs.mundus.commons.assets.material.MaterialAsset;
 import com.mbrlabs.mundus.commons.assets.meta.Meta;
 import org.apache.commons.lang3.NotImplementedException;
 
@@ -13,6 +14,8 @@ public class ModelService implements AssetService<ModelAsset> {
 
     @Override
     public ModelAsset load(Meta meta, FileHandle assetFile) {
-        throw new NotImplementedException();
+        var asset = new ModelAsset(meta, assetFile);
+        asset.load();
+        return asset;
     }
 }

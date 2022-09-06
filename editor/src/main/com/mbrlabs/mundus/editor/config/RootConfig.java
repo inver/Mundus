@@ -13,6 +13,7 @@ import com.mbrlabs.mundus.commons.assets.terrain.TerrainService;
 import com.mbrlabs.mundus.commons.assets.texture.TextureService;
 import com.mbrlabs.mundus.commons.core.registry.Registry;
 import com.mbrlabs.mundus.commons.loader.ModelImporter;
+import com.mbrlabs.mundus.editor.core.kryo.KryoManager;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.utils.Fa;
 import org.springframework.context.annotation.Bean;
@@ -25,8 +26,8 @@ import org.springframework.context.annotation.Configuration;
 })
 public class RootConfig {
     @Bean
-    public Registry registry() {
-        return new Registry();
+    public Registry registry(KryoManager kryoManager) {
+        return kryoManager.loadRegistry();
     }
 
     @Bean
@@ -70,12 +71,7 @@ public class RootConfig {
     }
 
     @Bean
-    public CommandHistory commandHistory() {
-        return new CommandHistory(CommandHistory.Companion.getDEFAULT_LIMIT());
-    }
-
-    @Bean
-    public ModelImporter modelImporter() {
-        return new ModelImporter(registry());
+    public ModelImporter modelImporter(Registry registry) {
+        return new ModelImporter(registry);
     }
 }

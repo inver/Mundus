@@ -18,6 +18,7 @@ package com.mbrlabs.mundus.editor.assets
 
 import com.mbrlabs.mundus.commons.core.registry.Registry
 import com.mbrlabs.mundus.editor.Mundus
+import com.mbrlabs.mundus.editor.events.EventBus
 import com.mbrlabs.mundus.editor.events.SettingsChangedEvent
 
 /**
@@ -25,12 +26,13 @@ import com.mbrlabs.mundus.editor.events.SettingsChangedEvent
  * @version 12-12-2015
  */
 @Deprecated("Use Model importer from common module")
-class ModelImporterOld(private val registry: Registry) : SettingsChangedEvent.SettingsChangedListener {
+class ModelImporterOld(eventBus: EventBus, registry: Registry) :
+    SettingsChangedEvent.SettingsChangedListener {
 
     private val fbxConv: FbxConv
 
     init {
-        Mundus.registerEventListener(this)
+        eventBus.register(this)
         fbxConv = FbxConv(registry.settings.fbxConvBinary)
     }
 

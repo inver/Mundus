@@ -25,6 +25,7 @@ import com.kotcrab.vis.ui.widget.file.FileChooser
 import com.mbrlabs.mundus.commons.skybox.Skybox
 import com.mbrlabs.mundus.editor.Mundus
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
+import com.mbrlabs.mundus.editor.events.EventBus
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent
 import com.mbrlabs.mundus.editor.events.SceneChangedEvent
 import com.mbrlabs.mundus.editor.ui.AppUi
@@ -38,6 +39,7 @@ import org.springframework.stereotype.Component
  */
 @Component
 class SkyboxDialog(
+    eventBus: EventBus,
     private val projectManager: ProjectManager,
     private val appUi: AppUi,
     private val fileChooser: FileChooser
@@ -57,7 +59,7 @@ class SkyboxDialog(
     private var deletBtn = VisTextButton("Remove Skybox")
 
     init {
-        Mundus.registerEventListener(this)
+        eventBus.register(this)
 
         setupUI()
         setupListeners()

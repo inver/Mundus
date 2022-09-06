@@ -28,6 +28,7 @@ import com.mbrlabs.mundus.commons.env.Fog
 import com.mbrlabs.mundus.editor.Mundus
 import com.mbrlabs.mundus.editor.config.UiWidgetsHolder
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
+import com.mbrlabs.mundus.editor.events.EventBus
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent
 import com.mbrlabs.mundus.editor.events.SceneChangedEvent
 import com.mbrlabs.mundus.editor.ui.AppUi
@@ -40,6 +41,7 @@ import org.springframework.stereotype.Component
  */
 @Component
 class FogDialog(
+    eventBus: EventBus,
     private val uiWidgetsHolder: UiWidgetsHolder,
     private val appUi: AppUi,
     private val projectManager: ProjectManager
@@ -51,7 +53,7 @@ class FogDialog(
     private val colorPickerField = ColorPickerField(uiWidgetsHolder.colorPicker, appUi)
 
     init {
-        Mundus.registerEventListener(this)
+        eventBus.register(this)
         setupUI()
         setupListeners()
     }

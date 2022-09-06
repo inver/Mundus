@@ -17,14 +17,11 @@
 package com.mbrlabs.mundus.editor.ui.widgets;
 
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.VisTextField;
 import com.kotcrab.vis.ui.widget.file.FileChooser;
-import com.kotcrab.vis.ui.widget.file.SingleFileChooserListener;
-import com.mbrlabs.mundus.editor.ui.AppUi;
+import lombok.Getter;
 
 /**
  * @author Marcus Brummer
@@ -32,37 +29,28 @@ import com.mbrlabs.mundus.editor.ui.AppUi;
  */
 public class FileChooserField extends VisTable {
 
-    public interface FileSelected {
-        void selected(FileHandle fileHandle);
-    }
-
     private int width = -1;
 
+    @Getter
     private FileChooser.SelectionMode mode = FileChooser.SelectionMode.FILES;
-    private FileSelected fileSelected;
-    private VisTextField textField;
-    private VisTextButton fcBtn;
+    private FileSelectedListener fileSelectedListener;
+    private final VisTextField textField;
+    @Getter
+    private final VisTextButton fcBtn;
 
-    private String path;
     private FileHandle fileHandle;
 
-    private final FileChooser fileChooser;
-    private final AppUi appUi;
-
-    public FileChooserField(AppUi appUi, FileChooser fileChooser, int width) {
+    public FileChooserField(int width) {
         super();
-        this.appUi = appUi;
-        this.fileChooser = fileChooser;
         this.width = width;
         textField = new VisTextField();
         fcBtn = new VisTextButton("Select");
 
         setupUI();
-        setupListeners();
     }
 
-    public FileChooserField(AppUi appUi, FileChooser fileChooser) {
-        this(appUi, fileChooser, -1);
+    public FileChooserField() {
+        this(-1);
     }
 
     public void setEditable(boolean editable) {
@@ -77,8 +65,8 @@ public class FileChooserField extends VisTable {
         return this.fileHandle;
     }
 
-    public void setCallback(FileSelected fileSelected) {
-        this.fileSelected = fileSelected;
+    public void setCallback(FileSelectedListener fileSelected) {
+        this.fileSelectedListener = fileSelected;
     }
 
     public void setFileMode(FileChooser.SelectionMode mode) {
@@ -104,29 +92,14 @@ public class FileChooserField extends VisTable {
         }
     }
 
-    private void setupListeners() {
-
-        fcBtn.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                super.clicked(event, x, y);
-                fileChooser.setSelectionMode(mode);
-                fileChooser.setListener(new SingleFileChooserListener() {
-                    @Override
-                    protected void selected(FileHandle file) {
-                        fileHandle = file;
-                        path = file.path();
-
-                        textField.setText(file.path());
-                        if (fileSelected != null) {
-                            fileSelected.selected(file);
-                        }
-                    }
-                });
-                appUi.addActor(fileChooser.fadeIn());
-            }
-        });
-
+    public void setValue(FileHandle file) {
+        textField.setText(file.path());
+        if (fileSelectedListener != null) {
+            fileSelectedListener.selected(file);
+        }
     }
 
+    public interface FileSelectedListener {
+        void selected(FileHandle fileHandle);
+    }
 }

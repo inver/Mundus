@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class MenuBarController {
+public class MenuBarPresenter {
 
     private final AppUi appUi;
     private final ProjectManager projectManager;

@@ -90,12 +90,12 @@ class OldEditorAssetManager(assetsRoot: FileHandle) : OldAssetManager(assetsRoot
     @Throws(IOException::class, AssetAlreadyExistsException::class)
     fun createNewMetaFile(file: FileHandle, type: AssetType): Meta {
         if (file.exists()) {
-            Mundus.postEvent(
-                LogEvent(
-                    LogType.ERROR,
-                    "Tried to create new Meta File that already exists: " + file.name()
-                )
-            )
+//            eventBus.post(
+//                LogEvent(
+//                    LogType.ERROR,
+//                    "Tried to create new Meta File that already exists: " + file.name()
+//                )
+//            )
             throw AssetAlreadyExistsException()
         }
 

@@ -16,13 +16,13 @@
 
 package com.mbrlabs.mundus.editor.events;
 
+import com.mbrlabs.mundus.editor.utils.ReflectionUtils;
+import org.springframework.stereotype.Component;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.List;
-
-import com.mbrlabs.mundus.editor.utils.ReflectionUtils;
-import org.springframework.stereotype.Component;
 
 /**
  * Simple Event bus via reflection.
@@ -39,17 +39,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class EventBus {
 
-    private class EventBusExcetion extends RuntimeException {
-        private EventBusExcetion(String s) {
+    private static class EventBusException extends RuntimeException {
+        private EventBusException(String s) {
             super(s);
         }
     }
 
-    private List<Object> subscribers;
-
-    public EventBus() {
-        subscribers = new LinkedList<>();
-    }
+    private final List<Object> subscribers = new LinkedList<>();
 
     public void register(Object subscriber) {
         subscribers.add(subscriber);
@@ -66,7 +62,7 @@ public class EventBus {
                 for (Method method : subscriber.getClass().getDeclaredMethods()) {
                     if (isSubscriber(method)) {
                         if (method.getParameterTypes().length != 1) {
-                            throw new EventBusExcetion("Size of parameter list of method " + method.getName() + " in "
+                            throw new EventBusException("Size of parameter list of method " + method.getName() + " in "
                                     + subscriber.getClass().getName() + " must be 1");
                         }
 

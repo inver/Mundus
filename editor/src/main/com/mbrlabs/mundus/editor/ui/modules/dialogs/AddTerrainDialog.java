@@ -107,7 +107,7 @@
 //        //                            shaders.terrainShader, projectContext.obtainID(), nom, terrainAsset);
 //        //                    projectContext.currScene.sceneGraph.addGameObject(terrainGO);
 //        //
-//        //                    Mundus.postEvent(new SceneGraphChangedEvent());
+//        //                    eventBus.post(new SceneGraphChangedEvent());
 //        //
 //        //                } catch (NumberFormatException nfe) {
 //        //                    Log.error(TAG, nfe.getMessage());

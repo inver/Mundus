@@ -35,10 +35,7 @@ import com.mbrlabs.mundus.commons.scene3d.SceneGraph
 import com.mbrlabs.mundus.commons.scene3d.components.Component
 import com.mbrlabs.mundus.editor.Mundus
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
-import com.mbrlabs.mundus.editor.events.GameObjectSelectedEvent
-import com.mbrlabs.mundus.editor.events.ProjectChangedEvent
-import com.mbrlabs.mundus.editor.events.SceneChangedEvent
-import com.mbrlabs.mundus.editor.events.SceneGraphChangedEvent
+import com.mbrlabs.mundus.editor.events.*
 import com.mbrlabs.mundus.editor.history.CommandHistory
 import com.mbrlabs.mundus.editor.history.commands.DeleteCommand
 import com.mbrlabs.mundus.editor.tools.ToolManager
@@ -56,7 +53,8 @@ import com.mbrlabs.mundus.editor.utils.Log
 class Outline(
     private val toolManager: ToolManager,
     private val projectManager: ProjectManager,
-    private val history: CommandHistory
+    private val history: CommandHistory,
+    private val eventBus: EventBus
 ) : VisTable(),
     ProjectChangedEvent.ProjectChangedListener,
     SceneChangedEvent.SceneChangedListener,
@@ -70,7 +68,7 @@ class Outline(
     private val rightClickMenu: RightClickMenu
 
     init {
-        Mundus.registerEventListener(this)
+        eventBus.register(this)
         setBackground("window-bg")
 
         rightClickMenu = RightClickMenu()
@@ -283,7 +281,7 @@ class Outline(
                     val go = selection.first().value
                     projectManager.current.currScene.sceneGraph.selected = go
                     toolManager.translateTool.gameObjectSelected(go)
-                    Mundus.postEvent(GameObjectSelectedEvent(go))
+                    eventBus.post(GameObjectSelectedEvent(go))
                 }
             }
         })
@@ -432,7 +430,7 @@ class Outline(
                         val n = tree.findNode(selectedGO!!)
                         addGoToTree(n, go)
                     }
-                    Mundus.postEvent(SceneGraphChangedEvent())
+                    eventBus.post(SceneGraphChangedEvent())
                 }
             })
 
@@ -466,8 +464,8 @@ class Outline(
 //                        context.currScene.terrains.add(asset)
 //                        projectManager.saveProject(context)
 //
-//                        Mundus.postEvent(AssetImportEvent(asset))
-//                        Mundus.postEvent(SceneGraphChangedEvent())
+//                        eventBus.post(AssetImportEvent(asset))
+//                        eventBus.post(SceneGraphChangedEvent())
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -488,7 +486,7 @@ class Outline(
                 override fun clicked(event: InputEvent?, x: Float, y: Float) {
                     if (selectedGO != null && !duplicate.isDisabled) {
                         duplicateGO(selectedGO!!, selectedGO!!.parent)
-                        Mundus.postEvent(SceneGraphChangedEvent())
+                        eventBus.post(SceneGraphChangedEvent())
                     }
                 }
             })
@@ -498,7 +496,7 @@ class Outline(
                 override fun clicked(event: InputEvent?, x: Float, y: Float) {
                     if (selectedGO != null) {
                         removeGo(selectedGO!!)
-                        Mundus.postEvent(SceneGraphChangedEvent())
+                        eventBus.post(SceneGraphChangedEvent())
                     }
                 }
             })
@@ -552,7 +550,7 @@ class Outline(
                         //goNode.name.setText(input + " [" + selectedGO.id + "]");
                         goNode.nameLabel.setText(input)
 
-                        Mundus.postEvent(SceneGraphChangedEvent())
+                        eventBus.post(SceneGraphChangedEvent())
                     }
                 })
             // set position of dialog to menuItem position

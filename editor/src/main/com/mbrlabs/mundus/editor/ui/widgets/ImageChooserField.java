@@ -110,7 +110,7 @@ public class ImageChooserField extends VisTable {
                         if (FileFormatUtils.isImage(file)) {
                             setImage(file);
                         } else {
-                            Dialogs.showErrorDialog(UI.INSTANCE, "This is no image");
+                            Dialogs.showErrorDialog(appUi, "This is no image");
                         }
                     }
                 });

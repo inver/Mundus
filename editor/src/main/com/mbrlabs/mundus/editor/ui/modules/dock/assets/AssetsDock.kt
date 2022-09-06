@@ -23,8 +23,6 @@ import com.kotcrab.vis.ui.widget.*
 import com.kotcrab.vis.ui.widget.tabbedpane.Tab
 import com.kotcrab.vis.ui.widget.tabbedpane.TabbedPane
 import com.kotcrab.vis.ui.widget.tabbedpane.TabbedPaneListener
-import com.mbrlabs.mundus.editor.Mundus
-import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.events.AssetImportEvent
 import com.mbrlabs.mundus.editor.events.GameObjectSelectedEvent
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent
@@ -33,7 +31,7 @@ import com.mbrlabs.mundus.editor.events.ProjectChangedEvent
  * @author Marcus Brummer
  * @version 08-12-2015
  */
-class AssetsDock(private val projectManager: ProjectManager) : Tab(false, false),
+class AssetsDock : Tab(false, false),
     ProjectChangedEvent.ProjectChangedListener,
     AssetImportEvent.AssetImportListener,
     GameObjectSelectedEvent.GameObjectSelectedListener {
@@ -51,12 +49,10 @@ class AssetsDock(private val projectManager: ProjectManager) : Tab(false, false)
 //    private var currentSelection: AssetItem? = null
     private var assetsTabs: TabbedPane
 
-    private val bundledAssets = AssetLibraryViewer(projectManager, "Bundled assets")
-    private val libraryAssets = AssetLibraryViewer(projectManager, "Imported assets")
+    val projectAssets = AssetLibraryViewer("Project assets")
+    val appAssets = AssetLibraryViewer("Asset library")
 
     init {
-        Mundus.registerEventListener(this)
-
         val style = TabbedPane.TabbedPaneStyle(VisUI.getSkin().get(TabbedPane.TabbedPaneStyle::class.java))
         style.buttonStyle = VisTextButton.VisTextButtonStyle(
             VisUI.getSkin().get("toggle", VisTextButton.VisTextButtonStyle::class.java)
@@ -76,9 +72,9 @@ class AssetsDock(private val projectManager: ProjectManager) : Tab(false, false)
             }
 
         })
-        assetsTabs.add(bundledAssets.tab)
-        assetsTabs.add(libraryAssets.tab)
-        assetsTabs.switchTab(bundledAssets.tab)
+        assetsTabs.add(projectAssets.tab)
+        assetsTabs.add(appAssets.tab)
+        assetsTabs.switchTab(projectAssets.tab)
 
         val splitPane = VisSplitPane(VisLabel("file tree here"), assetsTabs.table, false)
         splitPane.setSplitAmount(0.2f)
@@ -171,8 +167,8 @@ class AssetsDock(private val projectManager: ProjectManager) : Tab(false, false)
 //
 ////                        context.currScene..add(asset)
 //                        projectManager.saveProject(context)
-//                        Mundus.postEvent(AssetImportEvent(it))
-//                        Mundus.postEvent(SceneGraphChangedEvent())
+//                        eventBus.post(AssetImportEvent(it))
+//                        eventBus.post(SceneGraphChangedEvent())
 //                    } catch (e: Exception) {
 //                        e.printStackTrace()
 //                    }

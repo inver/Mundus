@@ -18,13 +18,9 @@ package com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain
 
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.kotcrab.vis.ui.widget.VisTable
-import com.kotcrab.vis.ui.widget.file.FileChooser
 import com.kotcrab.vis.ui.widget.tabbedpane.Tab
 import com.kotcrab.vis.ui.widget.tabbedpane.TabbedPane
 import com.kotcrab.vis.ui.widget.tabbedpane.TabbedPaneListener
-import com.mbrlabs.mundus.editor.core.project.ProjectManager
-import com.mbrlabs.mundus.editor.history.CommandHistory
-import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.generation.HeightmapTab
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.generation.PerlinNoiseTab
 
@@ -33,19 +29,15 @@ import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.generat
  * @version 04-03-2016
  */
 class TerrainGenTab(
-    private val parent: TerrainComponentWidget,
-    private val appUi: AppUi,
-    private val fileChooser: FileChooser,
-    private val projectManager: ProjectManager,
-    private val history: CommandHistory
+    parent: TerrainComponentWidget
 ) : Tab(false, false), TabbedPaneListener {
     private val root = VisTable()
 
     private val tabbedPane = TabbedPane()
     private val tabContainer = VisTable()
 
-    private val heightmapTab = HeightmapTab(parent.component.terrain, appUi, fileChooser, projectManager, history)
-    private val perlinNoiseTab = PerlinNoiseTab(parent.component.terrain, history, projectManager)
+    val heightmapTab = HeightmapTab(parent.component.terrain)
+    val perlinNoiseTab = PerlinNoiseTab(parent.component.terrain)
 
     init {
         tabbedPane.addListener(this)

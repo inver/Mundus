@@ -46,13 +46,11 @@ class RotateCommand(private val go: GameObject) : Command {
     override fun execute() {
         go.setLocalRotation(after.x, after.y, after.z, after.w)
         modEvent.gameObject = go
-        Mundus.postEvent(modEvent)
     }
 
     override fun undo() {
         go.setLocalRotation(before.x, before.y, before.z, before.w)
         modEvent.gameObject = go
-        Mundus.postEvent(modEvent)
     }
 
 }

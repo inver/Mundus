@@ -16,41 +16,26 @@
 
 package com.mbrlabs.mundus.editor.ui.modules.dialogs.settings
 
-import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.utils.JsonWriter
 import com.kotcrab.vis.ui.widget.VisCheckBox
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisSelectBox
 import com.kotcrab.vis.ui.widget.file.FileChooser
-import com.mbrlabs.mundus.editor.Mundus
-import com.mbrlabs.mundus.editor.core.kryo.KryoManager
-import com.mbrlabs.mundus.editor.core.project.ProjectManager
-import com.mbrlabs.mundus.editor.events.ProjectChangedEvent
-import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.UiConstants
 import com.mbrlabs.mundus.editor.ui.widgets.FileChooserField
-import com.mbrlabs.mundus.editor.utils.Toaster
 
 /**
  * @author Marcus Brummer
  * @version 26-10-2016
  */
-class ExportSettingsTable(
-    private val projectManager: ProjectManager,
-    private val kryoManager: KryoManager,
-    private val toaster: Toaster,
-    private val appUi: AppUi,
-    private val fileChooser: FileChooser
-) : BaseSettingsTable(), ProjectChangedEvent.ProjectChangedListener {
+class ExportSettingsTable : BaseSettingsTable() {
 
-    private val fileChooserField = FileChooserField(appUi, fileChooser, 500)
-
-    private val jsonType = VisSelectBox<JsonWriter.OutputType>()
-    private val allAssets = VisCheckBox("Export unused assets [will be ignored for now]")
-    private val compression = VisCheckBox("Compress scenes [will be ignored for now]")
+    val fileChooserField = FileChooserField(500)
+    val jsonType = VisSelectBox<JsonWriter.OutputType>()
+    val allAssets = VisCheckBox("Export unused assets [will be ignored for now]")
+    val compression = VisCheckBox("Compress scenes [will be ignored for now]")
 
     init {
-        Mundus.registerEventListener(this)
         top().left()
         padRight(UiConstants.PAD_SIDE).padLeft(UiConstants.PAD_SIDE)
 
@@ -73,30 +58,4 @@ class ExportSettingsTable(
 
         fileChooserField.setFileMode(FileChooser.SelectionMode.DIRECTORIES)
     }
-
-    override fun onProjectChanged(event: ProjectChangedEvent) {
-        updateValues()
-    }
-
-    private fun updateValues() {
-        val exportSettings = projectManager.current.settings?.export
-        if (exportSettings?.outputFolder != null) {
-            fileChooserField.setText(exportSettings.outputFolder?.path())
-        }
-        allAssets.isChecked = exportSettings?.allAssets!!
-        compression.isChecked = exportSettings.compressScenes
-        jsonType.selected = exportSettings.jsonType
-    }
-
-    override fun onSave() {
-        val exportSettings = projectManager.current.settings?.export ?: return
-        exportSettings.allAssets = allAssets.isChecked
-        exportSettings.compressScenes = compression.isChecked
-        exportSettings.jsonType = jsonType.selected
-        exportSettings.outputFolder = FileHandle(fileChooserField.path)
-
-        kryoManager.saveProjectContext(projectManager.current)
-        toaster.success("Settings saved")
-    }
-
 }

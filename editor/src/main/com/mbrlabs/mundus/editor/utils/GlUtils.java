@@ -35,7 +35,7 @@ public class GlUtils {
 
     /**
      * OpenGL functionality, that goes beyond OpenGL ES.
-     *
+     * <p>
      * It's not 'unsafe' to run this on a desktop, but this kind of
      * functionality uses raw LWJGL and is not available on mobile devices or in
      * the browser.

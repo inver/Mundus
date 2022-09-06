@@ -23,6 +23,7 @@ import com.kotcrab.vis.ui.layout.GridGroup
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.mbrlabs.mundus.editor.Mundus
+import com.mbrlabs.mundus.editor.events.EventBus
 import com.mbrlabs.mundus.editor.events.GlobalBrushSettingsChangedEvent
 import com.mbrlabs.mundus.editor.tools.ToolManager
 import com.mbrlabs.mundus.editor.tools.brushes.TerrainBrush
@@ -39,10 +40,9 @@ class TerrainBrushGrid(private val parent: TerrainComponentWidget) : VisTable(),
     var brushMode: TerrainBrush.BrushMode? = null
 
     val grid = GridGroup(40f, 0f)
-    private val strengthSlider = ImprovedSlider(0f, 1f, 0.1f)
+    val strengthSlider = ImprovedSlider(0f, 1f, 0.1f)
 
     init {
-        Mundus.registerEventListener(this)
         align(Align.left)
         add(VisLabel("Brushes:")).padBottom(10f).padLeft(5f).left().row()
 

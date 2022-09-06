@@ -26,6 +26,7 @@ import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.UiConstants
 import com.mbrlabs.mundus.editor.ui.widgets.FileChooserField
+import com.mbrlabs.mundus.editor.ui.widgets.presenter.FileChooserFieldPresenter
 import org.springframework.stereotype.Component
 
 /**
@@ -36,18 +37,18 @@ import org.springframework.stereotype.Component
 class NewProjectDialog(
     private val projectManager: ProjectManager,
     private val loadingProjectDialog: LoadingProjectDialog,
-    private val appUi: AppUi,
-    private val fileChooser: FileChooser
+    private val fileChooserFieldPresenter: FileChooserFieldPresenter
 ) : BaseDialog("Create New Project") {
 
     private val projectName = VisTextField()
     private val createBtn = VisTextButton("Create project")
-    private val locationPath = FileChooserField(appUi, fileChooser, 300)
+    private val locationPath = FileChooserField(300)
 
     init {
         isModal = true
-        locationPath.setFileMode(FileChooser.SelectionMode.DIRECTORIES)
 
+        fileChooserFieldPresenter.initFileChooserField(locationPath)
+        locationPath.setFileMode(FileChooser.SelectionMode.DIRECTORIES)
 
         contentTable.add(VisLabel("Project Name")).left().row()
         contentTable.add(this.projectName).padBottom(UiConstants.PAD_BOTTOM).width(300f).fillX().row()

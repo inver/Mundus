@@ -31,7 +31,7 @@ import com.mbrlabs.mundus.editor.appUimodules.menu.FileMenu
  */
 class MundusMenuBar(
     registry: Registry,
-    private val menuBarController: MenuBarController
+    private val menuBarController: MenuBarPresenter
 ) : MenuBar() {
 
     private val fileMenu = FileMenu(registry)

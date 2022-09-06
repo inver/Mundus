@@ -20,8 +20,6 @@ import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Array
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
-import com.kotcrab.vis.ui.widget.file.FileChooser
-import com.mbrlabs.mundus.commons.assets.meta.MetaService
 import com.mbrlabs.mundus.commons.scene3d.GameObject
 import com.mbrlabs.mundus.commons.scene3d.components.Component
 import com.mbrlabs.mundus.commons.scene3d.components.ModelComponent
@@ -37,7 +35,6 @@ import com.mbrlabs.mundus.editor.ui.modules.inspector.components.ModelComponentW
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.TransformWidget
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.TerrainComponentWidget
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.TerrainWidgetPresenter
-import com.mbrlabs.mundus.editor.utils.Toaster
 
 /**
  * @author Marcus Brummer
@@ -46,12 +43,9 @@ import com.mbrlabs.mundus.editor.utils.Toaster
 class GameObjectInspector(
     private val appUi: AppUi,
     private val uiWidgetsHolder: UiWidgetsHolder,
-    private val fileChooser: FileChooser,
     private val assetPickerDialog: AssetPickerDialog,
-    private val toaster: Toaster,
     private val projectManager: ProjectManager,
     private val history: CommandHistory,
-    private val metaService: MetaService,
     private val terrainWidgetPresenter: TerrainWidgetPresenter
 ) : VisTable() {
 
@@ -121,11 +115,7 @@ class GameObjectInspector(
                         TerrainComponentWidget(
                             uiWidgetsHolder.separatorStyle,
                             component as TerrainComponent,
-                            appUi,
-                            fileChooser,
-                            assetPickerDialog, toaster,
-                            projectManager, history, metaService, terrainWidgetPresenter
-
+                            terrainWidgetPresenter
                         )
                     )
                 }

@@ -84,7 +84,7 @@ class MaterialWidget(
      * An optional listener for changing the material. If the property is null
      * the user will not be able to change the material.
      */
-    var matChangedListener: MaterialWidget.MaterialChangedListener? = null
+    var matChangedListener: MaterialChangedListener? = null
         set(value) {
             field = value
             matChangedBtn.touchable = if (value == null) Touchable.disabled else Touchable.enabled

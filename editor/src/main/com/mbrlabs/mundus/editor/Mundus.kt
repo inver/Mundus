@@ -59,14 +59,14 @@ object Mundus {
 
     val context = Context()
 
-    val eventBus: EventBus
+//    val eventBus: EventBus
 
     lateinit var fa: BitmapFont
 
     private val modelBatch: ModelBatch
 
     //    private val toolManager: ToolManager
-    private val input: InputManager
+//    private val input: InputManager
     private val freeCamController: FreeCamController
 
     //    private val shortcutController: ShortcutController!
@@ -76,10 +76,10 @@ object Mundus {
     //    private val projectManager: ProjectManager
     private val registry: Registry
     private val modelImporter: ModelImporter
-    private val commandHistory: CommandHistory
+//    private val commandHistory: CommandHistory
     private val goPicker: GameObjectPicker
     private val handlePicker: ToolHandlePicker
-    private val json: Json
+//    private val json: Json
 
     private val metaService: MetaService
     private val textureService: TextureService
@@ -98,18 +98,18 @@ object Mundus {
         // init stuff
         initStyle()
         initFontAwesome()
-        eventBus = EventBus()
+//        eventBus = EventBus()
 
         // DI
         shapeRenderer = ShapeRenderer()
         modelBatch = ModelBatch()
-        input = InputManager()
+//        input = InputManager()
         goPicker = GameObjectPicker()
         handlePicker = ToolHandlePicker()
         kryoManager = KryoManager()
         registry = kryoManager.loadRegistry()
         freeCamController = FreeCamController()
-        commandHistory = CommandHistory(CommandHistory.DEFAULT_LIMIT)
+//        commandHistory = CommandHistory()
         modelImporter = ModelImporter(registry)
         metaService = MetaService()
         terrainService = TerrainService()
@@ -132,28 +132,28 @@ object Mundus {
 //            input, projectManager, goPicker, handlePicker, modelBatch, shapeRenderer, commandHistory
 //        )
 //        shortcutController = ShortcutController(registry, projectManager, commandHistory, toolManager)
-        json = Json()
+//        json = Json()
 
         // add to DI container
-        context.register {
-            bindSingleton(shapeRenderer)
-            bindSingleton(modelBatch)
-            bindSingleton(input)
-            bindSingleton(goPicker)
-            bindSingleton(handlePicker)
-            bindSingleton(kryoManager)
-            bindSingleton(registry)
-            bindSingleton(commandHistory)
-            bindSingleton(modelImporter)
-//            bindSingleton(projectManager)
-//            bindSingleton(toolManager)
-//            bindSingleton(shortcutController)
-            bindSingleton(freeCamController)
-            bindSingleton(json)
-
-            bindSingleton(MetaSaver())
-            bindSingleton(MetaService())
-        }
+//        context.register {
+//            bindSingleton(shapeRenderer)
+//            bindSingleton(modelBatch)
+////            bindSingleton(input)
+//            bindSingleton(goPicker)
+//            bindSingleton(handlePicker)
+//            bindSingleton(kryoManager)
+//            bindSingleton(registry)
+//            bindSingleton(commandHistory)
+//            bindSingleton(modelImporter)
+////            bindSingleton(projectManager)
+////            bindSingleton(toolManager)
+////            bindSingleton(shortcutController)
+//            bindSingleton(freeCamController)
+//            bindSingleton(json)
+//
+//            bindSingleton(MetaSaver())
+//            bindSingleton(MetaService())
+//        }
     }
 
     /**
@@ -202,27 +202,6 @@ object Mundus {
             .addIcon(Fa.ARROWS).addIcon(Fa.CIRCLE_O).addIcon(Fa.CIRCLE).addIcon(Fa.MINUS).addIcon(Fa.CARET_DOWN)
             .addIcon(Fa.CARET_UP).addIcon(Fa.TIMES).addIcon(Fa.SORT).addIcon(Fa.HASHTAG).addIcon(Fa.PAINT_BRUSH)
             .addIcon(Fa.STAR).addIcon(Fa.REFRESH).addIcon(Fa.EXPAND).build()
-    }
-
-    /**
-     * Posts an event.
-     */
-    fun postEvent(event: Any) {
-        eventBus.post(event)
-    }
-
-    /**
-     * Registers a class as event listener.
-     */
-    fun registerEventListener(listener: Any) {
-        eventBus.register(listener)
-    }
-
-    /**
-     * Removes a class from the list of event listeners.
-     */
-    fun unregisterEventListener(listener: Any) {
-        eventBus.unregister(listener)
     }
 
     /**

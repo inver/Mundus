@@ -24,6 +24,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.editor.core.EditorScene;
 import com.mbrlabs.mundus.editor.core.project.ProjectManager;
+import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.input.InputManager;
 import com.mbrlabs.mundus.editor.tools.brushes.*;
@@ -42,6 +43,7 @@ public class ToolManager extends InputAdapter implements Disposable {
     private static final int KEY_DEACTIVATE = Input.Keys.ESCAPE;
 
     private final AppUi appUi;
+    private final EventBus eventBus;
 
     private Tool activeTool;
 
@@ -54,10 +56,11 @@ public class ToolManager extends InputAdapter implements Disposable {
 
     private InputManager inputManager;
 
-    public ToolManager(AppUi appUi, InputManager inputManager, ProjectManager projectManager, GameObjectPicker goPicker,
+    public ToolManager(AppUi appUi, EventBus eventBus, InputManager inputManager, ProjectManager projectManager, GameObjectPicker goPicker,
                        ToolHandlePicker toolHandlePicker, ModelBatch modelBatch, ShapeRenderer shapeRenderer,
                        CommandHistory history) {
         this.appUi = appUi;
+        this.eventBus = eventBus;
         this.inputManager = inputManager;
         this.activeTool = null;
 
@@ -67,11 +70,11 @@ public class ToolManager extends InputAdapter implements Disposable {
         terrainBrushes.add(new StarBrush(projectManager, modelBatch, history));
         terrainBrushes.add(new ConfettiBrush(projectManager, modelBatch, history));
 
-        modelPlacementTool = new ModelPlacementTool(projectManager, modelBatch, history, this.appUi);
-        selectionTool = new SelectionTool(projectManager, goPicker, modelBatch, history);
-        translateTool = new TranslateTool(projectManager, goPicker, toolHandlePicker, modelBatch, history);
-        rotateTool = new RotateTool(projectManager, goPicker, toolHandlePicker, shapeRenderer, modelBatch, history);
-        scaleTool = new ScaleTool(projectManager, goPicker, toolHandlePicker, shapeRenderer, modelBatch, history, appUi);
+        modelPlacementTool = new ModelPlacementTool(projectManager, modelBatch, history, appUi, eventBus);
+        selectionTool = new SelectionTool(projectManager, goPicker, modelBatch, history, eventBus);
+        translateTool = new TranslateTool(projectManager, goPicker, toolHandlePicker, modelBatch, history, eventBus);
+        rotateTool = new RotateTool(projectManager, goPicker, toolHandlePicker, shapeRenderer, modelBatch, history, eventBus);
+        scaleTool = new ScaleTool(projectManager, goPicker, toolHandlePicker, shapeRenderer, modelBatch, history, appUi, eventBus);
     }
 
     public void activateTool(Tool tool) {

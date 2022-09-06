@@ -22,7 +22,6 @@ import com.badlogic.gdx.math.Interpolation;
 import com.mbrlabs.mundus.commons.terrain.Terrain;
 
 /**
- *
  * @author Marcus Brummer
  * @version 20-06-2016
  */
@@ -65,7 +64,8 @@ public class PerlinNoiseGenerator extends Generator<PerlinNoiseGenerator> {
             int z = (int) Math.floor((double) i / terrain.vertexResolution);
 
             float height = Interpolation.linear.apply(minHeight, maxHeight, getInterpolatedNoise(x / 4f, z / 4f));
-            height += Interpolation.linear.apply(minHeight / 3f, maxHeight / 3f, getInterpolatedNoise(x / 2f, z / 2f));
+            height += Interpolation.linear.apply(minHeight / 3f, maxHeight / 3f,
+                    getInterpolatedNoise(x / 2f, z / 2f));
 
             terrain.heightData[z * terrain.vertexResolution + x] = height;
         }

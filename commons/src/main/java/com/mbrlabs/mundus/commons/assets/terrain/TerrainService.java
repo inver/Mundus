@@ -13,6 +13,8 @@ public class TerrainService implements AssetService<TerrainAsset> {
 
     @Override
     public TerrainAsset load(Meta meta, FileHandle assetFile) {
-        throw new NotImplementedException();
+        TerrainAsset asset = new TerrainAsset(meta, assetFile);
+        asset.load();
+        return asset;
     }
 }

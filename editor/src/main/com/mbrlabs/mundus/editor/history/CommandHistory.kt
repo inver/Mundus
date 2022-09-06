@@ -17,6 +17,8 @@
 package com.mbrlabs.mundus.editor.history
 
 import com.badlogic.gdx.utils.Array
+import com.mbrlabs.mundus.editor.events.EventBus
+import com.mbrlabs.mundus.editor.events.SceneGraphChangedEvent
 import org.springframework.stereotype.Component
 
 /**
@@ -25,7 +27,10 @@ import org.springframework.stereotype.Component
  * @author Marcus Brummer
  * @version 07-02-2016
  */
-class CommandHistory(private val limit: Int) {
+@Component
+class CommandHistory(private val eventBus: EventBus) {
+
+    private val limit = DEFAULT_LIMIT
 
     private var pointer: Int = 0
     private val commands: Array<Command> = Array(limit)
@@ -80,6 +85,7 @@ class CommandHistory(private val limit: Int) {
     fun goBack(): Int {
         if (pointer >= 0) {
             commands.get(pointer).undo()
+            eventBus.post(SceneGraphChangedEvent())
             pointer--
         }
 
@@ -90,6 +96,7 @@ class CommandHistory(private val limit: Int) {
         if (pointer < commands.size - 1) {
             pointer++
             commands.get(pointer).execute()
+            eventBus.post(SceneGraphChangedEvent())
         }
 
         return pointer

@@ -22,8 +22,8 @@ import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.scene3d.components.Component;
 import com.mbrlabs.mundus.commons.scene3d.components.ModelComponent;
 import com.mbrlabs.mundus.commons.scene3d.components.TerrainComponent;
-import com.mbrlabs.mundus.editor.Mundus;
 import com.mbrlabs.mundus.editor.core.project.ProjectManager;
+import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.GameObjectSelectedEvent;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.tools.picker.GameObjectPicker;
@@ -38,11 +38,13 @@ public class SelectionTool extends Tool {
     public static final String NAME = "Selection Tool";
 
     private GameObjectPicker goPicker;
+    protected final EventBus eventBus;
 
     public SelectionTool(ProjectManager projectManager, GameObjectPicker goPicker, ModelBatch batch,
-                         CommandHistory history) {
+                         CommandHistory history, EventBus eventBus) {
         super(projectManager, batch, history);
         this.goPicker = goPicker;
+        this.eventBus = eventBus;
     }
 
     public void gameObjectSelected(GameObject selection) {
@@ -96,7 +98,7 @@ public class SelectionTool extends Tool {
             GameObject selection = goPicker.pick(getProjectManager().getCurrent().currScene, screenX, screenY);
             if (selection != null && !selection.equals(getProjectManager().getCurrent().currScene.currentSelection)) {
                 gameObjectSelected(selection);
-                Mundus.INSTANCE.postEvent(new GameObjectSelectedEvent(selection));
+                eventBus.post(new GameObjectSelectedEvent(selection));
             }
         }
 

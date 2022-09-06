@@ -29,6 +29,7 @@ import com.mbrlabs.mundus.editor.Mundus
 import com.mbrlabs.mundus.editor.assets.AssetFilter
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.events.AssetImportEvent
+import com.mbrlabs.mundus.editor.events.EventBus
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent
 import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.BaseDialog
@@ -45,6 +46,7 @@ import org.springframework.stereotype.Component
  */
 @Component
 class AssetPickerDialog(
+    eventBus: EventBus,
     private val projectManager: ProjectManager,
     private val appUi: AppUi
 ) : BaseDialog(TITLE),
@@ -64,7 +66,7 @@ class AssetPickerDialog(
     private var listener: AssetPickerListener? = null
 
     init {
-        Mundus.registerEventListener(this)
+        eventBus.register(this)
 
         setupUI()
         setupListeners()

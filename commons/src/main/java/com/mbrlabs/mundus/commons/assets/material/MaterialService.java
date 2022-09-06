@@ -4,6 +4,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.mbrlabs.mundus.commons.assets.AssetService;
 import com.mbrlabs.mundus.commons.assets.meta.Meta;
 import com.mbrlabs.mundus.commons.assets.meta.MetaService;
+import com.mbrlabs.mundus.commons.assets.model.ModelAsset;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -44,6 +45,8 @@ public class MaterialService implements AssetService<MaterialAsset> {
 
     @Override
     public MaterialAsset load(Meta meta, FileHandle assetFile) {
-        return null;
+        var asset = new MaterialAsset(meta, assetFile);
+        asset.load();
+        return asset;
     }
 }

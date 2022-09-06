@@ -22,7 +22,6 @@ import com.kotcrab.vis.ui.widget.VisTextButton
 import com.kotcrab.vis.ui.widget.tabbedpane.Tab
 import com.kotcrab.vis.ui.widget.tabbedpane.TabbedPane
 import com.kotcrab.vis.ui.widget.tabbedpane.TabbedPaneListener
-import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.ui.modules.dock.assets.AssetsDock
 import com.mbrlabs.mundus.editor.ui.widgets.MundusSplitPane
 
@@ -30,10 +29,10 @@ import com.mbrlabs.mundus.editor.ui.widgets.MundusSplitPane
  * @author Marcus Brummer
  * @version 08-12-2015
  */
-class DockBar(private val splitPane: MundusSplitPane, private val projectManager: ProjectManager) : VisTable(),
+class DockBar(private val splitPane: MundusSplitPane, private val dockBarPresenter: DockBarPresenter) : VisTable(),
     TabbedPaneListener {
 
-    private val assetsDock = AssetsDock(projectManager)
+    private val assetsDock = AssetsDock()
     private val logBar = LogBar()
     private val tabbedPane: TabbedPane
 
@@ -43,16 +42,28 @@ class DockBar(private val splitPane: MundusSplitPane, private val projectManager
             VisUI.getSkin().get("toggle", VisTextButton.VisTextButtonStyle::class.java)
         )
 
+        initAssetDoc(assetsDock)
+        initLogBar(logBar)
+
         tabbedPane = TabbedPane(style)
         tabbedPane.isAllowTabDeselect = true
         tabbedPane.addListener(this)
-
         tabbedPane.add(assetsDock)
         tabbedPane.add(logBar)
         add(tabbedPane.table).expandX().fillX().left().bottom().height(30f).row()
 
         // Keeping asset tab the default active tab
         tabbedPane.switchTab(assetsDock)
+    }
+
+    private fun initLogBar(logBar: LogBar) {
+        dockBarPresenter.iniLogBar(logBar)
+    }
+
+    private fun initAssetDoc(assetsDock: AssetsDock) {
+        dockBarPresenter.initAssetDock(assetsDock)
+        dockBarPresenter.initAppAssets(assetsDock.appAssets)
+        dockBarPresenter.initProjectAssets(assetsDock.projectAssets)
     }
 
     override fun switchedTab(tab: Tab?) {

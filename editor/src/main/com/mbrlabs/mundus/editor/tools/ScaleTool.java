@@ -36,6 +36,7 @@ import com.mbrlabs.mundus.commons.utils.MathUtils;
 import com.mbrlabs.mundus.editor.Mundus;
 import com.mbrlabs.mundus.editor.core.project.ProjectContext;
 import com.mbrlabs.mundus.editor.core.project.ProjectManager;
+import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.history.commands.ScaleCommand;
 import com.mbrlabs.mundus.editor.shader.Shaders;
@@ -81,8 +82,9 @@ public class ScaleTool extends TransformTool {
     private ScaleCommand command;
 
     public ScaleTool(ProjectManager projectManager, GameObjectPicker goPicker, ToolHandlePicker handlePicker,
-                     ShapeRenderer shapeRenderer, ModelBatch batch, CommandHistory history, AppUi appUi) {
-        super(projectManager, goPicker, handlePicker, batch, history);
+                     ShapeRenderer shapeRenderer, ModelBatch batch, CommandHistory history, AppUi appUi,
+                     EventBus eventBus) {
+        super(projectManager, goPicker, handlePicker, batch, history, eventBus);
 
         this.shapeRenderer = shapeRenderer;
         this.appUi = appUi;
@@ -219,7 +221,7 @@ public class ScaleTool extends TransformTool {
             }
             if (modified) {
                 gameObjectModifiedEvent.setGameObject(selection);
-                Mundus.INSTANCE.postEvent(gameObjectModifiedEvent);
+                eventBus.post(gameObjectModifiedEvent);
             }
         }
     }

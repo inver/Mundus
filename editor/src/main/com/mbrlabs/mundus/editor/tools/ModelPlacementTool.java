@@ -27,22 +27,20 @@ import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.scene3d.InvalidComponentException;
-import com.mbrlabs.mundus.editor.Mundus;
 import com.mbrlabs.mundus.editor.core.project.ProjectContext;
 import com.mbrlabs.mundus.editor.core.project.ProjectManager;
+import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.SceneGraphChangedEvent;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.scene3d.components.PickableModelComponent;
 import com.mbrlabs.mundus.editor.shader.Shaders;
 import com.mbrlabs.mundus.editor.ui.AppUi;
 import com.mbrlabs.mundus.editor.utils.TerrainUtils;
-import org.springframework.stereotype.Component;
 
 /**
  * @author Marcus Brummer
  * @version 25-12-2015
  */
-@Component
 public class ModelPlacementTool extends Tool {
 
     public static final String NAME = "Placement Tool";
@@ -57,10 +55,12 @@ public class ModelPlacementTool extends Tool {
     private ModelInstance modelInstance;
 
     private final AppUi appUi;
+    private final EventBus eventBus;
 
-    public ModelPlacementTool(ProjectManager projectManager, ModelBatch batch, CommandHistory history, AppUi appUi) {
+    public ModelPlacementTool(ProjectManager projectManager, ModelBatch batch, CommandHistory history, AppUi appUi, EventBus eventBus) {
         super(projectManager, batch, history);
         this.appUi = appUi;
+        this.eventBus = eventBus;
 
         setShader(Shaders.INSTANCE.getModelShader());
         this.model = null;
@@ -133,7 +133,7 @@ public class ModelPlacementTool extends Tool {
                 return false;
             }
 
-            Mundus.INSTANCE.postEvent(new SceneGraphChangedEvent());
+            eventBus.post(new SceneGraphChangedEvent());
             mouseMoved(screenX, screenY);
         }
         return false;

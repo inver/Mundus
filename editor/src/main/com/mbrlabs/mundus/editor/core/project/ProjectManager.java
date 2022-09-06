@@ -50,6 +50,7 @@ import com.mbrlabs.mundus.editor.core.EditorScene;
 import com.mbrlabs.mundus.editor.core.converter.SceneConverter;
 import com.mbrlabs.mundus.editor.core.kryo.KryoManager;
 import com.mbrlabs.mundus.editor.core.scene.SceneManager;
+import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.LogEvent;
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent;
 import com.mbrlabs.mundus.editor.events.SceneChangedEvent;
@@ -93,6 +94,8 @@ public class ProjectManager implements Disposable {
     private final MaterialService materialService;
     private final PixmapTextureService pixmapTextureService;
     private final ModelService modelService;
+
+    private final EventBus eventBus;
 
     public ProjectContext getCurrent() {
         return current;
@@ -206,12 +209,12 @@ public class ProjectManager implements Disposable {
         context.assetManager.loadAssets(new AssetManager.AssetLoadingListener() {
             @Override
             public void onLoad(Asset asset, int progress, int assetCount) {
-                log.debug(TAG, "Loaded {} asset ({}/{})", asset.getMeta().getType(), progress, assetCount);
+                log.debug("Loaded {} asset ({}/{})", asset.getMeta().getType(), progress, assetCount);
             }
 
             @Override
             public void onFinish(int assetCount) {
-                log.debug(TAG, "Finished loading {} assets", assetCount);
+                log.debug("Finished loading {} assets", assetCount);
             }
         }, false);
 
@@ -244,7 +247,7 @@ public class ProjectManager implements Disposable {
         SceneManager.saveScene(projectContext, projectContext.currScene);
 
         Log.debug(TAG, "Saving currentProject {}", projectContext.name + " [" + projectContext.path + "]");
-        Mundus.INSTANCE.postEvent(new LogEvent("Saving currentProject " + projectContext.name + " [" + projectContext.path + "]"));
+        eventBus.post(new LogEvent("Saving currentProject " + projectContext.name + " [" + projectContext.path + "]"));
     }
 
     /**
@@ -289,7 +292,7 @@ public class ProjectManager implements Disposable {
         kryoManager.saveRegistry(registry);
 
         Gdx.graphics.setTitle(constructWindowTitle());
-        Mundus.INSTANCE.postEvent(new ProjectChangedEvent(context));
+        eventBus.post(new ProjectChangedEvent(context));
     }
 
     /**
@@ -360,7 +363,7 @@ public class ProjectManager implements Disposable {
             projectContext.currScene = newScene;
 
             Gdx.graphics.setTitle(constructWindowTitle());
-            Mundus.INSTANCE.postEvent(new SceneChangedEvent());
+            eventBus.post(new SceneChangedEvent());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             Log.error(TAG, e.getMessage());
