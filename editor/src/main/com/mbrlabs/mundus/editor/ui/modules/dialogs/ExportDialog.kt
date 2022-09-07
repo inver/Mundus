@@ -23,7 +23,7 @@ import com.kotcrab.vis.ui.widget.VisProgressBar
 import com.mbrlabs.mundus.editor.core.kryo.KryoManager
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.exporter.Exporter
-import com.mbrlabs.mundus.editor.ui.UI
+import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.UiConstants
 import com.mbrlabs.mundus.editor.utils.Log
 import com.mbrlabs.mundus.editor.utils.Toaster
@@ -37,7 +37,8 @@ import org.springframework.stereotype.Component
 class ExportDialog(
     private val toaster: Toaster,
     private val projectManager: ProjectManager,
-    private val kryoManager: KryoManager
+    private val kryoManager: KryoManager,
+    private val appUi: AppUi
 ) : VisDialog("Exporting") {
 
     private var lastExport: Long = 0
@@ -72,7 +73,7 @@ class ExportDialog(
             return
         }
 
-        show(UI)
+        show(appUi)
 
         Exporter(kryoManager, projectManager.current).exportAsync(export.outputFolder, object : AsyncTaskListener {
             private var error = false

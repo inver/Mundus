@@ -1,18 +1,13 @@
 package com.mbrlabs.mundus.editor.ui.modules.dock
 
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
-import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.kotcrab.vis.ui.widget.*
 import com.kotcrab.vis.ui.widget.tabbedpane.Tab
 import com.mbrlabs.mundus.editor.events.LogEvent
 import com.mbrlabs.mundus.editor.events.LogType
-import com.mbrlabs.mundus.editor.ui.UI
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -54,31 +49,32 @@ class LogBar : Tab(false, false), LogEvent.LogEventListener {
 
     private fun registerListeners() {
         // Pop up menu on right click
-        root.addListener(object : InputListener() {
-            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                return true
-            }
-
-            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                if (event!!.button == Input.Buttons.RIGHT) {
-                    logOpsMenu.showMenu(
-                        UI, Gdx.input.x.toFloat(),
-                        (Gdx.graphics.height - Gdx.input.y).toFloat()
-                    )
-                }
-            }
-
-            override fun enter(event: InputEvent, x: Float, y: Float, pointer: Int, fromActor: Actor?) {
-                // Give scroll focus to pane automatically when mouse enters
-                UI.scrollFocus = pane
-            }
-
-            override fun exit(event: InputEvent, x: Float, y: Float, pointer: Int, toActor: Actor?) {
-                // Only clear focus if the exit to another actor is NOT an actor within the LogBars root
-                if (toActor?.isDescendantOf(root) != true)
-                    UI.scrollFocus = null
-            }
-        })
+        //todo
+//        root.addListener(object : InputListener() {
+//            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+//                return true
+//            }
+//
+//            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+//                if (event!!.button == Input.Buttons.RIGHT) {
+//                    logOpsMenu.showMenu(
+//                        UI, Gdx.input.x.toFloat(),
+//                        (Gdx.graphics.height - Gdx.input.y).toFloat()
+//                    )
+//                }
+//            }
+//
+//            override fun enter(event: InputEvent, x: Float, y: Float, pointer: Int, fromActor: Actor?) {
+//                // Give scroll focus to pane automatically when mouse enters
+//                UI.scrollFocus = pane
+//            }
+//
+//            override fun exit(event: InputEvent, x: Float, y: Float, pointer: Int, toActor: Actor?) {
+//                // Only clear focus if the exit to another actor is NOT an actor within the LogBars root
+//                if (toActor?.isDescendantOf(root) != true)
+//                    UI.scrollFocus = null
+//            }
+//        })
 
         clearLogsButton.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent, x: Float, y: Float) {

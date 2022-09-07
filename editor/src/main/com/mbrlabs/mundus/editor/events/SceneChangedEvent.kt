@@ -20,7 +20,7 @@ package com.mbrlabs.mundus.editor.events
  * @author Marcus Brummer
  * @version 21-01-2016
  */
-class SceneChangedEvent {
+class SceneChangedEvent: Event {
 
     interface SceneChangedListener {
         @Subscribe

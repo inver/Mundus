@@ -8,7 +8,6 @@ import com.mbrlabs.mundus.editor.core.project.ProjectManager;
 import com.mbrlabs.mundus.editor.events.AssetSelectedEvent;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.ui.AppUi;
-import com.mbrlabs.mundus.editor.ui.UI;
 import com.mbrlabs.mundus.editor.ui.modules.dock.assets.AssetLibraryViewer;
 import com.mbrlabs.mundus.editor.ui.modules.dock.assets.AssetsDock;
 import lombok.RequiredArgsConstructor;

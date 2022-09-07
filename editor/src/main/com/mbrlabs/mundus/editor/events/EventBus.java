@@ -16,13 +16,18 @@
 
 package com.mbrlabs.mundus.editor.events;
 
-import com.mbrlabs.mundus.editor.utils.ReflectionUtils;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.NotImplementedException;
+import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Simple Event bus via reflection.
@@ -36,70 +41,66 @@ import java.util.List;
  * @version 12-12-2015
  */
 // TODO improve/test performance might not be that great
+@Slf4j
 @Component
 public class EventBus {
 
-    private static class EventBusException extends RuntimeException {
-        private EventBusException(String s) {
-            super(s);
-        }
-    }
-
-    private final List<Object> subscribers = new LinkedList<>();
+    private final Map<Class<?>, List<Pair<Object, Method>>> methodsMap = new HashMap<>();
 
     public void register(Object subscriber) {
-        subscribers.add(subscriber);
+        var current = System.currentTimeMillis();
+        if (subscriber == null) {
+            return;
+        }
+
+        for (var method : subscriber.getClass().getDeclaredMethods()) {
+            if (!checkMethod(method)) {
+                continue;
+            }
+            //set method public. Show test case with SomeListenerClass
+            method.setAccessible(true);
+
+            var clazz = method.getParameterTypes()[0];
+            var list = methodsMap.computeIfAbsent(clazz, k -> new ArrayList<>());
+            list.add(Pair.of(subscriber, method));
+        }
+        log.debug("Register event executed in {}ms.", (System.currentTimeMillis() - current));
     }
 
     public void unregister(Object subscriber) {
-        subscribers.remove(subscriber);
+        throw new NotImplementedException("TODO");
+//        subscribers.remove(subscriber);
     }
 
-    public void post(Object event) {
-        try {
-            final Class eventType = event.getClass();
-            for (Object subscriber : subscribers.toArray()) {
-                for (Method method : subscriber.getClass().getDeclaredMethods()) {
-                    if (isSubscriber(method)) {
-                        if (method.getParameterTypes().length != 1) {
-                            throw new EventBusException("Size of parameter list of method " + method.getName() + " in "
-                                    + subscriber.getClass().getName() + " must be 1");
-                        }
+    public void post(Event event) {
+        var current = System.currentTimeMillis();
 
-                        if (method.getParameterTypes()[0].equals(eventType)) {
-                            // System.out.println(subscriber.getClass().getName());
-                            method.invoke(subscriber, eventType.cast(event));
-                        }
-                    }
-                }
-            }
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
+        var methods = methodsMap.get(event.getClass());
+        if (methods == null || methods.size() == 0) {
+            return;
         }
-    }
 
-    private boolean isSubscriber(Method method) {
-        // check if @Subscribe is directly used in class
-        boolean isSub = ReflectionUtils.hasMethodAnnotation(method, Subscribe.class);
-        if (isSub) return true;
-
-        // check if implemented interfaces of this class have a @Subscribe
-        // annotation
-        Class[] interfaces = method.getDeclaringClass().getInterfaces();
-        for (Class i : interfaces) {
+        for (var pair : methods) {
             try {
-                Method interfaceMethod = i.getMethod(method.getName(), method.getParameterTypes());
-                if (interfaceMethod != null) {
-                    isSub = ReflectionUtils.hasMethodAnnotation(interfaceMethod, Subscribe.class);
-                    if (isSub) return true;
-                }
-            } catch (NoSuchMethodException e) {
-                // silently ignore -> this interface simply does not declare
-                // such a method
+                pair.getRight().invoke(pair.getLeft(), event);
+                log.debug("Event {} to {} delivered", event, pair.getLeft());
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                log.error("ERROR", e);
             }
         }
 
-        return false;
+        log.debug("Post event executed in {}ms", (System.currentTimeMillis() - current));
     }
 
+    private boolean checkMethod(Method method) {
+        if (AnnotationUtils.findAnnotation(method, Subscribe.class) == null) {
+            return false;
+        }
+
+        if (method.getParameterCount() != 1) {
+            return false;
+        }
+
+        return Event.class.isAssignableFrom(method.getParameterTypes()[0]);
+    }
 }

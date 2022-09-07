@@ -45,7 +45,6 @@ import com.mbrlabs.mundus.commons.assets.meta.MetaModel
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset
 import com.mbrlabs.mundus.commons.core.ModelFiles
 import com.mbrlabs.mundus.commons.loader.ModelImporter
-import com.mbrlabs.mundus.editor.Mundus
 import com.mbrlabs.mundus.editor.assets.MetaSaver
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.events.AssetImportEvent
@@ -139,7 +138,7 @@ class ImportModelDialog(
             add(root)
 
             val inputTable = VisTable()
-            renderWidget = RenderWidget(cam)
+            renderWidget = RenderWidget(appUi, cam)
             renderWidget!!.setRenderer { camera ->
                 if (previewInstance != null) {
                     Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT)

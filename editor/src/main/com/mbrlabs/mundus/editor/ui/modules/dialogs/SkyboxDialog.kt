@@ -23,7 +23,6 @@ import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.kotcrab.vis.ui.widget.file.FileChooser
 import com.mbrlabs.mundus.commons.skybox.Skybox
-import com.mbrlabs.mundus.editor.Mundus
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.events.EventBus
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent
@@ -56,7 +55,7 @@ class SkyboxDialog(
 
     private var createBtn = VisTextButton("Create skybox")
     private var defaultBtn = VisTextButton("Create default skybox")
-    private var deletBtn = VisTextButton("Remove Skybox")
+    private var deleteBtn = VisTextButton("Remove Skybox")
 
     init {
         eventBus.register(this)
@@ -89,7 +88,7 @@ class SkyboxDialog(
 
         val tab = VisTable()
         tab.add(defaultBtn).expandX().padRight(3f).fillX()
-        tab.add(deletBtn).expandX().fillX().padLeft(3f).row()
+        tab.add(deleteBtn).expandX().fillX().padLeft(3f).row()
         root.add(tab).fillX().expandX().padTop(5f).padLeft(6f).padRight(6f).colspan(3).row()
     }
 
@@ -122,7 +121,7 @@ class SkyboxDialog(
         })
 
         // delete skybox btn
-        deletBtn.addListener(object : ClickListener() {
+        deleteBtn.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 projectContext.currScene.skybox.dispose()
                 projectContext.currScene.skybox = null

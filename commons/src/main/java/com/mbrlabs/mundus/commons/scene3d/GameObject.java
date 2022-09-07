@@ -38,12 +38,9 @@ public class GameObject extends SimpleNode<GameObject> implements Iterable<GameO
     public final SceneGraph sceneGraph;
 
     /**
-     * @param sceneGraph
-     *            scene graph
-     * @param name
-     *            game object name; can be null
-     * @param id
-     *            game object id
+     * @param sceneGraph scene graph
+     * @param name       game object name; can be null
+     * @param id         game object id
      */
     public GameObject(SceneGraph sceneGraph, String name, int id) {
         super(id);
@@ -57,8 +54,7 @@ public class GameObject extends SimpleNode<GameObject> implements Iterable<GameO
     /**
      * Make copy with existing gameObject and new id
      *
-     * @param gameObject
-     *            game object for clone
+     * @param gameObject game object for clone
      */
     public GameObject(GameObject gameObject, int id) {
         super(gameObject, id);
@@ -88,8 +84,7 @@ public class GameObject extends SimpleNode<GameObject> implements Iterable<GameO
     /**
      * Calls the render() method for each component in this and all child nodes.
      *
-     * @param delta
-     *            time since last render
+     * @param delta time since last render
      */
     public void render(float delta) {
         if (active) {
@@ -108,8 +103,7 @@ public class GameObject extends SimpleNode<GameObject> implements Iterable<GameO
     /**
      * Calls the update() method for each component in this and all child nodes.
      *
-     * @param delta
-     *            time since last update
+     * @param delta time since last update
      */
     public void update(float delta) {
         if (active) {
@@ -127,7 +121,7 @@ public class GameObject extends SimpleNode<GameObject> implements Iterable<GameO
 
     /**
      * Returns the tags
-     * 
+     *
      * @return tags or null if none available
      */
     public Array<String> getTags() {
@@ -136,9 +130,8 @@ public class GameObject extends SimpleNode<GameObject> implements Iterable<GameO
 
     /**
      * Adds a tag.
-     * 
-     * @param tag
-     *            tag to add
+     *
+     * @param tag tag to add
      */
     public void addTag(String tag) {
         if (this.tags == null) {
@@ -151,12 +144,9 @@ public class GameObject extends SimpleNode<GameObject> implements Iterable<GameO
     /**
      * Finds all component by a given type.
      *
-     * @param out
-     *            output array
-     * @param type
-     *            component type
-     * @param includeChilds
-     *            search in node children of this game object as well?
+     * @param out           output array
+     * @param type          component type
+     * @param includeChilds search in node children of this game object as well?
      * @return components found
      */
     public Array<Component> findComponentsByType(Array<Component> out, Component.Type type, boolean includeChilds) {
@@ -178,8 +168,7 @@ public class GameObject extends SimpleNode<GameObject> implements Iterable<GameO
     /**
      * Finds one component by type.
      *
-     * @param type
-     *            component type
+     * @param type component type
      * @return component if found or null
      */
     public Component findComponentByType(Component.Type type) {
@@ -192,7 +181,7 @@ public class GameObject extends SimpleNode<GameObject> implements Iterable<GameO
 
     /**
      * Returns all components of this go.
-     * 
+     *
      * @return components
      */
     public Array<Component> getComponents() {
@@ -201,9 +190,8 @@ public class GameObject extends SimpleNode<GameObject> implements Iterable<GameO
 
     /**
      * Removes a component.
-     * 
-     * @param component
-     *            component to remove
+     *
+     * @param component component to remove
      */
     public void removeComponent(Component component) {
         components.removeValue(component, true);
@@ -212,8 +200,7 @@ public class GameObject extends SimpleNode<GameObject> implements Iterable<GameO
     /**
      * Adds a component.
      *
-     * @param component
-     *            component to add
+     * @param component component to add
      * @throws InvalidComponentException
      */
     public void addComponent(Component component) throws InvalidComponentException {
@@ -222,7 +209,6 @@ public class GameObject extends SimpleNode<GameObject> implements Iterable<GameO
     }
 
     /**
-     *
      * @param component
      * @throws InvalidComponentException
      */

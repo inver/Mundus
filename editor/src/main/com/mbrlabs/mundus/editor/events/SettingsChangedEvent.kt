@@ -22,7 +22,7 @@ import com.mbrlabs.mundus.commons.core.registry.Settings
  * @author Marcus Brummer
  * @version 01-10-2016
  */
-class SettingsChangedEvent(val settings: Settings) {
+class SettingsChangedEvent(val settings: Settings) : Event {
 
     interface SettingsChangedListener {
         @Subscribe

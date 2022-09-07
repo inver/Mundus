@@ -22,7 +22,7 @@ import com.mbrlabs.mundus.commons.assets.Asset
  * @author Marcus Brummer
  * @version 12-10-2016
  */
-class AssetSelectedEvent(val asset: Asset) {
+class AssetSelectedEvent(val asset: Asset): Event {
 
     interface AssetSelectedListener {
         @Subscribe

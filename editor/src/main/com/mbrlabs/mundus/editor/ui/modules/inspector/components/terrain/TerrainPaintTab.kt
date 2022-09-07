@@ -16,38 +16,22 @@
 
 package com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.Align
 import com.kotcrab.vis.ui.VisUI
-import com.kotcrab.vis.ui.util.dialog.Dialogs
 import com.kotcrab.vis.ui.widget.*
 import com.kotcrab.vis.ui.widget.tabbedpane.Tab
-import com.mbrlabs.mundus.commons.assets.Asset
-import com.mbrlabs.mundus.commons.assets.exceptions.AssetAlreadyExistsException
-import com.mbrlabs.mundus.commons.assets.meta.MetaService
-import com.mbrlabs.mundus.commons.assets.texture.TextureAsset
 import com.mbrlabs.mundus.commons.terrain.SplatTexture
-import com.mbrlabs.mundus.editor.assets.AssetTextureFilter
-import com.mbrlabs.mundus.editor.core.project.ProjectManager
-import com.mbrlabs.mundus.editor.events.AssetImportEvent
 import com.mbrlabs.mundus.editor.tools.brushes.TerrainBrush
-import com.mbrlabs.mundus.editor.ui.UI
-import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
 import com.mbrlabs.mundus.editor.ui.widgets.TextureGrid
-import com.mbrlabs.mundus.editor.utils.Log
-import com.mbrlabs.mundus.editor.utils.Toaster
-import java.io.IOException
 
 /**
  * @author Marcus Brummer
  * @version 30-01-2016
  */
-class TerrainPaintTab(
-    private val parentWidget: TerrainComponentWidget
-) : Tab(false, false) {
+class TerrainPaintTab(private val parentWidget: TerrainComponentWidget) : Tab(false, false) {
 
     companion object {
         private val TAG = TerrainPaintTab::class.java.simpleName
@@ -77,8 +61,6 @@ class TerrainPaintTab(
     }
 
     private fun setupTextureGrid() {
-
-
         textureGrid.setListener { texture, leftClick ->
             val tex = texture as SplatTexture
             if (leftClick) {
@@ -160,7 +142,8 @@ class TerrainPaintTab(
         }
 
         fun show() {
-            showMenu(UI, Gdx.input.x.toFloat(), (Gdx.graphics.height - Gdx.input.y).toFloat())
+            //todo
+//            showMenu(UI, Gdx.input.x.toFloat(), (Gdx.graphics.height - Gdx.input.y).toFloat())
         }
 
     }

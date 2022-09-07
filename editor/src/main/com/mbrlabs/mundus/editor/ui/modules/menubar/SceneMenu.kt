@@ -19,15 +19,10 @@ package com.mbrlabs.mundus.editor.ui.modules.menubar
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.Array
-import com.kotcrab.vis.ui.util.dialog.Dialogs
-import com.kotcrab.vis.ui.util.dialog.InputDialogAdapter
 import com.kotcrab.vis.ui.widget.Menu
 import com.kotcrab.vis.ui.widget.MenuItem
-import com.mbrlabs.mundus.editor.Mundus
-import com.mbrlabs.mundus.editor.events.EventBus
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent
 import com.mbrlabs.mundus.editor.events.SceneAddedEvent
-import com.mbrlabs.mundus.editor.ui.UI
 import com.mbrlabs.mundus.editor.utils.Log
 
 /**
@@ -50,19 +45,19 @@ class SceneMenu : Menu("Scenes"),
     init {
 //        eventBus.register(this)
 
-        addScene.addListener(object : ClickListener() {
-            override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                Dialogs.showInputDialog(UI, "Add Scene", "Name:", object : InputDialogAdapter() {
-                    override fun finished(input: String?) {
-                        TODO()
-//                        val project = projectManager.current
-//                        val scene = projectManager.createScene(project, input)
-//                        projectManager.changeScene(project, scene.name)
-//                        eventBus.post(SceneAddedEvent(scene))
-                    }
-                })
-            }
-        })
+//        addScene.addListener(object : ClickListener() {
+//            override fun clicked(event: InputEvent?, x: Float, y: Float) {
+//                Dialogs.showInputDialog(UI, "Add Scene", "Name:", object : InputDialogAdapter() {
+//                    override fun finished(input: String?) {
+//                        TODO()
+////                        val project = projectManager.current
+////                        val scene = projectManager.createScene(project, input)
+////                        projectManager.changeScene(project, scene.name)
+////                        eventBus.post(SceneAddedEvent(scene))
+//                    }
+//                })
+//            }
+//        })
         addItem(addScene)
 
         addSeparator()

@@ -22,7 +22,7 @@ import com.mbrlabs.mundus.commons.scene3d.GameObject
  * @author Marcus Brummer
  * @version 23-01-2016
  */
-class GameObjectModifiedEvent(var gameObject: GameObject?) {
+class GameObjectModifiedEvent(var gameObject: GameObject?) : Event{
 
     interface GameObjectModifiedListener {
         @Subscribe

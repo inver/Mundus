@@ -24,8 +24,6 @@ import com.badlogic.gdx.utils.Align
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisScrollPane
 import com.kotcrab.vis.ui.widget.VisTable
-import com.kotcrab.vis.ui.widget.file.FileChooser
-import com.mbrlabs.mundus.commons.assets.meta.MetaService
 import com.mbrlabs.mundus.editor.config.UiWidgetsHolder
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.events.AssetSelectedEvent
@@ -35,11 +33,9 @@ import com.mbrlabs.mundus.editor.events.GameObjectSelectedEvent
 import com.mbrlabs.mundus.editor.history.CommandHistory
 import com.mbrlabs.mundus.editor.tools.ToolManager
 import com.mbrlabs.mundus.editor.ui.AppUi
-import com.mbrlabs.mundus.editor.ui.UI
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.TerrainWidgetPresenter
 import com.mbrlabs.mundus.editor.utils.Log
-import com.mbrlabs.mundus.editor.utils.Toaster
 import org.springframework.stereotype.Component
 
 /**
@@ -49,16 +45,13 @@ import org.springframework.stereotype.Component
 @Component
 class Inspector(
     eventBus: EventBus,
-    appUi: AppUi,
-    fileChooser: FileChooser,
+    private val appUi: AppUi,
     private val uiWidgetsHolder: UiWidgetsHolder,
     private val assetPickerDialog: AssetPickerDialog,
-    private val toaster: Toaster,
     private val toolManager: ToolManager,
     private val projectManager: ProjectManager,
     private val terrainWidgetPresenter: TerrainWidgetPresenter,
-    private val history: CommandHistory,
-    private val metaService: MetaService
+    private val history: CommandHistory
 ) : VisTable(),
     GameObjectSelectedEvent.GameObjectSelectedListener,
     GameObjectModifiedEvent.GameObjectModifiedListener,
@@ -112,11 +105,11 @@ class Inspector(
         scrollPane.setFadeScrollBars(false)
         scrollPane.addListener(object : InputListener() {
             override fun enter(event: InputEvent?, x: Float, y: Float, pointer: Int, fromActor: Actor?) {
-                UI.scrollFocus = scrollPane
+                appUi.scrollFocus = scrollPane
             }
 
             override fun exit(event: InputEvent?, x: Float, y: Float, pointer: Int, toActor: Actor?) {
-                UI.scrollFocus = null
+                appUi.scrollFocus = null
             }
         })
 

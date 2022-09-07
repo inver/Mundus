@@ -33,13 +33,12 @@ import com.kotcrab.vis.ui.widget.*
 import com.mbrlabs.mundus.commons.scene3d.GameObject
 import com.mbrlabs.mundus.commons.scene3d.SceneGraph
 import com.mbrlabs.mundus.commons.scene3d.components.Component
-import com.mbrlabs.mundus.editor.Mundus
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.events.*
 import com.mbrlabs.mundus.editor.history.CommandHistory
 import com.mbrlabs.mundus.editor.history.commands.DeleteCommand
 import com.mbrlabs.mundus.editor.tools.ToolManager
-import com.mbrlabs.mundus.editor.ui.UI
+import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.utils.Log
 
 /**
@@ -54,7 +53,9 @@ class Outline(
     private val toolManager: ToolManager,
     private val projectManager: ProjectManager,
     private val history: CommandHistory,
-    private val eventBus: EventBus
+    private val eventBus: EventBus,
+    private val appUi: AppUi,
+    private val outlinePresenter: OutlinePresenter
 ) : VisTable(),
     ProjectChangedEvent.ProjectChangedListener,
     SceneChangedEvent.SceneChangedListener,
@@ -68,11 +69,9 @@ class Outline(
     private val rightClickMenu: RightClickMenu
 
     init {
-        eventBus.register(this)
         setBackground("window-bg")
 
         rightClickMenu = RightClickMenu()
-
         content = VisTable()
         content.align(Align.left or Align.top)
 
@@ -86,6 +85,8 @@ class Outline(
         add(VisLabel(TITLE)).expandX().fillX().pad(3f).row()
         addSeparator().row()
         add(content).fill().expand()
+
+        outlinePresenter.init(this)
 
         setupDragAndDrop()
         setupListeners()
@@ -220,11 +221,11 @@ class Outline(
 
         scrollPane.addListener(object : InputListener() {
             override fun enter(event: InputEvent?, x: Float, y: Float, pointer: Int, fromActor: Actor?) {
-                UI.scrollFocus = scrollPane
+                appUi.scrollFocus = scrollPane
             }
 
             override fun exit(event: InputEvent?, x: Float, y: Float, pointer: Int, toActor: Actor?) {
-                UI.scrollFocus = null
+                appUi.scrollFocus = null
             }
 
         })
@@ -518,7 +519,7 @@ class Outline(
          */
         fun show(go: GameObject?, x: Float, y: Float) {
             selectedGO = go
-            showMenu(UI, x, y)
+            showMenu(appUi, x, y)
 
             // check if game object is selected
             if (selectedGO != null) {
@@ -540,7 +541,7 @@ class Outline(
             val node = tree.findNode(selectedGO!!)
             val goNode = node.actor as NodeTable
 
-            val renameDialog = Dialogs.showInputDialog(UI, "Rename", "",
+            val renameDialog = Dialogs.showInputDialog(appUi, "Rename", "",
                 object : InputDialogAdapter() {
                     override fun finished(input: String?) {
                         Log.trace(TAG, "Rename game object [{}] to [{}].", selectedGO, input)

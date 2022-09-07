@@ -23,8 +23,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.mbrlabs.mundus.editor.ui.UI;
-import org.springframework.stereotype.Component;
+import com.mbrlabs.mundus.editor.ui.AppUi;
 
 /**
  * @author Marcus Brummer
@@ -38,15 +37,19 @@ public class RenderWidget extends Widget {
     private PerspectiveCamera cam;
     private Renderer renderer;
 
-    public RenderWidget(PerspectiveCamera cam) {
+    private final AppUi appUi;
+
+    public RenderWidget(AppUi appUi, PerspectiveCamera cam) {
         super();
         this.cam = cam;
+        this.appUi = appUi;
         viewport = new ScreenViewport(this.cam);
     }
 
-    public RenderWidget() {
+    public RenderWidget(AppUi appUi) {
         super();
-        viewport = new ScreenViewport();
+        this.appUi = appUi;
+        this.viewport = new ScreenViewport();
     }
 
     public Viewport getViewport() {
@@ -83,7 +86,7 @@ public class RenderWidget extends Widget {
         renderer.render(cam);
 
         // re-apply stage viewport
-        UI.INSTANCE.getViewport().apply();
+        appUi.getViewport().apply();
 
         // proceed ui rendering
         batch.begin();

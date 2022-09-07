@@ -101,12 +101,6 @@ public class NewEditor implements ProjectChangedEvent.ProjectChangedListener, Sc
 
     private void setupUI() {
         menuBar = new MundusMenuBar(registry, menuBarPresenter);
-//        toolbar = new MundusToolbar();
-//        outline = new Outline();
-//        this.toolbar = toolbar;
-//        this.outline = outline;
-//        this.inspector = inspector;
-
 //        greenSeparatorStyle = new Separator.SeparatorStyle(VisUI.getSkin().getDrawable("mundus-separator-green"), 1);
 
         var root = new VisTable();
@@ -159,11 +153,10 @@ public class NewEditor implements ProjectChangedEvent.ProjectChangedListener, Sc
     }
 
     private void setupSceneWidget() {
-        var context = projectManager.getCurrent();
-        var scene = context.currScene;
+        var scene = projectManager.getCurrent().currScene;
         var sg = scene.sceneGraph;
 
-        appUi.getSceneWidget().setCam(context.currScene.cam);
+        appUi.getSceneWidget().setCam(scene.cam);
         appUi.getSceneWidget().setRenderer(cam -> {
             if (scene.skybox != null) {
                 batch.begin(scene.cam);
@@ -178,10 +171,10 @@ public class NewEditor implements ProjectChangedEvent.ProjectChangedListener, Sc
             compass.render(batch);
         });
 
-        compass.setWorldCam(context.currScene.cam);
-        camController.setCamera(context.currScene.cam);
-        appUi.getSceneWidget().setCam(context.currScene.cam);
-        context.currScene.viewport = appUi.getSceneWidget().getViewport();
+        compass.setWorldCam(scene.cam);
+        camController.setCamera(scene.cam);
+        appUi.getSceneWidget().setCam(scene.cam);
+        scene.viewport = appUi.getSceneWidget().getViewport();
     }
 
     public void render() {

@@ -18,6 +18,7 @@ package com.mbrlabs.mundus.editor.history;
 
 import static org.junit.Assert.assertEquals;
 
+import com.mbrlabs.mundus.editor.events.EventBus;
 import org.junit.Test;
 
 import com.mbrlabs.mundus.editor.history.Command;
@@ -31,7 +32,7 @@ public class HistoryTest {
 
     @Test
     public void addThenGoBackAndAdd() {
-        CommandHistory history = new CommandHistory(CommandHistory.Companion.getDEFAULT_LIMIT());
+        CommandHistory history = new CommandHistory(new EventBus());
         int ptr;
 
         ptr = history.add(new MockCommand());
@@ -57,7 +58,7 @@ public class HistoryTest {
 
     @Test
     public void addThenGoBackThenGoForwardOneThenAdd() {
-        CommandHistory history = new CommandHistory(CommandHistory.Companion.getDEFAULT_LIMIT());
+        CommandHistory history = new CommandHistory(new EventBus());
         int ptr;
 
         ptr = history.add(new MockCommand());

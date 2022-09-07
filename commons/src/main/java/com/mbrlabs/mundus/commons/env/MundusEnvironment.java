@@ -39,8 +39,11 @@ public class MundusEnvironment extends Environment {
     }
 
     public MundusEnvironment add(SunLight light) {
-        SunLightsAttribute sunLights = ((SunLightsAttribute) get(SunLightsAttribute.Type));
-        if (sunLights == null) set(sunLights = new SunLightsAttribute());
+        var sunLights = (SunLightsAttribute) get(SunLightsAttribute.Type);
+        if (sunLights == null) {
+            sunLights = new SunLightsAttribute();
+            set(sunLights);
+        }
         sunLights.lights.add(light);
 
         return this;

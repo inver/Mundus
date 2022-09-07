@@ -18,25 +18,17 @@ package com.mbrlabs.mundus.editor.ui.modules.toolbar
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
-import com.kotcrab.vis.ui.util.dialog.Dialogs
-import com.kotcrab.vis.ui.util.dialog.InputDialogAdapter
 import com.kotcrab.vis.ui.widget.MenuItem
 import com.kotcrab.vis.ui.widget.PopupMenu
 import com.kotcrab.vis.ui.widget.Tooltip
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
-import com.mbrlabs.mundus.editor.events.AssetImportEvent
-import com.mbrlabs.mundus.editor.events.EventBus
 import com.mbrlabs.mundus.editor.tools.*
 import com.mbrlabs.mundus.editor.ui.AppUi
-import com.mbrlabs.mundus.editor.ui.UI
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.ExportDialog
-import com.mbrlabs.mundus.editor.ui.modules.dialogs.importer.ImportModelDialog
-import com.mbrlabs.mundus.editor.ui.modules.dialogs.importer.ImportTextureDialog
 import com.mbrlabs.mundus.editor.ui.widgets.FaTextButton
 import com.mbrlabs.mundus.editor.ui.widgets.ToggleButton
 import com.mbrlabs.mundus.editor.ui.widgets.Toolbar
 import com.mbrlabs.mundus.editor.utils.Fa
-import com.mbrlabs.mundus.editor.utils.Log
 import com.mbrlabs.mundus.editor.utils.Toaster
 import org.springframework.stereotype.Component
 
@@ -52,9 +44,7 @@ class MundusToolbar(
     private val projectManager: ProjectManager,
     private val toaster: Toaster,
     private val exportDialog: ExportDialog,
-    private val importTextureDialog: ImportTextureDialog,
-    private val importModelDialog: ImportModelDialog,
-    private val eventBus: EventBus
+    private val appUi: AppUi
 ) : Toolbar() {
     companion object {
         private val TAG = MundusToolbar::class.java.simpleName
@@ -136,7 +126,7 @@ class MundusToolbar(
         // import btn
         importBtn.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                importMenu.showMenu(UI, importBtn)
+                importMenu.showMenu(appUi, importBtn)
             }
         })
 

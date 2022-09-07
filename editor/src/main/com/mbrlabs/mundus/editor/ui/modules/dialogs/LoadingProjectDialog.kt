@@ -22,7 +22,7 @@ import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.mbrlabs.mundus.editor.core.project.ProjectContext
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
-import com.mbrlabs.mundus.editor.ui.UI
+import com.mbrlabs.mundus.editor.ui.AppUi
 import org.springframework.stereotype.Component
 import java.io.File
 
@@ -32,7 +32,8 @@ import java.io.File
  */
 @Component
 class LoadingProjectDialog(
-    private val projectManager: ProjectManager
+    private val projectManager: ProjectManager,
+    private val appUi: AppUi
 ) : VisDialog("Loading Project") {
 
     private val projectName = VisLabel("Project Folder:")
@@ -50,14 +51,14 @@ class LoadingProjectDialog(
 
     fun loadProjectAsync(projectContext: ProjectContext) {
         this.projectName.setText("Loading project: " + projectContext.name)
-        UI.showDialog(this)
+        appUi.showDialog(this)
 
         if (File(projectContext.path).exists()) {
             projectManager.changeProject(projectContext)
             close()
         } else {
             close()
-            Dialogs.showErrorDialog(UI, "Faild to load project " + projectContext.path)
+            Dialogs.showErrorDialog(appUi, "Faild to load project " + projectContext.path)
         }
 
     }

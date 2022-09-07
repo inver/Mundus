@@ -32,7 +32,7 @@ class ModelImporterOld(eventBus: EventBus, registry: Registry) :
     private val fbxConv: FbxConv
 
     init {
-        eventBus.register(this)
+//        eventBus.register(this)
         fbxConv = FbxConv(registry.settings.fbxConvBinary)
     }
 

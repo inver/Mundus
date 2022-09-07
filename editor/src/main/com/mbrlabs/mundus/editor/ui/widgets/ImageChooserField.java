@@ -31,7 +31,6 @@ import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.file.FileChooser;
 import com.kotcrab.vis.ui.widget.file.SingleFileChooserListener;
 import com.mbrlabs.mundus.editor.ui.AppUi;
-import com.mbrlabs.mundus.editor.ui.UI;
 import com.mbrlabs.mundus.editor.utils.FileFormatUtils;
 
 /**

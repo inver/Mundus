@@ -47,8 +47,8 @@ public class EditorAssetManager extends AssetManager {
                               PixmapTextureService pixmapTextureService, ModelService modelService) {
         super(rootFolder, metaFileService, textureService, terrainService, materialService, pixmapTextureService,
                 modelService);
-        if (rootFolder != null && (!rootFolder.exists() || rootFolder.isDirectory())) {
-            log.error("Folder {} doesn't exist or directory", rootFolder.file());
+        if (rootFolder != null && (!rootFolder.exists() || !rootFolder.isDirectory())) {
+            log.error("Folder {} doesn't exist or is not a directory", rootFolder.file());
         }
     }
 

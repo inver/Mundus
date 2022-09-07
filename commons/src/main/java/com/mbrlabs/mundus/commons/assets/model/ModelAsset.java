@@ -23,10 +23,9 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.UBJsonReader;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset;
+import com.mbrlabs.mundus.commons.assets.meta.Meta;
 import com.mbrlabs.mundus.commons.loader.ac3d.Ac3dModelLoader;
 import com.mbrlabs.mundus.commons.loader.ac3d.Ac3dParser;
-import com.mbrlabs.mundus.commons.assets.meta.Meta;
-import com.mbrlabs.mundus.commons.assets.meta.MetaModel;
 import com.mbrlabs.mundus.commons.loader.g3d.MG3dModelLoader;
 import com.mbrlabs.mundus.commons.loader.gltf.GltfLoaderWrapper;
 import com.mbrlabs.mundus.commons.loader.obj.ObjLoaderWrapper;
@@ -82,7 +81,11 @@ public class ModelAsset extends Asset {
     public void resolveDependencies(Map<String, Asset> assets) {
         try {
             // materials
-            MetaModel metaModel = meta.getModel();
+            var metaModel = meta.getModel();
+            if (metaModel == null) {
+                return;
+            }
+
             for (String g3dbMatID : metaModel.getDefaultMaterials().keys()) {
                 String uuid = metaModel.getDefaultMaterials().get(g3dbMatID);
                 defaultMaterials.put(g3dbMatID, (MaterialAsset) assets.get(uuid));
