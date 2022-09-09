@@ -262,8 +262,8 @@ public class ProjectManager implements Disposable {
         if (lastOpenedProject != null) {
             try {
                 return loadProject(lastOpenedProject);
-            } catch (FileNotFoundException | AssetNotFoundException | MetaFileParseException anf) {
-                log.error("ERROR", anf.getMessage());
+            } catch (FileNotFoundException | AssetNotFoundException | MetaFileParseException e) {
+                log.error("ERROR", e);
             }
             return null;
         }

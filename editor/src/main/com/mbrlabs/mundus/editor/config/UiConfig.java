@@ -15,7 +15,8 @@ public class UiConfig {
     @Bean
     public BitmapFont fontAwesome() {
         var faBuilder = new Fa(Gdx.files.internal("fonts/fa45.ttf"));
-        faBuilder.getGeneratorParameter().size = Float.valueOf(Gdx.graphics.getHeight() * 0.02f).intValue();
+//        faBuilder.getGeneratorParameter().size = Float.valueOf(Gdx.graphics.getHeight() * 0.02f).intValue();
+        faBuilder.getGeneratorParameter().size = 15;
         faBuilder.getGeneratorParameter().kerning = true;
         faBuilder.getGeneratorParameter().borderStraight = false;
         //todo make bean
@@ -26,7 +27,10 @@ public class UiConfig {
                 .addIcon(Fa.Companion.getCARET_DOWN()).addIcon(Fa.Companion.getCARET_UP())
                 .addIcon(Fa.Companion.getTIMES()).addIcon(Fa.Companion.getSORT()).addIcon(Fa.Companion.getHASHTAG())
                 .addIcon(Fa.Companion.getPAINT_BRUSH()).addIcon(Fa.Companion.getSTAR())
-                .addIcon(Fa.Companion.getREFRESH()).addIcon(Fa.Companion.getEXPAND()).build();
+                .addIcon(Fa.Companion.getREFRESH()).addIcon(Fa.Companion.getEXPAND())
+                .addIcon(Fa.Companion.getPLUS_SQUARE()).addIcon(Fa.Companion.getMINUS_SQUARE())
+                .addIcon(Fa.Companion.getSQUARE())
+                .build();
     }
 
     @Bean

@@ -16,7 +16,7 @@
 
 package com.mbrlabs.mundus.commons.scene3d.traversal;
 
-import com.mbrlabs.mundus.commons.scene3d.GameObject;
+import com.mbrlabs.mundus.commons.scene3d.Node;
 
 import java.util.Iterator;
 import java.util.Stack;
@@ -25,12 +25,11 @@ import java.util.Stack;
  * @author Marcus Brummer
  * @version 20-01-2016
  */
-public class DepthFirstIterator implements Iterator<GameObject> {
+public class DepthFirstIterator<T extends Node<T>> implements Iterator<Node<T>> {
 
-    private Stack<GameObject> stack;
+    private final Stack<Node<T>> stack = new Stack<>();
 
-    public DepthFirstIterator(GameObject root) {
-        stack = new Stack<>();
+    public DepthFirstIterator(Node<T> root) {
         stack.push(root);
     }
 
@@ -40,10 +39,10 @@ public class DepthFirstIterator implements Iterator<GameObject> {
     }
 
     @Override
-    public GameObject next() {
-        GameObject top = stack.pop();
+    public Node<T> next() {
+        var top = stack.pop();
         if (top.getChildren() != null) {
-            for (GameObject child : top.getChildren()) {
+            for (var child : top.getChildren()) {
                 stack.push(child);
             }
         }

@@ -17,15 +17,14 @@ package com.mbrlabs.mundus.editor.ui.modules.outline
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
+import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
-import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.badlogic.gdx.scenes.scene2d.ui.Tree
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
-import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop
 import com.badlogic.gdx.utils.Align
 import com.kotcrab.vis.ui.util.dialog.Dialogs
 import com.kotcrab.vis.ui.util.dialog.InputDialogAdapter
@@ -33,13 +32,17 @@ import com.kotcrab.vis.ui.widget.*
 import com.mbrlabs.mundus.commons.scene3d.GameObject
 import com.mbrlabs.mundus.commons.scene3d.SceneGraph
 import com.mbrlabs.mundus.commons.scene3d.components.Component
+import com.mbrlabs.mundus.commons.terrain.Terrain
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.events.*
 import com.mbrlabs.mundus.editor.history.CommandHistory
 import com.mbrlabs.mundus.editor.history.commands.DeleteCommand
+import com.mbrlabs.mundus.editor.shader.Shaders
 import com.mbrlabs.mundus.editor.tools.ToolManager
 import com.mbrlabs.mundus.editor.ui.AppUi
-import com.mbrlabs.mundus.editor.utils.Log
+import com.mbrlabs.mundus.editor.utils.Fa
+import com.mbrlabs.mundus.editor.utils.createTerrainGO
+import mu.KotlinLogging
 
 /**
  * Outline shows overview about all game objects in the scene
@@ -55,180 +58,80 @@ class Outline(
     private val history: CommandHistory,
     private val eventBus: EventBus,
     private val appUi: AppUi,
-    private val outlinePresenter: OutlinePresenter
+    private val outlinePresenter: OutlinePresenter,
+    private val bitmapFont: BitmapFont
 ) : VisTable(),
     ProjectChangedEvent.ProjectChangedListener,
     SceneChangedEvent.SceneChangedListener,
     SceneGraphChangedEvent.SceneGraphChangedListener,
     GameObjectSelectedEvent.GameObjectSelectedListener {
 
+    private val log = KotlinLogging.logger {}
+
     private val content: VisTable
-    private val tree: VisTree<OutlineNode, GameObject>
-    private val scrollPane: ScrollPane
-    private val dragAndDrop: DragAndDrop = DragAndDrop()
-    private val rightClickMenu: RightClickMenu
+    private val tree = VisTree<OutlineNode, GameObject>()
+    val scrollPane: ScrollPane
+    private val dragAndDrop: OutlineDragAndDrop
+    private val rightClickMenu = RightClickMenu()
+
+    val addEmpty: MenuItem = MenuItem("Add Empty")
+    val addTerrain: MenuItem = MenuItem("Add terrain")
+    val duplicate: MenuItem = MenuItem("Duplicate")
+    val rename: MenuItem = MenuItem("Rename")
+    val delete: MenuItem = MenuItem("Delete")
 
     init {
         setBackground("window-bg")
 
-        rightClickMenu = RightClickMenu()
+//        rightClickMenu.addItem(addEmpty)
+//        rightClickMenu.addItem(addTerrain)
+//        rightClickMenu.addItem(duplicate)
+//        rightClickMenu.addItem(rename)
+//        rightClickMenu.addItem(delete)
+
         content = VisTable()
         content.align(Align.left or Align.top)
 
-        tree = VisTree<OutlineNode, GameObject>()
+        tree.debugAll()
+        tree.style.plus = FontAwesomeIcon(bitmapFont, Fa.PLUS_SQUARE)
+        tree.style.minus = FontAwesomeIcon(bitmapFont, Fa.MINUS_SQUARE)
         tree.selection.setProgrammaticChangeEvents(false)
+
+        dragAndDrop = OutlineDragAndDrop(tree, outlinePresenter.getDropListener(this))
+
         scrollPane = VisScrollPane(tree)
         scrollPane.setFlickScroll(false)
         scrollPane.setFadeScrollBars(false)
         content.add(scrollPane).fill().expand()
 
-        add(VisLabel(TITLE)).expandX().fillX().pad(3f).row()
+        add(VisLabel("Outline")).expandX().fillX().pad(3f).row()
         addSeparator().row()
         add(content).fill().expand()
 
         outlinePresenter.init(this)
 
-        setupDragAndDrop()
         setupListeners()
     }
 
+
     override fun onProjectChanged(event: ProjectChangedEvent) {
         // update to new sceneGraph
-        Log.trace(TAG, "Project changed. Building scene graph.")
+        log.trace("Project changed. Building scene graph.")
         buildTree(projectManager.current.currScene.sceneGraph)
     }
 
     override fun onSceneChanged(event: SceneChangedEvent) {
         // update to new sceneGraph
-        Log.trace(TAG, "Scene changed. Building scene graph.")
+        log.trace("Scene changed. Building scene graph.")
         buildTree(projectManager.current.currScene.sceneGraph)
     }
 
     override fun onSceneGraphChanged(event: SceneGraphChangedEvent) {
-        Log.trace(TAG, "SceneGraph changed. Building scene graph.")
+        log.trace("SceneGraph changed. Building scene graph.")
         buildTree(projectManager.current.currScene.sceneGraph)
     }
 
-    private fun setupDragAndDrop() {
-        // source
-        dragAndDrop.addSource(object : DragAndDrop.Source(tree) {
-            override fun dragStart(event: InputEvent, x: Float, y: Float, pointer: Int): DragAndDrop.Payload? {
-                val node = tree.getNodeAt(y) ?: return null
-
-                val payload = DragAndDrop.Payload()
-                payload.`object` = node
-                return payload
-            }
-        })
-
-        // target
-        dragAndDrop.addTarget(object : DragAndDrop.Target(tree) {
-            override fun drag(
-                source: DragAndDrop.Source,
-                payload: DragAndDrop.Payload,
-                x: Float,
-                y: Float,
-                pointer: Int
-            ): Boolean {
-                // Select node under mouse if not over the selection.
-                val overNode = tree.getNodeAt(y)
-                if (overNode == null && tree.selection.isEmpty) {
-                    return true
-                }
-                if (overNode != null && !tree.selection.contains(overNode)) {
-                    tree.selection.set(overNode)
-                }
-                return true
-            }
-
-            override fun drop(
-                source: DragAndDrop.Source,
-                payload: DragAndDrop.Payload,
-                x: Float,
-                y: Float,
-                pointer: Int
-            ) {
-                val context = projectManager.current
-                val newParent = tree.getNodeAt(y)
-
-                val node: Tree.Node<OutlineNode, GameObject, VisTable> =
-                    (payload.`object` as? Tree.Node<OutlineNode, GameObject, VisTable>) ?: return
-                val draggedGo: GameObject = node.value
-
-                // check if a go is dragged in one of its' children or
-                // itself
-                if (newParent != null) {
-                    val parentGo = newParent.value
-                    if (parentGo.isChildOf(draggedGo)) {
-                        return
-                    }
-                }
-                val oldParent = draggedGo.parent
-
-                // remove child from old parent
-                draggedGo.remove()
-
-                // add to new parent
-                if (newParent == null) {
-                    // recalculate position for root layer
-                    val newPos: Vector3
-                    val draggedPos = Vector3()
-                    draggedGo.getPosition(draggedPos)
-                    // if moved from old parent
-                    if (oldParent != null) {
-                        // new position = oldParentPos + draggedPos
-                        val parentPos = Vector3()
-                        oldParent.getPosition(parentPos)
-                        newPos = parentPos.add(draggedPos)
-                    } else {
-                        // new local position = World position
-                        newPos = draggedPos
-                    }
-                    context.currScene.sceneGraph.addGameObject(draggedGo)
-                    draggedGo.setLocalPosition(newPos.x, newPos.y, newPos.z)
-                } else {
-                    val parentGo = newParent.value
-                    // recalculate position
-                    val parentPos = Vector3()
-                    var draggedPos = Vector3()
-                    // World coorinates
-                    draggedGo.getPosition(draggedPos)
-                    parentGo.getPosition(parentPos)
-
-                    // if gameObject came from old parent
-                    if (oldParent != null) {
-                        // calculate oldParentPos + draggedPos
-                        val oldParentPos = Vector3()
-                        oldParent.getPosition(oldParentPos)
-                        draggedPos = oldParentPos.add(draggedPos)
-                    }
-
-                    // Local in releation to new parent
-                    val newPos = draggedPos.sub(parentPos)
-                    // add
-                    parentGo.addChild(draggedGo)
-                    draggedGo.setLocalPosition(newPos.x, newPos.y, newPos.z)
-                }
-
-                // update tree
-                buildTree(projectManager.current.currScene.sceneGraph)
-            }
-
-        })
-    }
-
     private fun setupListeners() {
-
-        scrollPane.addListener(object : InputListener() {
-            override fun enter(event: InputEvent?, x: Float, y: Float, pointer: Int, fromActor: Actor?) {
-                appUi.scrollFocus = scrollPane
-            }
-
-            override fun exit(event: InputEvent?, x: Float, y: Float, pointer: Int, toActor: Actor?) {
-                appUi.scrollFocus = null
-            }
-
-        })
 
         tree.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
@@ -295,11 +198,12 @@ class Outline(
 
      * @param sceneGraph
      */
-    private fun buildTree(sceneGraph: SceneGraph) {
+    fun buildTree(sceneGraph: SceneGraph) {
         tree.clearChildren()
+        tree.add(OutlineNode.ROOT_NODE)
 
         for (go in sceneGraph.gameObjects) {
-            addGoToTree(null, go)
+            addGoToTree(OutlineNode.ROOT_NODE, go)
         }
     }
 
@@ -310,8 +214,8 @@ class Outline(
      * *
      * @param gameObject
      */
-    private fun addGoToTree(treeParentNode: Tree.Node<OutlineNode, GameObject, NodeTable>?, gameObject: GameObject) {
-        val leaf = OutlineNode(NodeTable(gameObject), gameObject)
+    private fun addGoToTree(treeParentNode: Tree.Node<OutlineNode, GameObject, VisTable>?, gameObject: GameObject) {
+        val leaf = OutlineNode(gameObject)
         if (treeParentNode == null) {
             tree.add(leaf)
         } else {
@@ -348,7 +252,7 @@ class Outline(
      * *            game object on which clone will be added
      */
     private fun duplicateGO(go: GameObject, parent: GameObject) {
-        Log.trace(TAG, "Duplicate [{}] with parent [{}]", go, parent)
+        log.trace("Duplicate [{}] with parent [{}]", go, parent)
         val goCopy = GameObject(go, projectManager.current.obtainID())
 
         // add copy to tree
@@ -368,36 +272,12 @@ class Outline(
 
     override fun onGameObjectSelected(event: GameObjectSelectedEvent) {
         val node = tree.findNode(event.gameObject!!)
-        Log.trace(TAG, "Select game object [{}].", node.value)
+        log.trace("Select game object [{}].", node?.value)
         tree.selection.clear()
         tree.selection.add(node)
         node.expandTo()
     }
 
-    /**
-     * TODO
-     */
-    inner class NodeTable(go: GameObject) : VisTable() {
-
-        val nameLabel: VisLabel = VisLabel()
-
-        init {
-            add(nameLabel).expand().fill()
-            nameLabel.setText(go.name)
-        }
-    }
-
-    inner class OutlineNode(table: NodeTable, gameObject: GameObject) :
-        Tree.Node<OutlineNode, GameObject, NodeTable>(table) {
-
-        init {
-            value = gameObject
-        }
-    }
-
-    /**
-
-     */
     private inner class RightClickMenu : PopupMenu() {
 
         private val addEmpty: MenuItem = MenuItem("Add Empty")
@@ -419,12 +299,12 @@ class Outline(
                     // update outline
                     if (selectedGO == null) {
                         // update sceneGraph
-                        Log.trace(TAG, "Add empty game object [{}] in root node.", go)
+                        log.trace("Add empty game object [{}] in root node.", go)
                         sceneGraph.addGameObject(go)
                         // update outline
                         addGoToTree(null, go)
                     } else {
-                        Log.trace(TAG, "Add empty game object [{}] child in node [{}].", go, selectedGO)
+                        log.trace("Add empty game object [{}] child in node [{}].", go, selectedGO)
                         // update sceneGraph
                         selectedGO!!.addChild(go)
                         // update outline
@@ -439,34 +319,33 @@ class Outline(
             addTerrain.addListener(object : ClickListener() {
                 override fun clicked(event: InputEvent?, x: Float, y: Float) {
                     try {
-                        Log.trace(TAG, "Add terrain game object in root node.")
+                        log.trace("Add terrain game object in root node.")
                         val context = projectManager.current
                         val sceneGraph = context.currScene.sceneGraph
                         val goID = context.obtainID()
                         val name = "Terrain $goID"
                         // create asset
-                        TODO()
-//                        val asset = context.assetManager.createTerraAsset(
-//                            name,
-//                            Terrain.DEFAULT_VERTEX_RESOLUTION, Terrain.DEFAULT_SIZE
-//                        )
-//                        asset.load()
-//                        asset.applyDependencies()
-//
-//                        val terrainGO = createTerrainGO(
-//                            sceneGraph,
-//                            Shaders.terrainShader, goID, name, asset
-//                        )
-//                        // update sceneGraph
-//                        sceneGraph.addGameObject(terrainGO)
-//                        // update outline
-//                        addGoToTree(null, terrainGO)
-//
-//                        context.currScene.terrains.add(asset)
-//                        projectManager.saveProject(context)
-//
-//                        eventBus.post(AssetImportEvent(asset))
-//                        eventBus.post(SceneGraphChangedEvent())
+                        val asset = context.assetManager.createTerrainAsset(
+                            name,
+                            Terrain.DEFAULT_VERTEX_RESOLUTION, Terrain.DEFAULT_SIZE
+                        )
+                        asset.load()
+                        asset.applyDependencies()
+
+                        val terrainGO = createTerrainGO(
+                            sceneGraph,
+                            Shaders.terrainShader, goID, name, asset
+                        )
+                        // update sceneGraph
+                        sceneGraph.addGameObject(terrainGO)
+                        // update outline
+                        addGoToTree(null, terrainGO)
+
+                        context.currScene.terrains.add(asset)
+                        projectManager.saveProject(context)
+
+                        eventBus.post(AssetImportEvent(asset))
+                        eventBus.post(SceneGraphChangedEvent())
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -539,17 +418,16 @@ class Outline(
 
         fun showRenameDialog() {
             val node = tree.findNode(selectedGO!!)
-            val goNode = node.actor as NodeTable
 
             val renameDialog = Dialogs.showInputDialog(appUi, "Rename", "",
                 object : InputDialogAdapter() {
                     override fun finished(input: String?) {
-                        Log.trace(TAG, "Rename game object [{}] to [{}].", selectedGO, input)
+                        log.trace("Rename game object [{}] to [{}].", selectedGO, input)
                         // update sceneGraph
                         selectedGO!!.name = input
                         // update Outline
                         //goNode.name.setText(input + " [" + selectedGO.id + "]");
-                        goNode.nameLabel.setText(input)
+                        node.label.setText(input)
 
                         eventBus.post(SceneGraphChangedEvent())
                     }
@@ -561,9 +439,4 @@ class Outline(
         }
     }
 
-    companion object {
-
-        private val TITLE = "Outline"
-        private val TAG = Outline::class.java.simpleName
-    }
 }

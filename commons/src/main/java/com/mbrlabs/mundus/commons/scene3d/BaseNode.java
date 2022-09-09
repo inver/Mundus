@@ -17,14 +17,18 @@
 package com.mbrlabs.mundus.commons.scene3d;
 
 import com.badlogic.gdx.utils.Array;
+import com.mbrlabs.mundus.commons.scene3d.traversal.DepthFirstIterator;
+import lombok.Getter;
+
+import java.util.Iterator;
 
 /**
- *
  * @author Marcus Brummer
  * @version 22-06-2016
  */
-public abstract class BaseNode<T extends BaseNode> implements Node<T> {
+public abstract class BaseNode<T extends BaseNode<T>> implements Node<T> {
 
+    @Getter
     public final int id;
 
     protected Array<T> children;
@@ -41,17 +45,21 @@ public abstract class BaseNode<T extends BaseNode> implements Node<T> {
 
     @Override
     public void addChild(T child) {
-        if (children == null) children = new Array<T>();
+        if (children == null) {
+            children = new Array<>();
+        }
         children.add(child);
-        child.setParent(this);
+        child.setParent((T) this);
     }
 
     @Override
-    public boolean isChildOf(GameObject other) {
-        for (GameObject go : other) {
-            if (go.id == this.id) return true;
+    public boolean isChildOf(T other) {
+        var iterator = new DepthFirstIterator<T>(other);
+        while (iterator.hasNext()) {
+            if (iterator.next().getId() == id) {
+                return true;
+            }
         }
-
         return false;
     }
 
@@ -73,7 +81,7 @@ public abstract class BaseNode<T extends BaseNode> implements Node<T> {
     @Override
     public void remove() {
         if (parent != null) {
-            parent.getChildren().removeValue(this, true);
+            parent.getChildren().removeValue((T) this, true);
             this.parent = null;
         }
     }

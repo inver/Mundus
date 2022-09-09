@@ -12,6 +12,7 @@ import com.mbrlabs.mundus.commons.assets.material.MaterialAsset;
 import com.mbrlabs.mundus.commons.assets.material.MaterialService;
 import com.mbrlabs.mundus.commons.assets.meta.Meta;
 import com.mbrlabs.mundus.commons.assets.meta.MetaService;
+import com.mbrlabs.mundus.commons.assets.meta.MetaTerrain;
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset;
 import com.mbrlabs.mundus.commons.assets.model.ModelService;
 import com.mbrlabs.mundus.commons.assets.pixmap.PixmapTextureAsset;
@@ -29,6 +30,10 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import java.io.BufferedOutputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -176,6 +181,53 @@ public class EditorAssetManager extends AssetManager {
         addAsset(asset);
         return asset;
     }
+
+    @SneakyThrows
+    public TerrainAsset createTerrainAsset(String name, int vertexResolution, int size) {
+        var terraFilename = name + ".terrain";
+        var metaFilename = terraFilename + "meta";
+
+        // create meta file
+        var metaPath = FilenameUtils.concat(rootFolder.path(), metaFilename);
+        var meta = createNewMetaFile(new FileHandle(metaPath), AssetType.TERRAIN);
+        meta.setTerrain(new MetaTerrain());
+        meta.getTerrain().setSize(size);
+        meta.getTerrain().setUv(60f);
+        metaSaver.save(meta);
+
+        // create terra file
+        var terraPath = FilenameUtils.concat(rootFolder.path(), terraFilename);
+        var terraFile = new File(terraPath);
+        FileUtils.touch(terraFile);
+
+        // create initial height data
+        var data = new float[vertexResolution * vertexResolution];
+
+        // write terra file
+        var outputStream = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(terraFile)));
+        for (var f : data) {
+            outputStream.writeFloat(f);
+        }
+        outputStream.flush();
+        outputStream.close();
+
+        // load & apply standard chessboard texture
+        var asset = new TerrainAsset(meta, new FileHandle(terraFile));
+        asset.load();
+
+        //todo
+        // set base texture
+//        var chessboard = findAssetByID(STANDARD_ASSET_TEXTURE_CHESSBOARD)
+//        if (chessboard != null) {
+//            asset.splatBase = chessboard as TextureAsset
+//            asset.applyDependencies()
+//            metaSaver.save(asset.meta)
+//        }
+
+        addAsset(asset);
+        return asset;
+    }
+
 
     private String clearedUUID() {
         return UUID.randomUUID().toString().replaceAll("-", "");

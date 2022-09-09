@@ -29,7 +29,7 @@ import com.badlogic.gdx.math.Vector3;
  * @author Marcus Brummer
  * @version 09-06-2016
  */
-public class SimpleNode<T extends SimpleNode> extends BaseNode<T> {
+public class SimpleNode<T extends SimpleNode<T>> extends BaseNode<T> {
 
     static boolean WORLD_SPACE_TRANSFORM = true;
     private static Matrix4 tempMat = new Matrix4();
