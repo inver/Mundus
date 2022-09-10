@@ -26,4 +26,17 @@ public class DirectionalLight extends BaseLight {
 
     public final Vector3 direction = new Vector3();
 
+    public DirectionalLight() {
+    }
+
+    public DirectionalLight(final DirectionalLight copyFrom) {
+        intensity = copyFrom.intensity;
+        color.set(copyFrom.color);
+        direction.set(copyFrom.direction);
+    }
+
+    @Override
+    public DirectionalLight copy() {
+        return new DirectionalLight(this);
+    }
 }

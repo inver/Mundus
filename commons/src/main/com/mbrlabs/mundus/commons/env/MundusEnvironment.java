@@ -54,6 +54,22 @@ public class MundusEnvironment extends Environment {
         return this;
     }
 
+    public MundusEnvironment remove(SunLight light) {
+        SunLightsAttribute sunLights = ((SunLightsAttribute) get(SunLightsAttribute.Type));
+        if (sunLights != null) {
+            sunLights.lights.removeValue(light, true);
+        }
+        return this;
+    }
+
+    public MundusEnvironment remove(DirectionalLight light) {
+        DirectionalLightsAttribute dirLights = ((DirectionalLightsAttribute) get(DirectionalLightsAttribute.Type));
+        if (dirLights != null) {
+            dirLights.lights.removeValue(light, true);
+        }
+        return this;
+    }
+
     public BaseLight getAmbientLight() {
         return ambientLight;
     }
@@ -69,5 +85,4 @@ public class MundusEnvironment extends Environment {
     public void setFog(Fog fog) {
         this.fog = fog;
     }
-
 }
