@@ -19,9 +19,8 @@ package com.mbrlabs.mundus.editor.core.project;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.mbrlabs.mundus.editor.assets.EditorAssetManager;
-import com.mbrlabs.mundus.editor.assets.OldEditorAssetManager;
 import com.mbrlabs.mundus.editor.core.EditorScene;
-import com.mbrlabs.mundus.editor.utils.Log;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -34,9 +33,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author Marcus Brummer
  * @version 28-11-2015
  */
+@Slf4j
 public class ProjectContext implements Disposable {
-
-    private static final String TAG = ProjectContext.class.getSimpleName();
 
     public ProjectSettings settings;
     public String path;
@@ -47,7 +45,7 @@ public class ProjectContext implements Disposable {
 
     public EditorAssetManager assetManager;
 
-    private AtomicInteger idProvider;
+    private final AtomicInteger idProvider;
 
     /**
      * set by kryo when project is loaded. do not use this
@@ -75,7 +73,7 @@ public class ProjectContext implements Disposable {
 
     @Override
     public void dispose() {
-        Log.debug(TAG, "Disposing current project: {}", path);
+        log.debug("Disposing current project: {}", path);
         if (assetManager != null) {
             assetManager.dispose();
         }

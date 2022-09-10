@@ -42,7 +42,7 @@ class DockBar(private val splitPane: MundusSplitPane, private val dockBarPresent
             VisUI.getSkin().get("toggle", VisTextButton.VisTextButtonStyle::class.java)
         )
 
-        initAssetDoc(assetsDock)
+        dockBarPresenter.initAssetDock(assetsDock)
         initLogBar(logBar)
 
         tabbedPane = TabbedPane(style)
@@ -58,12 +58,6 @@ class DockBar(private val splitPane: MundusSplitPane, private val dockBarPresent
 
     private fun initLogBar(logBar: LogBar) {
         dockBarPresenter.iniLogBar(logBar)
-    }
-
-    private fun initAssetDoc(assetsDock: AssetsDock) {
-        dockBarPresenter.initAssetDock(assetsDock)
-        dockBarPresenter.initAppAssets(assetsDock.appAssets)
-        dockBarPresenter.initProjectAssets(assetsDock.projectAssets)
     }
 
     override fun switchedTab(tab: Tab?) {

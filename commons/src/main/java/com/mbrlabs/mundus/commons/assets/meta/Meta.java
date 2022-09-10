@@ -44,7 +44,7 @@ public class Meta {
     private MetaModel model;
     private MetaTerrain terrain;
 
-    private FileHandle file;
+    private final FileHandle file;
 
     public Meta(FileHandle file) {
         this.file = file;

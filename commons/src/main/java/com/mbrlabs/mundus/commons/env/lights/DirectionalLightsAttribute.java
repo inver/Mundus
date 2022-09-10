@@ -30,13 +30,13 @@ public class DirectionalLightsAttribute extends Attribute {
 
     public final static long Type = register(Alias);
 
-    public final static boolean is(final long mask) {
+    public static boolean is(final long mask) {
         return (mask & Type) == mask;
     }
 
     public DirectionalLightsAttribute() {
         super(Type);
-        lights = new Array<DirectionalLight>(1);
+        lights = new Array<>(1);
     }
 
     public DirectionalLightsAttribute(final DirectionalLightsAttribute copyFrom) {
@@ -52,8 +52,9 @@ public class DirectionalLightsAttribute extends Attribute {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        for (DirectionalLight light : lights)
+        for (DirectionalLight light : lights) {
             result = 1237 * result + (light == null ? 0 : light.hashCode());
+        }
         return result;
     }
 

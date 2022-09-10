@@ -30,8 +30,6 @@ import java.util.Objects;
  */
 public class TerrainComponent extends AbstractComponent implements AssetUsage {
 
-    private static final String TAG = TerrainComponent.class.getSimpleName();
-
     protected TerrainAsset terrain;
     protected Shader shader;
 

@@ -22,6 +22,10 @@ import com.mbrlabs.mundus.commons.assets.terrain.TerrainService;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
 import com.mbrlabs.mundus.commons.assets.texture.TextureService;
 import com.mbrlabs.mundus.commons.core.ModelFiles;
+import com.mbrlabs.mundus.commons.scene3d.GameObject;
+import com.mbrlabs.mundus.commons.scene3d.SceneGraph;
+import com.mbrlabs.mundus.editor.scene3d.components.PickableModelComponent;
+import com.mbrlabs.mundus.editor.shader.Shaders;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -228,6 +232,33 @@ public class EditorAssetManager extends AssetManager {
         return asset;
     }
 
+    public void deleteAsset(Asset asset) {
+//        val objectsUsingAsset = findAssetUsagesInScenes(projectManager, asset)
+//        val assetsUsingAsset = findAssetUsagesInAssets(asset)
+//
+//        if (objectsUsingAsset.isNotEmpty() || assetsUsingAsset.isNotEmpty()) {
+//            showUsagesFoundDialog(objectsUsingAsset, assetsUsingAsset)
+//            return
+//        }
+//
+//        // continue with deletion
+//        assets?.removeValue(asset, true)
+//
+//        if (asset.file.extension().equals(FileFormatUtils.FORMAT_3D_GLTF)) {
+//            // Delete the additional gltf binary file if found
+//            val binPath = asset.file.pathWithoutExtension() + ".bin"
+//            val binFile = Gdx.files.getFileHandle(binPath, Files.FileType.Absolute)
+//            if (binFile.exists())
+//                binFile.delete()
+//        }
+//
+//        if (asset.meta.file.exists())
+//            asset.meta.file.delete()
+//
+//        if (asset.file.exists())
+//            asset.file.delete()
+    }
+
 
     private String clearedUUID() {
         return UUID.randomUUID().toString().replaceAll("-", "");
@@ -241,5 +272,21 @@ public class EditorAssetManager extends AssetManager {
 
     public void dirty(Asset asset) {
         dirtyAssets.add(asset);
+    }
+
+    public GameObject convert(SceneGraph sceneGraph, int goID, String name, Asset asset) {
+        var res = new GameObject(sceneGraph, name, goID);
+
+        if (asset.getType() == AssetType.MODEL) {
+            var modelAsset = (ModelAsset) asset;
+
+            var modelComponent = new PickableModelComponent(res, Shaders.INSTANCE.getModelShader());
+            modelComponent.setModel(modelAsset, true);
+            modelComponent.encodeRaypickColorId();
+
+            res.getComponents().add(modelComponent);
+        }
+
+        return res;
     }
 }

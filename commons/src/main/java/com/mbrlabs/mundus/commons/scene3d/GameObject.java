@@ -66,7 +66,7 @@ public class GameObject extends SimpleNode<GameObject> implements Iterable<GameO
 
         // copy tags
         if (tags != null) {
-            Array<String> newTags = new Array<String>();
+            Array<String> newTags = new Array<>();
             for (String t : gameObject.tags) {
                 newTags.add(t);
             }

@@ -30,7 +30,7 @@ public class SunLightsAttribute extends Attribute {
 
     public final static long Type = register(Alias);
 
-    public final static boolean is(final long mask) {
+    public static boolean is(final long mask) {
         return (mask & Type) == mask;
     }
 
