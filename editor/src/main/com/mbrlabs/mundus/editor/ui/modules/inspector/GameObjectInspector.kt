@@ -22,7 +22,6 @@ import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.mbrlabs.mundus.commons.scene3d.GameObject
 import com.mbrlabs.mundus.commons.scene3d.components.Component
-import com.mbrlabs.mundus.commons.scene3d.components.DirectionalLightComponent
 import com.mbrlabs.mundus.commons.scene3d.components.ModelComponent
 import com.mbrlabs.mundus.commons.scene3d.components.TerrainComponent
 import com.mbrlabs.mundus.editor.config.UiWidgetsHolder
@@ -30,11 +29,7 @@ import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.history.CommandHistory
 import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
-import com.mbrlabs.mundus.editor.ui.modules.inspector.components.ComponentWidget
-import com.mbrlabs.mundus.editor.ui.modules.inspector.components.DirectionalLightComponentWidget
-import com.mbrlabs.mundus.editor.ui.modules.inspector.components.IdentifierWidget
-import com.mbrlabs.mundus.editor.ui.modules.inspector.components.ModelComponentWidget
-import com.mbrlabs.mundus.editor.ui.modules.inspector.components.TransformWidget
+import com.mbrlabs.mundus.editor.ui.modules.inspector.components.*
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.TerrainComponentWidget
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.TerrainWidgetPresenter
 
@@ -121,7 +116,14 @@ class GameObjectInspector(
                         )
                     )
                 } else if (component.type == Component.Type.LIGHT) {
-                    componentWidgets.add(DirectionalLightComponentWidget(component as DirectionalLightComponent))
+                    componentWidgets.add(
+                        DirectionalLightComponentWidget(
+                            uiWidgetsHolder.separatorStyle,
+                            component as DirectionalLightComponent,
+                            uiWidgetsHolder,
+                            appUi
+                        )
+                    )
                 }
             }
         }

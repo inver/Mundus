@@ -17,11 +17,7 @@
 package com.mbrlabs.mundus.commons.env;
 
 import com.badlogic.gdx.graphics.g3d.Environment;
-import com.mbrlabs.mundus.commons.env.lights.BaseLight;
-import com.mbrlabs.mundus.commons.env.lights.DirectionalLight;
-import com.mbrlabs.mundus.commons.env.lights.DirectionalLightsAttribute;
-import com.mbrlabs.mundus.commons.env.lights.SunLight;
-import com.mbrlabs.mundus.commons.env.lights.SunLightsAttribute;
+import com.mbrlabs.mundus.commons.env.lights.*;
 
 /**
  * @author Marcus Brummer
@@ -51,7 +47,9 @@ public class MundusEnvironment extends Environment {
 
     public MundusEnvironment add(DirectionalLight light) {
         DirectionalLightsAttribute dirLights = ((DirectionalLightsAttribute) get(DirectionalLightsAttribute.Type));
-        if (dirLights == null) set(dirLights = new DirectionalLightsAttribute());
+        if (dirLights == null) {
+            set(dirLights = new DirectionalLightsAttribute());
+        }
         dirLights.lights.add(light);
 
         return this;

@@ -41,9 +41,9 @@ import com.mbrlabs.mundus.editor.shader.Shaders
 import com.mbrlabs.mundus.editor.tools.ToolManager
 import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.utils.Fa
+import com.mbrlabs.mundus.editor.utils.createDirectionalLightGO
 import com.mbrlabs.mundus.editor.utils.createTerrainGO
 import mu.KotlinLogging
-import com.mbrlabs.mundus.editor.utils.createDirectionalLightGO
 
 /**
  * Outline shows overview about all game objects in the scene
@@ -398,27 +398,27 @@ class Outline(
 
             addDirectionalLight.addListener(object : ClickListener() {
                 override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                    val sceneGraph = projectManager.current().currScene.sceneGraph
-                    val id = projectManager.current().obtainID()
+                    val sceneGraph = projectManager.current.currScene.sceneGraph
+                    val id = projectManager.current.obtainID()
                     val name = "Directional light " + id
                     val go = createDirectionalLightGO(sceneGraph, id, name)
 
                     // update outline
                     if (selectedGO == null) {
                         // update sceneGraph
-                        Log.trace(TAG, "Add directional light game object [{}] in root node.", go)
+                        log.debug("Add directional light game object [{}] in root node.", go)
                         sceneGraph.addGameObject(go)
                         // update outline
                         addGoToTree(null, go)
                     } else {
-                        Log.trace(TAG, "Add directional light game object [{}] child in node [{}].", go, selectedGO)
+                        log.debug("Add directional light game object [{}] child in node [{}].", go, selectedGO)
                         // update sceneGraph
                         selectedGO!!.addChild(go)
                         // update outline
                         val n = tree.findNode(selectedGO!!)
                         addGoToTree(n, go)
                     }
-                    Mundus.postEvent(SceneGraphChangedEvent())
+                    eventBus.post(SceneGraphChangedEvent())
                 }
             })
 

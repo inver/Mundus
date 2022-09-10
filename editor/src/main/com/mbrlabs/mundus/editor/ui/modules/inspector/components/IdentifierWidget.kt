@@ -41,10 +41,10 @@ class IdentifierWidget(private val projectManager: ProjectManager) : VisTable() 
     }
 
     private fun setupUI() {
-        add<VisCheckBox>(active).padBottom(4f).left().top()
-        add<VisTextField>(name).padBottom(4f).left().top().expandX().fillX().row()
+        add(active).padBottom(4f).left().top()
+        add(name).padBottom(4f).left().top().expandX().fillX().row()
         add(VisLabel("Tag: ")).left().top()
-        add<VisTextField>(tag).top().left().expandX().fillX().row()
+        add(tag).top().left().expandX().fillX().row()
     }
 
     private fun setupListeners() {
