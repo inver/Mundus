@@ -18,7 +18,6 @@ package com.mbrlabs.mundus.editor.history.commands
 
 import com.badlogic.gdx.math.Vector3
 import com.mbrlabs.mundus.commons.scene3d.GameObject
-import com.mbrlabs.mundus.editor.Mundus
 import com.mbrlabs.mundus.editor.events.GameObjectModifiedEvent
 import com.mbrlabs.mundus.editor.history.Command
 
@@ -50,13 +49,11 @@ class TranslateCommand(private var go: GameObject?) : Command {
     override fun execute() {
         go!!.setLocalPosition(after.x, after.y, after.z)
         modEvent.gameObject = go
-        Mundus.postEvent(modEvent)
     }
 
     override fun undo() {
         go!!.setLocalPosition(before.x, before.y, before.z)
         modEvent.gameObject = go
-        Mundus.postEvent(modEvent)
     }
 
 }

@@ -27,13 +27,15 @@ import com.mbrlabs.mundus.editor.tools.brushes.TerrainBrush
  * @author Marcus Brummer
  * @version 30-01-2016
  */
-class TerrainUpDownTab(private val parent: TerrainComponentWidget) : Tab(false, false) {
+class TerrainUpDownTab(parent: TerrainComponentWidget) : Tab(false, false) {
     private val table = VisTable()
+
+    val grid = TerrainBrushGrid(parent, TerrainBrush.BrushMode.RAISE_LOWER)
 
     init {
         table.align(Align.left)
         table.add(VisLabel("Hold shift to lower")).center().row()
-        table.add(TerrainBrushGrid(this.parent, TerrainBrush.BrushMode.RAISE_LOWER)).expandX().fillX().row()
+        table.add(grid).expandX().fillX().row()
     }
 
     override fun getTabTitle(): String {

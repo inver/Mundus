@@ -16,28 +16,22 @@
 
 package com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain
 
-import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.badlogic.gdx.utils.Align
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.tabbedpane.Tab
-import com.mbrlabs.mundus.editor.Mundus
-import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.ui.widgets.ImprovedSlider
 
 /**
  * @author Marcus Brummer
  * @version 30-01-2016
  */
-class TerrainSettingsTab(private val parentWidget: TerrainComponentWidget) : Tab(false, false) {
+class TerrainSettingsTab(val parentWidget: TerrainComponentWidget) :
+    Tab(false, false) {
 
     private val table = VisTable()
-    private val uvSlider = ImprovedSlider(.5f, 120f, .5f)
-
-    private val projectManager: ProjectManager = Mundus.inject()
+    val uvSlider = ImprovedSlider(.5f, 120f, .5f)
 
     init {
         table.align(Align.left)
@@ -46,13 +40,6 @@ class TerrainSettingsTab(private val parentWidget: TerrainComponentWidget) : Tab
         table.add(VisLabel("UV scale")).left().row()
         uvSlider.value = parentWidget.component.terrain.terrain.uvScale.x
         table.add(uvSlider).expandX().fillX().row()
-        uvSlider.addListener(object : ChangeListener() {
-            override fun changed(event: ChangeEvent, actor: Actor) {
-                val assetManager = projectManager.current().assetManager
-                assetManager.addDirtyAsset(parentWidget.component.terrain)
-                parentWidget.component.updateUVs(Vector2(uvSlider.value, uvSlider.value))
-            }
-        })
     }
 
     override fun getTabTitle(): String {

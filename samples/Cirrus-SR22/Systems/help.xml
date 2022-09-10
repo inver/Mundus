@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<PropertyList>
+
+  <title>Cirrus SR22</title>
+  <line>______________________________________________</line>
+  <key>
+    <name>d</name>
+    <desc>Open/Close crew door</desc>
+  </key>
+  <key>
+    <name>Shift+D</name>
+    <desc>Open/Close passenger door</desc>
+  </key>
+  <key>
+    <name>e</name>
+    <desc>Open/Close cargo door</desc>
+  </key>
+  <key>
+    <name>L</name>
+    <desc>Lock/unlock castering nose wheel</desc>
+  </key>
+  <key>
+    <name>Shift+L</name>
+    <desc>On/Off Landing light</desc>
+  </key>
+  
+</PropertyList>

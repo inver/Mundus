@@ -30,7 +30,7 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.file.FileChooser;
 import com.kotcrab.vis.ui.widget.file.SingleFileChooserListener;
-import com.mbrlabs.mundus.editor.ui.UI;
+import com.mbrlabs.mundus.editor.ui.AppUi;
 import com.mbrlabs.mundus.editor.utils.FileFormatUtils;
 
 /**
@@ -50,9 +50,14 @@ public class ImageChooserField extends VisTable {
     private Texture texture;
     private FileHandle fileHandle;
 
-    public ImageChooserField(int width) {
+    private final AppUi appUi;
+    private final FileChooser fileChooser;
+
+    public ImageChooserField(AppUi appUi, int width, FileChooser fileChooser) {
         super();
+        this.appUi = appUi;
         this.width = width;
+        this.fileChooser = fileChooser;
         fcBtn = new VisTextButton("Select");
         img = new Image(PLACEHOLDER_IMG);
 
@@ -98,18 +103,17 @@ public class ImageChooserField extends VisTable {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                FileChooser fileChooser = UI.INSTANCE.getFileChooser();
                 fileChooser.setSelectionMode(FileChooser.SelectionMode.FILES);
                 fileChooser.setListener(new SingleFileChooserListener() {
                     public void selected(FileHandle file) {
                         if (FileFormatUtils.isImage(file)) {
                             setImage(file);
                         } else {
-                            Dialogs.showErrorDialog(UI.INSTANCE, "This is no image");
+                            Dialogs.showErrorDialog(appUi, "This is no image");
                         }
                     }
                 });
-                UI.INSTANCE.addActor(fileChooser.fadeIn());
+                appUi.addActor(fileChooser.fadeIn());
             }
         });
     }

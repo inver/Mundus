@@ -25,16 +25,20 @@ import com.kotcrab.vis.ui.VisUI
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
-import com.mbrlabs.mundus.editor.Mundus
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.input.FreeCamController
 import com.mbrlabs.mundus.editor.utils.formatFloat
+import org.springframework.stereotype.Component
 
 /**
  * @author Marcus Brummer
  * @version 24-11-2015
  */
-class StatusBar : VisTable() {
+@Component
+class StatusBar(
+    private val freeCamController: FreeCamController,
+    private val projectManager: ProjectManager
+) : VisTable() {
 
     private val root = VisTable()
     private val left = VisTable()
@@ -46,9 +50,6 @@ class StatusBar : VisTable() {
     private val speed01 = VisTextButton(".1")
     private val speed1 = VisTextButton("1")
     private val speed10 = VisTextButton("10")
-
-    private val freeCamController: FreeCamController = Mundus.inject()
-    private val projectManager: ProjectManager = Mundus.inject()
 
     init {
         background = VisUI.getSkin().getDrawable("menu-bg")
@@ -98,7 +99,7 @@ class StatusBar : VisTable() {
 
     override fun act(delta: Float) {
         setFps(Gdx.graphics.framesPerSecond)
-        setCamPos(projectManager.current().currScene.cam.position)
+        setCamPos(projectManager.current.currScene.cam.position)
         super.act(delta)
     }
 
@@ -107,8 +108,10 @@ class StatusBar : VisTable() {
     }
 
     private fun setCamPos(pos: Vector3) {
-        camPos.setText("camPos: " + formatFloat(pos.x, 2) + ", " + formatFloat(pos.y, 2) + ", "
-                + formatFloat(pos.z, 2))
+        camPos.setText(
+            "camPos: " + formatFloat(pos.x, 2) + ", " + formatFloat(pos.y, 2) + ", "
+                    + formatFloat(pos.z, 2)
+        )
     }
 
 }

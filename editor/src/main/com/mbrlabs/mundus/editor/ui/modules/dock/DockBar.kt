@@ -29,29 +29,35 @@ import com.mbrlabs.mundus.editor.ui.widgets.MundusSplitPane
  * @author Marcus Brummer
  * @version 08-12-2015
  */
-class DockBar(private val splitPane: MundusSplitPane) : VisTable(), TabbedPaneListener {
+class DockBar(private val splitPane: MundusSplitPane, private val dockBarPresenter: DockBarPresenter) : VisTable(),
+    TabbedPaneListener {
 
     private val assetsDock = AssetsDock()
     private val logBar = LogBar()
     private val tabbedPane: TabbedPane
 
-
     init {
-        val style = TabbedPane.TabbedPaneStyle(
-                VisUI.getSkin().get(TabbedPane.TabbedPaneStyle::class.java))
+        val style = TabbedPane.TabbedPaneStyle(VisUI.getSkin().get(TabbedPane.TabbedPaneStyle::class.java))
         style.buttonStyle = VisTextButton.VisTextButtonStyle(
-                VisUI.getSkin().get("toggle", VisTextButton.VisTextButtonStyle::class.java))
+            VisUI.getSkin().get("toggle", VisTextButton.VisTextButtonStyle::class.java)
+        )
+
+        dockBarPresenter.initAssetDock(assetsDock)
+        initLogBar(logBar)
 
         tabbedPane = TabbedPane(style)
         tabbedPane.isAllowTabDeselect = true
         tabbedPane.addListener(this)
-
         tabbedPane.add(assetsDock)
         tabbedPane.add(logBar)
         add(tabbedPane.table).expandX().fillX().left().bottom().height(30f).row()
 
         // Keeping asset tab the default active tab
         tabbedPane.switchTab(assetsDock)
+    }
+
+    private fun initLogBar(logBar: LogBar) {
+        dockBarPresenter.iniLogBar(logBar)
     }
 
     override fun switchedTab(tab: Tab?) {

@@ -9,6 +9,7 @@ import com.mbrlabs.mundus.editor.core.project.ProjectContext;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.history.HistoryTest;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.lwjgl.system.CallbackI;
 
@@ -20,6 +21,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
+@Ignore
 public class ExporterTest {
 
     private Exporter exporter;

@@ -17,7 +17,7 @@
 package com.mbrlabs.mundus.editor.core.converter;
 
 import com.mbrlabs.mundus.commons.assets.Asset;
-import com.mbrlabs.mundus.commons.assets.TerrainAsset;
+import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset;
 import com.mbrlabs.mundus.commons.dto.TerrainComponentDTO;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.editor.scene3d.components.PickableTerrainComponent;

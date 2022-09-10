@@ -23,7 +23,7 @@ package com.mbrlabs.mundus.editor.events
  * @author Marcus Brummer
  * @version 07-02-2016
  */
-class GlobalBrushSettingsChangedEvent {
+class GlobalBrushSettingsChangedEvent: Event {
 
     interface GlobalBrushSettingsChangedListener {
         @Subscribe

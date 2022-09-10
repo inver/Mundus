@@ -18,11 +18,13 @@ package com.mbrlabs.mundus.editor.input
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
+import org.springframework.stereotype.Component
 
 /**
  * @author Marcus Brummer
  * @version 07-12-2015
  */
+@Component
 class InputManager : InputMultiplexer() {
 
     init {

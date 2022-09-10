@@ -23,9 +23,7 @@ import com.kotcrab.vis.ui.widget.VisDialog
  * @version 25-11-2015
  */
 open class BaseDialog(title: String) : VisDialog(title) {
-
     init {
         addCloseButton()
     }
-
 }

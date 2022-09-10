@@ -16,17 +16,17 @@
 
 package com.mbrlabs.mundus.editor.core.kryo;
 
-import java.util.Locale;
-
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.JsonWriter;
+import com.mbrlabs.mundus.commons.core.registry.KeyboardLayout;
+import com.mbrlabs.mundus.commons.core.registry.ProjectRef;
+import com.mbrlabs.mundus.commons.core.registry.Registry;
+import com.mbrlabs.mundus.commons.core.registry.Settings;
 import com.mbrlabs.mundus.editor.core.kryo.descriptors.*;
 import com.mbrlabs.mundus.editor.core.project.ProjectContext;
 import com.mbrlabs.mundus.editor.core.project.ProjectSettings;
-import com.mbrlabs.mundus.editor.core.registry.KeyboardLayout;
-import com.mbrlabs.mundus.editor.core.registry.ProjectRef;
-import com.mbrlabs.mundus.editor.core.registry.Registry;
-import com.mbrlabs.mundus.editor.core.registry.Settings;
+
+import java.util.Locale;
 
 /**
  * Converts runtime formats into Kryo compatible formats for internal project

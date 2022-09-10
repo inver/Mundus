@@ -17,8 +17,8 @@
 package com.mbrlabs.mundus.editor.core.converter;
 
 import com.mbrlabs.mundus.commons.assets.Asset;
-import com.mbrlabs.mundus.commons.assets.MaterialAsset;
-import com.mbrlabs.mundus.commons.assets.ModelAsset;
+import com.mbrlabs.mundus.commons.assets.material.MaterialAsset;
+import com.mbrlabs.mundus.commons.assets.model.ModelAsset;
 import com.mbrlabs.mundus.commons.dto.ModelComponentDTO;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.editor.scene3d.components.PickableModelComponent;

@@ -28,13 +28,14 @@ import com.mbrlabs.mundus.editor.scene3d.components.PickableComponent;
  * Renders a scene graph to an offscreen FBO, encodes the game object's id in
  * the game object's render color (see GameObjectPickerShader) and does mouse
  * picking by decoding the picked color.
- *
+ * <p>
  * See also:
  * http://www.opengl-tutorial.org/miscellaneous/clicking-on-objects/picking-with-an-opengl-hack/
  *
  * @author Marcus Brummer
  * @version 20-02-2016
  */
+@org.springframework.stereotype.Component
 public class GameObjectPicker extends BasePicker {
 
     public GameObjectPicker() {

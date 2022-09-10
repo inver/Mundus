@@ -1,4 +1,3 @@
 include 'editor'
 include 'commons'
-include 'gdx-runtime'
 

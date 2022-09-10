@@ -20,9 +20,9 @@ import com.badlogic.gdx.math.Quaternion
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
+import com.kotcrab.vis.ui.widget.Separator.SeparatorStyle
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.mbrlabs.mundus.commons.scene3d.GameObject
-import com.mbrlabs.mundus.editor.Mundus
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.history.CommandHistory
 import com.mbrlabs.mundus.editor.history.commands.RotateCommand
@@ -36,7 +36,11 @@ import com.mbrlabs.mundus.editor.utils.formatFloat
  * @author Marcus Brummer
  * @version 16-01-2016
  */
-class TransformWidget : BaseInspectorWidget("Transformation") {
+class TransformWidget(
+    separator: SeparatorStyle,
+    private val projectManager: ProjectManager,
+    private val history: CommandHistory
+) : BaseInspectorWidget(separator, "Transformation") {
 
     companion object {
         private val tempV3 = Vector3()
@@ -56,9 +60,6 @@ class TransformWidget : BaseInspectorWidget("Transformation") {
     private val scaleY = FloatFieldWithLabel("y", FIELD_SIZE)
     private val scaleZ = FloatFieldWithLabel("z", FIELD_SIZE)
 
-    private val history: CommandHistory = Mundus.inject()
-    private val projectManager: ProjectManager = Mundus.inject()
-
     init {
         isDeletable = false
         setupUI()
@@ -68,7 +69,7 @@ class TransformWidget : BaseInspectorWidget("Transformation") {
     private fun setupUI() {
         val pad = 4
         collapsibleContent.add(VisLabel("Position: ")).padRight(5f).padBottom(pad.toFloat()).left()
-        collapsibleContent.add<FloatFieldWithLabel>(posX).padBottom(pad.toFloat()).padRight(pad.toFloat())
+        collapsibleContent.add(posX).padBottom(pad.toFloat()).padRight(pad.toFloat())
         collapsibleContent.add<FloatFieldWithLabel>(posY).padBottom(pad.toFloat()).padRight(pad.toFloat())
         collapsibleContent.add<FloatFieldWithLabel>(posZ).padBottom(pad.toFloat()).row()
 
@@ -88,7 +89,7 @@ class TransformWidget : BaseInspectorWidget("Transformation") {
         // position
         posX.addListener(object : ChangeListener() {
             override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
-                val projectContext = projectManager.current()
+                val projectContext = projectManager.current
                 val go = projectContext.currScene.currentSelection ?: return
                 val command = TranslateCommand(go)
                 val pos = go.getLocalPosition(tempV3)
@@ -100,7 +101,7 @@ class TransformWidget : BaseInspectorWidget("Transformation") {
         })
         posY.addListener(object : ChangeListener() {
             override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
-                val projectContext = projectManager.current()
+                val projectContext = projectManager.current
                 val go = projectContext.currScene.currentSelection ?: return
                 val command = TranslateCommand(go)
                 val pos = go.getLocalPosition(tempV3)
@@ -112,7 +113,7 @@ class TransformWidget : BaseInspectorWidget("Transformation") {
         })
         posZ.addListener(object : ChangeListener() {
             override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
-                val projectContext = projectManager.current()
+                val projectContext = projectManager.current
                 val go = projectContext.currScene.currentSelection ?: return
                 val command = TranslateCommand(go)
                 val pos = go.getLocalPosition(tempV3)
@@ -126,7 +127,7 @@ class TransformWidget : BaseInspectorWidget("Transformation") {
         // rotation
         rotX.addListener(object : ChangeListener() {
             override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
-                val projectContext = projectManager.current()
+                val projectContext = projectManager.current
                 val go = projectContext.currScene.currentSelection ?: return
                 val rot = go.getLocalRotation(tempQuat)
                 val rotateCommand = RotateCommand(go)
@@ -139,7 +140,7 @@ class TransformWidget : BaseInspectorWidget("Transformation") {
         })
         rotY.addListener(object : ChangeListener() {
             override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
-                val projectContext = projectManager.current()
+                val projectContext = projectManager.current
                 val go = projectContext.currScene.currentSelection ?: return
                 val rot = go.getLocalRotation(tempQuat)
                 val rotateCommand = RotateCommand(go)
@@ -152,7 +153,7 @@ class TransformWidget : BaseInspectorWidget("Transformation") {
         })
         rotZ.addListener(object : ChangeListener() {
             override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
-                val projectContext = projectManager.current()
+                val projectContext = projectManager.current
                 val go = projectContext.currScene.currentSelection ?: return
                 val rot = go.getLocalRotation(tempQuat)
                 val rotateCommand = RotateCommand(go)
@@ -167,7 +168,7 @@ class TransformWidget : BaseInspectorWidget("Transformation") {
         // scale
         scaleX.addListener(object : ChangeListener() {
             override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
-                val projectContext = projectManager.current()
+                val projectContext = projectManager.current
                 val go = projectContext.currScene.currentSelection
                 if (go != null && scaleX.float > 0f) {
                     val command = ScaleCommand(go)
@@ -181,7 +182,7 @@ class TransformWidget : BaseInspectorWidget("Transformation") {
         })
         scaleY.addListener(object : ChangeListener() {
             override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
-                val projectContext = projectManager.current()
+                val projectContext = projectManager.current
                 val go = projectContext.currScene.currentSelection
                 if (go != null && scaleY.float > 0f) {
                     val command = ScaleCommand(go)
@@ -195,7 +196,7 @@ class TransformWidget : BaseInspectorWidget("Transformation") {
         })
         scaleZ.addListener(object : ChangeListener() {
             override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
-                val projectContext = projectManager.current()
+                val projectContext = projectManager.current
                 val go = projectContext.currScene.currentSelection
                 if (go != null && scaleZ.float > 0f) {
                     val command = ScaleCommand(go)

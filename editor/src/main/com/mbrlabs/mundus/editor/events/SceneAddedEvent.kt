@@ -22,7 +22,7 @@ import com.mbrlabs.mundus.commons.Scene
  * @author Marcus Brummer
  * @version 21-01-2016
  */
-class SceneAddedEvent(var scene: Scene?) {
+class SceneAddedEvent(var scene: Scene?): Event {
 
     interface SceneAddedListener {
         @Subscribe

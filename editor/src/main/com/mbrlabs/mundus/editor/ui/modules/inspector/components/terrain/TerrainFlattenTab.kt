@@ -30,14 +30,12 @@ import com.mbrlabs.mundus.editor.tools.brushes.TerrainBrush
 class TerrainFlattenTab(parent: TerrainComponentWidget) : Tab(false, false) {
 
     private val table = VisTable()
-    private val brushGrid: TerrainBrushGrid
+    val grid = TerrainBrushGrid(parent, TerrainBrush.BrushMode.FLATTEN)
 
     init {
         table.align(Align.left)
         table.add(VisLabel("Hold shift to sample a height")).center().row()
-
-        brushGrid = TerrainBrushGrid(parent, TerrainBrush.BrushMode.FLATTEN)
-        table.add(brushGrid).expand().fill().row()
+        table.add(grid).expand().fill().row()
     }
 
     override fun getTabTitle(): String {

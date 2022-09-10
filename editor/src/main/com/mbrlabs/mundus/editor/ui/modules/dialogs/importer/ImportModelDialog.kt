@@ -35,43 +35,50 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.Disposable
 import com.badlogic.gdx.utils.GdxRuntimeException
-import com.badlogic.gdx.utils.UBJsonReader
 import com.kotcrab.vis.ui.util.dialog.Dialogs
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
-import com.mbrlabs.mundus.commons.assets.ModelAsset
+import com.mbrlabs.mundus.commons.assets.exceptions.AssetAlreadyExistsException
 import com.mbrlabs.mundus.commons.assets.meta.MetaModel
-import com.mbrlabs.mundus.commons.g3d.MG3dModelLoader
-import com.mbrlabs.mundus.editor.Mundus
-import com.mbrlabs.mundus.editor.assets.AssetAlreadyExistsException
-import com.mbrlabs.mundus.editor.assets.FileHandleWithDependencies
+import com.mbrlabs.mundus.commons.assets.model.ModelAsset
+import com.mbrlabs.mundus.commons.core.ModelFiles
+import com.mbrlabs.mundus.commons.loader.ModelImporter
 import com.mbrlabs.mundus.editor.assets.MetaSaver
-import com.mbrlabs.mundus.editor.assets.ModelImporter
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.events.AssetImportEvent
-import com.mbrlabs.mundus.editor.ui.UI
+import com.mbrlabs.mundus.editor.events.EventBus
+import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.BaseDialog
 import com.mbrlabs.mundus.editor.ui.widgets.FileChooserField
 import com.mbrlabs.mundus.editor.ui.widgets.RenderWidget
-import com.mbrlabs.mundus.editor.utils.*
-import net.mgsx.gltf.loaders.gltf.GLTFLoader
+import com.mbrlabs.mundus.editor.ui.widgets.presenter.FileChooserFieldPresenter
+import com.mbrlabs.mundus.editor.utils.Log
+import com.mbrlabs.mundus.editor.utils.Toaster
+import com.mbrlabs.mundus.editor.utils.isCollada
+import com.mbrlabs.mundus.editor.utils.isFBX
+import org.springframework.stereotype.Component
 import java.io.IOException
 
 /**
  * @author Marcus Brummer
  * @version 07-06-2016
  */
-class ImportModelDialog : BaseDialog("Import Mesh"), Disposable {
+@Component
+class ImportModelDialog(
+    private val appUi: AppUi,
+    private val toaster: Toaster,
+    private val modelImporter: ModelImporter,
+    private val projectManager: ProjectManager,
+    private val eventBus: EventBus,
+    private val fileChooserFieldPresenter: FileChooserFieldPresenter
+) : BaseDialog("Import Mesh"), Disposable {
 
     companion object {
         private val TAG = ImportModelDialog::class.java.simpleName
     }
 
     private val importMeshTable: ImportModelTable
-
-    private val modelImporter: ModelImporter = Mundus.inject()
-    private val projectManager: ProjectManager = Mundus.inject()
 
     init {
         isModal = true
@@ -80,7 +87,7 @@ class ImportModelDialog : BaseDialog("Import Mesh"), Disposable {
         val root = VisTable()
         add<Table>(root).expand().fill()
         importMeshTable = ImportModelTable()
-
+        fileChooserFieldPresenter.initFileChooserField(importMeshTable.modelInput)
         root.add(importMeshTable).minWidth(600f).expand().fill().left().top()
     }
 
@@ -94,13 +101,13 @@ class ImportModelDialog : BaseDialog("Import Mesh"), Disposable {
         // UI elements
         private var renderWidget: RenderWidget? = null
         private val importBtn = VisTextButton("IMPORT")
-        private val modelInput = FileChooserField(300)
+        val modelInput = FileChooserField(300)
 
         // preview model + instance
         private var previewModel: Model? = null
         private var previewInstance: ModelInstance? = null
 
-        private var importedModel: FileHandleWithDependencies? = null
+        private var importedModel: ModelFiles? = null
 
         private var modelBatch: ModelBatch? = null
         private val cam: PerspectiveCamera = PerspectiveCamera()
@@ -129,7 +136,7 @@ class ImportModelDialog : BaseDialog("Import Mesh"), Disposable {
             add(root)
 
             val inputTable = VisTable()
-            renderWidget = RenderWidget(cam)
+            renderWidget = RenderWidget(appUi, cam)
             renderWidget!!.setRenderer { camera ->
                 if (previewInstance != null) {
                     Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT)
@@ -156,7 +163,7 @@ class ImportModelDialog : BaseDialog("Import Mesh"), Disposable {
             // model chooser
             modelInput.setCallback { fileHandle ->
                 if (fileHandle.exists()) {
-                    loadAndShowPreview(modelInput.file)
+                    loadAndShowPreview(fileHandle)
                 }
             }
 
@@ -166,20 +173,20 @@ class ImportModelDialog : BaseDialog("Import Mesh"), Disposable {
                     if (previewModel != null && previewInstance != null) {
                         try {
                             val modelAsset = importModel()
-                            Mundus.postEvent(AssetImportEvent(modelAsset))
-                            UI.toaster.success("Mesh imported")
+                            eventBus.post(AssetImportEvent(modelAsset))
+                            toaster.success("Mesh imported")
                         } catch (e: IOException) {
                             e.printStackTrace()
-                            UI.toaster.error("Error while creating a ModelAsset")
+                            toaster.error("Error while creating a ModelAsset")
                         } catch (ee: AssetAlreadyExistsException) {
                             Log.exception(TAG, ee)
-                            UI.toaster.error("Error: There already exists a model with the same name")
+                            toaster.error("Error: There already exists a model with the same name")
                         }
 
                         dispose()
                         close()
                     } else {
-                        UI.toaster.error("There is nothing to import")
+                        toaster.error("There is nothing to import")
                     }
                 }
             })
@@ -189,7 +196,7 @@ class ImportModelDialog : BaseDialog("Import Mesh"), Disposable {
         private fun importModel(): ModelAsset {
 
             // create model asset
-            val assetManager = projectManager.current().assetManager
+            val assetManager = projectManager.current.assetManager
             val modelAsset = assetManager.createModelAsset(importedModel!!)
 
             // create materials
@@ -210,13 +217,14 @@ class ImportModelDialog : BaseDialog("Import Mesh"), Disposable {
         }
 
         private fun loadAndShowPreview(model: FileHandle) {
-            this.importedModel = modelImporter.importToTempFolder(model)
+            importedModel = modelImporter.importToTempFolder(model)
 
             if (importedModel == null) {
-                if (isCollada(model) || isFBX(model)
-                        || isWavefont(model)) {
-                    Dialogs.showErrorDialog(stage, "Import error\nPlease make sure you specified the right "
-                            + "files & have set the correct fbc-conv binary in the settings menu.")
+                if (isCollada(model) || isFBX(model)) {
+                    Dialogs.showErrorDialog(
+                        stage, "Import error\nPlease make sure you specified the right "
+                                + "files & have set the correct fbc-conv binary in the settings menu."
+                    )
                 } else {
                     Dialogs.showErrorDialog(stage, "Import error\nPlease make sure you specified the right files")
                 }
@@ -225,13 +233,7 @@ class ImportModelDialog : BaseDialog("Import Mesh"), Disposable {
             // load and show preview
             if (importedModel != null) {
                 try {
-                    if (isG3DB(importedModel!!.file)) {
-                        previewModel = MG3dModelLoader(UBJsonReader()).loadModel(importedModel!!.file)
-                    } else if (isGLTF(importedModel!!.file)) {
-                        previewModel = GLTFLoader().load(importedModel!!.file).scene.model
-                    } else {
-                        throw GdxRuntimeException("Unsupported 3D format")
-                    }
+                    previewModel = modelImporter.loadModel(importedModel!!.main)
 
                     previewInstance = ModelInstance(previewModel!!)
                     showPreview()

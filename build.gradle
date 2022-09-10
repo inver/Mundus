@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlinVersion = '1.6.21'
+    ext.kotlinVersion = '1.7.10'
     repositories {
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
@@ -26,7 +26,7 @@ allprojects {
 
     ext {
         appName = "Mundus"
-        gdxVersion = '1.10.0'
+        gdxVersion = '1.11.0'
         visuiVersion = '1.5.0'
         kryoVersion = '5.2.0'
         junitVersion = '4.13.2'
@@ -50,13 +50,25 @@ project(":commons") {
     apply plugin: "java"
 
     dependencies {
-        compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+        compileOnly 'org.projectlombok:lombok:1.18.24'
+        annotationProcessor 'org.projectlombok:lombok:1.18.24'
 
-        compile "com.github.mgsx-dev.gdx-gltf:gltf:$gltfVersion"
+        testCompileOnly 'org.projectlombok:lombok:1.18.24'
+        testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
 
-        testCompile "junit:junit:$junitVersion"
+        implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+        implementation "com.github.mgsx-dev.gdx-gltf:gltf:$gltfVersion"
+        implementation group: 'com.badlogicgames.ashley', name: 'ashley', version: '1.7.4'
 
-        testCompile "org.mockito:mockito-all:$mockitoVersion"
+        implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
+        implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
+        implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.4'
+        implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.0'
+
+        implementation 'org.locationtech.jts:jts-core:1.19.0'
+
+        testImplementation "junit:junit:$junitVersion"
+        testImplementation "org.mockito:mockito-all:$mockitoVersion"
     }
 }
 
@@ -65,39 +77,46 @@ project(":editor") {
     apply plugin: "kotlin"
 
     dependencies {
-        compile project(":commons")
+        implementation project(":commons")
+
+        compileOnly 'org.projectlombok:lombok:1.18.24'
+        annotationProcessor 'org.projectlombok:lombok:1.18.24'
+
+        testCompileOnly 'org.projectlombok:lombok:1.18.24'
+        testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
+
+        // Yep, we will use spring in desktop application =)
+        implementation 'org.springframework:spring-context:5.3.22'
+
+        // logging
+        implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.0'
+        implementation 'ch.qos.logback:logback-classic:1.4.0'
+        implementation 'io.github.microutils:kotlin-logging-jvm:2.1.23'
 
         // Kotlin libs
-        compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
-        compile "io.github.libktx:ktx-inject:$ktxVersion"
+        implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 
         // libGDX
-        compile "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+        implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
+        implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
 
         // gdx-freetype
-        compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
+        implementation "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+        implementation "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
+        implementation "com.github.mgsx-dev.gdx-gltf:gltf:$gltfVersion"
+        implementation group: 'com.badlogicgames.ashley', name: 'ashley', version: '1.7.4'
 
         // commons
-        compile "org.apache.commons:commons-lang3:$commonsLangVersion"
-        compile "commons-io:commons-io:$commonsIoVersion"
+        implementation "org.apache.commons:commons-lang3:$commonsLangVersion"
+        implementation "commons-io:commons-io:$commonsIoVersion"
 
         // other
-        compile "com.kotcrab.vis:vis-ui:$visuiVersion"
-        compile "com.esotericsoftware:kryo:$kryoVersion"
+        implementation "com.kotcrab.vis:vis-ui:$visuiVersion"
+        implementation "com.esotericsoftware:kryo:$kryoVersion"
 
         // tests
-        testCompile "junit:junit:$junitVersion"
-        testCompile "org.mockito:mockito-all:$mockitoVersion"
-    }
-}
-
-project(":gdx-runtime") {
-    apply plugin: "java"
-
-    dependencies {
-        compile project(":commons")
+        testImplementation "junit:junit:$junitVersion"
+        testImplementation "org.mockito:mockito-all:$mockitoVersion"
     }
 }
 

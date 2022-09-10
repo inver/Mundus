@@ -17,8 +17,8 @@
 package com.mbrlabs.mundus.editor.assets
 
 import com.mbrlabs.mundus.commons.assets.Asset
-import com.mbrlabs.mundus.commons.assets.MaterialAsset
-import com.mbrlabs.mundus.commons.assets.TextureAsset
+import com.mbrlabs.mundus.commons.assets.material.MaterialAsset
+import com.mbrlabs.mundus.commons.assets.texture.TextureAsset
 
 /**
  * @author Marcus Brummer

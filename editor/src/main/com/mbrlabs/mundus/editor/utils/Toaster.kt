@@ -16,11 +16,12 @@
 
 package com.mbrlabs.mundus.editor.utils
 
-import com.badlogic.gdx.scenes.scene2d.Stage
 import com.kotcrab.vis.ui.util.ToastManager
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.toast.Toast
+import com.mbrlabs.mundus.editor.ui.AppUi
+import org.springframework.stereotype.Component
 
 /**
  * Displays Android-like toasts at top right corner of the screen.
@@ -28,14 +29,15 @@ import com.kotcrab.vis.ui.widget.toast.Toast
  * @author Marcus Brummer
  * @version 07-06-2016
  */
-class Toaster(stage: Stage) {
+@Component
+class Toaster(private val appUi: AppUi) {
 
     /** Toast type determines background color of toast.  */
     enum class ToastType {
         SUCCESS, INFO, ERROR
     }
 
-    private val toastManager: ToastManager = ToastManager(stage)
+    private val toastManager: ToastManager = ToastManager(appUi)
 
     /**
      * Amber background.

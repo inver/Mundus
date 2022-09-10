@@ -24,20 +24,33 @@ import com.mbrlabs.mundus.commons.scene3d.GameObject
 import com.mbrlabs.mundus.commons.scene3d.components.Component
 import com.mbrlabs.mundus.commons.scene3d.components.ModelComponent
 import com.mbrlabs.mundus.commons.scene3d.components.TerrainComponent
+import com.mbrlabs.mundus.editor.config.UiWidgetsHolder
+import com.mbrlabs.mundus.editor.core.project.ProjectManager
+import com.mbrlabs.mundus.editor.history.CommandHistory
+import com.mbrlabs.mundus.editor.ui.AppUi
+import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.ComponentWidget
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.IdentifierWidget
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.ModelComponentWidget
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.TransformWidget
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.TerrainComponentWidget
+import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.TerrainWidgetPresenter
 
 /**
  * @author Marcus Brummer
  * @version 13-10-2016
  */
-class GameObjectInspector : VisTable() {
+class GameObjectInspector(
+    private val appUi: AppUi,
+    private val uiWidgetsHolder: UiWidgetsHolder,
+    private val assetPickerDialog: AssetPickerDialog,
+    private val projectManager: ProjectManager,
+    private val history: CommandHistory,
+    private val terrainWidgetPresenter: TerrainWidgetPresenter
+) : VisTable() {
 
-    private val identifierWidget = IdentifierWidget()
-    private val transformWidget = TransformWidget()
+    private val identifierWidget = IdentifierWidget(projectManager)
+    private val transformWidget = TransformWidget(uiWidgetsHolder.separatorStyle, projectManager, history)
     private val componentWidgets: Array<ComponentWidget<*>> = Array()
     private val addComponentBtn = VisTextButton("Add Component")
     private val componentTable = VisTable()
@@ -86,10 +99,25 @@ class GameObjectInspector : VisTable() {
             for (component in gameObject!!.components) {
                 // model component widget!!
                 if (component.type == Component.Type.MODEL) {
-                    componentWidgets.add(ModelComponentWidget(component as ModelComponent))
+                    componentWidgets.add(
+                        ModelComponentWidget(
+                            uiWidgetsHolder.separatorStyle,
+                            component as ModelComponent,
+                            appUi,
+                            uiWidgetsHolder,
+                            assetPickerDialog,
+                            projectManager
+                        )
+                    )
                     // terrainAsset component widget
                 } else if (component.type == Component.Type.TERRAIN) {
-                    componentWidgets.add(TerrainComponentWidget(component as TerrainComponent))
+                    componentWidgets.add(
+                        TerrainComponentWidget(
+                            uiWidgetsHolder.separatorStyle,
+                            component as TerrainComponent,
+                            terrainWidgetPresenter
+                        )
+                    )
                 }
             }
         }

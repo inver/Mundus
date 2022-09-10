@@ -15,15 +15,14 @@
  */
 package com.mbrlabs.mundus.editor.utils;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.mbrlabs.mundus.commons.core.registry.Registry;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import org.apache.commons.lang3.exception.ExceptionUtils;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
-import com.mbrlabs.mundus.editor.core.registry.Registry;
 
 /**
  * Log messages with different log levels. To save performance during runtime,

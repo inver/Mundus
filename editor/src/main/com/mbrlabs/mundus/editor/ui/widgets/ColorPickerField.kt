@@ -23,9 +23,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.kotcrab.vis.ui.widget.VisTextField
+import com.kotcrab.vis.ui.widget.color.ColorPicker
 import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter
 import com.kotcrab.vis.ui.widget.color.ColorPickerListener
-import com.mbrlabs.mundus.editor.ui.UI
+import com.mbrlabs.mundus.editor.ui.AppUi
 
 /**
  * An un-editable text field with a color picker.
@@ -35,7 +36,10 @@ import com.mbrlabs.mundus.editor.ui.UI
  * @author Marcus Brummer
  * @version 08-01-2016
  */
-class ColorPickerField() : VisTable() {
+class ColorPickerField(
+    private val colorPicker: ColorPicker,
+    private val appUi: AppUi
+) : VisTable() {
 
     /**
      * The currently selected color.
@@ -62,12 +66,15 @@ class ColorPickerField() : VisTable() {
             override fun canceled(oldColor: Color?) {
                 colorAdapter?.canceled(oldColor)
             }
+
             override fun reset(previousColor: Color?, newColor: Color?) {
                 colorAdapter?.reset(previousColor, newColor)
             }
+
             override fun changed(newColor: Color?) {
                 colorAdapter?.changed(newColor)
             }
+
             override fun finished(newColor: Color) {
                 selectedColor = newColor
                 colorAdapter?.finished(newColor)
@@ -101,10 +108,9 @@ class ColorPickerField() : VisTable() {
         cpBtn.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 super.clicked(event, x, y)
-                val colorPicker = UI.colorPicker
                 colorPicker.color = selectedColor
                 colorPicker.listener = colorPickerListenerInternal
-                UI.addActor(colorPicker.fadeIn())
+                appUi.addActor(colorPicker.fadeIn())
             }
         })
 

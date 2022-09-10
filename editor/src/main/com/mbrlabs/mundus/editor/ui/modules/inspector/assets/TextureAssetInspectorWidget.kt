@@ -16,8 +16,9 @@
 
 package com.mbrlabs.mundus.editor.ui.modules.inspector.assets
 
+import com.kotcrab.vis.ui.widget.Separator.SeparatorStyle
 import com.kotcrab.vis.ui.widget.VisLabel
-import com.mbrlabs.mundus.commons.assets.TextureAsset
+import com.mbrlabs.mundus.commons.assets.texture.TextureAsset
 import com.mbrlabs.mundus.commons.scene3d.GameObject
 import com.mbrlabs.mundus.editor.ui.modules.inspector.BaseInspectorWidget
 
@@ -27,11 +28,8 @@ import org.apache.commons.io.FileUtils
  * @author Marcus Brummer
  * @version 15-10-2016
  */
-class TextureAssetInspectorWidget : BaseInspectorWidget(TextureAssetInspectorWidget.TITLE) {
-
-    companion object {
-        private val TITLE = "Texture Asset"
-    }
+class TextureAssetInspectorWidget(separatorStyle: SeparatorStyle) :
+    BaseInspectorWidget(separatorStyle, "Texture Asset") {
 
     private val name = VisLabel()
     private val width = VisLabel()
