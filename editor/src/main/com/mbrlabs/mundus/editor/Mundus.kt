@@ -18,28 +18,9 @@ package com.mbrlabs.mundus.editor
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.graphics.g2d.TextureAtlas
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
-import com.badlogic.gdx.graphics.g3d.ModelBatch
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer
-import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.kotcrab.vis.ui.VisUI
-import com.mbrlabs.mundus.commons.assets.material.MaterialService
-import com.mbrlabs.mundus.commons.assets.meta.MetaService
-import com.mbrlabs.mundus.commons.assets.model.ModelService
-import com.mbrlabs.mundus.commons.assets.pixmap.PixmapTextureService
-import com.mbrlabs.mundus.commons.assets.terrain.TerrainService
-import com.mbrlabs.mundus.commons.assets.texture.TextureService
-import com.mbrlabs.mundus.commons.core.registry.Registry
-import com.mbrlabs.mundus.commons.loader.ModelImporter
-import com.mbrlabs.mundus.editor.core.kryo.KryoManager
-import com.mbrlabs.mundus.editor.input.FreeCamController
 import com.mbrlabs.mundus.editor.shader.Shaders
-import com.mbrlabs.mundus.editor.tools.picker.GameObjectPicker
-import com.mbrlabs.mundus.editor.tools.picker.ToolHandlePicker
 import com.mbrlabs.mundus.editor.utils.Fa
-import ktx.inject.Context
-import java.io.File
 
 /**
  * Core class.
@@ -51,140 +32,10 @@ import java.io.File
  */
 object Mundus {
 
-    val context = Context()
-
-//    val eventBus: EventBus
-
     lateinit var fa: BitmapFont
 
-    private val modelBatch: ModelBatch
-
-    //    private val toolManager: ToolManager
-//    private val input: InputManager
-    private val freeCamController: FreeCamController
-
-    //    private val shortcutController: ShortcutController!
-    private val shapeRenderer: ShapeRenderer
-    private val kryoManager: KryoManager
-
-    //    private val projectManager: ProjectManager
-    private val registry: Registry
-    private val modelImporter: ModelImporter
-//    private val commandHistory: CommandHistory
-    private val goPicker: GameObjectPicker
-    private val handlePicker: ToolHandlePicker
-//    private val json: Json
-
-    private val metaService: MetaService
-    private val textureService: TextureService
-    private val terrainService: TerrainService
-    private val materialService: MaterialService
-    private val pixmapTextureService: PixmapTextureService
-    private val modelService: ModelService
-
     init {
-        // create home dir
-        val homeDir = File(Registry.HOME_DIR)
-        if (!homeDir.exists()) {
-            homeDir.mkdirs()
-        }
-
-        // init stuff
-        initStyle()
         initFontAwesome()
-//        eventBus = EventBus()
-
-        // DI
-        shapeRenderer = ShapeRenderer()
-        modelBatch = ModelBatch()
-//        input = InputManager()
-        goPicker = GameObjectPicker()
-        handlePicker = ToolHandlePicker()
-        kryoManager = KryoManager()
-        registry = kryoManager.loadRegistry()
-        freeCamController = FreeCamController()
-//        commandHistory = CommandHistory()
-        modelImporter = ModelImporter(registry)
-        metaService = MetaService()
-        terrainService = TerrainService()
-        textureService = TextureService()
-        materialService = MaterialService(metaService)
-        pixmapTextureService = PixmapTextureService()
-        modelService = ModelService()
-//        projectManager = ProjectManager(
-//            registry,
-//            kryoManager,
-//            modelBatch,
-//            metaService,
-//            textureService,
-//            terrainService,
-//            materialService,
-//            pixmapTextureService,
-//            modelService
-//        )
-//        toolManager = ToolManager(
-//            input, projectManager, goPicker, handlePicker, modelBatch, shapeRenderer, commandHistory
-//        )
-//        shortcutController = ShortcutController(registry, projectManager, commandHistory, toolManager)
-//        json = Json()
-
-        // add to DI container
-//        context.register {
-//            bindSingleton(shapeRenderer)
-//            bindSingleton(modelBatch)
-////            bindSingleton(input)
-//            bindSingleton(goPicker)
-//            bindSingleton(handlePicker)
-//            bindSingleton(kryoManager)
-//            bindSingleton(registry)
-//            bindSingleton(commandHistory)
-//            bindSingleton(modelImporter)
-////            bindSingleton(projectManager)
-////            bindSingleton(toolManager)
-////            bindSingleton(shortcutController)
-//            bindSingleton(freeCamController)
-//            bindSingleton(json)
-//
-//            bindSingleton(MetaSaver())
-//            bindSingleton(MetaService())
-//        }
-    }
-
-    /**
-     *
-     */
-    private fun initStyle() {
-        val generator = FreeTypeFontGenerator(
-            Gdx.files.internal("fonts/OpenSans/OpenSans-Regular.ttf")
-        )
-        val params = FreeTypeFontGenerator.FreeTypeFontParameter()
-        params.kerning = true
-        params.borderStraight = false
-        params.genMipMaps = true
-        params.hinting = FreeTypeFontGenerator.Hinting.Full
-
-        // font norm
-        params.size = 12
-        val fontNorm = generator.generateFont(params)
-
-        // font small
-        params.size = 11
-        val fontSmall = generator.generateFont(params)
-
-        // font small
-        params.size = 10
-        val fontTiny = generator.generateFont(params)
-        generator.dispose()
-
-        // skin
-        val skin = Skin()
-        skin.add("font-norm", fontNorm, BitmapFont::class.java)
-        skin.add("font-small", fontSmall, BitmapFont::class.java)
-        skin.add("font-tiny", fontTiny, BitmapFont::class.java)
-
-        skin.addRegions(TextureAtlas(Gdx.files.internal("ui/skin/uiskin.atlas")))
-        skin.load(Gdx.files.internal("ui/skin/uiskin.json"))
-//        VisUI.load(skin)
     }
 
     private fun initFontAwesome() {
@@ -205,10 +56,6 @@ object Mundus {
         VisUI.dispose()
         Shaders.dispose()
         fa.dispose()
-        shapeRenderer.dispose()
-        modelBatch.dispose()
-        goPicker.dispose()
-        handlePicker.dispose()
     }
 
 }

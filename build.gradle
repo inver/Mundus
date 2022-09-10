@@ -60,7 +60,6 @@ project(":commons") {
         implementation "com.github.mgsx-dev.gdx-gltf:gltf:$gltfVersion"
         implementation group: 'com.badlogicgames.ashley', name: 'ashley', version: '1.7.4'
 
-
         implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
         implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
         implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.4'
@@ -96,7 +95,6 @@ project(":editor") {
 
         // Kotlin libs
         implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
-        implementation "io.github.libktx:ktx-inject:$ktxVersion"
 
         // libGDX
         implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"

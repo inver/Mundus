@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ToolbarController {
+public class ToolbarPresenter {
 
     private final AppUi appUi;
     private final ProjectManager projectManager;

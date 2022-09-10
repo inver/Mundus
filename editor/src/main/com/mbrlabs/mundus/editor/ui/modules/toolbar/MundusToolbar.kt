@@ -39,17 +39,13 @@ import org.springframework.stereotype.Component
  */
 @Component
 class MundusToolbar(
-    toolbarController: ToolbarController,
+    toolbarPresenter: ToolbarPresenter,
     private val toolManager: ToolManager,
     private val projectManager: ProjectManager,
     private val toaster: Toaster,
     private val exportDialog: ExportDialog,
     private val appUi: AppUi
 ) : Toolbar() {
-    companion object {
-        private val TAG = MundusToolbar::class.java.simpleName
-    }
-
     private val saveBtn = FaTextButton(Fa.SAVE)
     private val importBtn = FaTextButton(Fa.DOWNLOAD)
     private val exportBtn = FaTextButton(Fa.GIFT)
@@ -119,7 +115,7 @@ class MundusToolbar(
         // export btn
         exportBtn.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                exportDialog.export();
+                exportDialog.export()
             }
         })
 
@@ -131,9 +127,9 @@ class MundusToolbar(
         })
 
 
-        importMesh.addListener(toolbarController.importMeshListener())
-        importTexture.addListener(toolbarController.importTextureListener())
-        createMaterial.addListener(toolbarController.createMaterialListener())
+        importMesh.addListener(toolbarPresenter.importMeshListener())
+        importTexture.addListener(toolbarPresenter.importTextureListener())
+        createMaterial.addListener(toolbarPresenter.createMaterialListener())
 
         // select tool
         selectBtn.addListener(object : ClickListener() {

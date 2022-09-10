@@ -1,4 +1,5 @@
 # Documents
 
-[Terrain](Terrain.md)
+- [Architecture](Architecture.md)
+- [Terrain](Terrain.md)
 
