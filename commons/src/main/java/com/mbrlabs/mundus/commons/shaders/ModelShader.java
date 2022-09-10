@@ -26,11 +26,8 @@ import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.utils.Array;
 import com.mbrlabs.mundus.commons.env.Fog;
 import com.mbrlabs.mundus.commons.env.MundusEnvironment;
-import com.mbrlabs.mundus.commons.env.lights.DirectionalLight;
-import com.mbrlabs.mundus.commons.env.lights.DirectionalLightsAttribute;
 import com.mbrlabs.mundus.commons.utils.ShaderUtils;
 
 /**
@@ -151,15 +148,15 @@ public class ModelShader extends BaseShader {
         // TODO light array for each light type
 
         // directional lights
-        final DirectionalLightsAttribute dirLightAttribs = env.get(DirectionalLightsAttribute.class,
-                DirectionalLightsAttribute.Type);
-        final Array<DirectionalLight> dirLights = dirLightAttribs == null ? null : dirLightAttribs.lights;
-        if (dirLights != null && dirLights.size > 0) {
-            final DirectionalLight light = dirLights.first();
-            set(UNIFORM_DIRECTIONAL_LIGHT_COLOR, light.color);
-            set(UNIFORM_DIRECTIONAL_LIGHT_DIR, light.direction);
-            set(UNIFORM_DIRECTIONAL_LIGHT_INTENSITY, light.intensity);
-        }
+//        final DirectionalLightsAttribute dirLightAttribs = env.get(DirectionalLightsAttribute.class,
+//                DirectionalLightsAttribute.Type);
+//        final Array<DirectionalLight> dirLights = dirLightAttribs == null ? null : dirLightAttribs.lights;
+//        if (dirLights != null && dirLights.size > 0) {
+//            final DirectionalLight light = dirLights.first();
+//            set(UNIFORM_DIRECTIONAL_LIGHT_COLOR, light.color);
+//            set(UNIFORM_DIRECTIONAL_LIGHT_DIR, light.direction);
+//            set(UNIFORM_DIRECTIONAL_LIGHT_INTENSITY, light.intensity);
+//        }
 
         // TODO point lights, spot lights
     }

@@ -1,7 +1,6 @@
 package com.mbrlabs.mundus.commons.loader.ac3d;
 
-import com.mbrlabs.mundus.commons.loader.ac3d.Ac3dParser;
-import com.mbrlabs.mundus.commons.loader.ac3d.Ac3dToLibGdxConverter;
+import com.badlogic.gdx.graphics.GL20;
 import lombok.SneakyThrows;
 import org.junit.Assert;
 import org.junit.Test;
@@ -30,5 +29,14 @@ public class Ac3dToLibGdxConverterTest {
         var model = parser.parse(new BufferedReader(new FileReader(f)));
         var res = converter.convert(model);
         Assert.assertEquals(37, res.meshes.size);
+        for (var mesh : res.meshes) {
+            for (var part : mesh.parts) {
+                if (part.indices.length <= 3) {
+                    Assert.assertEquals(GL20.GL_TRIANGLES, part.primitiveType);
+                } else {
+                    Assert.assertEquals(GL20.GL_TRIANGLE_FAN, part.primitiveType);
+                }
+            }
+        }
     }
 }

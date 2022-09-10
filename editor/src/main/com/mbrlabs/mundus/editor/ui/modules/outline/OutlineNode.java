@@ -14,7 +14,6 @@ public class OutlineNode extends Tree.Node<OutlineNode, GameObject, VisTable> {
     @Getter
     private final GameObject value;
 
-
     public OutlineNode(String name) {
         this((GameObject) null);
         label.setText(name);

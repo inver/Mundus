@@ -25,8 +25,7 @@ import com.mbrlabs.mundus.editor.events.SettingsChangedEvent
  * @version 12-12-2015
  */
 @Deprecated("Use Model importer from common module")
-class ModelImporterOld(eventBus: EventBus, registry: Registry) :
-    SettingsChangedEvent.SettingsChangedListener {
+class ModelImporterOld(eventBus: EventBus, registry: Registry) : SettingsChangedEvent.SettingsChangedListener {
 
     private val fbxConv: FbxConv
 

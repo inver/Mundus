@@ -230,6 +230,16 @@ class Outline(
         }
     }
 
+    private fun createOutlineGameObject(parent: OutlineNode, go: GameObject): OutlineNode {
+        val res = OutlineNode(go)
+
+        go.components.forEach {
+
+        }
+
+        return res
+    }
+
     /**
      * Removing game object from tree and outline
 

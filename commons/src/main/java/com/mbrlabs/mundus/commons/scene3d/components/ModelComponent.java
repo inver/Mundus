@@ -62,8 +62,8 @@ public class ModelComponent extends AbstractComponent implements AssetUsage {
 
         // apply default materials of model
         if (inheritMaterials) {
-            for (String g3dbMatID : model.getDefaultMaterials().keySet()) {
-                materials.put(g3dbMatID, model.getDefaultMaterials().get(g3dbMatID));
+            for (String key : model.getDefaultMaterials().keySet()) {
+                materials.put(key, model.getDefaultMaterials().get(key));
             }
         }
         applyMaterials();
@@ -111,7 +111,7 @@ public class ModelComponent extends AbstractComponent implements AssetUsage {
             return true;
 
         if (assetToCheck instanceof MaterialAsset) {
-            if (materials.containsValue(assetToCheck,true)) {
+            if (materials.containsValue(assetToCheck, true)) {
                 return true;
             }
         }

@@ -69,25 +69,7 @@ public class Ac3dToLibGdxConverter {
                 mesh.parts = new ModelMeshPart[obj.getSurfaces().size()];
                 node.parts = new ModelNodePart[obj.getSurfaces().size()];
                 for (int i = 0; i < obj.getSurfaces().size(); i++) {
-                    var surface = obj.getSurfaces().get(i);
-
-                    var part = new ModelMeshPart();
-                    part.id = mesh.id + "_part_" + i;
-                    part.indices = new short[surface.getVerticesRefs().size()];
-                    for (int j = 0; j < surface.getVerticesRefs().size(); j++) {
-                        part.indices[j] = surface.getVerticesRefs().get(j).getKey().shortValue();
-                    }
-                    if (surface.getVerticesRefs().size() == 4) {
-                        part.primitiveType = GL20.GL_TRIANGLE_FAN;
-                    } else {
-                        part.primitiveType = GL20.GL_TRIANGLES;
-                    }
-                    mesh.parts[i] = part;
-
-                    var nodePart = new ModelNodePart();
-                    nodePart.meshPartId = part.id;
-                    nodePart.materialId = surface.getMaterialIndex() + "";
-                    node.parts[i] = nodePart;
+                    processSurface(obj, node, mesh, i);
                 }
             }
             res.meshes.add(mesh);
@@ -99,6 +81,28 @@ public class Ac3dToLibGdxConverter {
                 convert(obj.getChildren().get(i), res, node, i);
             }
         }
+    }
+
+    private void processSurface(Ac3dObject obj, ModelNode node, ModelMesh mesh, int i) {
+        var surface = obj.getSurfaces().get(i);
+
+        var part = new ModelMeshPart();
+        part.id = mesh.id + "_part_" + i;
+        part.indices = new short[surface.getVerticesRefs().size()];
+        for (int j = 0; j < surface.getVerticesRefs().size(); j++) {
+            part.indices[j] = surface.getVerticesRefs().get(j).getKey().shortValue();
+        }
+        if (surface.getVerticesRefs().size() > 3) {
+            part.primitiveType = GL20.GL_TRIANGLE_FAN;
+        } else {
+            part.primitiveType = GL20.GL_TRIANGLES;
+        }
+        mesh.parts[i] = part;
+
+        var nodePart = new ModelNodePart();
+        nodePart.meshPartId = part.id;
+        nodePart.materialId = surface.getMaterialIndex() + "";
+        node.parts[i] = nodePart;
     }
 
     public ModelNode convert2Node(Ac3dObject obj, int i) {

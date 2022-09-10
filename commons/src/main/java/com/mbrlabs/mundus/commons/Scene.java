@@ -19,11 +19,11 @@ package com.mbrlabs.mundus.commons;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset;
 import com.mbrlabs.mundus.commons.env.MundusEnvironment;
-import com.mbrlabs.mundus.commons.env.lights.DirectionalLight;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.scene3d.SceneGraph;
 import com.mbrlabs.mundus.commons.skybox.Skybox;
@@ -60,9 +60,9 @@ public class Scene implements Disposable {
         cam.near = 0.2f;
         cam.far = 10000;
 
-        DirectionalLight dirLight = new DirectionalLight();
+        var dirLight = new DirectionalShadowLight(1024, 1024, 60f, 60f, .1f, 50f);
         dirLight.color.set(1, 1, 1, 1);
-        dirLight.intensity = 1f;
+//        dirLight.intensity = 1f;
         dirLight.direction.set(0, -1f, 0);
         dirLight.direction.nor();
         environment.add(dirLight);
