@@ -20,20 +20,21 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.mbrlabs.mundus.editor.assets.EditorAssetManager;
 import com.mbrlabs.mundus.editor.core.EditorScene;
-import com.mbrlabs.mundus.editor.utils.Log;
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * A project context represents an loaded and opened project.
- *
- * A project context can have many scenes, nut only one scene at a time can be
+ * A project context represents a loaded and opened project.
+ * <p>
+ * A project context can have many scenes, not only one scene at a time can be
  * active.
  *
  * @author Marcus Brummer
  * @version 28-11-2015
  */
+@Slf4j
 public class ProjectContext implements Disposable {
-
-    private static final String TAG = ProjectContext.class.getSimpleName();
 
     public ProjectSettings settings;
     public String path;
@@ -44,30 +45,35 @@ public class ProjectContext implements Disposable {
 
     public EditorAssetManager assetManager;
 
-    private int idProvider;
+    private final AtomicInteger idProvider;
 
-    /** set by kryo when project is loaded. do not use this */
+    /**
+     * set by kryo when project is loaded. do not use this
+     */
     public String activeSceneName;
 
     public ProjectContext(int idProvider) {
+        this(new AtomicInteger(idProvider));
+    }
+
+    public ProjectContext(AtomicInteger idProvider) {
         scenes = new Array<>();
         settings = new ProjectSettings();
         currScene = new EditorScene();
         this.idProvider = idProvider;
     }
 
-    public synchronized int obtainID() {
-        idProvider += 1;
-        return idProvider;
+    public int obtainID() {
+        return idProvider.incrementAndGet();
     }
 
-    public synchronized int inspectCurrentID() {
-        return idProvider;
+    public int inspectCurrentID() {
+        return idProvider.get();
     }
 
     @Override
     public void dispose() {
-        Log.debug(TAG, "Disposing current project: {}", path);
+        log.debug("Disposing current project: {}", path);
         if (assetManager != null) {
             assetManager.dispose();
         }

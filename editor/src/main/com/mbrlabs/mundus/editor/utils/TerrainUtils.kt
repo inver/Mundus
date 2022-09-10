@@ -22,7 +22,7 @@ import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder.VertexInfo
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.math.collision.Ray
 import com.badlogic.gdx.utils.Array
-import com.mbrlabs.mundus.commons.assets.TerrainAsset
+import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset
 import com.mbrlabs.mundus.commons.scene3d.GameObject
 import com.mbrlabs.mundus.commons.scene3d.SceneGraph
 import com.mbrlabs.mundus.commons.shaders.TerrainShader
@@ -31,8 +31,13 @@ import com.mbrlabs.mundus.editor.shader.Shaders
 
 private var tempVI = VertexInfo()
 
-fun createTerrainGO(sg: SceneGraph, shader: TerrainShader, goID: Int, goName: String,
-                    terrain: TerrainAsset): GameObject {
+fun createTerrainGO(
+    sg: SceneGraph,
+    shader: TerrainShader,
+    goID: Int,
+    goName: String,
+    terrain: TerrainAsset
+): GameObject {
     val terrainGO = GameObject(sg, null, goID)
     terrainGO.name = goName
 

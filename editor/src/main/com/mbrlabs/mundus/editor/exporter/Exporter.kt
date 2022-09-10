@@ -53,7 +53,7 @@ class Exporter(val kryo: KryoManager, val project: ProjectContext) {
         val currentSceneDTO = SceneConverter.convert(project.currScene)
         val jsonType = project.settings.export.jsonType
 
-        val task = object: AsyncTask("export_${project.name}") {
+        val task = object : AsyncTask("export_${project.name}") {
             override fun doInBackground() {
                 val assetManager = project.assetManager
                 val step = 100f / (assetManager.assets.size + project.scenes.size)
@@ -69,7 +69,7 @@ class Exporter(val kryo: KryoManager, val project: ProjectContext) {
                 // sleep a bit to open the progress dialog
                 Thread.sleep(250)
 
-                for(asset in assetManager.assets) {
+                for (asset in assetManager.assets) {
                     exportAsset(asset, assetFolder)
                     progress += step
                     setProgressPercent(progress.toInt())
@@ -78,13 +78,17 @@ class Exporter(val kryo: KryoManager, val project: ProjectContext) {
                 }
 
                 // load, convert & copy scenes
-                for(sceneName in project.scenes) {
-                    val file = FileHandle(FilenameUtils.concat(scenesFolder.path(),
-                            sceneName + "." + ProjectManager.PROJECT_SCENE_EXTENSION))
+                for (sceneName in project.scenes) {
+                    val file = FileHandle(
+                        FilenameUtils.concat(
+                            scenesFolder.path(),
+                            sceneName + "." + ProjectManager.PROJECT_SCENE_EXTENSION
+                        )
+                    )
 
                     // load from disk or convert current scene
                     var scene: SceneDTO
-                    if(project.currScene.name == sceneName) {
+                    if (project.currScene.name == sceneName) {
                         scene = currentSceneDTO
                     } else {
                         scene = SceneManager.loadScene(project, sceneName)
@@ -138,7 +142,7 @@ class Exporter(val kryo: KryoManager, val project: ProjectContext) {
 
         // START game objects
         json.writeArrayStart(JsonScene.GAME_OBJECTS)
-        for(go in scene.gameObjects) {
+        for (go in scene.gameObjects) {
             convertGameObject(go, json)
         }
         json.writeArrayEnd()
@@ -168,11 +172,11 @@ class Exporter(val kryo: KryoManager, val project: ProjectContext) {
         // END tags
 
         // components
-        if(go.modelComponent != null) convertModelComponent(go.modelComponent, json)
-        if(go.terrainComponent != null) convertTerrainComponent(go.terrainComponent, json)
+        if (go.modelComponent != null) convertModelComponent(go.modelComponent, json)
+        if (go.terrainComponent != null) convertTerrainComponent(go.terrainComponent, json)
 
         // children
-        for(child in go.childs) {
+        for (child in go.childs) {
             json.writeArrayStart(JsonScene.GO_CHILDREN)
             convertGameObject(child, json)
             json.writeArrayEnd()
@@ -187,7 +191,7 @@ class Exporter(val kryo: KryoManager, val project: ProjectContext) {
 
         // materials
         json.writeObjectStart(JsonScene.MODEL_COMPONENT_MATERIALS)
-        for((key, value) in comp.materials) {
+        for ((key, value) in comp.materials) {
             json.writeValue(key, value)
         }
         json.writeObjectEnd()

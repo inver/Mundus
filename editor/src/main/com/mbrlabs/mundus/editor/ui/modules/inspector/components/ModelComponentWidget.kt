@@ -16,19 +16,32 @@
 
 package com.mbrlabs.mundus.editor.ui.modules.inspector.components
 
+import com.kotcrab.vis.ui.widget.Separator.SeparatorStyle
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
-import com.mbrlabs.mundus.commons.assets.MaterialAsset
+import com.mbrlabs.mundus.commons.assets.material.MaterialAsset
 import com.mbrlabs.mundus.commons.scene3d.GameObject
 import com.mbrlabs.mundus.commons.scene3d.components.Component
 import com.mbrlabs.mundus.commons.scene3d.components.ModelComponent
+import com.mbrlabs.mundus.editor.config.UiWidgetsHolder
+import com.mbrlabs.mundus.editor.core.project.ProjectManager
+import com.mbrlabs.mundus.editor.ui.AppUi
+import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
 import com.mbrlabs.mundus.editor.ui.widgets.MaterialWidget
 
 /**
  * @author Marcus Brummer
  * @version 21-01-2016
  */
-class ModelComponentWidget(modelComponent: ModelComponent) : ComponentWidget<ModelComponent>("Model Component", modelComponent) {
+class ModelComponentWidget(
+    separatorStyle: SeparatorStyle,
+    modelComponent: ModelComponent,
+    private val appUi: AppUi,
+    private val uiWidgetsHolder: UiWidgetsHolder,
+    private val assetSelectionDialog: AssetPickerDialog,
+    private val projectManager: ProjectManager
+) :
+    ComponentWidget<ModelComponent>(separatorStyle, "Model Component", modelComponent) {
 
     private val materialContainer = VisTable()
 
@@ -50,8 +63,10 @@ class ModelComponentWidget(modelComponent: ModelComponent) : ComponentWidget<Mod
 
         val label = VisLabel()
         label.setWrap(true)
-        label.setText("Here you change the materials of model components individually.\n"
-                + "Modifing the material will update all components, that use that material.")
+        label.setText(
+            "Here you change the materials of model components individually.\n"
+                    + "Modifing the material will update all components, that use that material."
+        )
         collapsibleContent.add(label).grow().padBottom(10f).row()
 
         collapsibleContent.add(materialContainer).grow().row()
@@ -62,8 +77,8 @@ class ModelComponentWidget(modelComponent: ModelComponent) : ComponentWidget<Mod
         materialContainer.clear()
         for (g3dbMatID in component.materials.keys()) {
 
-            val mw = MaterialWidget()
-            mw.matChangedListener = object: MaterialWidget.MaterialChangedListener {
+            val mw = MaterialWidget(uiWidgetsHolder.colorPicker, appUi, assetSelectionDialog, projectManager)
+            mw.matChangedListener = object : MaterialWidget.MaterialChangedListener {
                 override fun materialChanged(materialAsset: MaterialAsset) {
                     component.materials.put(g3dbMatID, materialAsset)
                     component.applyMaterials()

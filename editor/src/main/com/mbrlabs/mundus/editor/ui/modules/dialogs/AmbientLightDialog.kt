@@ -23,27 +23,35 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTextField
 import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter
-import com.mbrlabs.mundus.editor.Mundus
+import com.mbrlabs.mundus.editor.config.UiWidgetsHolder
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
+import com.mbrlabs.mundus.editor.events.EventBus
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent
 import com.mbrlabs.mundus.editor.events.SceneChangedEvent
+import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.widgets.ColorPickerField
+import org.springframework.stereotype.Component
 
 /**
  * @author Marcus Brummer
  * *
  * @version 04-03-2016
  */
-class AmbientLightDialog : BaseDialog("Ambient Light"), ProjectChangedEvent.ProjectChangedListener,
-        SceneChangedEvent.SceneChangedListener {
+@Component
+class AmbientLightDialog(
+    eventBus: EventBus,
+    private val projectManager: ProjectManager,
+    appUi: AppUi,
+    uiWidgetsHolder: UiWidgetsHolder
+) : BaseDialog("Ambient Light"),
+    ProjectChangedEvent.ProjectChangedListener,
+    SceneChangedEvent.SceneChangedListener {
 
     private val intensity = VisTextField("0")
-    private val colorPickerField = ColorPickerField()
-
-    private val projectManager: ProjectManager = Mundus.inject()
+    private val colorPickerField = ColorPickerField(uiWidgetsHolder.getColorPicker(), appUi)
 
     init {
-        Mundus.registerEventListener(this)
+        eventBus.register(this)
 
         setupUI()
         setupListeners()
@@ -62,11 +70,11 @@ class AmbientLightDialog : BaseDialog("Ambient Light"), ProjectChangedEvent.Proj
     }
 
     private fun setupListeners() {
-        val projectContext = projectManager.current()
+        val projectContext = projectManager.current
 
         // intensity
         intensity.addListener(object : ChangeListener() {
-            override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
+            override fun changed(event: ChangeEvent, actor: Actor) {
                 val d = convert(intensity.text)
                 if (d != null) {
                     projectContext.currScene.environment.ambientLight.intensity = d
@@ -75,7 +83,7 @@ class AmbientLightDialog : BaseDialog("Ambient Light"), ProjectChangedEvent.Proj
         })
 
         // color
-        colorPickerField.colorAdapter = object: ColorPickerAdapter() {
+        colorPickerField.colorAdapter = object : ColorPickerAdapter() {
             override fun finished(newColor: Color) {
                 projectContext.currScene.environment.ambientLight.color.set(color)
             }
@@ -84,7 +92,7 @@ class AmbientLightDialog : BaseDialog("Ambient Light"), ProjectChangedEvent.Proj
     }
 
     private fun resetValues() {
-        val light = projectManager.current().currScene.environment.ambientLight
+        val light = projectManager.current.currScene.environment.ambientLight
         intensity.text = light.intensity.toString()
         colorPickerField.color = light.color
     }

@@ -16,19 +16,18 @@
 
 package com.mbrlabs.mundus.editor.assets;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.SystemUtils;
-
 import com.badlogic.gdx.Gdx;
 import com.mbrlabs.mundus.editor.utils.Callback;
 import com.mbrlabs.mundus.editor.utils.Log;
 import com.mbrlabs.mundus.editor.utils.Os;
 import com.mbrlabs.mundus.editor.utils.OsNotSupported;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.SystemUtils;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Wrapper around the command line program fbx-conv.
@@ -170,18 +169,10 @@ public class FbxConv {
     }
 
     public void execute(final Callback<FbxConvResult> callback) {
-        new Thread() {
-            @Override
-            public void run() {
-                final FbxConvResult result = execute();
-                Gdx.app.postRunnable(new Runnable() {
-                    @Override
-                    public void run() {
-                        callback.done(result);
-                    }
-                });
-            }
-        }.start();
+        new Thread(() -> {
+            final FbxConvResult result = execute();
+            Gdx.app.postRunnable(() -> callback.done(result));
+        }).start();
     }
 
     /**

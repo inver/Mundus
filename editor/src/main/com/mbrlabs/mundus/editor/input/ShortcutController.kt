@@ -17,18 +17,29 @@
 package com.mbrlabs.mundus.editor.input
 
 import com.badlogic.gdx.Input
+import com.mbrlabs.mundus.commons.core.registry.Registry
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
-import com.mbrlabs.mundus.editor.core.registry.Registry
 import com.mbrlabs.mundus.editor.history.CommandHistory
 import com.mbrlabs.mundus.editor.tools.ToolManager
-import com.mbrlabs.mundus.editor.ui.UI
+import com.mbrlabs.mundus.editor.ui.modules.dialogs.ExportDialog
+import com.mbrlabs.mundus.editor.ui.modules.toolbar.MundusToolbar
+import com.mbrlabs.mundus.editor.utils.Toaster
+import org.springframework.stereotype.Component
 
 /**
  * @author Marcus Brummer
  * @version 07-02-2016
  */
-class ShortcutController(registry: Registry, private val projectManager: ProjectManager, private val history: CommandHistory, private val toolManager: ToolManager)
-    : KeyboardLayoutInputAdapter(registry) {
+@Component
+class ShortcutController(
+    registry: Registry,
+    private val projectManager: ProjectManager,
+    private val history: CommandHistory,
+    private val toolManager: ToolManager,
+    private val exportDialog: ExportDialog,
+    private val toaster: Toaster,
+    private val toolbar: MundusToolbar
+) : KeyboardLayoutInputAdapter(registry) {
 
     private var isCtrlPressed = false
 
@@ -36,8 +47,8 @@ class ShortcutController(registry: Registry, private val projectManager: Project
         val keycode = convertKeycode(code)
 
         // export
-        if(keycode == Input.Keys.F1) {
-            UI.exportDialog.export()
+        if (keycode == Input.Keys.F1) {
+            exportDialog.export()
             return true
         }
 
@@ -46,30 +57,46 @@ class ShortcutController(registry: Registry, private val projectManager: Project
         if (keycode == Input.Keys.CONTROL_LEFT) {
             isCtrlPressed = true
         }
-        if (!isCtrlPressed) return false
+        if (!isCtrlPressed) {
+            return false
+        }
 
-        if (keycode == Input.Keys.Z) {
-            history.goBack()
-            return true
-        } else if (keycode == Input.Keys.Y) {
-            history.goForward()
-            return true
-        } else if (keycode == Input.Keys.S) {
-            projectManager.saveCurrentProject()
-            UI.toaster.success("Project saved")
-            return true
-        } else if (keycode == Input.Keys.T) {
-            toolManager.activateTool(toolManager.translateTool)
-            UI.toolbar.updateActiveToolButton()
-        } else if (keycode == Input.Keys.R) {
-            toolManager.activateTool(toolManager.rotateTool)
-            UI.toolbar.updateActiveToolButton()
-        } else if (keycode == Input.Keys.G) {
-            toolManager.activateTool(toolManager.scaleTool)
-            UI.toolbar.updateActiveToolButton()
-        } else if (keycode == Input.Keys.F) {
-            toolManager.activateTool(toolManager.selectionTool)
-            UI.toolbar.updateActiveToolButton()
+        when (keycode) {
+            Input.Keys.Z -> {
+                history.goBack()
+                return true
+            }
+
+            Input.Keys.Y -> {
+                history.goForward()
+                return true
+            }
+
+            Input.Keys.S -> {
+                projectManager.saveCurrentProject()
+                toaster.success("Project saved")
+                return true
+            }
+
+            Input.Keys.T -> {
+                toolManager.activateTool(toolManager.translateTool)
+                toolbar.updateActiveToolButton()
+            }
+
+            Input.Keys.R -> {
+                toolManager.activateTool(toolManager.rotateTool)
+                toolbar.updateActiveToolButton()
+            }
+
+            Input.Keys.G -> {
+                toolManager.activateTool(toolManager.scaleTool)
+                toolbar.updateActiveToolButton()
+            }
+
+            Input.Keys.F -> {
+                toolManager.activateTool(toolManager.selectionTool)
+                toolbar.updateActiveToolButton()
+            }
         }
 
         return false

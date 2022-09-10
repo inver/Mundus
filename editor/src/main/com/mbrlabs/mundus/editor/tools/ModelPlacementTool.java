@@ -24,17 +24,17 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
-import com.mbrlabs.mundus.commons.assets.ModelAsset;
+import com.mbrlabs.mundus.commons.assets.model.ModelAsset;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.scene3d.InvalidComponentException;
-import com.mbrlabs.mundus.editor.Mundus;
 import com.mbrlabs.mundus.editor.core.project.ProjectContext;
 import com.mbrlabs.mundus.editor.core.project.ProjectManager;
+import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.SceneGraphChangedEvent;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.scene3d.components.PickableModelComponent;
 import com.mbrlabs.mundus.editor.shader.Shaders;
-import com.mbrlabs.mundus.editor.ui.UI;
+import com.mbrlabs.mundus.editor.ui.AppUi;
 import com.mbrlabs.mundus.editor.utils.TerrainUtils;
 
 /**
@@ -54,8 +54,14 @@ public class ModelPlacementTool extends Tool {
     private ModelAsset model;
     private ModelInstance modelInstance;
 
-    public ModelPlacementTool(ProjectManager projectManager, ModelBatch batch, CommandHistory history) {
+    private final AppUi appUi;
+    private final EventBus eventBus;
+
+    public ModelPlacementTool(ProjectManager projectManager, ModelBatch batch, CommandHistory history, AppUi appUi, EventBus eventBus) {
         super(projectManager, batch, history);
+        this.appUi = appUi;
+        this.eventBus = eventBus;
+
         setShader(Shaders.INSTANCE.getModelShader());
         this.model = null;
         this.modelInstance = null;
@@ -93,8 +99,8 @@ public class ModelPlacementTool extends Tool {
     @Override
     public void render() {
         if (modelInstance != null) {
-            getBatch().begin(getProjectManager().current().currScene.cam);
-            getBatch().render(modelInstance, getProjectManager().current().currScene.environment, getShader());
+            getBatch().begin(getProjectManager().getCurrent().currScene.cam);
+            getBatch().render(modelInstance, getProjectManager().getCurrent().currScene.environment, getShader());
             getBatch().end();
         }
     }
@@ -108,10 +114,9 @@ public class ModelPlacementTool extends Tool {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 
         if (modelInstance != null && button == Input.Buttons.LEFT) {
-            int id = getProjectManager().current().obtainID();
-            GameObject modelGo = new GameObject(getProjectManager().current().currScene.sceneGraph, model.getName(),
-                    id);
-            getProjectManager().current().currScene.sceneGraph.addGameObject(modelGo);
+            int id = getProjectManager().getCurrent().obtainID();
+            GameObject modelGo = new GameObject(getProjectManager().getCurrent().currScene.sceneGraph, model.getName(), id);
+            getProjectManager().getCurrent().currScene.sceneGraph.addGameObject(modelGo);
 
             modelInstance.transform.getTranslation(tempV3);
             modelGo.translate(tempV3);
@@ -124,11 +129,11 @@ public class ModelPlacementTool extends Tool {
             try {
                 modelGo.addComponent(modelComponent);
             } catch (InvalidComponentException e) {
-                Dialogs.showErrorDialog(UI.INSTANCE, e.getMessage());
+                Dialogs.showErrorDialog(appUi, e.getMessage());
                 return false;
             }
 
-            Mundus.INSTANCE.postEvent(new SceneGraphChangedEvent());
+            eventBus.post(new SceneGraphChangedEvent());
             mouseMoved(screenX, screenY);
         }
         return false;
@@ -138,9 +143,9 @@ public class ModelPlacementTool extends Tool {
     public boolean mouseMoved(int screenX, int screenY) {
         if (this.model == null || modelInstance == null) return false;
 
-        final ProjectContext context = getProjectManager().current();
+        final ProjectContext context = getProjectManager().getCurrent();
 
-        final Ray ray = getProjectManager().current().currScene.viewport.getPickRay(screenX, screenY);
+        final Ray ray = getProjectManager().getCurrent().currScene.viewport.getPickRay(screenX, screenY);
         if (context.currScene.terrains.size > 0 && modelInstance != null) {
             MeshPartBuilder.VertexInfo vi = TerrainUtils.getRayIntersectionAndUp(context.currScene.terrains, ray);
             if (vi != null) {
@@ -150,7 +155,7 @@ public class ModelPlacementTool extends Tool {
                 modelInstance.transform.setTranslation(vi.position);
             }
         } else {
-            tempV3.set(getProjectManager().current().currScene.cam.position);
+            tempV3.set(getProjectManager().getCurrent().currScene.cam.position);
             tempV3.add(ray.direction.nor().scl(200));
             modelInstance.transform.setTranslation(tempV3);
         }

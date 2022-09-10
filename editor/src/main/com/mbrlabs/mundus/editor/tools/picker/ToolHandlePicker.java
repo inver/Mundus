@@ -23,11 +23,13 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.mbrlabs.mundus.editor.core.EditorScene;
 import com.mbrlabs.mundus.editor.tools.ToolHandle;
 import com.mbrlabs.mundus.editor.utils.Log;
+import org.springframework.stereotype.Component;
 
 /**
  * @author Marcus Brummer
  * @version 07-03-2016
  */
+@Component
 public class ToolHandlePicker extends BasePicker {
 
     public ToolHandlePicker() {

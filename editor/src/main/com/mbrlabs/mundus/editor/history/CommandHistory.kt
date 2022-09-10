@@ -17,6 +17,9 @@
 package com.mbrlabs.mundus.editor.history
 
 import com.badlogic.gdx.utils.Array
+import com.mbrlabs.mundus.editor.events.EventBus
+import com.mbrlabs.mundus.editor.events.SceneGraphChangedEvent
+import org.springframework.stereotype.Component
 
 /**
  * Add commands to undo/redo a previously called process.
@@ -24,7 +27,10 @@ import com.badlogic.gdx.utils.Array
  * @author Marcus Brummer
  * @version 07-02-2016
  */
-class CommandHistory(private val limit: Int) {
+@Component
+class CommandHistory(private val eventBus: EventBus) {
+
+    private val limit = DEFAULT_LIMIT
 
     private var pointer: Int = 0
     private val commands: Array<Command> = Array(limit)
@@ -79,6 +85,7 @@ class CommandHistory(private val limit: Int) {
     fun goBack(): Int {
         if (pointer >= 0) {
             commands.get(pointer).undo()
+            eventBus.post(SceneGraphChangedEvent())
             pointer--
         }
 
@@ -89,6 +96,7 @@ class CommandHistory(private val limit: Int) {
         if (pointer < commands.size - 1) {
             pointer++
             commands.get(pointer).execute()
+            eventBus.post(SceneGraphChangedEvent())
         }
 
         return pointer
@@ -96,7 +104,7 @@ class CommandHistory(private val limit: Int) {
 
     fun clear() {
         commands.filterIsInstance<DisposableCommand>()
-                .forEach { it.dispose() }
+            .forEach { it.dispose() }
         commands.clear()
         pointer = -1
     }

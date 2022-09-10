@@ -16,11 +16,10 @@
 package com.mbrlabs.mundus.editor.history.commands
 
 import com.badlogic.gdx.scenes.scene2d.ui.Tree
+import com.kotcrab.vis.ui.widget.VisTable
 import com.mbrlabs.mundus.commons.scene3d.GameObject
-import com.mbrlabs.mundus.editor.Mundus
-import com.mbrlabs.mundus.editor.events.SceneGraphChangedEvent
 import com.mbrlabs.mundus.editor.history.Command
-import com.mbrlabs.mundus.editor.ui.modules.Outline
+import com.mbrlabs.mundus.editor.ui.modules.outline.OutlineNode
 import com.mbrlabs.mundus.editor.utils.Log
 
 /**
@@ -29,20 +28,20 @@ import com.mbrlabs.mundus.editor.utils.Log
  * @author codenigma
  * @version 28-09-2016
  */
-class DeleteCommand(private var go: GameObject?, private var node: Outline.OutlineNode) : Command {
+class DeleteCommand(private var go: GameObject?, private var node: OutlineNode) : Command {
 
     companion object {
         private val TAG = DeleteCommand::class.java.simpleName
     }
 
     private var parentGO: GameObject? = null
-    private var parentNode: Tree.Node<Outline.OutlineNode, GameObject, Outline.NodeTable>? = null
-    private var tree: Tree<Outline.OutlineNode, GameObject>? = null
+    private var parentNode: Tree.Node<OutlineNode, GameObject, VisTable>? = null
+    private var tree: Tree<OutlineNode, GameObject>? = null
 
     init {
         this.parentGO = go!!.parent
-        this.parentNode = node!!.parent
-        this.tree = node!!.tree
+        this.parentNode = node.parent
+        this.tree = node.tree
     }
 
     override fun execute() {
@@ -50,8 +49,7 @@ class DeleteCommand(private var go: GameObject?, private var node: Outline.Outli
         // remove go from sceneGraph
         go!!.remove()
         // remove from outline tree
-        tree!!.remove(node!!)
-        Mundus.postEvent(SceneGraphChangedEvent())
+        tree!!.remove(node)
     }
 
     override fun undo() {
@@ -63,8 +61,7 @@ class DeleteCommand(private var go: GameObject?, private var node: Outline.Outli
             tree!!.add(node)
         else
             parentNode!!.add(node)
-        node!!.expandTo()
-        Mundus.postEvent(SceneGraphChangedEvent())
+        node.expandTo()
     }
 
 }

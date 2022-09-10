@@ -16,6 +16,7 @@
 
 package com.mbrlabs.mundus.editor.ui.modules.inspector.components
 
+import com.kotcrab.vis.ui.widget.Separator.SeparatorStyle
 import com.mbrlabs.mundus.commons.scene3d.components.Component
 import com.mbrlabs.mundus.editor.ui.modules.inspector.BaseInspectorWidget
 
@@ -23,7 +24,11 @@ import com.mbrlabs.mundus.editor.ui.modules.inspector.BaseInspectorWidget
  * @author Marcus Brummer
  * @version 22-01-2016
  */
-abstract class ComponentWidget<T : Component>(title: String, var component: T) : BaseInspectorWidget(title) {
+abstract class ComponentWidget<T : Component>(
+    separatorStyle: SeparatorStyle,
+    title: String,
+    var component: T
+) : BaseInspectorWidget(separatorStyle, title) {
 
     init {
         isDeletable = true

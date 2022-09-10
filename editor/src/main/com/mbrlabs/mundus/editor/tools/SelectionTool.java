@@ -22,8 +22,8 @@ import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.scene3d.components.Component;
 import com.mbrlabs.mundus.commons.scene3d.components.ModelComponent;
 import com.mbrlabs.mundus.commons.scene3d.components.TerrainComponent;
-import com.mbrlabs.mundus.editor.Mundus;
 import com.mbrlabs.mundus.editor.core.project.ProjectManager;
+import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.GameObjectSelectedEvent;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.tools.picker.GameObjectPicker;
@@ -38,15 +38,17 @@ public class SelectionTool extends Tool {
     public static final String NAME = "Selection Tool";
 
     private GameObjectPicker goPicker;
+    protected final EventBus eventBus;
 
     public SelectionTool(ProjectManager projectManager, GameObjectPicker goPicker, ModelBatch batch,
-            CommandHistory history) {
+                         CommandHistory history, EventBus eventBus) {
         super(projectManager, batch, history);
         this.goPicker = goPicker;
+        this.eventBus = eventBus;
     }
 
     public void gameObjectSelected(GameObject selection) {
-        getProjectManager().current().currScene.currentSelection = selection;
+        getProjectManager().getCurrent().currScene.currentSelection = selection;
     }
 
     @Override
@@ -66,9 +68,9 @@ public class SelectionTool extends Tool {
 
     @Override
     public void render() {
-        if (getProjectManager().current().currScene.currentSelection != null) {
-            getBatch().begin(getProjectManager().current().currScene.cam);
-            for (GameObject go : getProjectManager().current().currScene.currentSelection) {
+        if (getProjectManager().getCurrent().currScene.currentSelection != null) {
+            getBatch().begin(getProjectManager().getCurrent().currScene.cam);
+            for (GameObject go : getProjectManager().getCurrent().currScene.currentSelection) {
                 // model component
                 ModelComponent mc = (ModelComponent) go.findComponentByType(Component.Type.MODEL);
                 if (mc != null) {
@@ -93,10 +95,10 @@ public class SelectionTool extends Tool {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         if (button == Input.Buttons.RIGHT) {
-            GameObject selection = goPicker.pick(getProjectManager().current().currScene, screenX, screenY);
-            if (selection != null && !selection.equals(getProjectManager().current().currScene.currentSelection)) {
+            GameObject selection = goPicker.pick(getProjectManager().getCurrent().currScene, screenX, screenY);
+            if (selection != null && !selection.equals(getProjectManager().getCurrent().currScene.currentSelection)) {
                 gameObjectSelected(selection);
-                Mundus.INSTANCE.postEvent(new GameObjectSelectedEvent(selection));
+                eventBus.post(new GameObjectSelectedEvent(selection));
             }
         }
 
@@ -110,6 +112,9 @@ public class SelectionTool extends Tool {
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
+        //todo
+//        projectManager.current.currScene.viewport.getScreenHeight();
+
         return false;
     }
 
@@ -120,12 +125,11 @@ public class SelectionTool extends Tool {
 
     @Override
     public void onActivated() {
-
     }
 
     @Override
     public void onDisabled() {
-        getProjectManager().current().currScene.currentSelection = null;
+        getProjectManager().getCurrent().currScene.currentSelection = null;
     }
 
 }

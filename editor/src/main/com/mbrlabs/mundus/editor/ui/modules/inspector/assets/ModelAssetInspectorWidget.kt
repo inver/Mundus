@@ -18,15 +18,18 @@ package com.mbrlabs.mundus.editor.ui.modules.inspector.assets
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import com.kotcrab.vis.ui.widget.Separator.SeparatorStyle
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
-import com.mbrlabs.mundus.commons.assets.MaterialAsset
-import com.mbrlabs.mundus.commons.assets.ModelAsset
+import com.mbrlabs.mundus.commons.assets.material.MaterialAsset
+import com.mbrlabs.mundus.commons.assets.model.ModelAsset
 import com.mbrlabs.mundus.commons.scene3d.GameObject
-import com.mbrlabs.mundus.editor.Mundus
+import com.mbrlabs.mundus.editor.config.UiWidgetsHolder
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.tools.ToolManager
+import com.mbrlabs.mundus.editor.ui.AppUi
+import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
 import com.mbrlabs.mundus.editor.ui.modules.inspector.BaseInspectorWidget
 import com.mbrlabs.mundus.editor.ui.widgets.MaterialWidget
 
@@ -34,7 +37,15 @@ import com.mbrlabs.mundus.editor.ui.widgets.MaterialWidget
  * @author Marcus Brummer
  * @version 13-10-2016
  */
-class ModelAssetInspectorWidget : BaseInspectorWidget(ModelAssetInspectorWidget.TITLE) {
+class ModelAssetInspectorWidget(
+    separatorStyle: SeparatorStyle,
+    private val appUi: AppUi,
+    private val uiWidgetsHolder: UiWidgetsHolder,
+    private val assetSelectionDialog: AssetPickerDialog,
+    private val toolManager: ToolManager,
+    private val projectManager: ProjectManager
+) :
+    BaseInspectorWidget(separatorStyle, "Model Asset") {
 
     private var modelAsset: ModelAsset? = null
 
@@ -50,9 +61,6 @@ class ModelAssetInspectorWidget : BaseInspectorWidget(ModelAssetInspectorWidget.
 
     // actions
     private val modelPlacement = VisTextButton("Activate model placement tool")
-
-    private val toolManager: ToolManager = Mundus.inject()
-    private val projectManager: ProjectManager = Mundus.inject()
 
     init {
         isDeletable = false
@@ -73,8 +81,10 @@ class ModelAssetInspectorWidget : BaseInspectorWidget(ModelAssetInspectorWidget.
 
         // materials
         val label = VisLabel()
-        label.setText("Default model materials determine the initial materials a new model will get, if "
-                + "you use the model placement tool.")
+        label.setText(
+            "Default model materials determine the initial materials a new model will get, if "
+                    + "you use the model placement tool."
+        )
         label.setWrap(true)
         collapsibleContent.add(VisLabel("Default model materials")).growX().row()
         collapsibleContent.addSeparator().padBottom(5f).row()
@@ -108,14 +118,14 @@ class ModelAssetInspectorWidget : BaseInspectorWidget(ModelAssetInspectorWidget.
         materialContainer.clear()
         for (g3dbMatID in modelAsset!!.defaultMaterials.keys) {
             val mat = modelAsset!!.defaultMaterials[g3dbMatID]
-            val mw = MaterialWidget()
-            mw.matChangedListener = object: MaterialWidget.MaterialChangedListener {
+            val mw = MaterialWidget(uiWidgetsHolder.colorPicker, appUi, assetSelectionDialog, projectManager)
+            mw.matChangedListener = object : MaterialWidget.MaterialChangedListener {
                 override fun materialChanged(materialAsset: MaterialAsset) {
-                    val assetManager = projectManager.current().assetManager
+                    val assetManager = projectManager.current.assetManager
                     modelAsset!!.defaultMaterials.put(g3dbMatID, materialAsset)
                     modelAsset!!.applyDependencies()
                     toolManager.modelPlacementTool.setModel(modelAsset)
-                    assetManager.addDirtyAsset(modelAsset!!)
+                    assetManager.dirty(modelAsset!!)
                 }
             }
             mw.material = mat
@@ -134,11 +144,6 @@ class ModelAssetInspectorWidget : BaseInspectorWidget(ModelAssetInspectorWidget.
 
     override fun setValues(go: GameObject) {
         // nope
-    }
-
-    companion object {
-
-        private val TITLE = "Model Asset"
     }
 
 }

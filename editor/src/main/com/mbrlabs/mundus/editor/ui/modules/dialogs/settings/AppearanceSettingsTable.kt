@@ -31,9 +31,4 @@ class AppearanceSettingsTable : BaseSettingsTable() {
         add(VisLabel("Appearance Settings")).left().row()
         addSeparator().padBottom(10f)
     }
-
-    override fun onSave() {
-
-    }
-
 }

@@ -16,28 +16,29 @@
 
 package com.mbrlabs.mundus.editor.core.kryo;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.Date;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.serializers.TaggedFieldSerializer;
+import com.mbrlabs.mundus.commons.core.registry.KeyboardLayout;
+import com.mbrlabs.mundus.commons.core.registry.ProjectRef;
+import com.mbrlabs.mundus.commons.core.registry.Registry;
 import com.mbrlabs.mundus.editor.core.kryo.descriptors.*;
 import com.mbrlabs.mundus.editor.core.project.ProjectContext;
 import com.mbrlabs.mundus.editor.core.project.ProjectManager;
-import com.mbrlabs.mundus.editor.core.registry.KeyboardLayout;
-import com.mbrlabs.mundus.editor.core.registry.ProjectRef;
-import com.mbrlabs.mundus.editor.core.registry.Registry;
+import org.springframework.stereotype.Component;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Manages descriptor object <-> file io.
- *
+ * <p>
  * This provides only method for loading the serialized data into POJOs. It does
  * not load or initialize any data (like for example it does not load meshes or
  * textures). This has to be done separately (ProjectManager).
@@ -45,6 +46,7 @@ import com.mbrlabs.mundus.editor.core.registry.Registry;
  * @author Marcus Brummer
  * @version 12-12-2015
  */
+@Component
 public class KryoManager {
 
     private Kryo kryo;
@@ -73,7 +75,7 @@ public class KryoManager {
 
     /**
      * Loads the registry.
-     *
+     * <p>
      * Save to use afterwards, nothing else needs to be loaded.
      *
      * @return mundus registry
@@ -96,8 +98,7 @@ public class KryoManager {
     /**
      * Saves the registry
      *
-     * @param registry
-     *            mundus registry
+     * @param registry mundus registry
      */
     public void saveRegistry(Registry registry) {
         try {
@@ -113,11 +114,10 @@ public class KryoManager {
 
     /**
      * Saves the project context.
-     *
+     * <p>
      * Saves only the project's .pro file, not the individual scenes.
      *
-     * @param context
-     *            project context to save
+     * @param context project context to save
      */
     public void saveProjectContext(ProjectContext context) {
         try {
@@ -136,12 +136,11 @@ public class KryoManager {
 
     /**
      * Loads the project context .pro.
-     *
+     * <p>
      * Does however not load the scenes (only the scene names as reference) or
      * meshes/textures (see ProjectManager).
      *
-     * @param ref
-     *            project to load
+     * @param ref project to load
      * @return loaded project context without scenes
      * @throws FileNotFoundException
      */

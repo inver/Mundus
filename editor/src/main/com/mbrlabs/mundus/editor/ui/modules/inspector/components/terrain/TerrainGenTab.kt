@@ -28,14 +28,16 @@ import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.generat
  * @author Marcus Brummer
  * @version 04-03-2016
  */
-class TerrainGenTab(private val parent: TerrainComponentWidget) : Tab(false, false), TabbedPaneListener {
+class TerrainGenTab(
+    parent: TerrainComponentWidget
+) : Tab(false, false), TabbedPaneListener {
     private val root = VisTable()
 
     private val tabbedPane = TabbedPane()
     private val tabContainer = VisTable()
 
-    private val heightmapTab = HeightmapTab(parent.component.terrain)
-    private val perlinNoiseTab = PerlinNoiseTab(parent.component.terrain)
+    val heightmapTab = HeightmapTab(parent.component.terrain)
+    val perlinNoiseTab = PerlinNoiseTab(parent.component.terrain)
 
     init {
         tabbedPane.addListener(this)

@@ -16,6 +16,7 @@
 
 package com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain
 
+import com.kotcrab.vis.ui.widget.Separator.SeparatorStyle
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.tabbedpane.Tab
 import com.kotcrab.vis.ui.widget.tabbedpane.TabbedPane
@@ -29,8 +30,12 @@ import com.mbrlabs.mundus.editor.ui.modules.inspector.components.ComponentWidget
  * @author Marcus Brummer
  * @version 29-01-2016
  */
-class TerrainComponentWidget(terrainComponent: TerrainComponent) :
-        ComponentWidget<TerrainComponent>("Terrain Component", terrainComponent), TabbedPaneListener {
+class TerrainComponentWidget(
+    separatorStyle: SeparatorStyle,
+    terrainComponent: TerrainComponent,
+    private val terrainWidgetPresenter: TerrainWidgetPresenter
+) :
+    ComponentWidget<TerrainComponent>(separatorStyle, "Terrain Component", terrainComponent), TabbedPaneListener {
 
     private val tabbedPane = TabbedPane()
     private val tabContainer = VisTable()
@@ -44,15 +49,41 @@ class TerrainComponentWidget(terrainComponent: TerrainComponent) :
     init {
         tabbedPane.addListener(this)
 
-        tabbedPane.add(raiseLowerTab)
-        tabbedPane.add(flattenTab)
-        tabbedPane.add(paintTab)
-        tabbedPane.add(genTab)
-        tabbedPane.add(settingsTab)
+        initRaiseLowerTab()
+        initFlattenTab()
+        initPaintTab()
+        initGenTab()
+        initSettingsTab()
 
         collapsibleContent.add(tabbedPane.table).growX().row()
         collapsibleContent.add(tabContainer).expand().fill().row()
         tabbedPane.switchTab(0)
+    }
+
+    private fun initSettingsTab() {
+        tabbedPane.add(settingsTab)
+        terrainWidgetPresenter.initSettingsTab(settingsTab)
+    }
+
+    private fun initGenTab() {
+        tabbedPane.add(genTab)
+        terrainWidgetPresenter.initGenTab(this, genTab)
+    }
+
+    private fun initPaintTab() {
+        tabbedPane.add(paintTab)
+        terrainWidgetPresenter.initBrushGrid(paintTab.grid)
+        terrainWidgetPresenter.initPaintTab(this, paintTab)
+    }
+
+    private fun initFlattenTab() {
+        tabbedPane.add(flattenTab)
+        terrainWidgetPresenter.initBrushGrid(flattenTab.grid)
+    }
+
+    private fun initRaiseLowerTab() {
+        tabbedPane.add(raiseLowerTab)
+        terrainWidgetPresenter.initBrushGrid(raiseLowerTab.grid)
     }
 
     override fun setValues(go: GameObject) {

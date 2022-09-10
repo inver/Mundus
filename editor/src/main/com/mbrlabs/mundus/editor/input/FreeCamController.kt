@@ -22,11 +22,13 @@ import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.graphics.Camera
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.utils.IntIntMap
+import org.springframework.stereotype.Component
 
 /**
  * @author Marcus Brummer
  * @version 24-11-2015
  */
+@Component
 class FreeCamController : InputAdapter() {
 
     val SPEED_01 = 10f
@@ -113,7 +115,8 @@ class FreeCamController : InputAdapter() {
         return true
     }
 
-    @JvmOverloads fun update(deltaTime: Float = Gdx.graphics.deltaTime) {
+    @JvmOverloads
+    fun update(deltaTime: Float = Gdx.graphics.deltaTime) {
         if (keys.containsKey(FORWARD)) {
             tmp.set(camera!!.direction).nor().scl(deltaTime * velocity)
             camera!!.position.add(tmp)
@@ -148,6 +151,8 @@ class FreeCamController : InputAdapter() {
                 pan = true
             }
         }
-        camera!!.update(true)
+        if (camera != null) {
+            camera!!.update(true)
+        }
     }
 }

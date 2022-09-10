@@ -24,11 +24,18 @@ import com.kotcrab.vis.ui.widget.VisTable
  */
 abstract class BaseSettingsTable : VisTable() {
 
+    var saveListener: SaveListener? = null
+
     init {
         top().left()
         padRight(5f).padLeft(6f)
     }
 
-    abstract fun onSave()
+    fun save() {
+        saveListener?.doSave()
+    }
 
+    interface SaveListener {
+        fun doSave()
+    }
 }

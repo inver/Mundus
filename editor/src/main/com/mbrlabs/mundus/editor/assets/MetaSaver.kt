@@ -26,6 +26,7 @@ import com.mbrlabs.mundus.commons.assets.meta.MetaTerrain
 /**
  *
  */
+@Deprecated("")
 class MetaSaver {
 
     fun save(meta: Meta) {
