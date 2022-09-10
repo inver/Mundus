@@ -30,8 +30,6 @@ public class SceneGraph {
 
     public Scene scene;
 
-    private GameObject selected;
-
     public SceneGraph(Scene scene) {
         root = new GameObject(this, null, -1);
         root.initChildrenArray();
@@ -62,13 +60,4 @@ public class SceneGraph {
     public void addGameObject(GameObject go) {
         root.addChild(go);
     }
-
-    public GameObject getSelected() {
-        return selected;
-    }
-
-    public void setSelected(GameObject selected) {
-        this.selected = selected;
-    }
-
 }

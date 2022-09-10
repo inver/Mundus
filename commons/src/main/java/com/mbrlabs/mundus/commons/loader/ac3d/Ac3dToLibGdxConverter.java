@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.g3d.model.data.*;
 import com.badlogic.gdx.math.Vector3;
-import com.mbrlabs.mundus.commons.dto.ColorDTO;
+import com.mbrlabs.mundus.commons.dto.ColorDto;
 import com.mbrlabs.mundus.commons.loader.ac3d.dto.Ac3dMaterial;
 import com.mbrlabs.mundus.commons.loader.ac3d.dto.Ac3dModel;
 import com.mbrlabs.mundus.commons.loader.ac3d.dto.Ac3dObject;
@@ -111,7 +111,7 @@ public class Ac3dToLibGdxConverter {
         return res;
     }
 
-    private Color fromDto(ColorDTO input) {
+    private Color fromDto(ColorDto input) {
         return new Color(input.getR(), input.getG(), input.getB(), input.getA());
     }
 }

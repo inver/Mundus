@@ -16,29 +16,19 @@
 
 package com.mbrlabs.mundus.commons.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 /**
  * @author Tibor Zsuro
  * @version 12-08-2021
  */
-public class BaseLightDTO {
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+public class BaseLightDto {
 
     private float intensity;
     private int color;
-
-    public float getIntensity() {
-        return intensity;
-    }
-
-    public void setIntensity(float intensity) {
-        this.intensity = intensity;
-    }
-
-    public int getColor() {
-        return color;
-    }
-
-    public void setColor(int color) {
-        this.color = color;
-    }
-
 }

@@ -113,7 +113,7 @@ public class ScaleTool extends TransformTool {
 
         GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
         ProjectContext projectContext = getProjectManager().getCurrent();
-        if (projectContext.currScene.currentSelection != null) {
+        if (projectContext.getSelected() != null) {
             getBatch().begin(projectContext.currScene.cam);
             xHandle.render(getBatch());
             yHandle.render(getBatch());
@@ -121,7 +121,7 @@ public class ScaleTool extends TransformTool {
             xyzHandle.render(getBatch());
             getBatch().end();
 
-            GameObject go = projectContext.currScene.currentSelection;
+            GameObject go = projectContext.getSelected();
             go.getTransform().getTranslation(temp0);
             if (viewport3d == null) {
                 viewport3d = appUi.getSceneWidget().getViewport();
@@ -177,7 +177,7 @@ public class ScaleTool extends TransformTool {
         super.act();
         ProjectContext projectContext = getProjectManager().getCurrent();
 
-        final GameObject selection = projectContext.currScene.currentSelection;
+        final GameObject selection = projectContext.getSelected();
         if (!isScalable(selection)) {
             return;
         }
@@ -227,7 +227,7 @@ public class ScaleTool extends TransformTool {
 
     private float getCurrentDst() {
         ProjectContext projectContext = getProjectManager().getCurrent();
-        final GameObject selection = projectContext.currScene.currentSelection;
+        final GameObject selection = projectContext.getSelected();
         if (selection != null) {
             selection.getTransform().getTranslation(temp0);
             Vector3 pivot = projectContext.currScene.cam.project(temp0, viewport3d.getScreenX(),
@@ -242,14 +242,14 @@ public class ScaleTool extends TransformTool {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         ProjectContext projectContext = getProjectManager().getCurrent();
-        final GameObject selection = projectContext.currScene.currentSelection;
+        final GameObject selection = projectContext.getSelected();
         super.touchDown(screenX, screenY, pointer, button);
 
         if (!isScalable(selection)) {
             return false;
         }
 
-        if (button == Input.Buttons.LEFT && projectContext.currScene.currentSelection != null) {
+        if (button == Input.Buttons.LEFT && projectContext.getSelected() != null) {
             ScaleHandle handle = (ScaleHandle) handlePicker.pick(handles, projectContext.currScene, screenX, screenY);
             if (handle == null) {
                 state = TransformState.IDLE;
@@ -304,7 +304,7 @@ public class ScaleTool extends TransformTool {
             xyzHandle.changeColor(COLOR_XYZ);
 
             // scale command after
-            projectContext.currScene.currentSelection.getScale(tempScale);
+            projectContext.getSelected().getScale(tempScale);
             command.setAfter(tempScale);
             getHistory().add(command);
             command = null;
@@ -338,7 +338,7 @@ public class ScaleTool extends TransformTool {
     @Override
     protected void translateHandles() {
         ProjectContext projectContext = getProjectManager().getCurrent();
-        final Vector3 pos = projectContext.currScene.currentSelection.getTransform().getTranslation(temp0);
+        final Vector3 pos = projectContext.getSelected().getTransform().getTranslation(temp0);
         xHandle.getPosition().set(pos);
         xHandle.applyTransform();
         yHandle.getPosition().set(pos);
@@ -351,7 +351,7 @@ public class ScaleTool extends TransformTool {
 
     @Override
     protected void scaleHandles() {
-        Vector3 pos = getProjectManager().getCurrent().currScene.currentSelection.getPosition(temp0);
+        Vector3 pos = getProjectManager().getCurrent().getSelected().getPosition(temp0);
         float scaleFactor = getProjectManager().getCurrent().currScene.cam.position.dst(pos) * 0.01f;
         xHandle.getScale().set(scaleFactor, scaleFactor, scaleFactor);
 

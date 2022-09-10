@@ -90,7 +90,7 @@ class TransformWidget(
         posX.addListener(object : ChangeListener() {
             override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
                 val projectContext = projectManager.current
-                val go = projectContext.currScene.currentSelection ?: return
+                val go = projectContext.selected ?: return
                 val command = TranslateCommand(go)
                 val pos = go.getLocalPosition(tempV3)
                 command.setBefore(pos)
@@ -102,7 +102,7 @@ class TransformWidget(
         posY.addListener(object : ChangeListener() {
             override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
                 val projectContext = projectManager.current
-                val go = projectContext.currScene.currentSelection ?: return
+                val go = projectContext.selected ?: return
                 val command = TranslateCommand(go)
                 val pos = go.getLocalPosition(tempV3)
                 command.setBefore(pos)
@@ -114,7 +114,7 @@ class TransformWidget(
         posZ.addListener(object : ChangeListener() {
             override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
                 val projectContext = projectManager.current
-                val go = projectContext.currScene.currentSelection ?: return
+                val go = projectContext.selected ?: return
                 val command = TranslateCommand(go)
                 val pos = go.getLocalPosition(tempV3)
                 command.setBefore(pos)
@@ -128,7 +128,7 @@ class TransformWidget(
         rotX.addListener(object : ChangeListener() {
             override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
                 val projectContext = projectManager.current
-                val go = projectContext.currScene.currentSelection ?: return
+                val go = projectContext.selected ?: return
                 val rot = go.getLocalRotation(tempQuat)
                 val rotateCommand = RotateCommand(go)
                 rotateCommand.setBefore(rot)
@@ -141,7 +141,7 @@ class TransformWidget(
         rotY.addListener(object : ChangeListener() {
             override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
                 val projectContext = projectManager.current
-                val go = projectContext.currScene.currentSelection ?: return
+                val go = projectContext.selected ?: return
                 val rot = go.getLocalRotation(tempQuat)
                 val rotateCommand = RotateCommand(go)
                 rotateCommand.setBefore(rot)
@@ -154,7 +154,7 @@ class TransformWidget(
         rotZ.addListener(object : ChangeListener() {
             override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
                 val projectContext = projectManager.current
-                val go = projectContext.currScene.currentSelection ?: return
+                val go = projectContext.selected ?: return
                 val rot = go.getLocalRotation(tempQuat)
                 val rotateCommand = RotateCommand(go)
                 rotateCommand.setBefore(rot)
@@ -169,7 +169,7 @@ class TransformWidget(
         scaleX.addListener(object : ChangeListener() {
             override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
                 val projectContext = projectManager.current
-                val go = projectContext.currScene.currentSelection
+                val go = projectContext.selected
                 if (go != null && scaleX.float > 0f) {
                     val command = ScaleCommand(go)
                     val scl = go.getLocalScale(tempV3)
@@ -183,7 +183,7 @@ class TransformWidget(
         scaleY.addListener(object : ChangeListener() {
             override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
                 val projectContext = projectManager.current
-                val go = projectContext.currScene.currentSelection
+                val go = projectContext.selected
                 if (go != null && scaleY.float > 0f) {
                     val command = ScaleCommand(go)
                     val scl = go.getLocalScale(tempV3)
@@ -197,7 +197,7 @@ class TransformWidget(
         scaleZ.addListener(object : ChangeListener() {
             override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
                 val projectContext = projectManager.current
-                val go = projectContext.currScene.currentSelection
+                val go = projectContext.selected
                 if (go != null && scaleZ.float > 0f) {
                     val command = ScaleCommand(go)
                     val scl = go.getLocalScale(tempV3)

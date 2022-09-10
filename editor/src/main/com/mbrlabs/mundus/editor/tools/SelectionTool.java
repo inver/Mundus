@@ -48,7 +48,7 @@ public class SelectionTool extends Tool {
     }
 
     public void gameObjectSelected(GameObject selection) {
-        getProjectManager().getCurrent().currScene.currentSelection = selection;
+        getProjectManager().getCurrent().setSelected(selection);
     }
 
     @Override
@@ -68,9 +68,9 @@ public class SelectionTool extends Tool {
 
     @Override
     public void render() {
-        if (getProjectManager().getCurrent().currScene.currentSelection != null) {
+        if (getProjectManager().getCurrent().getSelected() != null) {
             getBatch().begin(getProjectManager().getCurrent().currScene.cam);
-            for (GameObject go : getProjectManager().getCurrent().currScene.currentSelection) {
+            for (GameObject go : getProjectManager().getCurrent().getSelected()) {
                 // model component
                 ModelComponent mc = (ModelComponent) go.findComponentByType(Component.Type.MODEL);
                 if (mc != null) {
@@ -96,7 +96,7 @@ public class SelectionTool extends Tool {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         if (button == Input.Buttons.RIGHT) {
             GameObject selection = goPicker.pick(getProjectManager().getCurrent().currScene, screenX, screenY);
-            if (selection != null && !selection.equals(getProjectManager().getCurrent().currScene.currentSelection)) {
+            if (selection != null && !selection.equals(getProjectManager().getCurrent().getSelected())) {
                 gameObjectSelected(selection);
                 eventBus.post(new GameObjectSelectedEvent(selection));
             }
@@ -129,7 +129,7 @@ public class SelectionTool extends Tool {
 
     @Override
     public void onDisabled() {
-        getProjectManager().getCurrent().currScene.currentSelection = null;
+        getProjectManager().getCurrent().setSelected(null);
     }
 
 }

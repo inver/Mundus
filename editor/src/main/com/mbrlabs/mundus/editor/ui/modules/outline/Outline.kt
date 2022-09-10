@@ -184,8 +184,9 @@ class Outline(
                 val selection = tree.selection
                 if (selection != null && selection.size() > 0) {
                     val go = selection.first().value
-                    projectManager.current.currScene.sceneGraph.selected = go
+                    projectManager.current.selected = go
                     toolManager.translateTool.gameObjectSelected(go)
+
                     eventBus.post(GameObjectSelectedEvent(go))
                 }
             }
@@ -216,7 +217,7 @@ class Outline(
      * @param gameObject
      */
     private fun addGoToTree(treeParentNode: Tree.Node<OutlineNode, GameObject, VisTable>?, gameObject: GameObject) {
-        val leaf = OutlineNode(gameObject)
+        val leaf = OutlineNode(gameObject, bitmapFont)
         if (treeParentNode == null) {
             tree.add(leaf)
         } else {
@@ -232,7 +233,7 @@ class Outline(
     }
 
     private fun createOutlineGameObject(parent: OutlineNode, go: GameObject): OutlineNode {
-        val res = OutlineNode(go)
+        val res = OutlineNode(go, bitmapFont)
 
         go.components.forEach {
 
