@@ -12,7 +12,7 @@ import com.mbrlabs.mundus.commons.core.ModelFiles;
 import com.mbrlabs.mundus.commons.core.registry.Registry;
 import com.mbrlabs.mundus.commons.loader.g3d.MG3dModelLoader;
 import com.mbrlabs.mundus.commons.loader.gltf.GltfLoaderWrapper;
-import com.mbrlabs.mundus.commons.loader.obj.ObjLoaderWrapper;
+import com.mbrlabs.mundus.commons.loader.obj.ObjModelLoader;
 import com.mbrlabs.mundus.commons.utils.FileFormatUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
@@ -29,7 +29,7 @@ public class ModelImporter {
     public ModelImporter(Registry registry) {
         this.registry = registry;
         loaders.put(FileFormatUtils.FORMAT_3D_AC3D, new Ac3dModelLoader(new Ac3dParser()));
-        loaders.put(FileFormatUtils.FORMAT_3D_WAVEFONT, new ObjLoaderWrapper());
+        loaders.put(FileFormatUtils.FORMAT_3D_WAVEFONT, new ObjModelLoader());
         loaders.put(FileFormatUtils.FORMAT_3D_G3DB, new MG3dModelLoader(new UBJsonReader()));
         loaders.put(FileFormatUtils.FORMAT_3D_GLTF, new GltfLoaderWrapper(new Json()));
     }

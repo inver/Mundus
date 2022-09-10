@@ -12,18 +12,12 @@ import net.mgsx.gltf.loaders.gltf.GLTFLoader;
 import org.apache.commons.lang3.NotImplementedException;
 
 public class GltfLoaderWrapper extends ModelLoader<ModelLoader.ModelParameters> implements AppModelLoader {
-    public static final String MODEL_TYPE = "gltf";
     private final GLTFLoader loader = new GLTFLoader();
     private final Json json;
 
     public GltfLoaderWrapper(Json json) {
         super(null);
         this.json = json;
-    }
-
-    @Override
-    public String getKey() {
-        return MODEL_TYPE;
     }
 
     @Override

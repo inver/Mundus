@@ -39,7 +39,6 @@ import com.kotcrab.vis.ui.util.dialog.Dialogs
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
-import com.kotcrab.vis.ui.widget.file.FileChooser
 import com.mbrlabs.mundus.commons.assets.exceptions.AssetAlreadyExistsException
 import com.mbrlabs.mundus.commons.assets.meta.MetaModel
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset
@@ -68,7 +67,6 @@ import java.io.IOException
 @Component
 class ImportModelDialog(
     private val appUi: AppUi,
-    private val fileChooser: FileChooser,
     private val toaster: Toaster,
     private val modelImporter: ModelImporter,
     private val projectManager: ProjectManager,

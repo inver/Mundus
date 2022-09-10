@@ -4,9 +4,9 @@ import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.ModelLoader;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
-import com.mbrlabs.mundus.commons.loader.ac3d.dto.Ac3dModel;
 import com.mbrlabs.mundus.commons.core.AppModelLoader;
 import com.mbrlabs.mundus.commons.core.ModelFiles;
+import com.mbrlabs.mundus.commons.loader.ac3d.dto.Ac3dModel;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -14,7 +14,6 @@ import java.io.BufferedReader;
 
 @Slf4j
 public class Ac3dModelLoader extends ModelLoader<ModelLoader.ModelParameters> implements AppModelLoader {
-    public static final String MODEL_TYPE = "ac3d";
     private final Ac3dParser parser;
     private final Ac3dToLibGdxConverter converter = new Ac3dToLibGdxConverter();
 
@@ -41,11 +40,6 @@ public class Ac3dModelLoader extends ModelLoader<ModelLoader.ModelParameters> im
             log.error("ERROR", e);
         }
         return null;
-    }
-
-    @Override
-    public String getKey() {
-        return "ac3d";
     }
 
     @Override

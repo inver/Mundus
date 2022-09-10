@@ -44,7 +44,6 @@ import com.mbrlabs.mundus.commons.scene3d.components.Component;
 import com.mbrlabs.mundus.commons.scene3d.components.ModelComponent;
 import com.mbrlabs.mundus.commons.scene3d.components.TerrainComponent;
 import com.mbrlabs.mundus.editor.Main;
-import com.mbrlabs.mundus.editor.Mundus;
 import com.mbrlabs.mundus.editor.assets.EditorAssetManager;
 import com.mbrlabs.mundus.editor.core.EditorScene;
 import com.mbrlabs.mundus.editor.core.converter.SceneConverter;
@@ -99,6 +98,10 @@ public class ProjectManager implements Disposable {
 
     public ProjectContext getCurrent() {
         return current;
+    }
+
+    public GameObject getCurrentSelection() {
+        return getCurrent().currScene.currentSelection;
     }
 
     private EditorAssetManager createAssetManager(String rootPath) {

@@ -233,8 +233,8 @@ public class EditorAssetManager extends AssetManager {
     }
 
     public void deleteAsset(Asset asset) {
-//        val objectsUsingAsset = findAssetUsagesInScenes(projectManager, asset)
-//        val assetsUsingAsset = findAssetUsagesInAssets(asset)
+//        var objectsUsingAsset = findAssetUsagesInScenes(projectManager, asset)
+//        var assetsUsingAsset = findAssetUsagesInAssets(asset)
 //
 //        if (objectsUsingAsset.isNotEmpty() || assetsUsingAsset.isNotEmpty()) {
 //            showUsagesFoundDialog(objectsUsingAsset, assetsUsingAsset)
@@ -242,12 +242,12 @@ public class EditorAssetManager extends AssetManager {
 //        }
 //
 //        // continue with deletion
-//        assets?.removeValue(asset, true)
+//        assets ?.removeValue(asset, true)
 //
 //        if (asset.file.extension().equals(FileFormatUtils.FORMAT_3D_GLTF)) {
 //            // Delete the additional gltf binary file if found
-//            val binPath = asset.file.pathWithoutExtension() + ".bin"
-//            val binFile = Gdx.files.getFileHandle(binPath, Files.FileType.Absolute)
+//            var binPath = asset.file.pathWithoutExtension() + ".bin"
+//            var binFile = Gdx.files.getFileHandle(binPath, Files.FileType.Absolute)
 //            if (binFile.exists())
 //                binFile.delete()
 //        }
@@ -258,6 +258,20 @@ public class EditorAssetManager extends AssetManager {
 //        if (asset.file.exists())
 //            asset.file.delete()
     }
+
+//    private fun findAssetUsagesInScenes(projectManager:ProjectManager, asset:Asset):HashMap<GameObject, String>
+//
+//    {
+//        val objectsWithAssets = HashMap < GameObject, String>()
+//
+//        // we check for usages in all scenes
+//        for (sceneName in projectManager.current.scenes) {
+//            val scene = projectManager.loadScene(projectManager.current, sceneName)
+//            checkSceneForAssetUsage(scene, asset, objectsWithAssets)
+//        }
+//
+//        return objectsWithAssets
+//    }
 
 
     private String clearedUUID() {

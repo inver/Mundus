@@ -1,6 +1,7 @@
 package com.mbrlabs.mundus.commons.loader.ac3d;
 
 import com.mbrlabs.mundus.commons.dto.*;
+import com.mbrlabs.mundus.commons.dto.vertex.VertexDto;
 import com.mbrlabs.mundus.commons.loader.ac3d.dto.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.NotImplementedException;
@@ -138,7 +139,7 @@ public class Ac3dParser {
         res.type(parseObjectType(token));
 
         List<Ac3dSurface> surfaces = Collections.emptyList();
-        var vertices = new ArrayList<VertexDTO>();
+        var vertices = new ArrayList<VertexDto>();
         while (!Ac3dConstants.OBJECT_KIDS.equals(token)) {
             line = br.readLine();
             tokenizer = new StringTokenizer(line);
@@ -201,7 +202,7 @@ public class Ac3dParser {
                     break;
                 }
                 case Ac3dConstants.OBJECT_TRANSLATION: {
-                    res.translation(new Vector3DTO(
+                    res.translation(new Vector3Dto(
                             Float.parseFloat(tokenizer.nextToken()),
                             Float.parseFloat(tokenizer.nextToken()),
                             Float.parseFloat(tokenizer.nextToken())
@@ -229,7 +230,7 @@ public class Ac3dParser {
                     for (int i = 0; i < count; i++) {
                         line = br.readLine();
                         tokenizer = new StringTokenizer(line, " ");
-                        vertices.add(new VertexDTO(
+                        vertices.add(new VertexDto(
                                 Float.parseFloat(tokenizer.nextToken()),
                                 Float.parseFloat(tokenizer.nextToken()),
                                 Float.parseFloat(tokenizer.nextToken())

@@ -3,7 +3,6 @@ package com.mbrlabs.mundus.editor.config;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.Separator;
 import com.kotcrab.vis.ui.widget.color.ColorPicker;
-import lombok.Getter;
 import org.springframework.stereotype.Component;
 
 /**

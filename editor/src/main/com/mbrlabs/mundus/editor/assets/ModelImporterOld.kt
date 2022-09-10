@@ -17,7 +17,6 @@
 package com.mbrlabs.mundus.editor.assets
 
 import com.mbrlabs.mundus.commons.core.registry.Registry
-import com.mbrlabs.mundus.editor.Mundus
 import com.mbrlabs.mundus.editor.events.EventBus
 import com.mbrlabs.mundus.editor.events.SettingsChangedEvent
 

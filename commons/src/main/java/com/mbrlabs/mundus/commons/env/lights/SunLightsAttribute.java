@@ -36,7 +36,7 @@ public class SunLightsAttribute extends Attribute {
 
     public SunLightsAttribute() {
         super(Type);
-        lights = new Array<SunLight>(1);
+        lights = new Array<>(1);
     }
 
     public SunLightsAttribute(final SunLightsAttribute copyFrom) {

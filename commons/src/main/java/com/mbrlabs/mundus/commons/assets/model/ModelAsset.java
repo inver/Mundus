@@ -28,7 +28,7 @@ import com.mbrlabs.mundus.commons.loader.ac3d.Ac3dModelLoader;
 import com.mbrlabs.mundus.commons.loader.ac3d.Ac3dParser;
 import com.mbrlabs.mundus.commons.loader.g3d.MG3dModelLoader;
 import com.mbrlabs.mundus.commons.loader.gltf.GltfLoaderWrapper;
-import com.mbrlabs.mundus.commons.loader.obj.ObjLoaderWrapper;
+import com.mbrlabs.mundus.commons.loader.obj.ObjModelLoader;
 import com.mbrlabs.mundus.commons.utils.FileFormatUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -71,7 +71,7 @@ public class ModelAsset extends Asset {
             Ac3dModelLoader loader = new Ac3dModelLoader(new Ac3dParser());
             model = loader.loadModel(file);
         } else if (FileFormatUtils.isOBJ(file)) {
-            model = new ObjLoaderWrapper().loadModel(file);
+            model = new ObjModelLoader().loadModel(file);
         } else {
             throw new GdxRuntimeException("Unsupported 3D model");
         }

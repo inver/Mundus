@@ -22,8 +22,9 @@ import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.PixmapIO
 import com.badlogic.gdx.utils.ObjectSet
-import com.kotcrab.vis.ui.util.dialog.Dialogs
-import com.mbrlabs.mundus.commons.assets.*
+import com.mbrlabs.mundus.commons.assets.Asset
+import com.mbrlabs.mundus.commons.assets.AssetType
+import com.mbrlabs.mundus.commons.assets.OldAssetManager
 import com.mbrlabs.mundus.commons.assets.exceptions.AssetAlreadyExistsException
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset
 import com.mbrlabs.mundus.commons.assets.meta.Meta
@@ -36,11 +37,8 @@ import com.mbrlabs.mundus.commons.core.ModelFiles
 import com.mbrlabs.mundus.commons.scene3d.GameObject
 import com.mbrlabs.mundus.commons.scene3d.components.AssetUsage
 import com.mbrlabs.mundus.commons.utils.FileFormatUtils
-import com.mbrlabs.mundus.editor.Mundus
 import com.mbrlabs.mundus.editor.core.EditorScene
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
-import com.mbrlabs.mundus.editor.events.LogEvent
-import com.mbrlabs.mundus.editor.events.LogType
 import com.mbrlabs.mundus.editor.utils.Log
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.FilenameUtils

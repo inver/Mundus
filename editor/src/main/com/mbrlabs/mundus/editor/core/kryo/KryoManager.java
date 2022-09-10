@@ -16,25 +16,25 @@
 
 package com.mbrlabs.mundus.editor.core.kryo;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.Date;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.serializers.TaggedFieldSerializer;
-import com.mbrlabs.mundus.editor.core.kryo.descriptors.*;
-import com.mbrlabs.mundus.editor.core.project.ProjectContext;
-import com.mbrlabs.mundus.editor.core.project.ProjectManager;
 import com.mbrlabs.mundus.commons.core.registry.KeyboardLayout;
 import com.mbrlabs.mundus.commons.core.registry.ProjectRef;
 import com.mbrlabs.mundus.commons.core.registry.Registry;
+import com.mbrlabs.mundus.editor.core.kryo.descriptors.*;
+import com.mbrlabs.mundus.editor.core.project.ProjectContext;
+import com.mbrlabs.mundus.editor.core.project.ProjectManager;
 import org.springframework.stereotype.Component;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Manages descriptor object <-> file io.

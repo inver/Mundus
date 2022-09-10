@@ -24,7 +24,6 @@ import com.kotcrab.vis.ui.widget.MenuItem
 import com.kotcrab.vis.ui.widget.PopupMenu
 import com.mbrlabs.mundus.commons.core.registry.ProjectRef
 import com.mbrlabs.mundus.commons.core.registry.Registry
-import org.springframework.stereotype.Component
 
 /**
  * @author Marcus Brummer

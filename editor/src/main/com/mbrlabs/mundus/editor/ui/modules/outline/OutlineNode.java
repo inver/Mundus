@@ -8,21 +8,21 @@ import lombok.Getter;
 
 public class OutlineNode extends Tree.Node<OutlineNode, GameObject, VisTable> {
 
-    public static OutlineNode ROOT_NODE = new OutlineNode(null);
-
-    static {
-        ROOT_NODE.label.setText("Root");
-    }
+    public static OutlineNode ROOT_NODE = new OutlineNode("Root");
 
     private final VisLabel label = new VisLabel();
     @Getter
     private final GameObject value;
 
 
+    public OutlineNode(String name) {
+        this((GameObject) null);
+        label.setText(name);
+    }
+
     public OutlineNode(GameObject value) {
         super(new VisTable());
         this.value = value;
-//        getActor().debugAll();
 
         getActor().add(label).expand().fill();
         if (value != null) {

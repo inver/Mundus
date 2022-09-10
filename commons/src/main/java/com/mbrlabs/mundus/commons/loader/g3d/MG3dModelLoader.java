@@ -55,7 +55,6 @@ import com.mbrlabs.mundus.commons.core.ModelFiles;
  */
 public class MG3dModelLoader extends ModelLoader<ModelLoader.ModelParameters> implements AppModelLoader {
 
-    public static final String MODEL_TYPE = "mg3d";
     public static final short VERSION_HI = 0;
     public static final short VERSION_LO = 1;
     protected final BaseJsonReader reader;
@@ -490,11 +489,6 @@ public class MG3dModelLoader extends ModelLoader<ModelLoader.ModelParameters> im
                 }
             }
         }
-    }
-
-    @Override
-    public String getKey() {
-        return MODEL_TYPE;
     }
 
     @Override

@@ -23,7 +23,6 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import com.badlogic.gdx.graphics.g3d.ModelBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import com.badlogic.gdx.utils.Json
 import com.kotcrab.vis.ui.VisUI
 import com.mbrlabs.mundus.commons.assets.material.MaterialService
 import com.mbrlabs.mundus.commons.assets.meta.MetaService
@@ -33,18 +32,13 @@ import com.mbrlabs.mundus.commons.assets.terrain.TerrainService
 import com.mbrlabs.mundus.commons.assets.texture.TextureService
 import com.mbrlabs.mundus.commons.core.registry.Registry
 import com.mbrlabs.mundus.commons.loader.ModelImporter
-import com.mbrlabs.mundus.editor.assets.MetaSaver
 import com.mbrlabs.mundus.editor.core.kryo.KryoManager
-import com.mbrlabs.mundus.editor.events.EventBus
-import com.mbrlabs.mundus.editor.history.CommandHistory
 import com.mbrlabs.mundus.editor.input.FreeCamController
-import com.mbrlabs.mundus.editor.input.InputManager
 import com.mbrlabs.mundus.editor.shader.Shaders
 import com.mbrlabs.mundus.editor.tools.picker.GameObjectPicker
 import com.mbrlabs.mundus.editor.tools.picker.ToolHandlePicker
 import com.mbrlabs.mundus.editor.utils.Fa
 import ktx.inject.Context
-import ktx.inject.register
 import java.io.File
 
 /**

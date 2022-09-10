@@ -8,18 +8,18 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.kotcrab.vis.ui.VisUI;
-import com.mbrlabs.mundus.editor.NewEditor;
+import com.mbrlabs.mundus.editor.Editor;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 public class InitListener extends Lwjgl3WindowAdapter implements ApplicationListener {
 
-    private NewEditor editor;
+    private Editor editor;
 
     @Override
     public void create() {
         initVisUI();
         var ctx = new AnnotationConfigApplicationContext(RootConfig.class);
-        editor = ctx.getBean(NewEditor.class);
+        editor = ctx.getBean(Editor.class);
         editor.create();
         var widgetsHolder = ctx.getBean(UiWidgetsHolder.class);
         widgetsHolder.init();

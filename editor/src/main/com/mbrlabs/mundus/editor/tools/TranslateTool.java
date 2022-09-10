@@ -16,9 +16,6 @@
 
 package com.mbrlabs.mundus.editor.tools;
 
-import com.mbrlabs.mundus.editor.events.EventBus;
-import org.lwjgl.opengl.GL11;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -34,8 +31,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
-import com.mbrlabs.mundus.editor.Mundus;
 import com.mbrlabs.mundus.editor.core.project.ProjectManager;
+import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.GameObjectModifiedEvent;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.history.commands.TranslateCommand;
@@ -43,6 +40,7 @@ import com.mbrlabs.mundus.editor.shader.Shaders;
 import com.mbrlabs.mundus.editor.tools.picker.GameObjectPicker;
 import com.mbrlabs.mundus.editor.tools.picker.ToolHandlePicker;
 import com.mbrlabs.mundus.editor.utils.Fa;
+import org.lwjgl.opengl.GL11;
 
 /**
  * @author Marcus Brummer
@@ -205,6 +203,10 @@ public class TranslateTool extends TransformTool {
 
     @Override
     protected void scaleHandles() {
+        if (getProjectManager().getCurrent().currScene.currentSelection == null) {
+            return;
+        }
+
         Vector3 pos = getProjectManager().getCurrent().currScene.currentSelection.getPosition(temp0);
         float scaleFactor = getProjectManager().getCurrent().currScene.cam.position.dst(pos) * 0.25f;
         xHandle.getScale().set(scaleFactor * 0.7f, scaleFactor / 2, scaleFactor / 2);
@@ -222,8 +224,11 @@ public class TranslateTool extends TransformTool {
 
     @Override
     protected void translateHandles() {
-        final Vector3 pos = getProjectManager().getCurrent().currScene.currentSelection.getTransform()
-                .getTranslation(temp0);
+        if (getProjectManager().getCurrentSelection() == null) {
+            return;
+        }
+
+        final Vector3 pos = getProjectManager().getCurrentSelection().getTransform().getTranslation(temp0);
         xHandle.getPosition().set(pos);
         xHandle.applyTransform();
         yHandle.getPosition().set(pos);
@@ -243,7 +248,7 @@ public class TranslateTool extends TransformTool {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         super.touchDown(screenX, screenY, pointer, button);
 
-        if (button == Input.Buttons.LEFT && getProjectManager().getCurrent().currScene.currentSelection != null) {
+        if (button == Input.Buttons.LEFT && getProjectManager().getCurrentSelection() != null) {
             TranslateHandle handle = (TranslateHandle) handlePicker.pick(handles,
                     getProjectManager().getCurrent().currScene, screenX, screenY);
             if (handle == null) {

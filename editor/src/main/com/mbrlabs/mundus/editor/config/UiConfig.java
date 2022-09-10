@@ -2,8 +2,6 @@ package com.mbrlabs.mundus.editor.config;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.kotcrab.vis.ui.VisUI;
-import com.kotcrab.vis.ui.widget.Separator;
 import com.kotcrab.vis.ui.widget.file.FileChooser;
 import com.mbrlabs.mundus.editor.utils.Fa;
 import org.springframework.context.annotation.Bean;

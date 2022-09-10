@@ -19,7 +19,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Tree
 import com.kotcrab.vis.ui.widget.VisTable
 import com.mbrlabs.mundus.commons.scene3d.GameObject
 import com.mbrlabs.mundus.editor.history.Command
-import com.mbrlabs.mundus.editor.ui.modules.outline.Outline
 import com.mbrlabs.mundus.editor.ui.modules.outline.OutlineNode
 import com.mbrlabs.mundus.editor.utils.Log
 

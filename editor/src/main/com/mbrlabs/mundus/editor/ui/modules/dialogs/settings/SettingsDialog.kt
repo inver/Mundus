@@ -25,7 +25,6 @@ import com.kotcrab.vis.ui.widget.VisTextButton
 import com.kotcrab.vis.ui.widget.VisTree
 import com.mbrlabs.mundus.editor.ui.UiConstants
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.BaseDialog
-import com.mbrlabs.mundus.editor.utils.Toaster
 import org.springframework.stereotype.Component
 
 /**

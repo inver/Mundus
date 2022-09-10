@@ -2,8 +2,8 @@ package com.mbrlabs.mundus.commons.loader.ac3d.dto;
 
 import com.mbrlabs.mundus.commons.dto.Matrix3DTO;
 import com.mbrlabs.mundus.commons.dto.Vector2DTO;
-import com.mbrlabs.mundus.commons.dto.Vector3DTO;
-import com.mbrlabs.mundus.commons.dto.VertexDTO;
+import com.mbrlabs.mundus.commons.dto.Vector3Dto;
+import com.mbrlabs.mundus.commons.dto.vertex.VertexDto;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -31,14 +31,14 @@ public class Ac3dObject {
     private final String url;
 
     private Matrix3DTO rotation;
-    private Vector3DTO translation;
+    private Vector3Dto translation;
 
     private boolean hidden;
     private boolean locked;
     //if this object should be folded (collapsed) in the hierarchy dialog.
     private boolean folded;
 
-    private final List<VertexDTO> vertices;
+    private final List<VertexDto> vertices;
 
     private final List<Ac3dSurface> surfaces;
 
