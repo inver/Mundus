@@ -17,7 +17,6 @@ package com.mbrlabs.mundus.editor.ui.modules.outline
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
-import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
@@ -40,7 +39,7 @@ import com.mbrlabs.mundus.editor.history.commands.DeleteCommand
 import com.mbrlabs.mundus.editor.shader.Shaders
 import com.mbrlabs.mundus.editor.tools.ToolManager
 import com.mbrlabs.mundus.editor.ui.AppUi
-import com.mbrlabs.mundus.editor.utils.Fa
+import com.mbrlabs.mundus.editor.utils.TextureUtils
 import com.mbrlabs.mundus.editor.utils.createDirectionalLightGO
 import com.mbrlabs.mundus.editor.utils.createTerrainGO
 import mu.KotlinLogging
@@ -59,8 +58,7 @@ class Outline(
     private val history: CommandHistory,
     private val eventBus: EventBus,
     private val appUi: AppUi,
-    private val outlinePresenter: OutlinePresenter,
-    private val fontAwesome: BitmapFont
+    outlinePresenter: OutlinePresenter
 ) : VisTable(),
     ProjectChangedEvent.ProjectChangedListener,
     SceneChangedEvent.SceneChangedListener,
@@ -93,9 +91,9 @@ class Outline(
         content = VisTable()
         content.align(Align.left or Align.top)
 
-        tree.debugAll()
-        tree.style.plus = FontAwesomeIcon(fontAwesome, Fa.PLUS_SQUARE)
-        tree.style.minus = FontAwesomeIcon(fontAwesome, Fa.MINUS_SQUARE)
+//        tree.debugAll()
+        tree.style.plus = TextureUtils.load("ui/icons/expand.png", 20, 20)
+        tree.style.minus = TextureUtils.load("ui/icons/collapse.png", 20, 20)
         tree.selection.setProgrammaticChangeEvents(false)
 
         dragAndDrop = OutlineDragAndDrop(tree, outlinePresenter.getDropListener(this))
@@ -211,12 +209,13 @@ class Outline(
     }
 
     private fun createRootNode(): Pair<OutlineNode, OutlineNode> {
-        val res = OutlineNode("Scene", fontAwesome)
-        val nodes = OutlineNode("Nodes", fontAwesome)
+        val res = OutlineNode("Scene", "ui/icons/scene.png")
+        val nodes = OutlineNode("Nodes", "ui/icons/tree.png")
         res.add(nodes)
-        res.add(OutlineNode("Shaders", fontAwesome))
-        res.add(OutlineNode("Materials", fontAwesome))
-        res.add(OutlineNode("Textures", fontAwesome))
+        res.add(OutlineNode("Shaders", "ui/icons/shader.png"))
+        res.add(OutlineNode("Terrains", "ui/icons/terrain.png"))
+        res.add(OutlineNode("Materials", "ui/icons/material.png"))
+        res.add(OutlineNode("Textures", "ui/icons/texture.png"))
         return Pair(res, nodes)
     }
 
@@ -228,7 +227,7 @@ class Outline(
      * @param gameObject
      */
     private fun addGoToTree(treeParentNode: Tree.Node<OutlineNode, GameObject, VisTable>?, gameObject: GameObject) {
-        val leaf = OutlineNode(gameObject, fontAwesome)
+        val leaf = OutlineNode(gameObject, null)
         if (treeParentNode == null) {
             tree.add(leaf)
         } else {
@@ -244,7 +243,7 @@ class Outline(
     }
 
     private fun createOutlineGameObject(parent: OutlineNode, go: GameObject): OutlineNode {
-        val res = OutlineNode(go, fontAwesome)
+        val res = OutlineNode(go, null)
 
         go.components.forEach {
 
