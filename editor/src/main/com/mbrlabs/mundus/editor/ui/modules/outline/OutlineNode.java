@@ -2,11 +2,9 @@ package com.mbrlabs.mundus.editor.ui.modules.outline;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Tree;
-import com.kotcrab.vis.ui.widget.VisImage;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
-import com.mbrlabs.mundus.editor.utils.Fa;
 import lombok.Getter;
 
 public class OutlineNode extends Tree.Node<OutlineNode, GameObject, VisTable> {
@@ -25,7 +23,7 @@ public class OutlineNode extends Tree.Node<OutlineNode, GameObject, VisTable> {
         this.value = value;
 
         if (font != null) {
-            getActor().add(new VisImage(new FontAwesomeIcon(font, Fa.Companion.getPLUS_SQUARE())));
+//            getActor().add(new VisImage(new FontAwesomeIcon(font, Fa.Companion.getPLUS_SQUARE())));
         }
         getActor().add(label).expand().fill();
         if (value != null) {
