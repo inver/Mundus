@@ -11,8 +11,6 @@ import lombok.Getter;
 
 public class OutlineNode extends Tree.Node<OutlineNode, GameObject, VisTable> {
 
-    public static OutlineNode ROOT_NODE = new OutlineNode("Root", null);
-
     private final VisLabel label = new VisLabel();
     @Getter
     private final GameObject value;
