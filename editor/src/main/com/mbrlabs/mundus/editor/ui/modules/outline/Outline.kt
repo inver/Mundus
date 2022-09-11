@@ -202,12 +202,22 @@ class Outline(
      */
     fun buildTree(sceneGraph: SceneGraph) {
         tree.clearChildren()
-        val root = OutlineNode("Root", fontAwesome)
-        tree.add(root)
+        val rootPair = createRootNode()
+        tree.add(rootPair.first)
 
         for (go in sceneGraph.gameObjects) {
-            addGoToTree(root, go)
+            addGoToTree(rootPair.second, go)
         }
+    }
+
+    private fun createRootNode(): Pair<OutlineNode, OutlineNode> {
+        val res = OutlineNode("Scene", fontAwesome)
+        val nodes = OutlineNode("Nodes", fontAwesome)
+        res.add(nodes)
+        res.add(OutlineNode("Shaders", fontAwesome))
+        res.add(OutlineNode("Materials", fontAwesome))
+        res.add(OutlineNode("Textures", fontAwesome))
+        return Pair(res, nodes)
     }
 
     /**
