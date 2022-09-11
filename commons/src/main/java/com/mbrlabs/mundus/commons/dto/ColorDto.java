@@ -7,10 +7,10 @@ import lombok.ToString;
 @Getter
 @RequiredArgsConstructor
 @ToString
-public class ColorDTO {
+public class ColorDto {
     private final float r, g, b, a;
 
-    public ColorDTO(float r, float g, float b) {
+    public ColorDto(float r, float g, float b) {
         this.r = r;
         this.g = g;
         this.b = b;

@@ -60,7 +60,7 @@ class Outline(
     private val eventBus: EventBus,
     private val appUi: AppUi,
     private val outlinePresenter: OutlinePresenter,
-    private val bitmapFont: BitmapFont
+    private val fontAwesome: BitmapFont
 ) : VisTable(),
     ProjectChangedEvent.ProjectChangedListener,
     SceneChangedEvent.SceneChangedListener,
@@ -94,8 +94,8 @@ class Outline(
         content.align(Align.left or Align.top)
 
         tree.debugAll()
-        tree.style.plus = FontAwesomeIcon(bitmapFont, Fa.PLUS_SQUARE)
-        tree.style.minus = FontAwesomeIcon(bitmapFont, Fa.MINUS_SQUARE)
+        tree.style.plus = FontAwesomeIcon(fontAwesome, Fa.PLUS_SQUARE)
+        tree.style.minus = FontAwesomeIcon(fontAwesome, Fa.MINUS_SQUARE)
         tree.selection.setProgrammaticChangeEvents(false)
 
         dragAndDrop = OutlineDragAndDrop(tree, outlinePresenter.getDropListener(this))
@@ -184,8 +184,9 @@ class Outline(
                 val selection = tree.selection
                 if (selection != null && selection.size() > 0) {
                     val go = selection.first().value
-                    projectManager.current.currScene.sceneGraph.selected = go
+                    projectManager.current.selected = go
                     toolManager.translateTool.gameObjectSelected(go)
+
                     eventBus.post(GameObjectSelectedEvent(go))
                 }
             }
@@ -201,10 +202,11 @@ class Outline(
      */
     fun buildTree(sceneGraph: SceneGraph) {
         tree.clearChildren()
-        tree.add(OutlineNode.ROOT_NODE)
+        val root = OutlineNode("Root", fontAwesome)
+        tree.add(root)
 
         for (go in sceneGraph.gameObjects) {
-            addGoToTree(OutlineNode.ROOT_NODE, go)
+            addGoToTree(root, go)
         }
     }
 
@@ -216,7 +218,7 @@ class Outline(
      * @param gameObject
      */
     private fun addGoToTree(treeParentNode: Tree.Node<OutlineNode, GameObject, VisTable>?, gameObject: GameObject) {
-        val leaf = OutlineNode(gameObject)
+        val leaf = OutlineNode(gameObject, fontAwesome)
         if (treeParentNode == null) {
             tree.add(leaf)
         } else {
@@ -232,7 +234,7 @@ class Outline(
     }
 
     private fun createOutlineGameObject(parent: OutlineNode, go: GameObject): OutlineNode {
-        val res = OutlineNode(go)
+        val res = OutlineNode(go, fontAwesome)
 
         go.components.forEach {
 

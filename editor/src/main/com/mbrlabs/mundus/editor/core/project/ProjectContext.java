@@ -18,6 +18,7 @@ package com.mbrlabs.mundus.editor.core.project;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.editor.assets.EditorAssetManager;
 import com.mbrlabs.mundus.editor.core.EditorScene;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +46,7 @@ public class ProjectContext implements Disposable {
 
     public EditorAssetManager assetManager;
 
+    private GameObject selected;
     private final AtomicInteger idProvider;
 
     /**
@@ -79,4 +81,11 @@ public class ProjectContext implements Disposable {
         }
     }
 
+    public GameObject getSelected() {
+        return selected;
+    }
+
+    public void setSelected(GameObject selected) {
+        this.selected = selected;
+    }
 }

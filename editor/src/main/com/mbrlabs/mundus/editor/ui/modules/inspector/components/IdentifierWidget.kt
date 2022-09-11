@@ -51,16 +51,18 @@ class IdentifierWidget(private val projectManager: ProjectManager) : VisTable() 
         val projectContext = projectManager.current
 
         active.addListener(object : ChangeListener() {
-            override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
-                if (projectContext.currScene.currentSelection == null) return
-                projectContext.currScene.currentSelection.active = active.isChecked
+            override fun changed(event: ChangeEvent, actor: Actor) {
+                if (projectContext.selected == null) {
+                    return
+                }
+                projectContext.selected.active = active.isChecked
             }
         })
 
         name.addListener(object : ChangeListener() {
-            override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
-                if (projectContext.currScene.currentSelection == null) return
-                projectContext.currScene.currentSelection.name = name.text
+            override fun changed(event: ChangeEvent, actor: Actor) {
+                if (projectContext.selected == null) return
+                projectContext.selected.name = name.text
             }
         })
 

@@ -29,7 +29,7 @@ public class SceneDTO {
     private String name;
     private List<GameObjectDTO> gameObjects;
     private FogDTO fog;
-    private BaseLightDTO ambientLight;
+    private BaseLightDto ambientLight;
     private float camPosX;
     private float camPosY;
     private float camPosZ;
@@ -113,11 +113,11 @@ public class SceneDTO {
         this.fog = fog;
     }
 
-    public BaseLightDTO getAmbientLight() {
+    public BaseLightDto getAmbientLight() {
         return ambientLight;
     }
 
-    public void setAmbientLight(BaseLightDTO ambientLight) {
+    public void setAmbientLight(BaseLightDto ambientLight) {
         this.ambientLight = ambientLight;
     }
 

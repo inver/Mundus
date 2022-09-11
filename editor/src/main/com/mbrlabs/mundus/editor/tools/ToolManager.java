@@ -156,7 +156,7 @@ public class ToolManager extends InputAdapter implements Disposable {
         if (scene == null) {
             return null;
         }
-        return scene.currentSelection;
+        return getActiveTool().getProjectManager().getCurrent().getSelected();
     }
 
 }

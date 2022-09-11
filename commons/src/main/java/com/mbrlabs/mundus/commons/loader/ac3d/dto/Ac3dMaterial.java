@@ -1,6 +1,6 @@
 package com.mbrlabs.mundus.commons.loader.ac3d.dto;
 
-import com.mbrlabs.mundus.commons.dto.ColorDTO;
+import com.mbrlabs.mundus.commons.dto.ColorDto;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -8,10 +8,10 @@ import lombok.Getter;
 @Builder
 public class Ac3dMaterial {
     private final String name;
-    private final ColorDTO diffuse;
-    private final ColorDTO ambient;
-    private final ColorDTO emissive;
-    private final ColorDTO specular;
+    private final ColorDto diffuse;
+    private final ColorDto ambient;
+    private final ColorDto emissive;
+    private final ColorDto specular;
     private final float shininess;
     private final float transparency;
 }

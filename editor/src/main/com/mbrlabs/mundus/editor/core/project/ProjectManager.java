@@ -101,7 +101,7 @@ public class ProjectManager implements Disposable {
     }
 
     public GameObject getCurrentSelection() {
-        return getCurrent().currScene.currentSelection;
+        return getCurrent().getSelected();
     }
 
     private EditorAssetManager createAssetManager(String rootPath) {

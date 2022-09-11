@@ -86,16 +86,16 @@ public class RotateTool extends TransformTool {
         GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
 
         ProjectContext projectContext = getProjectManager().getCurrent();
-        if (state == TransformState.IDLE && projectContext.currScene.currentSelection != null) {
+        if (state == TransformState.IDLE && projectContext.getSelected() != null) {
             getBatch().begin(projectContext.currScene.cam);
             xHandle.render(getBatch());
             yHandle.render(getBatch());
             zHandle.render(getBatch());
             getBatch().end();
-        } else if (projectContext.currScene.currentSelection != null) {
+        } else if (projectContext.getSelected() != null) {
             Viewport vp = projectContext.currScene.viewport;
 
-            GameObject go = projectContext.currScene.currentSelection;
+            GameObject go = projectContext.getSelected();
             go.getTransform().getTranslation(temp0);
             Vector3 pivot = projectContext.currScene.cam.project(temp0);
 
@@ -143,7 +143,7 @@ public class RotateTool extends TransformTool {
         super.act();
 
         ProjectContext projectContext = getProjectManager().getCurrent();
-        if (projectContext.currScene.currentSelection != null) {
+        if (projectContext.getSelected() != null) {
             translateHandles();
             if (state == TransformState.IDLE) {
                 return;
@@ -157,17 +157,17 @@ public class RotateTool extends TransformTool {
                 switch (state) {
                     case TRANSFORM_X:
                         tempQuat.setEulerAngles(0, -rot, 0);
-                        projectContext.currScene.currentSelection.rotate(tempQuat);
+                        projectContext.getSelected().rotate(tempQuat);
                         modified = true;
                         break;
                     case TRANSFORM_Y:
                         tempQuat.setEulerAngles(-rot, 0, 0);
-                        projectContext.currScene.currentSelection.rotate(tempQuat);
+                        projectContext.getSelected().rotate(tempQuat);
                         modified = true;
                         break;
                     case TRANSFORM_Z:
                         tempQuat.setEulerAngles(0, 0, -rot);
-                        projectContext.currScene.currentSelection.rotate(tempQuat);
+                        projectContext.getSelected().rotate(tempQuat);
                         modified = true;
                         break;
                     default:
@@ -176,7 +176,7 @@ public class RotateTool extends TransformTool {
             }
 
             if (modified) {
-                gameObjectModifiedEvent.setGameObject(projectContext.currScene.currentSelection);
+                gameObjectModifiedEvent.setGameObject(projectContext.getSelected());
                 eventBus.post(gameObjectModifiedEvent);
             }
 
@@ -187,8 +187,8 @@ public class RotateTool extends TransformTool {
 
     private float getCurrentAngle() {
         ProjectContext projectContext = getProjectManager().getCurrent();
-        if (projectContext.currScene.currentSelection != null) {
-            projectContext.currScene.currentSelection.getPosition(temp0);
+        if (projectContext.getSelected() != null) {
+            projectContext.getSelected().getPosition(temp0);
             Vector3 pivot = projectContext.currScene.cam.project(temp0);
             Vector3 mouse = temp1.set(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), 0);
 
@@ -203,11 +203,11 @@ public class RotateTool extends TransformTool {
         super.touchDown(screenX, screenY, pointer, button);
 
         ProjectContext projectContext = getProjectManager().getCurrent();
-        if (button == Input.Buttons.LEFT && projectContext.currScene.currentSelection != null) {
+        if (button == Input.Buttons.LEFT && projectContext.getSelected() != null) {
             lastRot = getCurrentAngle();
 
-            currentRotateCommand = new RotateCommand(projectContext.currScene.currentSelection);
-            currentRotateCommand.setBefore(projectContext.currScene.currentSelection.getLocalRotation(tempQuat));
+            currentRotateCommand = new RotateCommand(projectContext.getSelected());
+            currentRotateCommand.setBefore(projectContext.getSelected().getLocalRotation(tempQuat));
 
             RotateHandle handle = (RotateHandle) handlePicker.pick(handles, projectContext.currScene, screenX, screenY);
             if (handle == null) {
@@ -238,7 +238,7 @@ public class RotateTool extends TransformTool {
         state = TransformState.IDLE;
         if (currentRotateCommand != null) {
             ProjectContext projectContext = getProjectManager().getCurrent();
-            currentRotateCommand.setAfter(projectContext.currScene.currentSelection.getLocalRotation(tempQuat));
+            currentRotateCommand.setAfter(projectContext.getSelected().getLocalRotation(tempQuat));
             getHistory().add(currentRotateCommand);
             currentRotateCommand = null;
         }
@@ -266,7 +266,7 @@ public class RotateTool extends TransformTool {
     @Override
     protected void translateHandles() {
         ProjectContext projectContext = getProjectManager().getCurrent();
-        final Vector3 pos = projectContext.currScene.currentSelection.getTransform().getTranslation(temp0);
+        final Vector3 pos = projectContext.getSelected().getTransform().getTranslation(temp0);
         xHandle.getPosition().set(pos);
         xHandle.applyTransform();
         yHandle.getPosition().set(pos);
@@ -279,7 +279,7 @@ public class RotateTool extends TransformTool {
     protected void scaleHandles() {
 
         ProjectContext projectContext = getProjectManager().getCurrent();
-        Vector3 pos = projectContext.currScene.currentSelection.getPosition(temp0);
+        Vector3 pos = projectContext.getSelected().getPosition(temp0);
         float scaleFactor = projectContext.currScene.cam.position.dst(pos) * 0.005f;
         xHandle.getScale().set(scaleFactor, scaleFactor, scaleFactor);
         xHandle.applyTransform();

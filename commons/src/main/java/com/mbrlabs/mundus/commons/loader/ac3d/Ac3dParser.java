@@ -1,6 +1,9 @@
 package com.mbrlabs.mundus.commons.loader.ac3d;
 
-import com.mbrlabs.mundus.commons.dto.*;
+import com.mbrlabs.mundus.commons.dto.ColorDto;
+import com.mbrlabs.mundus.commons.dto.Matrix3DTO;
+import com.mbrlabs.mundus.commons.dto.Vector2DTO;
+import com.mbrlabs.mundus.commons.dto.Vector3Dto;
 import com.mbrlabs.mundus.commons.dto.vertex.VertexDto;
 import com.mbrlabs.mundus.commons.loader.ac3d.dto.*;
 import lombok.extern.slf4j.Slf4j;
@@ -125,8 +128,8 @@ public class Ac3dParser {
     }
 
 
-    private ColorDTO createColor(String red, String green, String blue) {
-        return new ColorDTO(Float.parseFloat(red), Float.parseFloat(green), Float.parseFloat(blue));
+    private ColorDto createColor(String red, String green, String blue) {
+        return new ColorDto(Float.parseFloat(red), Float.parseFloat(green), Float.parseFloat(blue));
     }
 
     public Ac3dObject parseObject(String line, BufferedReader br) throws IOException {
