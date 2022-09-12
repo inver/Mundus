@@ -9,6 +9,7 @@ import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.editor.core.project.ProjectManager;
 import com.mbrlabs.mundus.editor.events.*;
 import com.mbrlabs.mundus.editor.ui.AppUi;
+import com.mbrlabs.mundus.editor.ui.PreviewGenerator;
 import com.mbrlabs.mundus.editor.ui.modules.dock.assets.AssetItem;
 import com.mbrlabs.mundus.editor.ui.modules.dock.assets.AssetsDock;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class DockBarPresenter {
     private final ProjectManager projectManager;
     private final EventBus eventBus;
     private final AppUi appUi;
+    private final PreviewGenerator previewGenerator;
 
     public void initAssetDock(@NotNull AssetsDock assetsDock) {
         eventBus.register((ProjectChangedEvent.ProjectChangedListener) event -> reloadAssets(assetsDock));
@@ -43,7 +45,7 @@ public class DockBarPresenter {
             return;
         }
         for (var asset : projectContext.assetManager.getAssets()) {
-            var assetItem = new AssetItem(asset);
+            var assetItem = new AssetItem(asset, previewGenerator);
             assetsDock.getAssetsView().addActor(assetItem);
             assetItem.addListener(new InputListener() {
                 @Override

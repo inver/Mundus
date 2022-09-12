@@ -1,12 +1,20 @@
 package com.mbrlabs.mundus.editor.ui.widgets;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum Icons {
-    ADD_BOX("add_box");
+    HIERARCHY("tree.png"),
+    SHADER("shader.png"),
+    TERRAIN("terrain.png"),
+    MATERIAL("material.png"),
+    TEXTURE("texture.png"),
+    MODEL("model.png"),
+    SCENE("scene.png");
 
-    @Getter
-    private final String code;
+    private final String fileName;
+
+    public String getPath() {
+        return "ui/icons/" + fileName;
+    }
 }

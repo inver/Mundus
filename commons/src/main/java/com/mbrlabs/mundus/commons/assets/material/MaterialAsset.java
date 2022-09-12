@@ -25,8 +25,9 @@ import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.PropertiesUtils;
 import com.mbrlabs.mundus.commons.assets.Asset;
-import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
 import com.mbrlabs.mundus.commons.assets.meta.Meta;
+import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -36,6 +37,7 @@ import java.util.Map;
  * @author Marcus Brummer
  * @version 09-10-2016
  */
+@Slf4j
 public class MaterialAsset extends Asset {
 
     private static final ObjectMap<String, String> MAP = new ObjectMap<>();
@@ -94,7 +96,7 @@ public class MaterialAsset extends Asset {
             diffuseTextureID = MAP.get(PROP_DIFFUSE_TEXTURE, null);
             normalMapID = MAP.get(PROP_MAP_NORMAL, null);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("ERROR", e);
         }
     }
 

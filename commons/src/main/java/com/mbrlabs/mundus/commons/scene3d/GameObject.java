@@ -231,13 +231,10 @@ public class GameObject extends SimpleNode<GameObject> implements Iterable<GameO
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         GameObject that = (GameObject) o;
 
         if (id != that.id) return false;
-        if (!name.equals(that.name)) return false;
-
-        return true;
+        return name.equals(that.name);
     }
 
     @Override

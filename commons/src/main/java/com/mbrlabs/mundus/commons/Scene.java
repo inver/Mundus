@@ -21,11 +21,17 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import com.mbrlabs.mundus.commons.assets.material.MaterialAsset;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset;
+import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
 import com.mbrlabs.mundus.commons.env.MundusEnvironment;
 import com.mbrlabs.mundus.commons.env.lights.DirectionalLight;
 import com.mbrlabs.mundus.commons.scene3d.SceneGraph;
 import com.mbrlabs.mundus.commons.skybox.Skybox;
+import lombok.Getter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Marcus Brummer
@@ -39,6 +45,11 @@ public class Scene implements Disposable {
     public SceneGraph sceneGraph;
     public MundusEnvironment environment;
     public Skybox skybox;
+
+    @Getter
+    private final List<MaterialAsset> materials = new ArrayList<>();
+    @Getter
+    private final List<TextureAsset> textures = new ArrayList<>();
 
     @Deprecated // TODO not here
     public Array<TerrainAsset> terrains;
@@ -91,6 +102,14 @@ public class Scene implements Disposable {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public void addMaterial(MaterialAsset asset) {
+        materials.add(asset);
+    }
+
+    public void addTexture(TextureAsset asset) {
+        textures.add(asset);
     }
 
     @Override

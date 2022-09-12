@@ -22,7 +22,7 @@ import com.badlogic.gdx.math.Vector3;
 
 /**
  * Very simple and incredible inefficient implementation of a scene graph node.
- *
+ * <p>
  * Inefficient, because each call to getTransform() multiplies all parent
  * transformation matrices without caching them.
  *
@@ -51,7 +51,7 @@ public class SimpleNode<T extends SimpleNode<T>> extends BaseNode<T> {
 
     /**
      * Copy construction
-     * 
+     *
      * @param simpleNode
      * @param id
      */

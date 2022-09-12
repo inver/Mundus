@@ -277,7 +277,6 @@ public class RotateTool extends TransformTool {
 
     @Override
     protected void scaleHandles() {
-
         ProjectContext projectContext = getProjectManager().getCurrent();
         Vector3 pos = projectContext.getSelected().getPosition(temp0);
         float scaleFactor = projectContext.currScene.cam.position.dst(pos) * 0.005f;

@@ -299,6 +299,8 @@ public class EditorAssetManager extends AssetManager {
             modelComponent.encodeRaypickColorId();
 
             res.getComponents().add(modelComponent);
+        } else if (asset.getType() == AssetType.MATERIAL) {
+
         }
 
         return res;
