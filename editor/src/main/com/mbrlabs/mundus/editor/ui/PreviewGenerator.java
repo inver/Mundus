@@ -2,12 +2,10 @@ package com.mbrlabs.mundus.editor.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
@@ -17,16 +15,27 @@ import com.kotcrab.vis.ui.widget.VisImage;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
+import com.mbrlabs.mundus.commons.env.AppEnvironment;
+import com.mbrlabs.mundus.commons.env.lights.DirectionalLight;
+import com.mbrlabs.mundus.editor.shader.MaterialPreviewShader;
 import com.mbrlabs.mundus.editor.ui.widgets.RenderWidget;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-@RequiredArgsConstructor
 @Component
 public class PreviewGenerator {
 
     private final float previewWidth = 80;
     private final float previewHeight = 80;
+
+    private final MaterialPreviewShader shader;
+
+    public PreviewGenerator() {
+        shader = new MaterialPreviewShader(
+                "bundled/shaders/material_preview.vert.glsl",
+                "bundled/shaders/material_preview.frag.glsl"
+        );
+        shader.init();
+    }
 
     public Actor generate(Asset asset) {
         if (asset instanceof TextureAsset) {
@@ -57,11 +66,12 @@ public class PreviewGenerator {
 
         var config = new DefaultShader.Config();
         config.numBones = 60;
+
         var modelBatch = new ModelBatch(new DefaultShaderProvider(config));
 
-        var environment = new Environment();
+        var environment = new AppEnvironment();
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 1f, 1f, 1f, 1f));
-        environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, 10f, 10f, 20f));
+        environment.add(new DirectionalLight());
 
         var camera = new PerspectiveCamera(67, previewWidth, previewHeight);
         camera.position.set(1f, 1f, 1f);
@@ -76,7 +86,7 @@ public class PreviewGenerator {
 
         Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT);
         modelBatch.begin(camera);
-        modelBatch.render(sphereInstance, environment);
+        modelBatch.render(sphereInstance, environment, shader);
         modelBatch.end();
 
         fb.end();

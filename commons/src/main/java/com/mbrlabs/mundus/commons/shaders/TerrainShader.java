@@ -24,8 +24,8 @@ import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
+import com.mbrlabs.mundus.commons.env.AppEnvironment;
 import com.mbrlabs.mundus.commons.env.Fog;
-import com.mbrlabs.mundus.commons.env.MundusEnvironment;
 import com.mbrlabs.mundus.commons.terrain.SplatTexture;
 import com.mbrlabs.mundus.commons.terrain.TerrainTexture;
 import com.mbrlabs.mundus.commons.terrain.TerrainTextureAttribute;
@@ -109,7 +109,7 @@ public class TerrainShader extends BaseShader {
 
     @Override
     public void render(Renderable renderable) {
-        final MundusEnvironment env = (MundusEnvironment) renderable.environment;
+        final AppEnvironment env = (AppEnvironment) renderable.environment;
 
         setLights(env);
         setTerrainSplatTextures(renderable);
@@ -130,7 +130,7 @@ public class TerrainShader extends BaseShader {
         renderable.meshPart.render(program);
     }
 
-    protected void setLights(MundusEnvironment env) {
+    protected void setLights(AppEnvironment env) {
         // ambient
         set(UNIFORM_AMBIENT_LIGHT_COLOR, env.getAmbientLight().color);
         set(UNIFORM_AMBIENT_LIGHT_INTENSITY, env.getAmbientLight().intensity);

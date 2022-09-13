@@ -23,18 +23,18 @@ import com.mbrlabs.mundus.commons.env.lights.*;
  * @author Marcus Brummer
  * @version 04-01-2016
  */
-public class MundusEnvironment extends Environment {
+public class AppEnvironment extends Environment {
 
     private Fog fog;
     private BaseLight ambientLight;
 
-    public MundusEnvironment() {
+    public AppEnvironment() {
         super();
         ambientLight = new BaseLight();
         fog = null;
     }
 
-    public MundusEnvironment add(SunLight light) {
+    public AppEnvironment add(SunLight light) {
         var sunLights = (SunLightsAttribute) get(SunLightsAttribute.Type);
         if (sunLights == null) {
             sunLights = new SunLightsAttribute();
@@ -45,8 +45,8 @@ public class MundusEnvironment extends Environment {
         return this;
     }
 
-    public MundusEnvironment add(DirectionalLight light) {
-        DirectionalLightsAttribute dirLights = ((DirectionalLightsAttribute) get(DirectionalLightsAttribute.Type));
+    public AppEnvironment add(DirectionalLight light) {
+        DirectionalLightsAttribute dirLights = ((DirectionalLightsAttribute) get(DirectionalLightsAttribute.TYPE));
         if (dirLights == null) {
             set(dirLights = new DirectionalLightsAttribute());
         }
@@ -55,7 +55,7 @@ public class MundusEnvironment extends Environment {
         return this;
     }
 
-    public MundusEnvironment remove(SunLight light) {
+    public AppEnvironment remove(SunLight light) {
         SunLightsAttribute sunLights = ((SunLightsAttribute) get(SunLightsAttribute.Type));
         if (sunLights != null) {
             sunLights.lights.removeValue(light, true);
@@ -63,8 +63,8 @@ public class MundusEnvironment extends Environment {
         return this;
     }
 
-    public MundusEnvironment remove(DirectionalLight light) {
-        DirectionalLightsAttribute dirLights = ((DirectionalLightsAttribute) get(DirectionalLightsAttribute.Type));
+    public AppEnvironment remove(DirectionalLight light) {
+        DirectionalLightsAttribute dirLights = ((DirectionalLightsAttribute) get(DirectionalLightsAttribute.TYPE));
         if (dirLights != null) {
             dirLights.lights.removeValue(light, true);
         }

@@ -24,7 +24,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
-import com.mbrlabs.mundus.commons.env.MundusEnvironment;
+import com.mbrlabs.mundus.commons.env.AppEnvironment;
 import com.mbrlabs.mundus.commons.env.lights.DirectionalLight;
 import com.mbrlabs.mundus.commons.scene3d.SceneGraph;
 import com.mbrlabs.mundus.commons.skybox.Skybox;
@@ -43,7 +43,7 @@ public class Scene implements Disposable {
     private long id;
 
     public SceneGraph sceneGraph;
-    public MundusEnvironment environment;
+    public AppEnvironment environment;
     public Skybox skybox;
 
     @Getter
@@ -58,7 +58,7 @@ public class Scene implements Disposable {
     public ModelBatch batch;
 
     public Scene() {
-        environment = new MundusEnvironment();
+        environment = new AppEnvironment();
         terrains = new Array<>();
 
         cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

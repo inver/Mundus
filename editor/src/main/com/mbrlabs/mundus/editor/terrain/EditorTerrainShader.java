@@ -21,8 +21,8 @@ import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.mbrlabs.mundus.commons.env.AppEnvironment;
 import com.mbrlabs.mundus.commons.env.Fog;
-import com.mbrlabs.mundus.commons.env.MundusEnvironment;
 import com.mbrlabs.mundus.commons.shaders.TerrainShader;
 
 public class EditorTerrainShader extends TerrainShader {
@@ -48,7 +48,7 @@ public class EditorTerrainShader extends TerrainShader {
 
     @Override
     public void render(Renderable renderable) {
-        final MundusEnvironment env = (MundusEnvironment) renderable.environment;
+        final AppEnvironment env = (AppEnvironment) renderable.environment;
 
         setLights(env);
         setTerrainSplatTextures(renderable);

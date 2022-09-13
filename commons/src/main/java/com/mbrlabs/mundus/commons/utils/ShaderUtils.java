@@ -25,16 +25,13 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author Marcus Brummer
  * @version 23-11-2015
  */
-public class ShaderUtils {
+public final class ShaderUtils {
 
     /**
      * Compiles and links shader.
      *
-     * @param vertexShader
-     *            path to vertex shader
-     * @param fragmentShader
-     *            path to fragment shader
-     *
+     * @param vertexShader   path to vertex shader
+     * @param fragmentShader path to fragment shader
      * @return compiled shader program
      */
     public static ShaderProgram compile(String vertexShader, String fragmentShader) {
