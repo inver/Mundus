@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.mbrlabs.mundus.commons.env.AppEnvironment;
+import com.mbrlabs.mundus.commons.env.lights.SunLightsAttribute;
 import com.mbrlabs.mundus.commons.utils.ShaderUtils;
 import lombok.RequiredArgsConstructor;
 
@@ -29,6 +30,8 @@ public abstract class AppBaseShader extends BaseShader {
     protected final int UNIFORM_DIRECTIONAL_LIGHT_DIR = register(new Uniform("u_directionalLight.direction"));
     protected final int UNIFORM_DIRECTIONAL_LIGHT_INTENSITY = register(new Uniform("u_directionalLight.intensity"));
 
+    protected final int UNIFORM_SUN_LIGHT_POSITION = register(new Uniform("u_sunLightPos"));
+
 
     protected final int UNIFORM_LIGHT_COLOR = register(new Uniform("lightColor"));
     protected final int UNIFORM_OBJECT_COLOR = register(new Uniform("objectColor"));
@@ -52,13 +55,16 @@ public abstract class AppBaseShader extends BaseShader {
         program.bind();
 
         set(UNIFORM_PROJ_VIEW_MATRIX, camera.combined);
-//        set(UNIFORM_CAM_POS, camera.position);
+        set(UNIFORM_CAM_POS, camera.position);
     }
 
     protected void setLights(AppEnvironment env) {
         // ambient
-        set(UNIFORM_LIGHT_COLOR, new Color(0.5f, 0.5f, 1, 1));
-        set(UNIFORM_OBJECT_COLOR, new Color(0.5f, 1, 1, 1));
+        set(UNIFORM_LIGHT_COLOR, new Color(1f, 1f, 1f, 1f));
+
+        var sunLightAttr = env.get(SunLightsAttribute.class, SunLightsAttribute.Type);
+        set(UNIFORM_SUN_LIGHT_POSITION, sunLightAttr.lights.get(0).position);
+//        set(UNIFORM_OBJECT_COLOR, new Color(1f, 1, 1, 1));
 //        set(UNIFORM_AMBIENT_LIGHT_COLOR, env.getAmbientLight().color);
 //        set(UNIFORM_AMBIENT_LIGHT_INTENSITY, env.getAmbientLight().intensity);
 

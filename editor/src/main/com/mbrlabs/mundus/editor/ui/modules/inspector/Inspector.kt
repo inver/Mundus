@@ -33,6 +33,7 @@ import com.mbrlabs.mundus.editor.events.GameObjectSelectedEvent
 import com.mbrlabs.mundus.editor.history.CommandHistory
 import com.mbrlabs.mundus.editor.tools.ToolManager
 import com.mbrlabs.mundus.editor.ui.AppUi
+import com.mbrlabs.mundus.editor.ui.PreviewGenerator
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.TerrainWidgetPresenter
 import com.mbrlabs.mundus.editor.utils.Log
@@ -51,7 +52,8 @@ class Inspector(
     private val toolManager: ToolManager,
     private val projectManager: ProjectManager,
     private val terrainWidgetPresenter: TerrainWidgetPresenter,
-    private val history: CommandHistory
+    private val history: CommandHistory,
+    private val previewGenerator: PreviewGenerator
 ) : VisTable(),
     GameObjectSelectedEvent.GameObjectSelectedListener,
     GameObjectModifiedEvent.GameObjectModifiedListener,
@@ -81,7 +83,8 @@ class Inspector(
             assetPickerDialog,
             projectManager,
             history,
-            terrainWidgetPresenter
+            terrainWidgetPresenter,
+            previewGenerator
         )
         assetInspector = AssetInspector(
             uiWidgetsHolder.separatorStyle,
@@ -89,7 +92,8 @@ class Inspector(
             uiWidgetsHolder,
             assetPickerDialog,
             toolManager,
-            projectManager
+            projectManager,
+            previewGenerator
         )
 
         init()

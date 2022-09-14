@@ -28,6 +28,7 @@ import com.mbrlabs.mundus.editor.config.UiWidgetsHolder
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.tools.ToolManager
 import com.mbrlabs.mundus.editor.ui.AppUi
+import com.mbrlabs.mundus.editor.ui.PreviewGenerator
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
 import com.mbrlabs.mundus.editor.ui.modules.inspector.assets.MaterialAssetInspectorWidget
 import com.mbrlabs.mundus.editor.ui.modules.inspector.assets.ModelAssetInspectorWidget
@@ -44,18 +45,26 @@ class AssetInspector(
     private val uiWidgetsHolder: UiWidgetsHolder,
     private val assetSelectionDialog: AssetPickerDialog,
     private val toolManager: ToolManager,
-    private val projectManager: ProjectManager
+    private val projectManager: ProjectManager,
+    private val previewGenerator: PreviewGenerator
 ) : VisTable() {
 
-    private val materialWidget =
-        MaterialAssetInspectorWidget(separatorStyle, appUi, uiWidgetsHolder, assetSelectionDialog, projectManager)
+    private val materialWidget = MaterialAssetInspectorWidget(
+        separatorStyle,
+        appUi,
+        uiWidgetsHolder,
+        assetSelectionDialog,
+        projectManager,
+        previewGenerator
+    )
     private val modelWidget = ModelAssetInspectorWidget(
         separatorStyle,
         appUi,
         uiWidgetsHolder,
         assetSelectionDialog,
         toolManager,
-        projectManager
+        projectManager,
+        previewGenerator
     )
     private val textureWidget = TextureAssetInspectorWidget(separatorStyle)
     private val terrainWidget = TerrainAssetInspectorWidget(separatorStyle)

@@ -28,6 +28,7 @@ import com.mbrlabs.mundus.editor.config.UiWidgetsHolder
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.history.CommandHistory
 import com.mbrlabs.mundus.editor.ui.AppUi
+import com.mbrlabs.mundus.editor.ui.PreviewGenerator
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.*
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.TerrainComponentWidget
@@ -43,7 +44,8 @@ class GameObjectInspector(
     private val assetPickerDialog: AssetPickerDialog,
     private val projectManager: ProjectManager,
     private val history: CommandHistory,
-    private val terrainWidgetPresenter: TerrainWidgetPresenter
+    private val terrainWidgetPresenter: TerrainWidgetPresenter,
+    private val previewGenerator: PreviewGenerator
 ) : VisTable() {
 
     private val identifierWidget = IdentifierWidget(projectManager)
@@ -103,7 +105,8 @@ class GameObjectInspector(
                             appUi,
                             uiWidgetsHolder,
                             assetPickerDialog,
-                            projectManager
+                            projectManager,
+                            previewGenerator
                         )
                     )
                     // terrainAsset component widget

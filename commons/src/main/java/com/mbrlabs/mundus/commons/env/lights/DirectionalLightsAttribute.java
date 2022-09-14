@@ -24,10 +24,9 @@ import com.badlogic.gdx.utils.Array;
  * @version 14-02-2016
  */
 public class DirectionalLightsAttribute extends Attribute {
+    public static final long TYPE = register("directionalLights");
 
     public final Array<DirectionalLight> lights;
-
-    public static final long TYPE = register("directionalLights");
 
     public static boolean is(final long mask) {
         return (mask & TYPE) == mask;

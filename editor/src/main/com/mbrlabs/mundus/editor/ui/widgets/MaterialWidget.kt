@@ -39,6 +39,7 @@ import com.mbrlabs.mundus.editor.assets.AssetMaterialFilter
 import com.mbrlabs.mundus.editor.assets.AssetTextureFilter
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.ui.AppUi
+import com.mbrlabs.mundus.editor.ui.PreviewGenerator
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
 
 /**
@@ -51,9 +52,10 @@ import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
  */
 class MaterialWidget(
     colorPicker: ColorPicker,
-    appUi: AppUi,
+    private val appUi: AppUi,
     private val assetSelectionDialog: AssetPickerDialog,
-    private val projectManager: ProjectManager
+    private val projectManager: ProjectManager,
+    private val previewGenerator: PreviewGenerator
 ) : VisTable() {
 
     private val matFilter: AssetMaterialFilter = AssetMaterialFilter()
@@ -64,6 +66,8 @@ class MaterialWidget(
     private val diffuseColorField: ColorPickerField = ColorPickerField(colorPicker, appUi)
     private val diffuseAssetField: AssetSelectionField = AssetSelectionField(assetSelectionDialog)
     private val shininessField = VisTextField()
+
+    private val previewWidgetContainer = VisTable()
 
     /**
      * The currently active material of the widget.
@@ -76,6 +80,9 @@ class MaterialWidget(
                 diffuseAssetField.setAsset(value.diffuseTexture)
                 matNameLabel.setText(value.name)
                 shininessField.text = value.shininess.toString()
+
+                previewWidgetContainer.clearChildren()
+                previewWidgetContainer.add(previewGenerator.createPreviewWidget(appUi, value)).expand().fill()
             }
         }
 
@@ -104,9 +111,12 @@ class MaterialWidget(
     }
 
     private fun setupWidgets() {
+        previewWidgetContainer.debugAll()
+        add(previewWidgetContainer).height(250f).width(250f).row()
+
         val table = VisTable()
         table.add(matNameLabel).grow()
-        table.add<VisTextButton>(matChangedBtn).padLeft(4f).right().row()
+        table.add(matChangedBtn).padLeft(4f).right().row()
         add(table).grow().row()
 
         addSeparator().growX().row()

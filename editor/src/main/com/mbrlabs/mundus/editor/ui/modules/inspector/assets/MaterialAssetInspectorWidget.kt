@@ -22,6 +22,7 @@ import com.mbrlabs.mundus.commons.scene3d.GameObject
 import com.mbrlabs.mundus.editor.config.UiWidgetsHolder
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.ui.AppUi
+import com.mbrlabs.mundus.editor.ui.PreviewGenerator
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
 import com.mbrlabs.mundus.editor.ui.modules.inspector.BaseInspectorWidget
 import com.mbrlabs.mundus.editor.ui.widgets.MaterialWidget
@@ -35,13 +36,14 @@ class MaterialAssetInspectorWidget(
     private val appUi: AppUi,
     private val uiWidgetsHolder: UiWidgetsHolder,
     private val assetSelectionDialog: AssetPickerDialog,
-    private val projectManager: ProjectManager
+    private val projectManager: ProjectManager,
+    private val previewGenerator: PreviewGenerator
 ) :
     BaseInspectorWidget(separatorStyle, "Material Asset") {
 
     private var material: MaterialAsset? = null
     private val materialWidget =
-        MaterialWidget(uiWidgetsHolder.colorPicker, appUi, assetSelectionDialog, projectManager)
+        MaterialWidget(uiWidgetsHolder.colorPicker, appUi, assetSelectionDialog, projectManager, previewGenerator)
 
     init {
         isDeletable = false
