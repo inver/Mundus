@@ -3,9 +3,14 @@ package com.mbrlabs.mundus.editor.shader;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.math.Matrix4;
 import com.mbrlabs.mundus.commons.env.AppEnvironment;
 
 public class MaterialPreviewShader extends AppBaseShader {
+
+    protected final int UNIFORM_MDOEL_MATRIX = register(new Uniform("u_modelMatrix"));
+
+    private final Matrix4 modelPos = new Matrix4();
 
     public MaterialPreviewShader(String vertexShaderPath, String fragmentShaderPath) {
         super(vertexShaderPath, fragmentShaderPath);
@@ -22,6 +27,7 @@ public class MaterialPreviewShader extends AppBaseShader {
 
         setLights(env);
         set(UNIFORM_TRANS_MATRIX, renderable.worldTransform);
+        set(UNIFORM_MDOEL_MATRIX, modelPos);
 
         // texture uniform
 //        TextureAttribute diffuseTexture = ((TextureAttribute) (renderable.material.get(TextureAttribute.Diffuse)));
