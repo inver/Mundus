@@ -23,7 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.kotcrab.vis.ui.widget.Separator.SeparatorStyle
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.mbrlabs.mundus.commons.scene3d.GameObject
-import com.mbrlabs.mundus.editor.core.project.ProjectManager
+import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.history.CommandHistory
 import com.mbrlabs.mundus.editor.history.commands.RotateCommand
 import com.mbrlabs.mundus.editor.history.commands.ScaleCommand
@@ -38,7 +38,7 @@ import com.mbrlabs.mundus.editor.utils.formatFloat
  */
 class TransformWidget(
     separator: SeparatorStyle,
-    private val projectManager: ProjectManager,
+    private val ctx: EditorCtx,
     private val history: CommandHistory
 ) : BaseInspectorWidget(separator, "Transformation") {
 
@@ -88,9 +88,8 @@ class TransformWidget(
 
         // position
         posX.addListener(object : ChangeListener() {
-            override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
-                val projectContext = projectManager.current
-                val go = projectContext.selectedGameObject ?: return
+            override fun changed(event: ChangeEvent, actor: Actor) {
+                val go = ctx.selected ?: return
                 val command = TranslateCommand(go)
                 val pos = go.getLocalPosition(tempV3)
                 command.setBefore(pos)
@@ -100,9 +99,8 @@ class TransformWidget(
             }
         })
         posY.addListener(object : ChangeListener() {
-            override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
-                val projectContext = projectManager.current
-                val go = projectContext.selectedGameObject ?: return
+            override fun changed(event: ChangeEvent, actor: Actor) {
+                val go = ctx.selected ?: return
                 val command = TranslateCommand(go)
                 val pos = go.getLocalPosition(tempV3)
                 command.setBefore(pos)
@@ -112,9 +110,8 @@ class TransformWidget(
             }
         })
         posZ.addListener(object : ChangeListener() {
-            override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
-                val projectContext = projectManager.current
-                val go = projectContext.selectedGameObject ?: return
+            override fun changed(event: ChangeEvent, actor: Actor) {
+                val go = ctx.selected ?: return
                 val command = TranslateCommand(go)
                 val pos = go.getLocalPosition(tempV3)
                 command.setBefore(pos)
@@ -126,9 +123,8 @@ class TransformWidget(
 
         // rotation
         rotX.addListener(object : ChangeListener() {
-            override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
-                val projectContext = projectManager.current
-                val go = projectContext.selectedGameObject ?: return
+            override fun changed(event: ChangeEvent, actor: Actor) {
+                val go = ctx.selected ?: return
                 val rot = go.getLocalRotation(tempQuat)
                 val rotateCommand = RotateCommand(go)
                 rotateCommand.setBefore(rot)
@@ -139,9 +135,8 @@ class TransformWidget(
             }
         })
         rotY.addListener(object : ChangeListener() {
-            override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
-                val projectContext = projectManager.current
-                val go = projectContext.selectedGameObject ?: return
+            override fun changed(event: ChangeEvent, actor: Actor) {
+                val go = ctx.selected ?: return
                 val rot = go.getLocalRotation(tempQuat)
                 val rotateCommand = RotateCommand(go)
                 rotateCommand.setBefore(rot)
@@ -152,9 +147,8 @@ class TransformWidget(
             }
         })
         rotZ.addListener(object : ChangeListener() {
-            override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
-                val projectContext = projectManager.current
-                val go = projectContext.selectedGameObject ?: return
+            override fun changed(event: ChangeEvent, actor: Actor) {
+                val go = ctx.selected ?: return
                 val rot = go.getLocalRotation(tempQuat)
                 val rotateCommand = RotateCommand(go)
                 rotateCommand.setBefore(rot)
@@ -167,9 +161,8 @@ class TransformWidget(
 
         // scale
         scaleX.addListener(object : ChangeListener() {
-            override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
-                val projectContext = projectManager.current
-                val go = projectContext.selectedGameObject
+            override fun changed(event: ChangeEvent, actor: Actor) {
+                val go = ctx.selected
                 if (go != null && scaleX.float > 0f) {
                     val command = ScaleCommand(go)
                     val scl = go.getLocalScale(tempV3)
@@ -181,9 +174,8 @@ class TransformWidget(
             }
         })
         scaleY.addListener(object : ChangeListener() {
-            override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
-                val projectContext = projectManager.current
-                val go = projectContext.selectedGameObject
+            override fun changed(event: ChangeEvent, actor: Actor) {
+                val go = ctx.selected
                 if (go != null && scaleY.float > 0f) {
                     val command = ScaleCommand(go)
                     val scl = go.getLocalScale(tempV3)
@@ -195,9 +187,8 @@ class TransformWidget(
             }
         })
         scaleZ.addListener(object : ChangeListener() {
-            override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
-                val projectContext = projectManager.current
-                val go = projectContext.selectedGameObject
+            override fun changed(event: ChangeEvent, actor: Actor) {
+                val go = ctx.selected
                 if (go != null && scaleZ.float > 0f) {
                     val command = ScaleCommand(go)
                     val scl = go.getLocalScale(tempV3)

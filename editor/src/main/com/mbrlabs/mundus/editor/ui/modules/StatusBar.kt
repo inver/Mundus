@@ -25,6 +25,7 @@ import com.kotcrab.vis.ui.VisUI
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
+import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.input.FreeCamController
 import com.mbrlabs.mundus.editor.utils.formatFloat
@@ -37,7 +38,8 @@ import org.springframework.stereotype.Component
 @Component
 class StatusBar(
     private val freeCamController: FreeCamController,
-    private val projectManager: ProjectManager
+    private val projectManager: ProjectManager,
+    private val ctx: EditorCtx
 ) : VisTable() {
 
     private val root = VisTable()
@@ -99,7 +101,7 @@ class StatusBar(
 
     override fun act(delta: Float) {
         setFps(Gdx.graphics.framesPerSecond)
-        setCamPos(projectManager.current.currentCamera.position)
+        setCamPos(ctx.current.currentCamera.position)
         super.act(delta)
     }
 

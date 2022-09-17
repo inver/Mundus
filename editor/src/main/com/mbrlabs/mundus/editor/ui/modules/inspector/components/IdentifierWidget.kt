@@ -23,13 +23,13 @@ import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextField
 import com.mbrlabs.mundus.commons.scene3d.GameObject
-import com.mbrlabs.mundus.editor.core.project.ProjectManager
+import com.mbrlabs.mundus.editor.core.project.EditorCtx
 
 /**
  * @author Marcus Brummer
  * @version 19-01-2016
  */
-class IdentifierWidget(private val projectManager: ProjectManager) : VisTable() {
+class IdentifierWidget(private val ctx: EditorCtx) : VisTable() {
 
     private val active = VisCheckBox("", true)
     private val name = VisTextField("Name")
@@ -48,21 +48,23 @@ class IdentifierWidget(private val projectManager: ProjectManager) : VisTable() 
     }
 
     private fun setupListeners() {
-        val projectContext = projectManager.current
+        val projectContext = ctx.current
 
         active.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                if (projectContext.selectedGameObject == null) {
+                if (ctx.selected == null) {
                     return
                 }
-                projectContext.selectedGameObject.isActive = active.isChecked
+                ctx.selected.isActive = active.isChecked
             }
         })
 
         name.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                if (projectContext.selectedGameObject == null) return
-                projectContext.selectedGameObject.name = name.text
+                if (ctx.selected == null) {
+                    return
+                }
+                ctx.selected.name = name.text
             }
         })
 

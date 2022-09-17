@@ -25,8 +25,8 @@ import com.kotcrab.vis.ui.widget.VisTextButton
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset
 import com.mbrlabs.mundus.commons.scene3d.GameObject
-import com.mbrlabs.mundus.editor.config.UiWidgetsHolder
-import com.mbrlabs.mundus.editor.core.project.ProjectManager
+import com.mbrlabs.mundus.editor.assets.EditorAssetManager
+import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.tools.ToolManager
 import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.PreviewGenerator
@@ -40,11 +40,11 @@ import com.mbrlabs.mundus.editor.ui.widgets.MaterialWidget
  */
 class ModelAssetInspectorWidget(
     separatorStyle: SeparatorStyle,
+    private val ctx: EditorCtx,
     private val appUi: AppUi,
-    private val uiWidgetsHolder: UiWidgetsHolder,
+    private val assetManager: EditorAssetManager,
     private val assetSelectionDialog: AssetPickerDialog,
     private val toolManager: ToolManager,
-    private val projectManager: ProjectManager,
     private val previewGenerator: PreviewGenerator
 ) :
     BaseInspectorWidget(separatorStyle, "Model Asset") {
@@ -121,14 +121,14 @@ class ModelAssetInspectorWidget(
         for (g3dbMatID in modelAsset!!.defaultMaterials.keys) {
             val mat = modelAsset!!.defaultMaterials[g3dbMatID]
             val mw = MaterialWidget(
+                ctx,
                 appUi,
                 assetSelectionDialog,
-                projectManager,
+                assetManager,
                 previewGenerator
             )
             mw.matChangedListener = object : MaterialWidget.MaterialChangedListener {
                 override fun materialChanged(materialAsset: MaterialAsset) {
-                    val assetManager = projectManager.current.getAssetManager()
                     modelAsset!!.defaultMaterials.put(g3dbMatID, materialAsset)
                     modelAsset!!.applyDependencies()
                     toolManager.modelPlacementTool.setModel(modelAsset)

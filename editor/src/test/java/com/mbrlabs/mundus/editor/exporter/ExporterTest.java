@@ -4,6 +4,7 @@ import com.badlogic.gdx.utils.JsonWriter;
 import com.mbrlabs.mundus.commons.dto.GameObjectDto;
 import com.mbrlabs.mundus.commons.dto.SceneDto;
 import com.mbrlabs.mundus.commons.dto.TerrainComponentDto;
+import com.mbrlabs.mundus.editor.assets.EditorAssetManager;
 import com.mbrlabs.mundus.editor.core.project.ProjectContext;
 import com.mbrlabs.mundus.editor.core.project.ProjectStorage;
 import com.mbrlabs.mundus.editor.core.scene.SceneStorage;
@@ -29,8 +30,9 @@ public class ExporterTest {
         ProjectStorage manager = mock(ProjectStorage.class);
         ProjectContext context = mock(ProjectContext.class);
         SceneStorage sceneStorage = mock(SceneStorage.class);
+        EditorAssetManager assetManager = mock(EditorAssetManager.class);
 
-        exporter = new Exporter(manager, context, sceneStorage);
+        exporter = new Exporter(manager, context, sceneStorage, assetManager);
     }
 
     @Test

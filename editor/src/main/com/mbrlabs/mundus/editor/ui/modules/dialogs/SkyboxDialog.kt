@@ -23,6 +23,7 @@ import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.kotcrab.vis.ui.widget.file.FileChooser
 import com.mbrlabs.mundus.commons.skybox.Skybox
+import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.events.EventBus
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent
@@ -38,6 +39,7 @@ import org.springframework.stereotype.Component
  */
 @Component
 class SkyboxDialog(
+    private val ctx: EditorCtx,
     eventBus: EventBus,
     private val projectManager: ProjectManager,
     private val appUi: AppUi,
@@ -93,7 +95,7 @@ class SkyboxDialog(
     }
 
     private fun setupListeners() {
-        val projectContext = projectManager.current
+        val projectContext = ctx.current
 
         // create btn
         createBtn.addListener(object : ClickListener() {
@@ -132,7 +134,7 @@ class SkyboxDialog(
     }
 
     private fun resetImages() {
-        val skybox = projectManager.current.getCurrentScene().skybox
+        val skybox = ctx.current.getCurrentScene().skybox
         if (skybox != null) {
             positiveX.setImage(skybox.positiveX)
             negativeX.setImage(skybox.negativeX)

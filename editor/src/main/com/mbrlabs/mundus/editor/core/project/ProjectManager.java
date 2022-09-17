@@ -17,8 +17,6 @@
 package com.mbrlabs.mundus.editor.core.project;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.utils.Disposable;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.assets.AssetManager;
@@ -53,7 +51,6 @@ import com.mbrlabs.mundus.editor.scene3d.components.PickableComponent;
 import com.mbrlabs.mundus.editor.utils.SkyboxBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -73,11 +70,11 @@ import static com.mbrlabs.mundus.editor.core.ProjectConstants.PROJECT_SCENES_DIR
 @Slf4j
 @RequiredArgsConstructor
 public class ProjectManager implements Disposable {
-    private ProjectContext current = new ProjectContext(-1);
 
+    private final EditorCtx editorCtx;
     private final Registry registry;
     private final ProjectStorage projectStorage;
-    private ModelBatch modelBatch;
+    private final EditorAssetManager assetManager;
     private final MetaService metaService;
     private final TextureService textureService;
     private final TerrainService terrainService;
@@ -90,35 +87,16 @@ public class ProjectManager implements Disposable {
     private final ShaderStorage shaderStorage;
     private final AssetsStorage assetsStorage;
 
-    // test interop.
-    @Autowired(required = false)
-    public void setModelBatch(ModelBatch modelBatch) {
-        this.modelBatch = modelBatch;
-    }
-
-    public ProjectContext getCurrent() {
-        return current;
-    }
-
-
-    public GameObject getCurrentSelection() {
-        return getCurrent().getSelectedGameObject();
-    }
-
-    private EditorAssetManager createAssetManager(String rootPath) {
-        return new EditorAssetManager(new FileHandle(rootPath), metaService, textureService, terrainService,
-                materialService, pixmapTextureService, modelService);
-    }
+//    private EditorAssetManager createAssetManager(String rootPath) {
+//        return new EditorAssetManager(new FileHandle(rootPath), metaService, textureService, terrainService,
+//                materialService, pixmapTextureService, modelService);
+//    }
 
     /**
      * Saves the active project
      */
     public void saveCurrentProject() {
-        saveProject(current);
-    }
-
-    public String assetFolder() {
-        return current.path + "/" + PROJECT_ASSETS_DIR;
+        saveProject(editorCtx.getCurrent());
     }
 
     /**
@@ -143,7 +121,7 @@ public class ProjectManager implements Disposable {
 
 
         //todo
-        ctx.setAssetManager(createAssetManager(path + "/" + PROJECT_ASSETS_DIR));
+//        ctx.setAssetManager(createAssetManager(path + "/" + PROJECT_ASSETS_DIR));
 
         var scene = sceneStorage.createDefault(ctx.path, ctx.obtainID());
 
@@ -153,7 +131,7 @@ public class ProjectManager implements Disposable {
         saveProject(ctx);
 
         // create standard assets
-        ctx.getAssetManager().loadStandardAssets();
+//        ctx.getAssetManager().loadStandardAssets();
 
         return ctx;
     }
@@ -206,14 +184,15 @@ public class ProjectManager implements Disposable {
             return createProject(ref.getName(), ref.getPath());
         }
 
-        context.getShaderLibrary().putAll(shaderStorage.loadDefault());
-        context.getAssetLibrary().putAll(assetsStorage.loadDefault());
+        //todo
+//        context.getShaderLibrary().putAll(shaderStorage.loadDefault());
+//        context.getAssetLibrary().putAll(assetsStorage.loadDefault());
 
         context.setCurrentScene(loadScene(context, context.activeSceneName));
 
         // load assets
-        context.setAssetManager(createAssetManager(ref.getPath() + "/" + PROJECT_ASSETS_DIR));
-        context.getAssetManager().loadAssets(new AssetManager.AssetLoadingListener() {
+//        context.setAssetManager(createAssetManager(ref.getPath() + "/" + PROJECT_ASSETS_DIR));
+        assetManager.loadAssets(new AssetManager.AssetLoadingListener() {
             @Override
             public void onLoad(Asset asset, int progress, int assetCount) {
                 log.debug("Loaded {} asset ({}/{})", asset.getMeta().getType(), progress, assetCount);
@@ -236,7 +215,7 @@ public class ProjectManager implements Disposable {
      */
     public void saveProject(ProjectContext projectContext) {
         // save modified assets
-        var assetManager = projectContext.getAssetManager();
+//        var assetManager = projectContext.getAssetManager();
         assetManager.getDirtyAssets().forEach(asset -> {
             try {
                 log.debug("Saving dirty asset: {}", asset);
@@ -285,11 +264,11 @@ public class ProjectManager implements Disposable {
      * @param context project context to open
      */
     public void changeProject(ProjectContext context) {
-        if (current != null) {
-            current.dispose();
+        if (editorCtx.getCurrent() != null) {
+            editorCtx.getCurrent().dispose();
         }
 
-        current = context;
+        editorCtx.setCurrent(context);
         // currentProject.copyFrom(context);
         registry.setLastProject(new ProjectRef());
         registry.getLastProject().setName(context.name);
@@ -336,7 +315,7 @@ public class ProjectManager implements Disposable {
         var scene = new EditorScene();
 
         //todo preload assets to cache
-        SceneConverter.fillScene(scene, dto, context.getAssetLibrary(), context.getShaderLibrary());
+        SceneConverter.fillScene(scene, dto, editorCtx.getAssetLibrary(), editorCtx.getShaderLibrary());
         scene.setSkybox(SkyboxBuilder.createDefaultSkybox());
 
         var sceneGraph = scene.getSceneGraph();
@@ -387,7 +366,7 @@ public class ProjectManager implements Disposable {
     }
 
     private void initComponents(ProjectContext context, GameObject go) {
-        List<Asset> models = context.getAssetManager().getAssetsByType(AssetType.MODEL);
+        List<Asset> models = assetManager.getAssetsByType(AssetType.MODEL);
         var iterator = go.getComponents().iterator();
         while (iterator.hasNext()) {
             var c = iterator.next();
@@ -422,12 +401,12 @@ public class ProjectManager implements Disposable {
     }
 
     private String constructWindowTitle() {
-        return current.name + " - " + current.getCurrentScene().getName() + " [" + current.path + "]"
-                + " - " + Main.TITLE;
+        return editorCtx.getCurrent().name + " - " + editorCtx.getCurrent().getCurrentScene().getName() +
+                " [" + editorCtx.getCurrent().path + "]" + " - " + Main.TITLE;
     }
 
     @Override
     public void dispose() {
-        current.dispose();
+        editorCtx.dispose();
     }
 }

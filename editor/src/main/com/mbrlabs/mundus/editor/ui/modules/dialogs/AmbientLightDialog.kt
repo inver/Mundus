@@ -23,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTextField
 import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter
+import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.events.EventBus
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent
@@ -40,7 +41,8 @@ import org.springframework.stereotype.Component
 class AmbientLightDialog(
     eventBus: EventBus,
     private val projectManager: ProjectManager,
-    private val colorPickerPresenter: ColorPickerPresenter
+    private val colorPickerPresenter: ColorPickerPresenter,
+    private val ctx: EditorCtx
 ) : BaseDialog("Ambient Light"),
     ProjectChangedEvent.ProjectChangedListener,
     SceneChangedEvent.SceneChangedListener {
@@ -70,14 +72,12 @@ class AmbientLightDialog(
     }
 
     private fun setupListeners() {
-        val projectContext = projectManager.current
-
         // intensity
         intensity.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
                 val d = convert(intensity.text)
                 if (d != null) {
-                    projectContext.getCurrentScene().environment.ambientLight.intensity = d
+                    ctx.current.currentScene.environment.ambientLight.intensity = d
                 }
             }
         })
@@ -85,14 +85,14 @@ class AmbientLightDialog(
         // color
         colorPickerField.colorAdapter = object : ColorPickerAdapter() {
             override fun finished(newColor: Color) {
-                projectContext.getCurrentScene().environment.ambientLight.color.set(color)
+                ctx.current.currentScene.environment.ambientLight.color.set(color)
             }
         }
 
     }
 
     private fun resetValues() {
-        val light = projectManager.current.currentScene.environment.ambientLight
+        val light = ctx.current.currentScene.environment.ambientLight
         intensity.text = light.intensity.toString()
         colorPickerField.color = light.color
     }

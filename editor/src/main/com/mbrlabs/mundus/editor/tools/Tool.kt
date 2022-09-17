@@ -21,7 +21,7 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch
 import com.badlogic.gdx.graphics.g3d.Shader
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Disposable
-import com.mbrlabs.mundus.editor.core.project.ProjectManager
+import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.history.CommandHistory
 import com.mbrlabs.mundus.editor.shader.Shaders
 
@@ -30,7 +30,7 @@ import com.mbrlabs.mundus.editor.shader.Shaders
  * @version 25-12-2015
  */
 abstract class Tool(
-    protected var projectManager: ProjectManager, protected var batch: ModelBatch,
+    protected var ctx: EditorCtx, protected var batch: ModelBatch,
     protected var history: CommandHistory
 ) : InputAdapter(), Disposable {
 

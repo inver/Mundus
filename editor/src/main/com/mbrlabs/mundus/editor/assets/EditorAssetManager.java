@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.NotImplementedException;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
@@ -41,8 +41,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import static com.mbrlabs.mundus.editor.core.ProjectConstants.BUNDLED_FOLDER;
+import static com.mbrlabs.mundus.editor.core.ProjectConstants.*;
 
+@Component
 @Slf4j
 public class EditorAssetManager extends AssetManager {
 
@@ -50,11 +51,11 @@ public class EditorAssetManager extends AssetManager {
     private final Set<Asset> dirtyAssets = new HashSet<>();
     private final MetaSaver metaSaver = new MetaSaver();
 
-    public EditorAssetManager(@Qualifier("rootFolder") FileHandle rootFolder, MetaService metaFileService, TextureService textureService,
+    public EditorAssetManager(MetaService metaFileService, TextureService textureService,
                               TerrainService terrainService, MaterialService materialService,
                               PixmapTextureService pixmapTextureService, ModelService modelService) {
-        super(rootFolder, metaFileService, textureService, terrainService, materialService, pixmapTextureService,
-                modelService);
+        super(new FileHandle(HOME_DIR + "/" + PROJECT_ASSETS_DIR), metaFileService, textureService,
+                terrainService, materialService, pixmapTextureService, modelService);
         if (rootFolder != null && (!rootFolder.exists() || !rootFolder.isDirectory())) {
             log.error("Folder {} doesn't exist or is not a directory", rootFolder.file());
         }

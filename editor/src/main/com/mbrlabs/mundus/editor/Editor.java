@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.kotcrab.vis.ui.widget.VisTable;
+import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.project.ProjectContext;
 import com.mbrlabs.mundus.editor.core.project.ProjectManager;
 import com.mbrlabs.mundus.editor.core.registry.Registry;
@@ -47,6 +48,7 @@ import static com.mbrlabs.mundus.editor.core.ProjectConstants.HOME_DIR;
 @RequiredArgsConstructor
 public class Editor implements ProjectChangedEvent.ProjectChangedListener, SceneChangedEvent.SceneChangedListener {
 
+    private final EditorCtx ctx;
     private final FreeCamController camController;
     private final ShortcutController shortcutController;
     private final InputManager inputManager;
@@ -61,7 +63,6 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
     private final MenuBarPresenter menuBarPresenter;
     private final DockBarPresenter dockBarPresenter;
     private Compass compass;
-    private MundusMenuBar menuBar;
     private final Outline outline;
     private final MundusToolbar toolbar;
     private final StatusBar statusBar;
@@ -103,7 +104,7 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
 
 
     private void setupUI() {
-        menuBar = new MundusMenuBar(registry, menuBarPresenter);
+        MundusMenuBar menuBar = new MundusMenuBar(registry, menuBarPresenter);
 
         var root = new VisTable();
         appUi.addActor(root);
@@ -155,7 +156,7 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
     }
 
     private void setupSceneWidget() {
-        var scene = projectManager.getCurrent().getCurrentScene();
+        var scene = ctx.getCurrent().getCurrentScene();
         var sg = scene.getSceneGraph();
 
         appUi.getSceneWidget().setCam(scene.getCurrentCamera());

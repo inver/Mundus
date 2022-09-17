@@ -25,7 +25,7 @@ import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.kotcrab.vis.ui.widget.file.FileChooser
 import com.mbrlabs.mundus.commons.assets.exceptions.AssetAlreadyExistsException
-import com.mbrlabs.mundus.editor.core.project.ProjectManager
+import com.mbrlabs.mundus.editor.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.events.AssetImportEvent
 import com.mbrlabs.mundus.editor.events.EventBus
 import com.mbrlabs.mundus.editor.ui.AppUi
@@ -43,10 +43,10 @@ import java.io.IOException
  */
 @Component
 class ImportTextureDialog(
+    private val assetManager: EditorAssetManager,
     private val appUi: AppUi,
     private val fileChooser: FileChooser,
     private val toaster: Toaster,
-    private val projectManager: ProjectManager,
     private val eventBus: EventBus
 ) : BaseDialog("Import Texture"), Disposable {
 
@@ -103,7 +103,6 @@ class ImportTextureDialog(
                     try {
                         val texture = imageChooserField.file
                         if (texture != null && texture.exists() && isImage(texture)) {
-                            val assetManager = projectManager.current.getAssetManager()
                             val asset = assetManager.createTextureAsset(texture)
                             eventBus.post(AssetImportEvent(asset))
                             close()

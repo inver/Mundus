@@ -33,8 +33,8 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.scene3d.components.Component;
 import com.mbrlabs.mundus.commons.utils.MathUtils;
+import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.project.ProjectContext;
-import com.mbrlabs.mundus.editor.core.project.ProjectManager;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.history.commands.ScaleCommand;
@@ -80,10 +80,10 @@ public class ScaleTool extends TransformTool {
     private TransformState state = TransformState.IDLE;
     private ScaleCommand command;
 
-    public ScaleTool(ProjectManager projectManager, GameObjectPicker goPicker, ToolHandlePicker handlePicker,
+    public ScaleTool(EditorCtx ctx, GameObjectPicker goPicker, ToolHandlePicker handlePicker,
                      ShapeRenderer shapeRenderer, ModelBatch batch, CommandHistory history, AppUi appUi,
                      EventBus eventBus) {
-        super(projectManager, goPicker, handlePicker, batch, history, eventBus);
+        super(ctx, goPicker, handlePicker, batch, history, eventBus);
 
         this.shapeRenderer = shapeRenderer;
         this.appUi = appUi;
@@ -112,8 +112,8 @@ public class ScaleTool extends TransformTool {
         super.render();
 
         GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
-        ProjectContext projectContext = getProjectManager().getCurrent();
-        if (projectContext.getSelectedGameObject() != null) {
+        ProjectContext projectContext = getCtx().getCurrent();
+        if (getCtx().getSelected() != null) {
             getBatch().begin(projectContext.getCurrentScene().getCurrentCamera());
             xHandle.render(getBatch());
             yHandle.render(getBatch());
@@ -121,7 +121,7 @@ public class ScaleTool extends TransformTool {
             xyzHandle.render(getBatch());
             getBatch().end();
 
-            GameObject go = projectContext.getSelectedGameObject();
+            GameObject go = getCtx().getSelected();
             go.getTransform().getTranslation(temp0);
             if (viewport3d == null) {
                 viewport3d = appUi.getSceneWidget().getViewport();
@@ -175,9 +175,9 @@ public class ScaleTool extends TransformTool {
     @Override
     public void act() {
         super.act();
-        ProjectContext projectContext = getProjectManager().getCurrent();
+        ProjectContext projectContext = getCtx().getCurrent();
 
-        final GameObject selection = projectContext.getSelectedGameObject();
+        final GameObject selection = getCtx().getSelected();
         if (!isScalable(selection)) {
             return;
         }
@@ -226,8 +226,8 @@ public class ScaleTool extends TransformTool {
     }
 
     private float getCurrentDst() {
-        ProjectContext projectContext = getProjectManager().getCurrent();
-        final GameObject selection = projectContext.getSelectedGameObject();
+        ProjectContext projectContext = getCtx().getCurrent();
+        final GameObject selection = getCtx().getSelected();
         if (selection != null) {
             selection.getTransform().getTranslation(temp0);
             Vector3 pivot = projectContext.getCurrentScene().getCurrentCamera().project(temp0, viewport3d.getScreenX(),
@@ -241,15 +241,15 @@ public class ScaleTool extends TransformTool {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        ProjectContext projectContext = getProjectManager().getCurrent();
-        final GameObject selection = projectContext.getSelectedGameObject();
+        ProjectContext projectContext = getCtx().getCurrent();
+        final GameObject selection = getCtx().getSelected();
         super.touchDown(screenX, screenY, pointer, button);
 
         if (!isScalable(selection)) {
             return false;
         }
 
-        if (button == Input.Buttons.LEFT && projectContext.getSelectedGameObject() != null) {
+        if (button == Input.Buttons.LEFT && getCtx().getSelected() != null) {
             ScaleHandle handle = (ScaleHandle) handlePicker.pick(handles, projectContext.getCurrentScene(), screenX, screenY);
             if (handle == null) {
                 state = TransformState.IDLE;
@@ -296,7 +296,7 @@ public class ScaleTool extends TransformTool {
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         super.touchUp(screenX, screenY, pointer, button);
-        ProjectContext projectContext = getProjectManager().getCurrent();
+        ProjectContext projectContext = getCtx().getCurrent();
         if (state != TransformState.IDLE) {
             xHandle.changeColor(COLOR_X);
             yHandle.changeColor(COLOR_Y);
@@ -304,7 +304,7 @@ public class ScaleTool extends TransformTool {
             xyzHandle.changeColor(COLOR_XYZ);
 
             // scale command after
-            projectContext.getSelectedGameObject().getScale(tempScale);
+            getCtx().getSelected().getScale(tempScale);
             command.setAfter(tempScale);
             getHistory().add(command);
             command = null;
@@ -337,8 +337,8 @@ public class ScaleTool extends TransformTool {
 
     @Override
     protected void translateHandles() {
-        ProjectContext projectContext = getProjectManager().getCurrent();
-        final Vector3 pos = projectContext.getSelectedGameObject().getTransform().getTranslation(temp0);
+        ProjectContext projectContext = getCtx().getCurrent();
+        final Vector3 pos = getCtx().getSelected().getTransform().getTranslation(temp0);
         xHandle.getPosition().set(pos);
         xHandle.applyTransform();
         yHandle.getPosition().set(pos);
@@ -351,8 +351,8 @@ public class ScaleTool extends TransformTool {
 
     @Override
     protected void scaleHandles() {
-        Vector3 pos = getProjectManager().getCurrent().getSelectedGameObject().getPosition(temp0);
-        float scaleFactor = getProjectManager().getCurrent().getCurrentScene().getCurrentCamera().position.dst(pos) * 0.01f;
+        Vector3 pos = getCtx().getSelected().getPosition(temp0);
+        float scaleFactor = getCtx().getCurrent().getCurrentScene().getCurrentCamera().position.dst(pos) * 0.01f;
         xHandle.getScale().set(scaleFactor, scaleFactor, scaleFactor);
 
         xHandle.applyTransform();

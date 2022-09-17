@@ -25,12 +25,10 @@ import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTextField
 import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter
 import com.mbrlabs.mundus.commons.env.Fog
-import com.mbrlabs.mundus.editor.config.UiWidgetsHolder
-import com.mbrlabs.mundus.editor.core.project.ProjectManager
+import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.events.EventBus
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent
 import com.mbrlabs.mundus.editor.events.SceneChangedEvent
-import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerField
 import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerPresenter
 import org.springframework.stereotype.Component
@@ -41,11 +39,9 @@ import org.springframework.stereotype.Component
  */
 @Component
 class FogDialog(
+    private val ctx: EditorCtx,
     eventBus: EventBus,
-    private val uiWidgetsHolder: UiWidgetsHolder,
-    private val appUi: AppUi,
-    private val projectManager: ProjectManager,
-    private val colorPickerPresenter: ColorPickerPresenter
+    colorPickerPresenter: ColorPickerPresenter
 ) : BaseDialog("Fog"), ProjectChangedEvent.ProjectChangedListener, SceneChangedEvent.SceneChangedListener {
 
     private val useFog = VisCheckBox("Use fog")
@@ -74,15 +70,15 @@ class FogDialog(
         root.add(gradient).growX().padBottom(10f).row()
         root.add(VisLabel("Color")).growX().row()
         root.add(colorPickerField).left().growX().colspan(2).row()
-        resetValues()
+//        resetValues()
     }
 
     private fun setupListeners() {
 
         // use fog checkbox
         useFog.addListener(object : ChangeListener() {
-            override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
-                val projectContext = projectManager.current
+            override fun changed(event: ChangeEvent, actor: Actor) {
+                val projectContext = ctx.current
                 if (useFog.isChecked) {
                     if (projectContext.getCurrentScene().environment.fog == null) {
                         val fog = Fog()
@@ -104,22 +100,20 @@ class FogDialog(
 
         // gradient
         gradient.addListener(object : ChangeListener() {
-            override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
-                val projectContext = projectManager.current
+            override fun changed(event: ChangeEvent, actor: Actor) {
                 val g = convert(gradient.text)
                 if (g != null) {
-                    projectContext.getCurrentScene().environment.fog.gradient = g
+                    ctx.current.currentScene.environment.fog.gradient = g
                 }
             }
         })
 
         // density
         density.addListener(object : ChangeListener() {
-            override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
-                val projectContext = projectManager.current
+            override fun changed(event: ChangeEvent, actor: Actor) {
                 val value = convert(density.text)
                 if (value != null) {
-                    projectContext.getCurrentScene().environment.fog.density = value
+                    ctx.current.currentScene.environment.fog.density = value
                 }
             }
         })
@@ -127,15 +121,14 @@ class FogDialog(
         // color
         colorPickerField.colorAdapter = object : ColorPickerAdapter() {
             override fun finished(newColor: Color) {
-                val projectContext = projectManager.current
-                projectContext.getCurrentScene().environment.fog.color.set(newColor)
+                ctx.current.currentScene.environment.fog.color.set(newColor)
             }
         }
 
     }
 
     private fun resetValues() {
-        val fog = projectManager.current.getCurrentScene().environment.fog
+        val fog = ctx.current.currentScene.environment.fog
         if (fog == null) {
             density.isDisabled = true
             gradient.isDisabled = true

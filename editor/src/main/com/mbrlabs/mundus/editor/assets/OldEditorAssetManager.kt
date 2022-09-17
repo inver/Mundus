@@ -434,10 +434,10 @@ class OldEditorAssetManager(assetsRoot: FileHandle) : OldAssetManager(assetsRoot
         val objectsWithAssets = HashMap<GameObject, String>()
 
         // we check for usages in all scenes
-        for (sceneName in projectManager.current.scenes) {
-            val scene = projectManager.loadScene(projectManager.current, sceneName)
-            checkSceneForAssetUsage(scene, asset, objectsWithAssets)
-        }
+//        for (sceneName in projectManager.current.scenes) {
+//            val scene = projectManager.loadScene(projectManager.current, sceneName)
+//            checkSceneForAssetUsage(scene, asset, objectsWithAssets)
+//        }
 
         return objectsWithAssets
     }

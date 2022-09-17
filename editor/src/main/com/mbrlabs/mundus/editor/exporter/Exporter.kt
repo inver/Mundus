@@ -28,6 +28,7 @@ import com.mbrlabs.mundus.commons.dto.SceneDto
 import com.mbrlabs.mundus.commons.dto.TerrainComponentDto
 import com.mbrlabs.mundus.commons.importer.JsonScene
 import com.mbrlabs.mundus.commons.importer.SceneConverter
+import com.mbrlabs.mundus.editor.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.ProjectConstants.PROJECT_SCENE_EXTENSION
 import com.mbrlabs.mundus.editor.core.project.ProjectContext
 import com.mbrlabs.mundus.editor.core.project.ProjectStorage
@@ -40,11 +41,12 @@ import java.io.Writer
  * @author Marcus Brummer
  * @version 26-10-2016
  */
-class Exporter(val kryo: ProjectStorage, val project: ProjectContext, val sceneStorage: SceneStorage) {
-
-    /**
-     *
-     */
+class Exporter(
+    val kryo: ProjectStorage,
+    val project: ProjectContext,
+    val sceneStorage: SceneStorage,
+    val assetManager: EditorAssetManager
+) {
     fun exportAsync(outputFolder: FileHandle, listener: AsyncTaskListener) {
 
         // convert current project on the main thread to avoid nested array iterators
@@ -55,7 +57,6 @@ class Exporter(val kryo: ProjectStorage, val project: ProjectContext, val sceneS
 
         val task = object : AsyncTask("export_${project.name}") {
             override fun doInBackground() {
-                val assetManager = project.getAssetManager()
                 val step = 100f / (assetManager.assets.size + project.scenes.size)
                 var progress = 0f
 

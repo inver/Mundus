@@ -24,7 +24,8 @@ import com.mbrlabs.mundus.commons.assets.material.MaterialAsset
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset
-import com.mbrlabs.mundus.editor.config.UiWidgetsHolder
+import com.mbrlabs.mundus.editor.assets.EditorAssetManager
+import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.tools.ToolManager
 import com.mbrlabs.mundus.editor.ui.AppUi
@@ -42,8 +43,9 @@ import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerPresenter
  */
 class AssetInspector(
     separatorStyle: Separator.SeparatorStyle,
+    private val ctx: EditorCtx,
     private val appUi: AppUi,
-    private val uiWidgetsHolder: UiWidgetsHolder,
+    private val assetManager: EditorAssetManager,
     private val assetSelectionDialog: AssetPickerDialog,
     private val toolManager: ToolManager,
     private val projectManager: ProjectManager,
@@ -53,19 +55,20 @@ class AssetInspector(
 
     private val materialWidget = MaterialAssetInspectorWidget(
         separatorStyle,
+        ctx,
         appUi,
         assetSelectionDialog,
-        projectManager,
+        assetManager,
         previewGenerator,
         colorPickerPresenter
     )
     private val modelWidget = ModelAssetInspectorWidget(
         separatorStyle,
+        ctx,
         appUi,
-        uiWidgetsHolder,
+        assetManager,
         assetSelectionDialog,
         toolManager,
-        projectManager,
         previewGenerator
     )
     private val textureWidget = TextureAssetInspectorWidget(separatorStyle)

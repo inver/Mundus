@@ -10,6 +10,7 @@ import com.mbrlabs.mundus.commons.assets.meta.MetaService;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
 import com.mbrlabs.mundus.commons.terrain.SplatTexture;
 import com.mbrlabs.mundus.editor.assets.AssetTextureFilter;
+import com.mbrlabs.mundus.editor.assets.EditorAssetManager;
 import com.mbrlabs.mundus.editor.core.project.ProjectManager;
 import com.mbrlabs.mundus.editor.events.AssetImportEvent;
 import com.mbrlabs.mundus.editor.events.EventBus;
@@ -34,6 +35,7 @@ import static com.mbrlabs.mundus.editor.utils.FileFormatUtils.isImage;
 @Slf4j
 public class TerrainWidgetPresenter {
 
+    private final EditorAssetManager assetManager;
     private final EventBus eventBus;
     private final AppUi appUi;
     private final ToolManager toolManager;
@@ -76,7 +78,6 @@ public class TerrainWidgetPresenter {
         settingsTab.getUvSlider().addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                var assetManager = projectManager.getCurrent().getAssetManager();
                 var component = settingsTab.getParentWidget().getComponent();
                 assetManager.dirty(component.getTerrain());
 
@@ -120,7 +121,7 @@ public class TerrainWidgetPresenter {
             }
 
             terrain.applyDependencies();
-            projectManager.getCurrent().getAssetManager().dirty(terrain);
+            assetManager.dirty(terrain);
         });
         paintTab.getRightClickMenu().addChangeListener(channel -> assetPickerDialog.show(
                 false,
@@ -140,14 +141,12 @@ public class TerrainWidgetPresenter {
                     }
                     terrain.applyDependencies();
                     paintTab.setTexturesInUiGrid();
-                    projectManager.getCurrent().getAssetManager().dirty(terrain);
+                    assetManager.dirty(terrain);
                 }));
     }
 
     private void addTexture(TerrainComponentWidget parent, TextureGrid<SplatTexture> textureGrid,
                             TextureAsset textureAsset) {
-        var assetManager = projectManager.getCurrent().getAssetManager();
-
         var terrainAsset = parent.getComponent().getTerrain();
         var terrainTexture = terrainAsset.getTerrain().getTerrainTexture();
 
@@ -219,7 +218,7 @@ public class TerrainWidgetPresenter {
                 var file = genTab.getHeightmapTab().getSelectedFile();
                 if (file != null && file.exists() && isImage(file)) {
                     var command = genTab.getHeightmapTab().loadHeightMap(file);
-                    projectManager.getCurrent().getAssetManager().dirty(parent.getComponent().getTerrain());
+                    assetManager.dirty(parent.getComponent().getTerrain());
                     history.add(command);
                 } else {
                     Dialogs.showErrorDialog(appUi, "Please select a heightmap image");
@@ -234,7 +233,7 @@ public class TerrainWidgetPresenter {
                 var max = genTab.getPerlinNoiseTab().getPerlinNoiseMaxHeight().getFloat();
                 var command = genTab.getPerlinNoiseTab().generatePerlinNoise(seed, min, max);
                 history.add(command);
-                projectManager.getCurrent().getAssetManager().dirty(parent.getComponent().getTerrain());
+                assetManager.dirty(parent.getComponent().getTerrain());
             }
         });
     }

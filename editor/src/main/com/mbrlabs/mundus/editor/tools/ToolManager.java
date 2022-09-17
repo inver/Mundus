@@ -19,11 +19,11 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
+import com.mbrlabs.mundus.editor.assets.EditorAssetManager;
 import com.mbrlabs.mundus.editor.core.EditorScene;
-import com.mbrlabs.mundus.editor.core.project.ProjectManager;
+import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.input.InputManager;
@@ -32,6 +32,9 @@ import com.mbrlabs.mundus.editor.tools.picker.GameObjectPicker;
 import com.mbrlabs.mundus.editor.tools.picker.ToolHandlePicker;
 import com.mbrlabs.mundus.editor.ui.AppUi;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Marcus Brummer
@@ -42,39 +45,38 @@ public class ToolManager extends InputAdapter implements Disposable {
 
     private static final int KEY_DEACTIVATE = Input.Keys.ESCAPE;
 
-    private final AppUi appUi;
-    private final EventBus eventBus;
+    private final EditorCtx ctx;
 
     private Tool activeTool;
 
-    public Array<TerrainBrush> terrainBrushes;
+    public List<TerrainBrush> terrainBrushes;
     public ModelPlacementTool modelPlacementTool;
     public SelectionTool selectionTool;
     public TranslateTool translateTool;
     public RotateTool rotateTool;
     public ScaleTool scaleTool;
 
-    private InputManager inputManager;
+    private final InputManager inputManager;
 
-    public ToolManager(AppUi appUi, EventBus eventBus, InputManager inputManager, ProjectManager projectManager, GameObjectPicker goPicker,
+    public ToolManager(EditorCtx ctx, AppUi appUi, EventBus eventBus, InputManager inputManager,
+                       EditorAssetManager assetManager, GameObjectPicker goPicker,
                        ToolHandlePicker toolHandlePicker, ModelBatch modelBatch, ShapeRenderer shapeRenderer,
                        CommandHistory history) {
-        this.appUi = appUi;
-        this.eventBus = eventBus;
+        this.ctx = ctx;
         this.inputManager = inputManager;
         this.activeTool = null;
 
-        terrainBrushes = new Array<>();
-        terrainBrushes.add(new SmoothCircleBrush(projectManager, modelBatch, history));
-        terrainBrushes.add(new CircleBrush(projectManager, modelBatch, history));
-        terrainBrushes.add(new StarBrush(projectManager, modelBatch, history));
-        terrainBrushes.add(new ConfettiBrush(projectManager, modelBatch, history));
+        terrainBrushes = new ArrayList<>();
+        terrainBrushes.add(new SmoothCircleBrush(ctx, assetManager, modelBatch, history));
+        terrainBrushes.add(new CircleBrush(ctx, assetManager, modelBatch, history));
+        terrainBrushes.add(new StarBrush(ctx, assetManager, modelBatch, history));
+        terrainBrushes.add(new ConfettiBrush(ctx, assetManager, modelBatch, history));
 
-        modelPlacementTool = new ModelPlacementTool(projectManager, modelBatch, history, appUi, eventBus);
-        selectionTool = new SelectionTool(projectManager, goPicker, modelBatch, history, eventBus);
-        translateTool = new TranslateTool(projectManager, goPicker, toolHandlePicker, modelBatch, history, eventBus);
-        rotateTool = new RotateTool(projectManager, goPicker, toolHandlePicker, shapeRenderer, modelBatch, history, eventBus);
-        scaleTool = new ScaleTool(projectManager, goPicker, toolHandlePicker, shapeRenderer, modelBatch, history, appUi, eventBus);
+        modelPlacementTool = new ModelPlacementTool(ctx, modelBatch, history, appUi, eventBus);
+        selectionTool = new SelectionTool(ctx, goPicker, modelBatch, history, eventBus);
+        translateTool = new TranslateTool(ctx, goPicker, toolHandlePicker, modelBatch, history, eventBus);
+        rotateTool = new RotateTool(ctx, goPicker, toolHandlePicker, shapeRenderer, modelBatch, history, eventBus);
+        scaleTool = new ScaleTool(ctx, goPicker, toolHandlePicker, shapeRenderer, modelBatch, history, appUi, eventBus);
     }
 
     public void activateTool(Tool tool) {
@@ -151,12 +153,12 @@ public class ToolManager extends InputAdapter implements Disposable {
         if (activeTool == null) {
             return null;
         }
-        EditorScene scene = getActiveTool().getProjectManager().getCurrent().getCurrentScene();
+        EditorScene scene = ctx.getCurrent().getCurrentScene();
 
         if (scene == null) {
             return null;
         }
-        return getActiveTool().getProjectManager().getCurrent().getSelectedGameObject();
+        return ctx.getSelected();
     }
 
 }

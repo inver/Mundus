@@ -24,8 +24,9 @@ import com.mbrlabs.mundus.commons.scene3d.GameObject
 import com.mbrlabs.mundus.commons.scene3d.components.Component
 import com.mbrlabs.mundus.commons.scene3d.components.ModelComponent
 import com.mbrlabs.mundus.commons.scene3d.components.TerrainComponent
+import com.mbrlabs.mundus.editor.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.config.UiWidgetsHolder
-import com.mbrlabs.mundus.editor.core.project.ProjectManager
+import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.history.CommandHistory
 import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.PreviewGenerator
@@ -40,18 +41,19 @@ import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerPresenter
  * @version 13-10-2016
  */
 class GameObjectInspector(
+    private val ctx: EditorCtx,
     private val appUi: AppUi,
     private val uiWidgetsHolder: UiWidgetsHolder,
     private val assetPickerDialog: AssetPickerDialog,
-    private val projectManager: ProjectManager,
+    private val assetManager: EditorAssetManager,
     private val history: CommandHistory,
     private val terrainWidgetPresenter: TerrainWidgetPresenter,
     private val previewGenerator: PreviewGenerator,
     private val colorPickerPresenter: ColorPickerPresenter
 ) : VisTable() {
 
-    private val identifierWidget = IdentifierWidget(projectManager)
-    private val transformWidget = TransformWidget(uiWidgetsHolder.separatorStyle, projectManager, history)
+    private val identifierWidget = IdentifierWidget(ctx)
+    private val transformWidget = TransformWidget(uiWidgetsHolder.separatorStyle, ctx, history)
     private val componentWidgets: Array<ComponentWidget<*>> = Array()
     private val addComponentBtn = VisTextButton("Add Component")
     private val componentTable = VisTable()
@@ -104,10 +106,10 @@ class GameObjectInspector(
                         ModelComponentWidget(
                             uiWidgetsHolder.separatorStyle,
                             component as ModelComponent,
+                            ctx,
                             appUi,
-                            uiWidgetsHolder,
                             assetPickerDialog,
-                            projectManager,
+                            assetManager,
                             previewGenerator
                         )
                     )

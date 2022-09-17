@@ -23,8 +23,8 @@ import com.mbrlabs.mundus.commons.assets.material.MaterialAsset
 import com.mbrlabs.mundus.commons.scene3d.GameObject
 import com.mbrlabs.mundus.commons.scene3d.components.Component
 import com.mbrlabs.mundus.commons.scene3d.components.ModelComponent
-import com.mbrlabs.mundus.editor.config.UiWidgetsHolder
-import com.mbrlabs.mundus.editor.core.project.ProjectManager
+import com.mbrlabs.mundus.editor.assets.EditorAssetManager
+import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.PreviewGenerator
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
@@ -37,10 +37,10 @@ import com.mbrlabs.mundus.editor.ui.widgets.MaterialWidget
 class ModelComponentWidget(
     separatorStyle: SeparatorStyle,
     modelComponent: ModelComponent,
+    private val ctx: EditorCtx,
     private val appUi: AppUi,
-    private val uiWidgetsHolder: UiWidgetsHolder,
     private val assetSelectionDialog: AssetPickerDialog,
-    private val projectManager: ProjectManager,
+    private val assetManager: EditorAssetManager,
     private val previewGenerator: PreviewGenerator
 ) :
     ComponentWidget<ModelComponent>(separatorStyle, "Model Component", modelComponent) {
@@ -80,9 +80,10 @@ class ModelComponentWidget(
         for (g3dbMatID in component.materials.keys()) {
 
             val mw = MaterialWidget(
+                ctx,
                 appUi,
                 assetSelectionDialog,
-                projectManager,
+                assetManager,
                 previewGenerator
             )
             mw.matChangedListener = object : MaterialWidget.MaterialChangedListener {

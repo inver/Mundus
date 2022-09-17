@@ -31,8 +31,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.utils.MathUtils;
+import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.project.ProjectContext;
-import com.mbrlabs.mundus.editor.core.project.ProjectManager;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.history.commands.RotateCommand;
@@ -70,9 +70,9 @@ public class RotateTool extends TransformTool {
     private RotateCommand currentRotateCommand;
     private float lastRot = 0;
 
-    public RotateTool(ProjectManager projectManager, GameObjectPicker goPicker, ToolHandlePicker handlePicker,
+    public RotateTool(EditorCtx ctx, GameObjectPicker goPicker, ToolHandlePicker handlePicker,
                       ShapeRenderer shapeRenderer, ModelBatch batch, CommandHistory history, EventBus eventBus) {
-        super(projectManager, goPicker, handlePicker, batch, history, eventBus);
+        super(ctx, goPicker, handlePicker, batch, history, eventBus);
         this.shapeRenderer = shapeRenderer;
         xHandle = new RotateHandle(X_HANDLE_ID, COLOR_X);
         yHandle = new RotateHandle(Y_HANDLE_ID, COLOR_Y);
@@ -85,17 +85,17 @@ public class RotateTool extends TransformTool {
         super.render();
         GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
 
-        ProjectContext projectContext = getProjectManager().getCurrent();
-        if (state == TransformState.IDLE && projectContext.getSelectedGameObject() != null) {
+        ProjectContext projectContext = getCtx().getCurrent();
+        if (state == TransformState.IDLE && getCtx().getSelected() != null) {
             getBatch().begin(projectContext.getCurrentScene().getCurrentCamera());
             xHandle.render(getBatch());
             yHandle.render(getBatch());
             zHandle.render(getBatch());
             getBatch().end();
-        } else if (projectContext.getSelectedGameObject() != null) {
+        } else if (getCtx().getSelected() != null) {
             Viewport vp = projectContext.getCurrentScene().viewport;
 
-            GameObject go = projectContext.getSelectedGameObject();
+            GameObject go = getCtx().getSelected();
             go.getTransform().getTranslation(temp0);
             Vector3 pivot = projectContext.getCurrentScene().getCurrentCamera().project(temp0);
 
@@ -142,8 +142,8 @@ public class RotateTool extends TransformTool {
     public void act() {
         super.act();
 
-        ProjectContext projectContext = getProjectManager().getCurrent();
-        if (projectContext.getSelectedGameObject() != null) {
+        ProjectContext projectContext = getCtx().getCurrent();
+        if (getCtx().getSelected() != null) {
             translateHandles();
             if (state == TransformState.IDLE) {
                 return;
@@ -157,17 +157,17 @@ public class RotateTool extends TransformTool {
                 switch (state) {
                     case TRANSFORM_X:
                         tempQuat.setEulerAngles(0, -rot, 0);
-                        projectContext.getSelectedGameObject().rotate(tempQuat);
+                        getCtx().getSelected().rotate(tempQuat);
                         modified = true;
                         break;
                     case TRANSFORM_Y:
                         tempQuat.setEulerAngles(-rot, 0, 0);
-                        projectContext.getSelectedGameObject().rotate(tempQuat);
+                        getCtx().getSelected().rotate(tempQuat);
                         modified = true;
                         break;
                     case TRANSFORM_Z:
                         tempQuat.setEulerAngles(0, 0, -rot);
-                        projectContext.getSelectedGameObject().rotate(tempQuat);
+                        getCtx().getSelected().rotate(tempQuat);
                         modified = true;
                         break;
                     default:
@@ -176,7 +176,7 @@ public class RotateTool extends TransformTool {
             }
 
             if (modified) {
-                gameObjectModifiedEvent.setGameObject(projectContext.getSelectedGameObject());
+                gameObjectModifiedEvent.setGameObject(getCtx().getSelected());
                 eventBus.post(gameObjectModifiedEvent);
             }
 
@@ -186,9 +186,9 @@ public class RotateTool extends TransformTool {
     }
 
     private float getCurrentAngle() {
-        ProjectContext projectContext = getProjectManager().getCurrent();
-        if (projectContext.getSelectedGameObject() != null) {
-            projectContext.getSelectedGameObject().getPosition(temp0);
+        ProjectContext projectContext = getCtx().getCurrent();
+        if (getCtx().getSelected() != null) {
+            getCtx().getSelected().getPosition(temp0);
             Vector3 pivot = projectContext.getCurrentScene().getCurrentCamera().project(temp0);
             Vector3 mouse = temp1.set(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), 0);
 
@@ -202,12 +202,12 @@ public class RotateTool extends TransformTool {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         super.touchDown(screenX, screenY, pointer, button);
 
-        ProjectContext projectContext = getProjectManager().getCurrent();
-        if (button == Input.Buttons.LEFT && projectContext.getSelectedGameObject() != null) {
+        ProjectContext projectContext = getCtx().getCurrent();
+        if (button == Input.Buttons.LEFT && getCtx().getSelected() != null) {
             lastRot = getCurrentAngle();
 
-            currentRotateCommand = new RotateCommand(projectContext.getSelectedGameObject());
-            currentRotateCommand.setBefore(projectContext.getSelectedGameObject().getLocalRotation(tempQuat));
+            currentRotateCommand = new RotateCommand(getCtx().getSelected());
+            currentRotateCommand.setBefore(getCtx().getSelected().getLocalRotation(tempQuat));
 
             RotateHandle handle = (RotateHandle) handlePicker.pick(handles, projectContext.getCurrentScene(), screenX, screenY);
             if (handle == null) {
@@ -237,8 +237,8 @@ public class RotateTool extends TransformTool {
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         state = TransformState.IDLE;
         if (currentRotateCommand != null) {
-            ProjectContext projectContext = getProjectManager().getCurrent();
-            currentRotateCommand.setAfter(projectContext.getSelectedGameObject().getLocalRotation(tempQuat));
+            ProjectContext projectContext = getCtx().getCurrent();
+            currentRotateCommand.setAfter(getCtx().getSelected().getLocalRotation(tempQuat));
             getHistory().add(currentRotateCommand);
             currentRotateCommand = null;
         }
@@ -265,8 +265,8 @@ public class RotateTool extends TransformTool {
 
     @Override
     protected void translateHandles() {
-        ProjectContext projectContext = getProjectManager().getCurrent();
-        final Vector3 pos = projectContext.getSelectedGameObject().getTransform().getTranslation(temp0);
+        ProjectContext projectContext = getCtx().getCurrent();
+        final Vector3 pos = getCtx().getSelected().getTransform().getTranslation(temp0);
         xHandle.getPosition().set(pos);
         xHandle.applyTransform();
         yHandle.getPosition().set(pos);
@@ -277,8 +277,8 @@ public class RotateTool extends TransformTool {
 
     @Override
     protected void scaleHandles() {
-        ProjectContext projectContext = getProjectManager().getCurrent();
-        Vector3 pos = projectContext.getSelectedGameObject().getPosition(temp0);
+        ProjectContext projectContext = getCtx().getCurrent();
+        Vector3 pos = getCtx().getSelected().getPosition(temp0);
         float scaleFactor = projectContext.getCurrentScene().getCurrentCamera().position.dst(pos) * 0.005f;
         xHandle.getScale().set(scaleFactor, scaleFactor, scaleFactor);
         xHandle.applyTransform();

@@ -22,7 +22,7 @@ import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.scene3d.components.Component;
 import com.mbrlabs.mundus.commons.scene3d.components.ModelComponent;
 import com.mbrlabs.mundus.commons.scene3d.components.TerrainComponent;
-import com.mbrlabs.mundus.editor.core.project.ProjectManager;
+import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.GameObjectSelectedEvent;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
@@ -40,15 +40,15 @@ public class SelectionTool extends Tool {
     private GameObjectPicker goPicker;
     protected final EventBus eventBus;
 
-    public SelectionTool(ProjectManager projectManager, GameObjectPicker goPicker, ModelBatch batch,
+    public SelectionTool(EditorCtx ctx, GameObjectPicker goPicker, ModelBatch batch,
                          CommandHistory history, EventBus eventBus) {
-        super(projectManager, batch, history);
+        super(ctx, batch, history);
         this.goPicker = goPicker;
         this.eventBus = eventBus;
     }
 
     public void gameObjectSelected(GameObject selection) {
-        getProjectManager().getCurrent().setSelectedGameObject(selection);
+        getCtx().setSelected(selection);
     }
 
     @Override
@@ -68,9 +68,9 @@ public class SelectionTool extends Tool {
 
     @Override
     public void render() {
-        if (getProjectManager().getCurrent().getSelectedGameObject() != null) {
-            getBatch().begin(getProjectManager().getCurrent().getCurrentScene().getCurrentCamera());
-            for (GameObject go : getProjectManager().getCurrent().getSelectedGameObject()) {
+        if (getCtx().getSelected() != null) {
+            getBatch().begin(getCtx().getCurrent().getCurrentScene().getCurrentCamera());
+            for (GameObject go : getCtx().getSelected()) {
                 // model component
                 ModelComponent mc = (ModelComponent) go.findComponentByType(Component.Type.MODEL);
                 if (mc != null) {
@@ -95,8 +95,8 @@ public class SelectionTool extends Tool {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         if (button == Input.Buttons.RIGHT) {
-            GameObject selection = goPicker.pick(getProjectManager().getCurrent().getCurrentScene(), screenX, screenY);
-            if (selection != null && !selection.equals(getProjectManager().getCurrent().getSelectedGameObject())) {
+            GameObject selection = goPicker.pick(getCtx().getCurrent().getCurrentScene(), screenX, screenY);
+            if (selection != null && !selection.equals(getCtx().getSelected())) {
                 gameObjectSelected(selection);
                 eventBus.post(new GameObjectSelectedEvent(selection));
             }
@@ -129,7 +129,7 @@ public class SelectionTool extends Tool {
 
     @Override
     public void onDisabled() {
-        getProjectManager().getCurrent().setSelectedGameObject(null);
+        getCtx().setSelected(null);
     }
 
 }

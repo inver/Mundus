@@ -30,8 +30,8 @@ import com.mbrlabs.mundus.commons.terrain.SplatMap;
 import com.mbrlabs.mundus.commons.terrain.SplatTexture;
 import com.mbrlabs.mundus.commons.terrain.Terrain;
 import com.mbrlabs.mundus.commons.utils.MathUtils;
-import com.mbrlabs.mundus.editor.core.project.ProjectManager;
-import com.mbrlabs.mundus.editor.events.GlobalBrushSettingsChangedEvent;
+import com.mbrlabs.mundus.editor.assets.EditorAssetManager;
+import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.history.commands.TerrainHeightCommand;
 import com.mbrlabs.mundus.editor.history.commands.TerrainPaintCommand;
@@ -79,12 +79,12 @@ public abstract class TerrainBrush extends Tool {
      * 'lower' as secondary. Pressing the keycode of the secondary & the primary
      * key enables the secondary action.
      **/
-    public static enum BrushAction {
+    public enum BrushAction {
         PRIMARY(Input.Buttons.LEFT), SECONDARY(Input.Keys.SHIFT_LEFT);
 
         public final int code;
 
-        private BrushAction(int levelCode) {
+        BrushAction(int levelCode) {
             this.code = levelCode;
         }
 
@@ -108,8 +108,6 @@ public abstract class TerrainBrush extends Tool {
     protected static final Vector3 tVec0 = new Vector3();
     protected static final Vector3 tVec1 = new Vector3();
 
-    // all brushes share the some common settings
-    private static GlobalBrushSettingsChangedEvent brushSettingsChangedEvent = new GlobalBrushSettingsChangedEvent();
     private static float strength = 0.5f;
     private static float heightSample = 0f;
     private static SplatTexture.Channel paintChannel;
@@ -124,8 +122,8 @@ public abstract class TerrainBrush extends Tool {
     private boolean mouseMoved = false;
 
     // the pixmap brush
-    private Pixmap brushPixmap;
-    private int pixmapCenter;
+    private final Pixmap brushPixmap;
+    private final int pixmapCenter;
 
     // undo/redo system
     private TerrainHeightCommand heightCommand = null;
@@ -133,10 +131,13 @@ public abstract class TerrainBrush extends Tool {
     private boolean terrainHeightModified = false;
     private boolean splatmapModified = false;
 
-    public TerrainBrush(ProjectManager projectManager, ModelBatch batch, CommandHistory history,
-                        FileHandle pixmapBrush) {
-        super(projectManager, batch, history);
+    private final EditorAssetManager assetManager;
 
+    public TerrainBrush(EditorCtx ctx, EditorAssetManager assetManager, ModelBatch batch, CommandHistory history,
+                        FileHandle pixmapBrush) {
+        super(ctx, batch, history);
+
+        this.assetManager = assetManager;
         brushPixmap = new Pixmap(pixmapBrush);
         pixmapCenter = brushPixmap.getWidth() / 2;
     }
@@ -189,7 +190,7 @@ public abstract class TerrainBrush extends Tool {
 
         sm.updateTexture();
         splatmapModified = true;
-        getProjectManager().getCurrent().getAssetManager().dirty(terrainAsset);
+        assetManager.dirty(terrainAsset);
     }
 
     private void flatten() {
@@ -227,7 +228,7 @@ public abstract class TerrainBrush extends Tool {
 
         terrain.update();
         terrainHeightModified = true;
-        getProjectManager().getCurrent().getAssetManager().dirty(terrainAsset);
+        assetManager.dirty(terrainAsset);
     }
 
     private void raiseLower(BrushAction action) {
@@ -250,7 +251,7 @@ public abstract class TerrainBrush extends Tool {
 
         terrain.update();
         terrainHeightModified = true;
-        getProjectManager().getCurrent().getAssetManager().dirty(terrainAsset);
+        assetManager.dirty(terrainAsset);
     }
 
     /**
@@ -423,7 +424,7 @@ public abstract class TerrainBrush extends Tool {
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
         if (terrainAsset != null) {
-            Ray ray = getProjectManager().getCurrent().getCurrentScene().viewport.getPickRay(screenX, screenY);
+            Ray ray = getCtx().getCurrent().getCurrentScene().viewport.getPickRay(screenX, screenY);
             terrainAsset.getTerrain().getRayIntersection(brushPos, ray);
         }
 

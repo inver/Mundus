@@ -24,7 +24,9 @@ import com.badlogic.gdx.utils.Align
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisScrollPane
 import com.kotcrab.vis.ui.widget.VisTable
+import com.mbrlabs.mundus.editor.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.config.UiWidgetsHolder
+import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.events.AssetSelectedEvent
 import com.mbrlabs.mundus.editor.events.EventBus
@@ -47,6 +49,8 @@ import org.springframework.stereotype.Component
 @Component
 class Inspector(
     eventBus: EventBus,
+    private val ctx: EditorCtx,
+    private val assetManager: EditorAssetManager,
     private val appUi: AppUi,
     private val uiWidgetsHolder: UiWidgetsHolder,
     private val assetPickerDialog: AssetPickerDialog,
@@ -80,10 +84,11 @@ class Inspector(
         eventBus.register(this)
 
         goInspector = GameObjectInspector(
+            ctx,
             appUi,
             uiWidgetsHolder,
             assetPickerDialog,
-            projectManager,
+            assetManager,
             history,
             terrainWidgetPresenter,
             previewGenerator,
@@ -91,8 +96,9 @@ class Inspector(
         )
         assetInspector = AssetInspector(
             uiWidgetsHolder.separatorStyle,
+            ctx,
             appUi,
-            uiWidgetsHolder,
+            assetManager,
             assetPickerDialog,
             toolManager,
             projectManager,

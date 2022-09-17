@@ -20,7 +20,8 @@ import com.kotcrab.vis.ui.util.async.AsyncTaskListener
 import com.kotcrab.vis.ui.widget.VisDialog
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisProgressBar
-import com.mbrlabs.mundus.editor.core.project.ProjectManager
+import com.mbrlabs.mundus.editor.assets.EditorAssetManager
+import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.core.project.ProjectStorage
 import com.mbrlabs.mundus.editor.core.scene.SceneStorage
 import com.mbrlabs.mundus.editor.exporter.Exporter
@@ -36,11 +37,12 @@ import org.springframework.stereotype.Component
  */
 @Component
 class ExportDialog(
+    private val assetManager: EditorAssetManager,
     private val toaster: Toaster,
-    private val projectManager: ProjectManager,
     private val projectStorage: ProjectStorage,
     private val sceneStorage: SceneStorage,
-    private val appUi: AppUi
+    private val appUi: AppUi,
+    private val ctx: EditorCtx
 ) : VisDialog("Exporting") {
 
     private var lastExport: Long = 0
@@ -58,7 +60,7 @@ class ExportDialog(
 
     fun export() {
         // validate
-        val export = projectManager.current.settings?.export
+        val export = ctx.current.settings?.export
         if (export?.outputFolder == null
             || export.outputFolder.path().isEmpty() || !export.outputFolder.exists()
         ) {
@@ -77,7 +79,7 @@ class ExportDialog(
 
         show(appUi)
 
-        Exporter(projectStorage, projectManager.current, sceneStorage).exportAsync(
+        Exporter(projectStorage, ctx.current, sceneStorage, assetManager).exportAsync(
             export.outputFolder,
             object : AsyncTaskListener {
                 private var error = false

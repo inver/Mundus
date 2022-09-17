@@ -44,8 +44,8 @@ import com.mbrlabs.mundus.commons.assets.meta.MetaModel
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset
 import com.mbrlabs.mundus.commons.core.ModelFiles
 import com.mbrlabs.mundus.commons.loader.ModelImporter
+import com.mbrlabs.mundus.editor.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.assets.MetaSaver
-import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.core.registry.Registry
 import com.mbrlabs.mundus.editor.events.AssetImportEvent
 import com.mbrlabs.mundus.editor.events.EventBus
@@ -70,7 +70,7 @@ class ImportModelDialog(
     private val appUi: AppUi,
     private val toaster: Toaster,
     private val modelImporter: ModelImporter,
-    private val projectManager: ProjectManager,
+    private val assetManager: EditorAssetManager,
     private val eventBus: EventBus,
     private val fileChooserFieldPresenter: FileChooserFieldPresenter,
     private val registry: Registry
@@ -198,7 +198,6 @@ class ImportModelDialog(
         private fun importModel(): ModelAsset {
 
             // create model asset
-            val assetManager = projectManager.current.getAssetManager()
             val modelAsset = assetManager.createModelAsset(importedModel!!)
 
             // create materials

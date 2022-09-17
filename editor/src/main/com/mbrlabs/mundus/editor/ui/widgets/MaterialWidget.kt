@@ -36,7 +36,8 @@ import com.mbrlabs.mundus.commons.scene3d.components.Component
 import com.mbrlabs.mundus.commons.scene3d.components.ModelComponent
 import com.mbrlabs.mundus.editor.assets.AssetMaterialFilter
 import com.mbrlabs.mundus.editor.assets.AssetTextureFilter
-import com.mbrlabs.mundus.editor.core.project.ProjectManager
+import com.mbrlabs.mundus.editor.assets.EditorAssetManager
+import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.PreviewGenerator
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
@@ -51,9 +52,10 @@ import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerField
  * @version 13-10-2016
  */
 class MaterialWidget(
+    private val ctx: EditorCtx,
     private val appUi: AppUi,
     private val assetSelectionDialog: AssetPickerDialog,
-    private val projectManager: ProjectManager,
+    private val assetManager: EditorAssetManager,
     private val previewGenerator: PreviewGenerator
 ) : VisTable() {
 
@@ -140,7 +142,7 @@ class MaterialWidget(
                 material?.diffuseTexture = asset as? TextureAsset
                 applyMaterialToModelAssets()
                 applyMaterialToModelComponents()
-                projectManager.current.getAssetManager().dirty(material!!)
+                assetManager.dirty(material!!)
             }
         }
 
@@ -150,7 +152,7 @@ class MaterialWidget(
                 material?.diffuseColor?.set(newColor)
                 applyMaterialToModelAssets()
                 applyMaterialToModelComponents()
-                projectManager.current.getAssetManager().dirty(material!!)
+                assetManager.dirty(material!!)
             }
         }
 
@@ -162,7 +164,7 @@ class MaterialWidget(
                     material?.shininess = shininessField.text.toFloat()
                     applyMaterialToModelAssets()
                     applyMaterialToModelComponents()
-                    projectManager.current.getAssetManager().dirty(material!!)
+                    assetManager.dirty(material!!)
                 }
             }
         })
@@ -171,7 +173,7 @@ class MaterialWidget(
 
     // TODO find better solution than iterating through all components
     private fun applyMaterialToModelComponents() {
-        val sceneGraph = projectManager.current.getCurrentScene().sceneGraph
+        val sceneGraph = ctx.current.currentScene.sceneGraph
         for (go in sceneGraph.gameObjects) {
             val mc = go.findComponentByType(Component.Type.MODEL)
             if (mc != null && mc is ModelComponent) {
@@ -182,7 +184,6 @@ class MaterialWidget(
 
     // TODO find better solution than iterating through all assets
     private fun applyMaterialToModelAssets() {
-        val assetManager = projectManager.current.getAssetManager()
         for (modelAsset in assetManager.assets) {
             modelAsset.applyDependencies()
         }

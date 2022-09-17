@@ -6,6 +6,8 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
+import com.mbrlabs.mundus.editor.assets.EditorAssetManager;
+import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.project.ProjectManager;
 import com.mbrlabs.mundus.editor.events.*;
 import com.mbrlabs.mundus.editor.ui.AppUi;
@@ -21,6 +23,9 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class DockBarPresenter {
+
+    private final EditorCtx ctx;
+    private final EditorAssetManager assetManager;
     private final ProjectManager projectManager;
     private final EventBus eventBus;
     private final AppUi appUi;
@@ -40,11 +45,8 @@ public class DockBarPresenter {
 
     private void reloadAssets(AssetsDock assetsDock) {
         assetsDock.getAssetsView().clearChildren();
-        var projectContext = projectManager.getCurrent();
-        if (projectContext.getAssetManager() == null) {
-            return;
-        }
-        for (var asset : projectContext.getAssetManager().getAssets()) {
+
+        for (var asset : assetManager.getAssets()) {
             var assetItem = new AssetItem(asset, previewGenerator);
             assetsDock.getAssetsView().addActor(assetItem);
             assetItem.addListener(new InputListener() {
@@ -75,7 +77,7 @@ public class DockBarPresenter {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (assetsDock.getSelected() != null && assetsDock.getSelected().getAsset() != null) {
-                    projectManager.getCurrent().getAssetManager().deleteAsset(assetsDock.getSelected().getAsset());
+                    assetManager.deleteAsset(assetsDock.getSelected().getAsset());
                 }
             }
         };
@@ -92,7 +94,7 @@ public class DockBarPresenter {
                 var asset = assetsDock.getSelected().getAsset();
 
                 try {
-                    var context = projectManager.getCurrent();
+                    var context = ctx.getCurrent();
                     var sceneGraph = context.getCurrentScene().getSceneGraph();
                     var goID = context.obtainID();
                     var name = asset.getType() + "_" + goID;
@@ -102,7 +104,7 @@ public class DockBarPresenter {
 
 //                        asset.load()
 //                        asset.applyDependencies()
-                    GameObject go = projectManager.getCurrent().getAssetManager().convert(goID, name, asset);
+                    GameObject go = assetManager.convert(goID, name, asset);
 
 //                    var modelGO = GameObjectUtils.createModelGO(
 //                            sceneGraph, Shaders.modelShader, goID, name,

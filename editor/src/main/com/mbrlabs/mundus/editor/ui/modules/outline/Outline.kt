@@ -26,12 +26,12 @@ import com.mbrlabs.mundus.commons.Scene
 import com.mbrlabs.mundus.commons.scene3d.GameObject
 import com.mbrlabs.mundus.commons.scene3d.components.Component
 import com.mbrlabs.mundus.commons.terrain.Terrain
-import com.mbrlabs.mundus.editor.core.project.ProjectManager
+import com.mbrlabs.mundus.editor.assets.EditorAssetManager
+import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.events.*
 import com.mbrlabs.mundus.editor.history.CommandHistory
 import com.mbrlabs.mundus.editor.history.commands.DeleteCommand
 import com.mbrlabs.mundus.editor.shader.Shaders
-import com.mbrlabs.mundus.editor.tools.ToolManager
 import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.modules.outline.OutlineNode.RootNode
 import com.mbrlabs.mundus.editor.utils.TextureUtils
@@ -49,8 +49,8 @@ import java.util.function.Consumer
 // TODO refactor...kind of messy spaghetti code!
 @org.springframework.stereotype.Component
 class Outline(
-    private val toolManager: ToolManager,
-    private val projectManager: ProjectManager,
+    private val ctx: EditorCtx,
+    private val assetManager: EditorAssetManager,
     private val history: CommandHistory,
     private val eventBus: EventBus,
     private val appUi: AppUi,
@@ -110,18 +110,18 @@ class Outline(
     override fun onProjectChanged(event: ProjectChangedEvent) {
         // update to new sceneGraph
         log.trace("Project changed. Building scene graph.")
-        buildTree(projectManager.current.getCurrentScene())
+        buildTree(ctx.current.getCurrentScene())
     }
 
     override fun onSceneChanged(event: SceneChangedEvent) {
         // update to new sceneGraph
         log.trace("Scene changed. Building scene graph.")
-        buildTree(projectManager.current.getCurrentScene())
+        buildTree(ctx.current.getCurrentScene())
     }
 
     override fun onSceneGraphChanged(event: SceneGraphChangedEvent) {
         log.trace("SceneGraph changed. Building scene graph.")
-        buildTree(projectManager.current.getCurrentScene())
+        buildTree(ctx.current.getCurrentScene())
     }
 
     /**
@@ -221,7 +221,7 @@ class Outline(
      */
     private fun duplicateGO(go: GameObject, parent: GameObject) {
         log.trace("Duplicate [{}] with parent [{}]", go, parent)
-        val goCopy = GameObject(go, projectManager.current.obtainID())
+        val goCopy = GameObject(go, ctx.current.obtainID())
 
         // add copy to tree
         val n = tree.findNode(parent)
@@ -266,8 +266,8 @@ class Outline(
             // add empty
             addEmpty.addListener(object : ClickListener() {
                 override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                    val sceneGraph = projectManager.current.getCurrentScene().sceneGraph
-                    val id = projectManager.current.obtainID()
+                    val sceneGraph = ctx.current.getCurrentScene().sceneGraph
+                    val id = ctx.current.obtainID()
                     // the new game object
                     val go = GameObject(GameObject.DEFAULT_NAME, id)
                     // update outline
@@ -294,12 +294,12 @@ class Outline(
                 override fun clicked(event: InputEvent?, x: Float, y: Float) {
                     try {
                         log.trace("Add terrain game object in root node.")
-                        val context = projectManager.current
+                        val context = ctx.current
                         val sceneGraph = context.getCurrentScene().sceneGraph
                         val goID = context.obtainID()
                         val name = "Terrain $goID"
                         // create asset
-                        val asset = context.getAssetManager().createTerrainAsset(
+                        val asset = assetManager.createTerrainAsset(
                             name,
                             Terrain.DEFAULT_VERTEX_RESOLUTION, Terrain.DEFAULT_SIZE
                         )
@@ -358,8 +358,8 @@ class Outline(
 
             addDirectionalLight.addListener(object : ClickListener() {
                 override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                    val sceneGraph = projectManager.current.getCurrentScene().sceneGraph
-                    val id = projectManager.current.obtainID()
+                    val sceneGraph = ctx.current.getCurrentScene().sceneGraph
+                    val id = ctx.current.obtainID()
                     val name = "Directional light " + id
                     val go = createDirectionalLightGO(sceneGraph, id, name)
 

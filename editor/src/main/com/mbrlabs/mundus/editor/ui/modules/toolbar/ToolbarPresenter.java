@@ -5,7 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.util.dialog.InputDialogAdapter;
-import com.mbrlabs.mundus.editor.core.project.ProjectManager;
+import com.mbrlabs.mundus.editor.assets.EditorAssetManager;
 import com.mbrlabs.mundus.editor.events.AssetImportEvent;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.ui.AppUi;
@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 public class ToolbarPresenter {
 
     private final AppUi appUi;
-    private final ProjectManager projectManager;
+    private final EditorAssetManager assetManager;
     private final ImportModelDialog importModelDialog;
     private final ImportTextureDialog importTextureDialog;
     private final Toaster toaster;
@@ -48,7 +48,6 @@ public class ToolbarPresenter {
                         new InputDialogAdapter() {
                             @Override
                             public void finished(String input) {
-                                var assetManager = projectManager.getCurrent().getAssetManager();
                                 try {
                                     var material = assetManager.createMaterialAsset(input);
                                     eventBus.post(new AssetImportEvent(material));

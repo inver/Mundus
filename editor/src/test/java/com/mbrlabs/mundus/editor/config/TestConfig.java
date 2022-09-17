@@ -28,7 +28,8 @@ import static org.mockito.Mockito.when;
 @Configuration
 @ComponentScan({
         "com.mbrlabs.mundus.editor.core",
-        "com.mbrlabs.mundus.editor.events"
+        "com.mbrlabs.mundus.editor.events",
+        "com.mbrlabs.mundus.editor.assets"
 })
 public class TestConfig {
     public TestConfig() {
