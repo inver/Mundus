@@ -151,12 +151,12 @@ public class ToolManager extends InputAdapter implements Disposable {
         if (activeTool == null) {
             return null;
         }
-        EditorScene scene = getActiveTool().getProjectManager().getCurrent().currScene;
+        EditorScene scene = getActiveTool().getProjectManager().getCurrent().getCurrentScene();
 
         if (scene == null) {
             return null;
         }
-        return getActiveTool().getProjectManager().getCurrent().getSelected();
+        return getActiveTool().getProjectManager().getCurrent().getSelectedGameObject();
     }
 
 }

@@ -31,7 +31,8 @@ import com.mbrlabs.mundus.editor.events.EventBus
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent
 import com.mbrlabs.mundus.editor.events.SceneChangedEvent
 import com.mbrlabs.mundus.editor.ui.AppUi
-import com.mbrlabs.mundus.editor.ui.widgets.ColorPickerField
+import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerField
+import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerPresenter
 import org.springframework.stereotype.Component
 
 /**
@@ -43,16 +44,20 @@ class FogDialog(
     eventBus: EventBus,
     private val uiWidgetsHolder: UiWidgetsHolder,
     private val appUi: AppUi,
-    private val projectManager: ProjectManager
+    private val projectManager: ProjectManager,
+    private val colorPickerPresenter: ColorPickerPresenter
 ) : BaseDialog("Fog"), ProjectChangedEvent.ProjectChangedListener, SceneChangedEvent.SceneChangedListener {
 
     private val useFog = VisCheckBox("Use fog")
     private val density = VisTextField("0")
     private val gradient = VisTextField("0")
-    private val colorPickerField = ColorPickerField(uiWidgetsHolder.colorPicker, appUi)
+    private val colorPickerField = ColorPickerField()
 
     init {
         eventBus.register(this)
+
+        colorPickerPresenter.init(colorPickerField)
+
         setupUI()
         setupListeners()
     }
@@ -79,9 +84,9 @@ class FogDialog(
             override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
                 val projectContext = projectManager.current
                 if (useFog.isChecked) {
-                    if (projectContext.currScene.environment.fog == null) {
+                    if (projectContext.getCurrentScene().environment.fog == null) {
                         val fog = Fog()
-                        projectContext.currScene.environment.fog = fog
+                        projectContext.getCurrentScene().environment.fog = fog
                         density.text = fog.density.toString()
                         gradient.text = fog.gradient.toString()
                     }
@@ -89,7 +94,7 @@ class FogDialog(
                     gradient.isDisabled = false
                     colorPickerField.disable(false)
                 } else {
-                    projectContext.currScene.environment.fog = null
+                    projectContext.getCurrentScene().environment.fog = null
                     density.isDisabled = true
                     gradient.isDisabled = true
                     colorPickerField.disable(true)
@@ -103,7 +108,7 @@ class FogDialog(
                 val projectContext = projectManager.current
                 val g = convert(gradient.text)
                 if (g != null) {
-                    projectContext.currScene.environment.fog.gradient = g
+                    projectContext.getCurrentScene().environment.fog.gradient = g
                 }
             }
         })
@@ -114,7 +119,7 @@ class FogDialog(
                 val projectContext = projectManager.current
                 val value = convert(density.text)
                 if (value != null) {
-                    projectContext.currScene.environment.fog.density = value
+                    projectContext.getCurrentScene().environment.fog.density = value
                 }
             }
         })
@@ -123,14 +128,14 @@ class FogDialog(
         colorPickerField.colorAdapter = object : ColorPickerAdapter() {
             override fun finished(newColor: Color) {
                 val projectContext = projectManager.current
-                projectContext.currScene.environment.fog.color.set(newColor)
+                projectContext.getCurrentScene().environment.fog.color.set(newColor)
             }
         }
 
     }
 
     private fun resetValues() {
-        val fog = projectManager.current.currScene.environment.fog
+        val fog = projectManager.current.getCurrentScene().environment.fog
         if (fog == null) {
             density.isDisabled = true
             gradient.isDisabled = true

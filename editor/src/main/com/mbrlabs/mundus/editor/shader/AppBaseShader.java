@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.mbrlabs.mundus.commons.env.AppEnvironment;
 import com.mbrlabs.mundus.commons.env.lights.SunLightsAttribute;
 import com.mbrlabs.mundus.commons.utils.ShaderUtils;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -38,6 +39,8 @@ public abstract class AppBaseShader extends BaseShader {
 
     protected final String vertexShaderPath;
     protected final String fragmentShaderPath;
+    @Getter
+    protected final boolean bundled;
 
     public void compile() {
         program = ShaderUtils.compile(vertexShaderPath, fragmentShaderPath);

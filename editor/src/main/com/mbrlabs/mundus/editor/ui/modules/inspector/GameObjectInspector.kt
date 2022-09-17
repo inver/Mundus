@@ -33,6 +33,7 @@ import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.*
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.TerrainComponentWidget
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.TerrainWidgetPresenter
+import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerPresenter
 
 /**
  * @author Marcus Brummer
@@ -45,7 +46,8 @@ class GameObjectInspector(
     private val projectManager: ProjectManager,
     private val history: CommandHistory,
     private val terrainWidgetPresenter: TerrainWidgetPresenter,
-    private val previewGenerator: PreviewGenerator
+    private val previewGenerator: PreviewGenerator,
+    private val colorPickerPresenter: ColorPickerPresenter
 ) : VisTable() {
 
     private val identifierWidget = IdentifierWidget(projectManager)
@@ -124,7 +126,8 @@ class GameObjectInspector(
                             uiWidgetsHolder.separatorStyle,
                             component as DirectionalLightComponent,
                             uiWidgetsHolder,
-                            appUi
+                            appUi,
+                            colorPickerPresenter
                         )
                     )
                 }

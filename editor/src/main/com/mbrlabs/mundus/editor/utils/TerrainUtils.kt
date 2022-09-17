@@ -38,7 +38,7 @@ fun createTerrainGO(
     goName: String,
     terrain: TerrainAsset
 ): GameObject {
-    val terrainGO = GameObject(sg, null, goID)
+    val terrainGO = GameObject(null as String, goID)
     terrainGO.name = goName
 
     terrain.terrain.setTransform(terrainGO.transform)
@@ -46,7 +46,7 @@ fun createTerrainGO(
     terrainComponent.terrain = terrain
     terrainGO.components.add(terrainComponent)
     terrainComponent.shader = shader
-    terrainComponent.encodeRaypickColorId()
+    terrainComponent.encodeRayPickColorId()
 
     return terrainGO
 }

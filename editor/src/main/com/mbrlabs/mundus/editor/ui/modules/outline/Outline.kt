@@ -22,8 +22,8 @@ import com.badlogic.gdx.utils.Align
 import com.kotcrab.vis.ui.util.dialog.Dialogs
 import com.kotcrab.vis.ui.util.dialog.InputDialogAdapter
 import com.kotcrab.vis.ui.widget.*
+import com.mbrlabs.mundus.commons.Scene
 import com.mbrlabs.mundus.commons.scene3d.GameObject
-import com.mbrlabs.mundus.commons.scene3d.SceneGraph
 import com.mbrlabs.mundus.commons.scene3d.components.Component
 import com.mbrlabs.mundus.commons.terrain.Terrain
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
@@ -110,18 +110,18 @@ class Outline(
     override fun onProjectChanged(event: ProjectChangedEvent) {
         // update to new sceneGraph
         log.trace("Project changed. Building scene graph.")
-        buildTree(projectManager.current.currScene.sceneGraph)
+        buildTree(projectManager.current.getCurrentScene())
     }
 
     override fun onSceneChanged(event: SceneChangedEvent) {
         // update to new sceneGraph
         log.trace("Scene changed. Building scene graph.")
-        buildTree(projectManager.current.currScene.sceneGraph)
+        buildTree(projectManager.current.getCurrentScene())
     }
 
     override fun onSceneGraphChanged(event: SceneGraphChangedEvent) {
         log.trace("SceneGraph changed. Building scene graph.")
-        buildTree(projectManager.current.currScene.sceneGraph)
+        buildTree(projectManager.current.getCurrentScene())
     }
 
     /**
@@ -130,25 +130,25 @@ class Outline(
 
      * @param sceneGraph
      */
-    fun buildTree(sceneGraph: SceneGraph) {
+    fun buildTree(scene: Scene) {
         tree.clearChildren()
         val rootNode = RootNode()
         tree.add(rootNode)
 
-        for (mat in sceneGraph.scene.materials) {
-            //todo add materials from models
-            rootNode.materials.add(OutlineNode(mat.name))
+//        for (mat in scene.materials) {
+//            todo add materials from models
+//            rootNode.materials.add(OutlineNode(mat.name))
+//        }
+        for (go in scene.sceneGraph.gameObjects) {
+//            extractParamFromGameObject(go, { it.components.forEach() })
         }
-//        for (go in sceneGraph.gameObjects) {
-//            extractParamFromGameObject(go, Consumer { it.components.forEach() })
+
+//        for (texture in scene.getTextures()) {
+//            todo add textures from models
+//            rootNode.getTextures().add(OutlineNode(texture.name))
 //        }
 
-        for (texture in sceneGraph.scene.getTextures()) {
-            //todo add textures from models
-            rootNode.getTextures().add(OutlineNode(texture.name))
-        }
-
-        for (go in sceneGraph.gameObjects) {
+        for (go in scene.sceneGraph.gameObjects) {
             addGoToTree(rootNode.hierarchy, go)
         }
     }
@@ -266,10 +266,10 @@ class Outline(
             // add empty
             addEmpty.addListener(object : ClickListener() {
                 override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                    val sceneGraph = projectManager.current.currScene.sceneGraph
+                    val sceneGraph = projectManager.current.getCurrentScene().sceneGraph
                     val id = projectManager.current.obtainID()
                     // the new game object
-                    val go = GameObject(sceneGraph, GameObject.DEFAULT_NAME, id)
+                    val go = GameObject(GameObject.DEFAULT_NAME, id)
                     // update outline
                     if (selectedGO == null) {
                         // update sceneGraph
@@ -295,11 +295,11 @@ class Outline(
                     try {
                         log.trace("Add terrain game object in root node.")
                         val context = projectManager.current
-                        val sceneGraph = context.currScene.sceneGraph
+                        val sceneGraph = context.getCurrentScene().sceneGraph
                         val goID = context.obtainID()
                         val name = "Terrain $goID"
                         // create asset
-                        val asset = context.assetManager.createTerrainAsset(
+                        val asset = context.getAssetManager().createTerrainAsset(
                             name,
                             Terrain.DEFAULT_VERTEX_RESOLUTION, Terrain.DEFAULT_SIZE
                         )
@@ -315,11 +315,12 @@ class Outline(
                         // update outline
                         addGoToTree(null, terrainGO)
 
-                        context.currScene.terrains.add(asset)
-                        projectManager.saveProject(context)
-
-                        eventBus.post(AssetImportEvent(asset))
-                        eventBus.post(SceneGraphChangedEvent())
+                        TODO()
+//                        context.getCurrentScene().terrains.add(asset)
+//                        projectManager.saveProject(context)
+//
+//                        eventBus.post(AssetImportEvent(asset))
+//                        eventBus.post(SceneGraphChangedEvent())
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -357,7 +358,7 @@ class Outline(
 
             addDirectionalLight.addListener(object : ClickListener() {
                 override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                    val sceneGraph = projectManager.current.currScene.sceneGraph
+                    val sceneGraph = projectManager.current.getCurrentScene().sceneGraph
                     val id = projectManager.current.obtainID()
                     val name = "Directional light " + id
                     val go = createDirectionalLightGO(sceneGraph, id, name)

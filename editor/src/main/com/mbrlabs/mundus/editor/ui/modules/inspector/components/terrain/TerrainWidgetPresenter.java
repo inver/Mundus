@@ -76,7 +76,7 @@ public class TerrainWidgetPresenter {
         settingsTab.getUvSlider().addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                var assetManager = projectManager.getCurrent().assetManager;
+                var assetManager = projectManager.getCurrent().getAssetManager();
                 var component = settingsTab.getParentWidget().getComponent();
                 assetManager.dirty(component.getTerrain());
 
@@ -120,7 +120,7 @@ public class TerrainWidgetPresenter {
             }
 
             terrain.applyDependencies();
-            projectManager.getCurrent().assetManager.dirty(terrain);
+            projectManager.getCurrent().getAssetManager().dirty(terrain);
         });
         paintTab.getRightClickMenu().addChangeListener(channel -> assetPickerDialog.show(
                 false,
@@ -140,13 +140,13 @@ public class TerrainWidgetPresenter {
                     }
                     terrain.applyDependencies();
                     paintTab.setTexturesInUiGrid();
-                    projectManager.getCurrent().assetManager.dirty(terrain);
+                    projectManager.getCurrent().getAssetManager().dirty(terrain);
                 }));
     }
 
     private void addTexture(TerrainComponentWidget parent, TextureGrid<SplatTexture> textureGrid,
                             TextureAsset textureAsset) {
-        var assetManager = projectManager.getCurrent().assetManager;
+        var assetManager = projectManager.getCurrent().getAssetManager();
 
         var terrainAsset = parent.getComponent().getTerrain();
         var terrainTexture = terrainAsset.getTerrain().getTerrainTexture();
@@ -219,7 +219,7 @@ public class TerrainWidgetPresenter {
                 var file = genTab.getHeightmapTab().getSelectedFile();
                 if (file != null && file.exists() && isImage(file)) {
                     var command = genTab.getHeightmapTab().loadHeightMap(file);
-                    projectManager.getCurrent().assetManager.dirty(parent.getComponent().getTerrain());
+                    projectManager.getCurrent().getAssetManager().dirty(parent.getComponent().getTerrain());
                     history.add(command);
                 } else {
                     Dialogs.showErrorDialog(appUi, "Please select a heightmap image");
@@ -234,7 +234,7 @@ public class TerrainWidgetPresenter {
                 var max = genTab.getPerlinNoiseTab().getPerlinNoiseMaxHeight().getFloat();
                 var command = genTab.getPerlinNoiseTab().generatePerlinNoise(seed, min, max);
                 history.add(command);
-                projectManager.getCurrent().assetManager.dirty(parent.getComponent().getTerrain());
+                projectManager.getCurrent().getAssetManager().dirty(parent.getComponent().getTerrain());
             }
         });
     }

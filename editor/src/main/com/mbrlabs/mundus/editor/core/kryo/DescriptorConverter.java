@@ -18,13 +18,13 @@ package com.mbrlabs.mundus.editor.core.kryo;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.JsonWriter;
-import com.mbrlabs.mundus.commons.core.registry.KeyboardLayout;
-import com.mbrlabs.mundus.commons.core.registry.ProjectRef;
-import com.mbrlabs.mundus.commons.core.registry.Registry;
-import com.mbrlabs.mundus.commons.core.registry.Settings;
 import com.mbrlabs.mundus.editor.core.kryo.descriptors.*;
 import com.mbrlabs.mundus.editor.core.project.ProjectContext;
 import com.mbrlabs.mundus.editor.core.project.ProjectSettings;
+import com.mbrlabs.mundus.editor.core.registry.KeyboardLayout;
+import com.mbrlabs.mundus.editor.core.registry.ProjectRef;
+import com.mbrlabs.mundus.editor.core.registry.Registry;
+import com.mbrlabs.mundus.editor.core.registry.Settings;
 
 import java.util.Locale;
 
@@ -46,7 +46,7 @@ public class DescriptorConverter {
     public static RegistryDescriptor convert(Registry registry) {
         RegistryDescriptor descriptor = new RegistryDescriptor();
 
-        descriptor.setLastProject(convert(registry.getLastOpenedProject()));
+        descriptor.setLastProject(convert(registry.getLastProject()));
         for (ProjectRef projectRef : registry.getProjects()) {
             descriptor.getProjects().add(convert(projectRef));
         }
@@ -114,12 +114,12 @@ public class DescriptorConverter {
     public static ProjectDescriptor convert(ProjectContext project) {
         ProjectDescriptor descriptor = new ProjectDescriptor();
         descriptor.setName(project.name);
-        descriptor.setCurrentSceneName(project.currScene.getName());
+        descriptor.setCurrentSceneName(project.getCurrentScene().getName());
         descriptor.setNextAvailableID(project.inspectCurrentID());
         descriptor.setSettings(convert(project.settings));
 
         // scenes
-        for (String sceneName : project.scenes) {
+        for (String sceneName : project.getScenes()) {
             descriptor.getSceneRefDescriptor().add(new SceneRefDescriptor(sceneName));
         }
 
@@ -135,7 +135,7 @@ public class DescriptorConverter {
 
         // scenes
         for (SceneRefDescriptor sceneRefDescriptor : projectDescriptor.getSceneRefDescriptor()) {
-            context.scenes.add(sceneRefDescriptor.getName());
+            context.getScenes().add(sceneRefDescriptor.getName());
         }
 
         return context;

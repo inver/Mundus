@@ -16,6 +16,8 @@
 
 package com.mbrlabs.mundus.editor.ui.modules.inspector.components;
 
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.mbrlabs.mundus.commons.env.AppEnvironment;
 import com.mbrlabs.mundus.commons.env.lights.DirectionalLight;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.scene3d.components.AbstractComponent;
@@ -27,8 +29,6 @@ import com.mbrlabs.mundus.commons.scene3d.components.Component;
  */
 public class DirectionalLightComponent extends AbstractComponent {
 
-    private static final String TAG = DirectionalLightComponent.class.getSimpleName();
-
     protected DirectionalLight light;
 
     public DirectionalLightComponent(GameObject go, DirectionalLight light) {
@@ -36,7 +36,8 @@ public class DirectionalLightComponent extends AbstractComponent {
         type = Type.LIGHT;
 
         this.light = light;
-        go.sceneGraph.scene.environment.add(light);
+        //todo
+//        go.sceneGraph.scene.environment.add(light);
     }
 
     public DirectionalLight getDirectionalLight() {
@@ -44,7 +45,8 @@ public class DirectionalLightComponent extends AbstractComponent {
     }
 
     @Override
-    public void render(float delta) {
+    public void render(ModelBatch batch, AppEnvironment environment, float delta) {
+
     }
 
     @Override
@@ -53,7 +55,7 @@ public class DirectionalLightComponent extends AbstractComponent {
 
     @Override
     public void remove() {
-        gameObject.sceneGraph.scene.environment.remove(light);
+//        gameObject.sceneGraph.scene.environment.remove(light);
     }
 
     @Override

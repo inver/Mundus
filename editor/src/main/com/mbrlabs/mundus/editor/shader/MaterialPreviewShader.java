@@ -8,12 +8,12 @@ import com.mbrlabs.mundus.commons.env.AppEnvironment;
 
 public class MaterialPreviewShader extends AppBaseShader {
 
-    protected final int UNIFORM_MDOEL_MATRIX = register(new Uniform("u_modelMatrix"));
+    protected final int UNIFORM_MODEL_MATRIX = register(new Uniform("u_modelMatrix"));
 
     private final Matrix4 modelPos = new Matrix4();
 
     public MaterialPreviewShader(String vertexShaderPath, String fragmentShaderPath) {
-        super(vertexShaderPath, fragmentShaderPath);
+        super(vertexShaderPath, fragmentShaderPath, true);
     }
 
     @Override
@@ -27,7 +27,7 @@ public class MaterialPreviewShader extends AppBaseShader {
 
         setLights(env);
         set(UNIFORM_TRANS_MATRIX, renderable.worldTransform);
-        set(UNIFORM_MDOEL_MATRIX, modelPos);
+        set(UNIFORM_MODEL_MATRIX, modelPos);
 
         // texture uniform
 //        TextureAttribute diffuseTexture = ((TextureAttribute) (renderable.material.get(TextureAttribute.Diffuse)));

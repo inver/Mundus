@@ -23,7 +23,6 @@ import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
 import com.mbrlabs.mundus.commons.assets.texture.TextureService;
 import com.mbrlabs.mundus.commons.core.ModelFiles;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
-import com.mbrlabs.mundus.commons.scene3d.SceneGraph;
 import com.mbrlabs.mundus.editor.scene3d.components.PickableModelComponent;
 import com.mbrlabs.mundus.editor.shader.Shaders;
 import lombok.Getter;
@@ -42,10 +41,10 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import static com.mbrlabs.mundus.editor.core.ProjectConstants.BUNDLED_FOLDER;
+
 @Slf4j
 public class EditorAssetManager extends AssetManager {
-
-    private static final String BUNDLED_FOLDER = "bundled/";
 
     @Getter
     private final Set<Asset> dirtyAssets = new HashSet<>();
@@ -288,15 +287,15 @@ public class EditorAssetManager extends AssetManager {
         dirtyAssets.add(asset);
     }
 
-    public GameObject convert(SceneGraph sceneGraph, int goID, String name, Asset asset) {
-        var res = new GameObject(sceneGraph, name, goID);
+    public GameObject convert(int goID, String name, Asset asset) {
+        var res = new GameObject(name, goID);
 
         if (asset.getType() == AssetType.MODEL) {
             var modelAsset = (ModelAsset) asset;
 
             var modelComponent = new PickableModelComponent(res, Shaders.INSTANCE.getModelShader());
             modelComponent.setModel(modelAsset, true);
-            modelComponent.encodeRaypickColorId();
+            modelComponent.encodeRayPickColorId();
 
             res.getComponents().add(modelComponent);
         } else if (asset.getType() == AssetType.MATERIAL) {

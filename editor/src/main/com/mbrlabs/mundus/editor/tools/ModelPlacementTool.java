@@ -19,7 +19,6 @@ package com.mbrlabs.mundus.editor.tools;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -35,7 +34,6 @@ import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.scene3d.components.PickableModelComponent;
 import com.mbrlabs.mundus.editor.shader.Shaders;
 import com.mbrlabs.mundus.editor.ui.AppUi;
-import com.mbrlabs.mundus.editor.utils.TerrainUtils;
 
 /**
  * @author Marcus Brummer
@@ -99,8 +97,8 @@ public class ModelPlacementTool extends Tool {
     @Override
     public void render() {
         if (modelInstance != null) {
-            getBatch().begin(getProjectManager().getCurrent().currScene.cam);
-            getBatch().render(modelInstance, getProjectManager().getCurrent().currScene.environment, getShader());
+            getBatch().begin(getProjectManager().getCurrent().getCurrentScene().getCurrentCamera());
+            getBatch().render(modelInstance, getProjectManager().getCurrent().getCurrentScene().getEnvironment(), getShader());
             getBatch().end();
         }
     }
@@ -115,8 +113,8 @@ public class ModelPlacementTool extends Tool {
 
         if (modelInstance != null && button == Input.Buttons.LEFT) {
             int id = getProjectManager().getCurrent().obtainID();
-            GameObject modelGo = new GameObject(getProjectManager().getCurrent().currScene.sceneGraph, model.getName(), id);
-            getProjectManager().getCurrent().currScene.sceneGraph.addGameObject(modelGo);
+            GameObject modelGo = new GameObject(model.getName(), id);
+            getProjectManager().getCurrent().getCurrentScene().getSceneGraph().addGameObject(modelGo);
 
             modelInstance.transform.getTranslation(tempV3);
             modelGo.translate(tempV3);
@@ -124,7 +122,7 @@ public class ModelPlacementTool extends Tool {
             PickableModelComponent modelComponent = new PickableModelComponent(modelGo, Shaders.INSTANCE.getModelShader());
             modelComponent.setShader(getShader());
             modelComponent.setModel(model, true);
-            modelComponent.encodeRaypickColorId();
+            modelComponent.encodeRayPickColorId();
 
             try {
                 modelGo.addComponent(modelComponent);
@@ -145,20 +143,20 @@ public class ModelPlacementTool extends Tool {
 
         final ProjectContext context = getProjectManager().getCurrent();
 
-        final Ray ray = getProjectManager().getCurrent().currScene.viewport.getPickRay(screenX, screenY);
-        if (context.currScene.terrains.size > 0 && modelInstance != null) {
-            MeshPartBuilder.VertexInfo vi = TerrainUtils.getRayIntersectionAndUp(context.currScene.terrains, ray);
-            if (vi != null) {
-                if (shouldRespectTerrainSlope) {
-                    modelInstance.transform.setToLookAt(DEFAULT_ORIENTATION, vi.normal);
-                }
-                modelInstance.transform.setTranslation(vi.position);
-            }
-        } else {
-            tempV3.set(getProjectManager().getCurrent().currScene.cam.position);
-            tempV3.add(ray.direction.nor().scl(200));
-            modelInstance.transform.setTranslation(tempV3);
-        }
+        final Ray ray = getProjectManager().getCurrent().getCurrentScene().viewport.getPickRay(screenX, screenY);
+//        if (context.getCurrentScene().terrains.size > 0 && modelInstance != null) {
+//            MeshPartBuilder.VertexInfo vi = TerrainUtils.getRayIntersectionAndUp(context.getCurrentScene().terrains, ray);
+//            if (vi != null) {
+//                if (shouldRespectTerrainSlope) {
+//                    modelInstance.transform.setToLookAt(DEFAULT_ORIENTATION, vi.normal);
+//                }
+//                modelInstance.transform.setTranslation(vi.position);
+//            }
+//        } else {
+//            tempV3.set(getProjectManager().getCurrent().getCurrentScene().cam.position);
+//            tempV3.add(ray.direction.nor().scl(200));
+//            modelInstance.transform.setTranslation(tempV3);
+//        }
 
         return false;
     }

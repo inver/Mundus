@@ -18,11 +18,13 @@ package com.mbrlabs.mundus.editor.tools.picker;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.mbrlabs.mundus.commons.Scene;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
-import com.mbrlabs.mundus.commons.scene3d.SceneGraph;
 import com.mbrlabs.mundus.commons.scene3d.components.Component;
 import com.mbrlabs.mundus.editor.core.EditorScene;
 import com.mbrlabs.mundus.editor.scene3d.components.PickableComponent;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Renders a scene graph to an offscreen FBO, encodes the game object's id in
@@ -36,15 +38,14 @@ import com.mbrlabs.mundus.editor.scene3d.components.PickableComponent;
  * @version 20-02-2016
  */
 @org.springframework.stereotype.Component
+@RequiredArgsConstructor
 public class GameObjectPicker extends BasePicker {
 
-    public GameObjectPicker() {
-        super();
-    }
+    private final ModelBatch batch;
 
     public GameObject pick(EditorScene scene, int screenX, int screenY) {
         begin(scene.viewport);
-        renderPickableScene(scene.sceneGraph);
+        renderPickableScene(scene);
         end();
         Pixmap pm = getFrameBufferPixmap(scene.viewport);
 
@@ -52,34 +53,34 @@ public class GameObjectPicker extends BasePicker {
         int y = screenY - (Gdx.graphics.getHeight() - (scene.viewport.getScreenY() + scene.viewport.getScreenHeight()));
 
         int id = PickerColorEncoder.decode(pm.getPixel(x, y));
-        for (GameObject go : scene.sceneGraph.getGameObjects()) {
-            if (id == go.id) return go;
+        for (GameObject go : scene.getSceneGraph().getGameObjects()) {
+            if (id == go.getId()) return go;
             for (GameObject child : go) {
-                if (id == child.id) return child;
+                if (id == child.getId()) return child;
             }
         }
 
         return null;
     }
 
-    private void renderPickableScene(SceneGraph sceneGraph) {
-        sceneGraph.scene.batch.begin(sceneGraph.scene.cam);
-        for (GameObject go : sceneGraph.getGameObjects()) {
-            renderPickableGameObject(go);
+    private void renderPickableScene(EditorScene scene) {
+        batch.begin(scene.getCurrentCamera());
+        for (GameObject go : scene.getSceneGraph().getGameObjects()) {
+            renderPickableGameObject(scene, go);
         }
-        sceneGraph.scene.batch.end();
+        batch.end();
     }
 
-    private void renderPickableGameObject(GameObject go) {
+    private void renderPickableGameObject(Scene scene, GameObject go) {
         for (Component c : go.getComponents()) {
             if (c instanceof PickableComponent) {
-                ((PickableComponent) c).renderPick();
+                c.render(batch, scene.getEnvironment(), Gdx.graphics.getDeltaTime());
             }
         }
 
         if (go.getChildren() != null) {
             for (GameObject goc : go.getChildren()) {
-                renderPickableGameObject(goc);
+                renderPickableGameObject(scene, goc);
             }
         }
     }

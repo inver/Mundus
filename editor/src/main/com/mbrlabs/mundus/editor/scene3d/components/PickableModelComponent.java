@@ -16,14 +16,15 @@
 
 package com.mbrlabs.mundus.editor.scene3d.components;
 
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.Shader;
+import com.mbrlabs.mundus.commons.env.AppEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.scene3d.components.Component;
 import com.mbrlabs.mundus.commons.scene3d.components.ModelComponent;
 import com.mbrlabs.mundus.editor.shader.Shaders;
 import com.mbrlabs.mundus.editor.tools.picker.PickerColorEncoder;
-import com.mbrlabs.mundus.editor.tools.picker.PickerIDAttribute;
 
 /**
  * @author Marcus Brummer
@@ -36,14 +37,14 @@ public class PickableModelComponent extends ModelComponent implements PickableCo
     }
 
     @Override
-    public void encodeRaypickColorId() {
-        PickerIDAttribute goIDa = PickerColorEncoder.encodeRaypickColorId(gameObject);
-        this.modelInstance.materials.first().set(goIDa);
+    public void encodeRayPickColorId() {
+        var goIDa = PickerColorEncoder.encodeRaypickColorId(gameObject);
+        modelInstance.materials.first().set(goIDa);
     }
 
     @Override
-    public void renderPick() {
-        gameObject.sceneGraph.scene.batch.render(modelInstance, Shaders.INSTANCE.getPickerShader());
+    public void render(ModelBatch batch, AppEnvironment environment, float delta) {
+        batch.render(modelInstance, Shaders.INSTANCE.getPickerShader());
     }
 
     @Override
@@ -52,7 +53,7 @@ public class PickableModelComponent extends ModelComponent implements PickableCo
         mc.modelAsset = this.modelAsset;
         mc.modelInstance = new ModelInstance(modelAsset.getModel());
         mc.shader = this.shader;
-        mc.encodeRaypickColorId();
+        mc.encodeRayPickColorId();
         return mc;
     }
 }

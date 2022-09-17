@@ -24,7 +24,7 @@ import com.mbrlabs.mundus.commons.scene3d.SceneGraph
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.DirectionalLightComponent
 
 fun createDirectionalLightGO(sg: SceneGraph, goID: Int, goName: String): GameObject {
-    val lightGO = GameObject(sg, null, goID)
+    val lightGO = GameObject(null as String, goID)
     lightGO.name = goName
 
     // TODO: make pickable light component

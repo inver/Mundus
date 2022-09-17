@@ -86,18 +86,18 @@ public class RotateTool extends TransformTool {
         GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
 
         ProjectContext projectContext = getProjectManager().getCurrent();
-        if (state == TransformState.IDLE && projectContext.getSelected() != null) {
-            getBatch().begin(projectContext.currScene.cam);
+        if (state == TransformState.IDLE && projectContext.getSelectedGameObject() != null) {
+            getBatch().begin(projectContext.getCurrentScene().getCurrentCamera());
             xHandle.render(getBatch());
             yHandle.render(getBatch());
             zHandle.render(getBatch());
             getBatch().end();
-        } else if (projectContext.getSelected() != null) {
-            Viewport vp = projectContext.currScene.viewport;
+        } else if (projectContext.getSelectedGameObject() != null) {
+            Viewport vp = projectContext.getCurrentScene().viewport;
 
-            GameObject go = projectContext.getSelected();
+            GameObject go = projectContext.getSelectedGameObject();
             go.getTransform().getTranslation(temp0);
-            Vector3 pivot = projectContext.currScene.cam.project(temp0);
+            Vector3 pivot = projectContext.getCurrentScene().getCurrentCamera().project(temp0);
 
             shapeRenderMat.setToOrtho2D(vp.getScreenX(), vp.getScreenY(), vp.getScreenWidth(), vp.getScreenHeight());
             switch (state) {
@@ -143,7 +143,7 @@ public class RotateTool extends TransformTool {
         super.act();
 
         ProjectContext projectContext = getProjectManager().getCurrent();
-        if (projectContext.getSelected() != null) {
+        if (projectContext.getSelectedGameObject() != null) {
             translateHandles();
             if (state == TransformState.IDLE) {
                 return;
@@ -157,17 +157,17 @@ public class RotateTool extends TransformTool {
                 switch (state) {
                     case TRANSFORM_X:
                         tempQuat.setEulerAngles(0, -rot, 0);
-                        projectContext.getSelected().rotate(tempQuat);
+                        projectContext.getSelectedGameObject().rotate(tempQuat);
                         modified = true;
                         break;
                     case TRANSFORM_Y:
                         tempQuat.setEulerAngles(-rot, 0, 0);
-                        projectContext.getSelected().rotate(tempQuat);
+                        projectContext.getSelectedGameObject().rotate(tempQuat);
                         modified = true;
                         break;
                     case TRANSFORM_Z:
                         tempQuat.setEulerAngles(0, 0, -rot);
-                        projectContext.getSelected().rotate(tempQuat);
+                        projectContext.getSelectedGameObject().rotate(tempQuat);
                         modified = true;
                         break;
                     default:
@@ -176,7 +176,7 @@ public class RotateTool extends TransformTool {
             }
 
             if (modified) {
-                gameObjectModifiedEvent.setGameObject(projectContext.getSelected());
+                gameObjectModifiedEvent.setGameObject(projectContext.getSelectedGameObject());
                 eventBus.post(gameObjectModifiedEvent);
             }
 
@@ -187,9 +187,9 @@ public class RotateTool extends TransformTool {
 
     private float getCurrentAngle() {
         ProjectContext projectContext = getProjectManager().getCurrent();
-        if (projectContext.getSelected() != null) {
-            projectContext.getSelected().getPosition(temp0);
-            Vector3 pivot = projectContext.currScene.cam.project(temp0);
+        if (projectContext.getSelectedGameObject() != null) {
+            projectContext.getSelectedGameObject().getPosition(temp0);
+            Vector3 pivot = projectContext.getCurrentScene().getCurrentCamera().project(temp0);
             Vector3 mouse = temp1.set(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), 0);
 
             return MathUtils.angle(pivot.x, pivot.y, mouse.x, mouse.y);
@@ -203,13 +203,13 @@ public class RotateTool extends TransformTool {
         super.touchDown(screenX, screenY, pointer, button);
 
         ProjectContext projectContext = getProjectManager().getCurrent();
-        if (button == Input.Buttons.LEFT && projectContext.getSelected() != null) {
+        if (button == Input.Buttons.LEFT && projectContext.getSelectedGameObject() != null) {
             lastRot = getCurrentAngle();
 
-            currentRotateCommand = new RotateCommand(projectContext.getSelected());
-            currentRotateCommand.setBefore(projectContext.getSelected().getLocalRotation(tempQuat));
+            currentRotateCommand = new RotateCommand(projectContext.getSelectedGameObject());
+            currentRotateCommand.setBefore(projectContext.getSelectedGameObject().getLocalRotation(tempQuat));
 
-            RotateHandle handle = (RotateHandle) handlePicker.pick(handles, projectContext.currScene, screenX, screenY);
+            RotateHandle handle = (RotateHandle) handlePicker.pick(handles, projectContext.getCurrentScene(), screenX, screenY);
             if (handle == null) {
                 state = TransformState.IDLE;
                 return false;
@@ -238,7 +238,7 @@ public class RotateTool extends TransformTool {
         state = TransformState.IDLE;
         if (currentRotateCommand != null) {
             ProjectContext projectContext = getProjectManager().getCurrent();
-            currentRotateCommand.setAfter(projectContext.getSelected().getLocalRotation(tempQuat));
+            currentRotateCommand.setAfter(projectContext.getSelectedGameObject().getLocalRotation(tempQuat));
             getHistory().add(currentRotateCommand);
             currentRotateCommand = null;
         }
@@ -266,7 +266,7 @@ public class RotateTool extends TransformTool {
     @Override
     protected void translateHandles() {
         ProjectContext projectContext = getProjectManager().getCurrent();
-        final Vector3 pos = projectContext.getSelected().getTransform().getTranslation(temp0);
+        final Vector3 pos = projectContext.getSelectedGameObject().getTransform().getTranslation(temp0);
         xHandle.getPosition().set(pos);
         xHandle.applyTransform();
         yHandle.getPosition().set(pos);
@@ -278,8 +278,8 @@ public class RotateTool extends TransformTool {
     @Override
     protected void scaleHandles() {
         ProjectContext projectContext = getProjectManager().getCurrent();
-        Vector3 pos = projectContext.getSelected().getPosition(temp0);
-        float scaleFactor = projectContext.currScene.cam.position.dst(pos) * 0.005f;
+        Vector3 pos = projectContext.getSelectedGameObject().getPosition(temp0);
+        float scaleFactor = projectContext.getCurrentScene().getCurrentCamera().position.dst(pos) * 0.005f;
         xHandle.getScale().set(scaleFactor, scaleFactor, scaleFactor);
         xHandle.applyTransform();
 

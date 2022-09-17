@@ -16,39 +16,37 @@
 
 package com.mbrlabs.mundus.commons.scene3d;
 
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.mbrlabs.mundus.commons.env.AppEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.components.Component;
+import com.mbrlabs.mundus.commons.scene3d.components.Renderable;
 import com.mbrlabs.mundus.commons.scene3d.traversal.DepthFirstIterator;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author Marcus Brummer
  * @version 16-01-2016
  */
-public class GameObject extends SimpleNode<GameObject> implements Iterable<GameObject> {
+public class GameObject extends SimpleNode<GameObject> implements Iterable<GameObject>, Renderable {
 
     public static final String DEFAULT_NAME = "GameObject";
 
     public String name;
-    public boolean active;
-    private Array<String> tags;
-    private Array<Component> components;
-
-    public final SceneGraph sceneGraph;
+    private boolean active;
+    private final List<String> tags = new ArrayList<>();
+    private final List<Component> components = new ArrayList<>();
 
     /**
-     * @param sceneGraph scene graph
-     * @param name       game object name; can be null
-     * @param id         game object id
+     * @param name game object name; can be null
+     * @param id   game object id
      */
-    public GameObject(SceneGraph sceneGraph, String name, int id) {
+    public GameObject(String name, int id) {
         super(id);
-        this.sceneGraph = sceneGraph;
         this.name = (name == null) ? DEFAULT_NAME : name;
         this.active = true;
-        this.tags = null;
-        this.components = new Array<>(3);
     }
 
     /**
@@ -58,43 +56,33 @@ public class GameObject extends SimpleNode<GameObject> implements Iterable<GameO
      */
     public GameObject(GameObject gameObject, int id) {
         super(gameObject, id);
-        this.sceneGraph = gameObject.sceneGraph;
 
         // set name _copy
         this.name = gameObject.name + "_copy";
         this.active = gameObject.active;
 
-        // copy tags
-        if (tags != null) {
-            Array<String> newTags = new Array<>();
-            for (String t : gameObject.tags) {
-                newTags.add(t);
-            }
-            this.tags = newTags;
+        if (gameObject.tags.size() > 0) {
+            this.tags.addAll(gameObject.tags);
         }
 
         // copy components
-        this.components = new Array<>();
         for (Component c : gameObject.components) {
             this.components.add(c.clone(this));
         }
         setParent(gameObject.parent);
     }
 
-    /**
-     * Calls the render() method for each component in this and all child nodes.
-     *
-     * @param delta time since last render
-     */
-    public void render(float delta) {
+
+    @Override
+    public void render(ModelBatch batch, AppEnvironment environment, float delta) {
         if (active) {
             for (Component component : this.components) {
-                component.render(delta);
+                component.render(batch, environment, delta);
             }
 
             if (getChildren() != null) {
                 for (GameObject node : getChildren()) {
-                    node.render(delta);
+                    node.render(batch, environment, delta);
                 }
             }
         }
@@ -124,7 +112,7 @@ public class GameObject extends SimpleNode<GameObject> implements Iterable<GameO
      *
      * @return tags or null if none available
      */
-    public Array<String> getTags() {
+    public List<String> getTags() {
         return this.tags;
     }
 
@@ -134,23 +122,18 @@ public class GameObject extends SimpleNode<GameObject> implements Iterable<GameO
      * @param tag tag to add
      */
     public void addTag(String tag) {
-        if (this.tags == null) {
-            this.tags = new Array<String>(2);
-        }
-
-        this.tags.add(tag);
+        tags.add(tag);
     }
 
     /**
      * Finds all component by a given type.
      *
-     * @param out           output array
-     * @param type          component type
-     * @param includeChilds search in node children of this game object as well?
-     * @return components found
+     * @param out             output array
+     * @param type            component type
+     * @param includeChildren search in node children of this game object as well?
      */
-    public Array<Component> findComponentsByType(Array<Component> out, Component.Type type, boolean includeChilds) {
-        if (includeChilds) {
+    public void findComponentsByType(List<Component> out, Component.Type type, boolean includeChildren) {
+        if (includeChildren) {
             for (GameObject go : this) {
                 for (Component c : go.components) {
                     if (c.getType() == type) out.add(c);
@@ -161,8 +144,6 @@ public class GameObject extends SimpleNode<GameObject> implements Iterable<GameO
                 if (c.getType() == type) out.add(c);
             }
         }
-
-        return out;
     }
 
     /**
@@ -184,7 +165,7 @@ public class GameObject extends SimpleNode<GameObject> implements Iterable<GameO
      *
      * @return components
      */
-    public Array<Component> getComponents() {
+    public List<Component> getComponents() {
         return this.components;
     }
 
@@ -194,7 +175,7 @@ public class GameObject extends SimpleNode<GameObject> implements Iterable<GameO
      * @param component component to remove
      */
     public void removeComponent(Component component) {
-        components.removeValue(component, true);
+        components.remove(component);
     }
 
     /**
@@ -249,4 +230,11 @@ public class GameObject extends SimpleNode<GameObject> implements Iterable<GameO
         return name;
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 }

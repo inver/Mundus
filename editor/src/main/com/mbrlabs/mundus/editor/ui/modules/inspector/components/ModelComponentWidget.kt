@@ -80,7 +80,6 @@ class ModelComponentWidget(
         for (g3dbMatID in component.materials.keys()) {
 
             val mw = MaterialWidget(
-                uiWidgetsHolder.colorPicker,
                 appUi,
                 assetSelectionDialog,
                 projectManager,

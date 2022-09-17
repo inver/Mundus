@@ -17,30 +17,24 @@
 package com.mbrlabs.mundus.commons.scene3d;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.Array;
-import com.mbrlabs.mundus.commons.Scene;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.mbrlabs.mundus.commons.env.AppEnvironment;
+import com.mbrlabs.mundus.commons.scene3d.components.Renderable;
+
+import java.util.List;
 
 /**
  * @author Marcus Brummer
  * @version 16-01-2016
  */
-public class SceneGraph {
+public class SceneGraph implements Renderable {
 
     protected GameObject root;
 
-    public Scene scene;
-
-    public SceneGraph(Scene scene) {
-        root = new GameObject(this, null, -1);
+    public SceneGraph() {
+        root = new GameObject((String) null, -1);
         root.initChildrenArray();
-        root.active = false;
-        this.scene = scene;
-    }
-
-    public void render(float delta) {
-        for (GameObject go : root.getChildren()) {
-            go.render(delta);
-        }
+        root.setActive(false);
     }
 
     public void update() {
@@ -53,11 +47,18 @@ public class SceneGraph {
         }
     }
 
-    public Array<GameObject> getGameObjects() {
+    public List<GameObject> getGameObjects() {
         return root.getChildren();
     }
 
     public void addGameObject(GameObject go) {
         root.addChild(go);
+    }
+
+    @Override
+    public void render(ModelBatch batch, AppEnvironment environment, float delta) {
+        for (GameObject go : root.getChildren()) {
+            go.render(batch, environment, delta);
+        }
     }
 }

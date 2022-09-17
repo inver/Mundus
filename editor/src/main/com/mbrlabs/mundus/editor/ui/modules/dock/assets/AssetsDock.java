@@ -80,7 +80,7 @@ public class AssetsDock extends Tab/*(false, false)*/ {
 //        deleteAsset.addListener(object :ClickListener() {
 //            override fun clicked(event:InputEvent, x:Float, y:Float){
 //                selected ?.asset ?.let {
-//                    projectManager.current().assetManager.deleteAsset(it, projectManager)
+//                    projectManager.current().getAssetManager().deleteAsset(it, projectManager)
 //                    reloadAssets()
 //                }
 //            }

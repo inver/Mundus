@@ -5,6 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.Integer.parseInt;
+import static java.lang.Integer.valueOf;
+
 @Slf4j
 public class ObjStringUtils {
     // ----------------------------------------------------------------------
@@ -132,7 +135,7 @@ public class ObjStringUtils {
                 }
             }
             itemLength = itemEnd - itemStart;
-            returnList.add(Integer.parseInt(new String(listChars, itemStart, itemLength)));
+            returnList.add(parseInt(new String(listChars, itemStart, itemLength)));
 
             count = itemEnd;
         }
@@ -210,7 +213,7 @@ public class ObjStringUtils {
         //	log.log(INFO, "found "+vertexStrings.length+" strings in parseWhitespaceList");
 
         ArrayList<Integer> returnList = new ArrayList<Integer>();
-        Integer emptyMarker = new Integer(BuilderInterface.EMPTY_VERTEX_VALUE);
+        var emptyMarker = valueOf(BuilderInterface.EMPTY_VERTEX_VALUE);
 
         for (int loopi = 0; loopi < vertexStrings.length; loopi++) {
             //	    log.log(INFO, "parsing vertexStrings["+loopi+"]=|"+vertexStrings[loopi]+"|");
@@ -240,7 +243,7 @@ public class ObjStringUtils {
                 returnList.add(emptyMarker);
             } else {
 //                                log.log(INFO, "numbers["+index+"] is NOT empty, adding parsed int "+Integer.parseInt(numbers[index])+" to list.");
-                returnList.add(Integer.parseInt(numbers[index]));
+                returnList.add(parseInt(numbers[index]));
             }
             foundCount++;
             index++;

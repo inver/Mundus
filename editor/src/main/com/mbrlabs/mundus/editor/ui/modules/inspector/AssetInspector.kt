@@ -34,6 +34,7 @@ import com.mbrlabs.mundus.editor.ui.modules.inspector.assets.MaterialAssetInspec
 import com.mbrlabs.mundus.editor.ui.modules.inspector.assets.ModelAssetInspectorWidget
 import com.mbrlabs.mundus.editor.ui.modules.inspector.assets.TerrainAssetInspectorWidget
 import com.mbrlabs.mundus.editor.ui.modules.inspector.assets.TextureAssetInspectorWidget
+import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerPresenter
 
 /**
  * @author Marcus Brummer
@@ -46,16 +47,17 @@ class AssetInspector(
     private val assetSelectionDialog: AssetPickerDialog,
     private val toolManager: ToolManager,
     private val projectManager: ProjectManager,
-    private val previewGenerator: PreviewGenerator
+    private val previewGenerator: PreviewGenerator,
+    private val colorPickerPresenter: ColorPickerPresenter
 ) : VisTable() {
 
     private val materialWidget = MaterialAssetInspectorWidget(
         separatorStyle,
         appUi,
-        uiWidgetsHolder,
         assetSelectionDialog,
         projectManager,
-        previewGenerator
+        previewGenerator,
+        colorPickerPresenter
     )
     private val modelWidget = ModelAssetInspectorWidget(
         separatorStyle,

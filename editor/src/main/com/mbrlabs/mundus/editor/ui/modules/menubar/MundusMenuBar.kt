@@ -22,8 +22,8 @@ import com.badlogic.gdx.scenes.scene2d.EventListener
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.kotcrab.vis.ui.VisUI
 import com.kotcrab.vis.ui.widget.*
-import com.mbrlabs.mundus.commons.core.registry.Registry
 import com.mbrlabs.mundus.editor.appUimodules.menu.FileMenu
+import com.mbrlabs.mundus.editor.core.registry.Registry
 
 /**
  * @author Marcus Brummer

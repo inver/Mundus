@@ -20,8 +20,9 @@ import com.kotcrab.vis.ui.util.async.AsyncTaskListener
 import com.kotcrab.vis.ui.widget.VisDialog
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisProgressBar
-import com.mbrlabs.mundus.editor.core.kryo.KryoManager
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
+import com.mbrlabs.mundus.editor.core.project.ProjectStorage
+import com.mbrlabs.mundus.editor.core.scene.SceneStorage
 import com.mbrlabs.mundus.editor.exporter.Exporter
 import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.UiConstants
@@ -37,7 +38,8 @@ import org.springframework.stereotype.Component
 class ExportDialog(
     private val toaster: Toaster,
     private val projectManager: ProjectManager,
-    private val kryoManager: KryoManager,
+    private val projectStorage: ProjectStorage,
+    private val sceneStorage: SceneStorage,
     private val appUi: AppUi
 ) : VisDialog("Exporting") {
 
@@ -75,34 +77,36 @@ class ExportDialog(
 
         show(appUi)
 
-        Exporter(kryoManager, projectManager.current).exportAsync(export.outputFolder, object : AsyncTaskListener {
-            private var error = false
+        Exporter(projectStorage, projectManager.current, sceneStorage).exportAsync(
+            export.outputFolder,
+            object : AsyncTaskListener {
+                private var error = false
 
-            override fun progressChanged(newProgressPercent: Int) {
-                progressBar.value = newProgressPercent.toFloat()
-            }
-
-            override fun finished() {
-                if (!error) {
-                    toaster.success("Project exported")
+                override fun progressChanged(newProgressPercent: Int) {
+                    progressBar.value = newProgressPercent.toFloat()
                 }
-                resetValues()
-                close()
-                lastExport = System.currentTimeMillis()
-            }
 
-            override fun messageChanged(message: String?) {
-                label.setText(message)
-            }
+                override fun finished() {
+                    if (!error) {
+                        toaster.success("Project exported")
+                    }
+                    resetValues()
+                    close()
+                    lastExport = System.currentTimeMillis()
+                }
 
-            override fun failed(message: String?, exception: Exception?) {
-                Log.exception("Exporter", exception)
-                toaster.sticky(Toaster.ToastType.ERROR, "Export failed: " + exception.toString())
-                error = true
-                resetValues()
-                close()
-            }
-        })
+                override fun messageChanged(message: String?) {
+                    label.setText(message)
+                }
+
+                override fun failed(message: String?, exception: Exception?) {
+                    Log.exception("Exporter", exception)
+                    toaster.sticky(Toaster.ToastType.ERROR, "Export failed: " + exception.toString())
+                    error = true
+                    resetValues()
+                    close()
+                }
+            })
     }
 
     private fun resetValues() {

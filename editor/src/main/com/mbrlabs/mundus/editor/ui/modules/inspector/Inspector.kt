@@ -36,6 +36,7 @@ import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.PreviewGenerator
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.TerrainWidgetPresenter
+import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerPresenter
 import com.mbrlabs.mundus.editor.utils.Log
 import org.springframework.stereotype.Component
 
@@ -53,7 +54,8 @@ class Inspector(
     private val projectManager: ProjectManager,
     private val terrainWidgetPresenter: TerrainWidgetPresenter,
     private val history: CommandHistory,
-    private val previewGenerator: PreviewGenerator
+    private val previewGenerator: PreviewGenerator,
+    private val colorPickerPresenter: ColorPickerPresenter
 ) : VisTable(),
     GameObjectSelectedEvent.GameObjectSelectedListener,
     GameObjectModifiedEvent.GameObjectModifiedListener,
@@ -84,7 +86,8 @@ class Inspector(
             projectManager,
             history,
             terrainWidgetPresenter,
-            previewGenerator
+            previewGenerator,
+            colorPickerPresenter
         )
         assetInspector = AssetInspector(
             uiWidgetsHolder.separatorStyle,
@@ -93,7 +96,8 @@ class Inspector(
             assetPickerDialog,
             toolManager,
             projectManager,
-            previewGenerator
+            previewGenerator,
+            colorPickerPresenter
         )
 
         init()

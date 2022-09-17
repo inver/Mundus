@@ -31,15 +31,12 @@ import com.badlogic.gdx.math.Vector3;
  */
 public class SimpleNode<T extends SimpleNode<T>> extends BaseNode<T> {
 
-    static boolean WORLD_SPACE_TRANSFORM = true;
-    private static Matrix4 tempMat = new Matrix4();
-
-    private Vector3 localPosition;
-    private Quaternion localRotation;
-    private Vector3 localScale;
+    private final Vector3 localPosition;
+    private final Quaternion localRotation;
+    private final Vector3 localScale;
 
     // root * p0 * p1 * localMat = combined (absolute transfrom)
-    private Matrix4 combined;
+    private final Matrix4 combined;
 
     public SimpleNode(int id) {
         super(id);
@@ -55,7 +52,7 @@ public class SimpleNode<T extends SimpleNode<T>> extends BaseNode<T> {
      * @param simpleNode
      * @param id
      */
-    public SimpleNode(SimpleNode simpleNode, int id) {
+    public SimpleNode(SimpleNode<T> simpleNode, int id) {
         super(id);
         this.localPosition = new Vector3(simpleNode.localPosition);
         this.localRotation = new Quaternion(simpleNode.localRotation);

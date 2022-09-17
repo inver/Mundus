@@ -28,7 +28,6 @@ import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.kotcrab.vis.ui.widget.VisTextField
-import com.kotcrab.vis.ui.widget.color.ColorPicker
 import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter
 import com.mbrlabs.mundus.commons.assets.Asset
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset
@@ -41,6 +40,7 @@ import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.PreviewGenerator
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
+import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerField
 
 /**
  * Displays all properties of a material.
@@ -51,7 +51,6 @@ import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
  * @version 13-10-2016
  */
 class MaterialWidget(
-    colorPicker: ColorPicker,
     private val appUi: AppUi,
     private val assetSelectionDialog: AssetPickerDialog,
     private val projectManager: ProjectManager,
@@ -63,7 +62,7 @@ class MaterialWidget(
     private val matPickerListener: AssetPickerDialog.AssetPickerListener
 
     private val matNameLabel: VisLabel = VisLabel()
-    private val diffuseColorField: ColorPickerField = ColorPickerField(colorPicker, appUi)
+    val diffuseColorField: ColorPickerField = ColorPickerField()
     private val diffuseAssetField: AssetSelectionField = AssetSelectionField(assetSelectionDialog)
     private val shininessField = VisTextField()
 
@@ -141,7 +140,7 @@ class MaterialWidget(
                 material?.diffuseTexture = asset as? TextureAsset
                 applyMaterialToModelAssets()
                 applyMaterialToModelComponents()
-                projectManager.current.assetManager.dirty(material!!)
+                projectManager.current.getAssetManager().dirty(material!!)
             }
         }
 
@@ -151,7 +150,7 @@ class MaterialWidget(
                 material?.diffuseColor?.set(newColor)
                 applyMaterialToModelAssets()
                 applyMaterialToModelComponents()
-                projectManager.current.assetManager.dirty(material!!)
+                projectManager.current.getAssetManager().dirty(material!!)
             }
         }
 
@@ -163,7 +162,7 @@ class MaterialWidget(
                     material?.shininess = shininessField.text.toFloat()
                     applyMaterialToModelAssets()
                     applyMaterialToModelComponents()
-                    projectManager.current.assetManager.dirty(material!!)
+                    projectManager.current.getAssetManager().dirty(material!!)
                 }
             }
         })
@@ -172,7 +171,7 @@ class MaterialWidget(
 
     // TODO find better solution than iterating through all components
     private fun applyMaterialToModelComponents() {
-        val sceneGraph = projectManager.current.currScene.sceneGraph
+        val sceneGraph = projectManager.current.getCurrentScene().sceneGraph
         for (go in sceneGraph.gameObjects) {
             val mc = go.findComponentByType(Component.Type.MODEL)
             if (mc != null && mc is ModelComponent) {
@@ -183,7 +182,7 @@ class MaterialWidget(
 
     // TODO find better solution than iterating through all assets
     private fun applyMaterialToModelAssets() {
-        val assetManager = projectManager.current.assetManager
+        val assetManager = projectManager.current.getAssetManager()
         for (modelAsset in assetManager.assets) {
             modelAsset.applyDependencies()
         }

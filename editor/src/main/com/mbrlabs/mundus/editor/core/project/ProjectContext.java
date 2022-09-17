@@ -16,13 +16,20 @@
 
 package com.mbrlabs.mundus.editor.core.project;
 
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.utils.Disposable;
+import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.editor.assets.EditorAssetManager;
 import com.mbrlabs.mundus.editor.core.EditorScene;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -36,33 +43,33 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @Slf4j
 public class ProjectContext implements Disposable {
+    private final AtomicInteger idProvider;
 
     public ProjectSettings settings;
     public String path;
     public String name;
 
-    public Array<String> scenes;
-    public EditorScene currScene;
+    private final List<String> scenes = new ArrayList<>();
 
-    public EditorAssetManager assetManager;
+    private EditorAssetManager assetManager;
 
-    private GameObject selected;
-    private final AtomicInteger idProvider;
+    // Assets imported in editor and stored in <home dir>/.mundus
+    @Getter
+    private final Map<String, Asset> assetLibrary = new HashMap<>();
+    @Getter
+    private final Map<String, BaseShader> shaderLibrary = new HashMap<>();
 
+    private EditorScene currentScene;
+    private GameObject selectedGameObject;
     /**
      * set by kryo when project is loaded. do not use this
      */
     public String activeSceneName;
 
-    public ProjectContext(int idProvider) {
-        this(new AtomicInteger(idProvider));
-    }
-
-    public ProjectContext(AtomicInteger idProvider) {
-        scenes = new Array<>();
+    public ProjectContext(int startId) {
         settings = new ProjectSettings();
-        currScene = new EditorScene();
-        this.idProvider = idProvider;
+        currentScene = new EditorScene();
+        idProvider = new AtomicInteger(startId);
     }
 
     public int obtainID() {
@@ -81,11 +88,35 @@ public class ProjectContext implements Disposable {
         }
     }
 
-    public GameObject getSelected() {
-        return selected;
+    public GameObject getSelectedGameObject() {
+        return selectedGameObject;
     }
 
-    public void setSelected(GameObject selected) {
-        this.selected = selected;
+    public void setSelectedGameObject(GameObject selectedGameObject) {
+        this.selectedGameObject = selectedGameObject;
+    }
+
+    public List<String> getScenes() {
+        return scenes;
+    }
+
+    public EditorAssetManager getAssetManager() {
+        return assetManager;
+    }
+
+    public void setAssetManager(EditorAssetManager assetManager) {
+        this.assetManager = assetManager;
+    }
+
+    public EditorScene getCurrentScene() {
+        return currentScene;
+    }
+
+    public void setCurrentScene(EditorScene currentScene) {
+        this.currentScene = currentScene;
+    }
+
+    public Camera getCurrentCamera() {
+        return currentScene.getCurrentCamera();
     }
 }

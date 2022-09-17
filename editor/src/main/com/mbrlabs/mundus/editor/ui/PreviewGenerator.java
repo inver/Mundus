@@ -85,7 +85,7 @@ public class PreviewGenerator {
 
 
         var sunLight = new SunLight();
-        sunLight.position.set(new Vector3(-1, -1, -1));
+        sunLight.position.set(new Vector3(-10, -10, -10));
 
         var environment = new AppEnvironment();
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 1f, 1f, 1f, 1f));

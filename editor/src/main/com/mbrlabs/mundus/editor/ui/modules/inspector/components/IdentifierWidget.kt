@@ -52,24 +52,24 @@ class IdentifierWidget(private val projectManager: ProjectManager) : VisTable() 
 
         active.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                if (projectContext.selected == null) {
+                if (projectContext.selectedGameObject == null) {
                     return
                 }
-                projectContext.selected.active = active.isChecked
+                projectContext.selectedGameObject.isActive = active.isChecked
             }
         })
 
         name.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                if (projectContext.selected == null) return
-                projectContext.selected.name = name.text
+                if (projectContext.selectedGameObject == null) return
+                projectContext.selectedGameObject.name = name.text
             }
         })
 
     }
 
     fun setValues(go: GameObject) {
-        active.isChecked = go.active
+        active.isChecked = go.isActive
         name.text = go.name
     }
 

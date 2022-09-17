@@ -41,10 +41,10 @@ public class DockBarPresenter {
     private void reloadAssets(AssetsDock assetsDock) {
         assetsDock.getAssetsView().clearChildren();
         var projectContext = projectManager.getCurrent();
-        if (projectContext.assetManager == null) {
+        if (projectContext.getAssetManager() == null) {
             return;
         }
-        for (var asset : projectContext.assetManager.getAssets()) {
+        for (var asset : projectContext.getAssetManager().getAssets()) {
             var assetItem = new AssetItem(asset, previewGenerator);
             assetsDock.getAssetsView().addActor(assetItem);
             assetItem.addListener(new InputListener() {
@@ -75,7 +75,7 @@ public class DockBarPresenter {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (assetsDock.getSelected() != null && assetsDock.getSelected().getAsset() != null) {
-                    projectManager.getCurrent().assetManager.deleteAsset(assetsDock.getSelected().getAsset());
+                    projectManager.getCurrent().getAssetManager().deleteAsset(assetsDock.getSelected().getAsset());
                 }
             }
         };
@@ -93,16 +93,16 @@ public class DockBarPresenter {
 
                 try {
                     var context = projectManager.getCurrent();
-                    var sceneGraph = context.currScene.sceneGraph;
+                    var sceneGraph = context.getCurrentScene().getSceneGraph();
                     var goID = context.obtainID();
                     var name = asset.getType() + "_" + goID;
 
                     // create asset
-//                        var asset = context.assetManager.createModelAsset(it.file)
+//                        var asset = context.getAssetManager().createModelAsset(it.file)
 
 //                        asset.load()
 //                        asset.applyDependencies()
-                    GameObject go = projectManager.getCurrent().assetManager.convert(sceneGraph, goID, name, asset);
+                    GameObject go = projectManager.getCurrent().getAssetManager().convert(goID, name, asset);
 
 //                    var modelGO = GameObjectUtils.createModelGO(
 //                            sceneGraph, Shaders.modelShader, goID, name,
@@ -119,7 +119,7 @@ public class DockBarPresenter {
                     //todo
 //                        addGoToTree(null, terrainGO)
 
-//                        context.currScene..add(asset)
+//                        context.getCurrentScene()..add(asset)
                     projectManager.saveProject(context);
                     eventBus.post(new AssetImportEvent(asset));
                     eventBus.post(new SceneGraphChangedEvent());

@@ -103,7 +103,7 @@ class ImportTextureDialog(
                     try {
                         val texture = imageChooserField.file
                         if (texture != null && texture.exists() && isImage(texture)) {
-                            val assetManager = projectManager.current.assetManager
+                            val assetManager = projectManager.current.getAssetManager()
                             val asset = assetManager.createTextureAsset(texture)
                             eventBus.post(AssetImportEvent(asset))
                             close()

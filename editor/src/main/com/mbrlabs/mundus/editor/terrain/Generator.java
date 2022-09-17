@@ -23,6 +23,7 @@ import com.mbrlabs.mundus.commons.terrain.Terrain;
  * @author Marcus Brummer
  * @version 20-06-2016
  */
+@SuppressWarnings("unchecked")
 public abstract class Generator<T extends Generator<T>> {
 
     protected Terrain terrain;

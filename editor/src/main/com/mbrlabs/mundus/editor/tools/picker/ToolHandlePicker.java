@@ -17,12 +17,13 @@
 package com.mbrlabs.mundus.editor.tools.picker;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.mbrlabs.mundus.editor.core.EditorScene;
 import com.mbrlabs.mundus.editor.tools.ToolHandle;
 import com.mbrlabs.mundus.editor.utils.Log;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 /**
@@ -30,15 +31,14 @@ import org.springframework.stereotype.Component;
  * @version 07-03-2016
  */
 @Component
+@RequiredArgsConstructor
 public class ToolHandlePicker extends BasePicker {
 
-    public ToolHandlePicker() {
-        super();
-    }
+    private final ModelBatch batch;
 
     public ToolHandle pick(ToolHandle[] handles, EditorScene scene, int screenX, int screenY) {
         begin(scene.viewport);
-        renderPickableScene(handles, scene.batch, scene.cam);
+        renderPickableScene(handles, batch, scene.getCurrentCamera());
         end();
         Pixmap pm = getFrameBufferPixmap(scene.viewport);
 
@@ -56,7 +56,7 @@ public class ToolHandlePicker extends BasePicker {
         return null;
     }
 
-    private void renderPickableScene(ToolHandle[] handles, ModelBatch batch, PerspectiveCamera cam) {
+    private void renderPickableScene(ToolHandle[] handles, ModelBatch batch, Camera cam) {
         batch.begin(cam);
         for (ToolHandle handle : handles) {
             handle.renderPick(batch);

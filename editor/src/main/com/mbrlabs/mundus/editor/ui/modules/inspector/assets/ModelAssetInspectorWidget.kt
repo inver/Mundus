@@ -121,7 +121,6 @@ class ModelAssetInspectorWidget(
         for (g3dbMatID in modelAsset!!.defaultMaterials.keys) {
             val mat = modelAsset!!.defaultMaterials[g3dbMatID]
             val mw = MaterialWidget(
-                uiWidgetsHolder.colorPicker,
                 appUi,
                 assetSelectionDialog,
                 projectManager,
@@ -129,7 +128,7 @@ class ModelAssetInspectorWidget(
             )
             mw.matChangedListener = object : MaterialWidget.MaterialChangedListener {
                 override fun materialChanged(materialAsset: MaterialAsset) {
-                    val assetManager = projectManager.current.assetManager
+                    val assetManager = projectManager.current.getAssetManager()
                     modelAsset!!.defaultMaterials.put(g3dbMatID, materialAsset)
                     modelAsset!!.applyDependencies()
                     toolManager.modelPlacementTool.setModel(modelAsset)

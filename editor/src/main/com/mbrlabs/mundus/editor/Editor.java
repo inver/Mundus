@@ -1,14 +1,15 @@
 package com.mbrlabs.mundus.editor;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.kotcrab.vis.ui.widget.VisTable;
-import com.mbrlabs.mundus.commons.core.registry.Registry;
 import com.mbrlabs.mundus.editor.core.project.ProjectContext;
 import com.mbrlabs.mundus.editor.core.project.ProjectManager;
+import com.mbrlabs.mundus.editor.core.registry.Registry;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent;
 import com.mbrlabs.mundus.editor.events.SceneChangedEvent;
@@ -40,6 +41,8 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 
+import static com.mbrlabs.mundus.editor.core.ProjectConstants.HOME_DIR;
+
 @Component
 @RequiredArgsConstructor
 public class Editor implements ProjectChangedEvent.ProjectChangedListener, SceneChangedEvent.SceneChangedListener {
@@ -66,7 +69,7 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
     private DockBar dockBar;
 
     public void create() {
-        var homeDir = new File(Registry.HOME_DIR);
+        var homeDir = new File(HOME_DIR);
         if (!homeDir.exists()) {
             homeDir.mkdirs();
         }
@@ -92,7 +95,7 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
             throw new GdxRuntimeException("Couldn't open a project");
         }
 
-        compass = new Compass(context.currScene.cam);
+        compass = new Compass(context.getCurrentScene().getCurrentCamera());
 
         // change project; this will fire a ProjectChangedEvent
         projectManager.changeProject(context);
@@ -101,7 +104,6 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
 
     private void setupUI() {
         menuBar = new MundusMenuBar(registry, menuBarPresenter);
-//        greenSeparatorStyle = new Separator.SeparatorStyle(VisUI.getSkin().getDrawable("mundus-separator-green"), 1);
 
         var root = new VisTable();
         appUi.addActor(root);
@@ -153,27 +155,29 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
     }
 
     private void setupSceneWidget() {
-        var scene = projectManager.getCurrent().currScene;
-        var sg = scene.sceneGraph;
+        var scene = projectManager.getCurrent().getCurrentScene();
+        var sg = scene.getSceneGraph();
 
-        appUi.getSceneWidget().setCam(scene.cam);
-        appUi.getSceneWidget().setRenderer(cam -> {
-            if (scene.skybox != null) {
-                batch.begin(scene.cam);
-                batch.render(scene.skybox.getSkyboxInstance(), scene.environment, Shaders.INSTANCE.getSkyboxShader());
+        appUi.getSceneWidget().setCam(scene.getCurrentCamera());
+        appUi.getSceneWidget().setRenderer(camera -> {
+            if (scene.getSkybox() != null) {
+                batch.begin(scene.getCurrentCamera());
+                batch.render(scene.getSkybox().getSkyboxInstance(), scene.getEnvironment(), Shaders.INSTANCE.getSkyboxShader());
                 batch.end();
             }
 
             sg.update();
-            scene.render();
+            batch.begin(scene.getCurrentCamera());
+            scene.render(batch, Gdx.graphics.getDeltaTime());
+            batch.end();
 
             toolManager.render();
             compass.render(batch);
         });
 
-        compass.setWorldCam(scene.cam);
-        camController.setCamera(scene.cam);
-        appUi.getSceneWidget().setCam(scene.cam);
+        compass.setWorldCam(scene.getCurrentCamera());
+        camController.setCamera(scene.getCurrentCamera());
+        appUi.getSceneWidget().setCam(scene.getCurrentCamera());
         scene.viewport = appUi.getSceneWidget().getViewport();
     }
 
@@ -205,7 +209,7 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
     }
 
     private ProjectContext createDefaultProject() {
-        if (registry.getLastOpenedProject() == null || registry.getProjects().size() == 0) {
+        if (registry.getLastProject() == null || registry.getProjects().size() == 0) {
             var path = FilenameUtils.concat(FileUtils.getUserDirectoryPath(), "MundusProjects");
 
             return projectManager.createProject("Default Project", path);

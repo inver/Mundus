@@ -22,8 +22,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.kotcrab.vis.ui.widget.Menu
 import com.kotcrab.vis.ui.widget.MenuItem
 import com.kotcrab.vis.ui.widget.PopupMenu
-import com.mbrlabs.mundus.commons.core.registry.ProjectRef
-import com.mbrlabs.mundus.commons.core.registry.Registry
+import com.mbrlabs.mundus.editor.core.registry.ProjectRef
+import com.mbrlabs.mundus.editor.core.registry.Registry
 
 /**
  * @author Marcus Brummer

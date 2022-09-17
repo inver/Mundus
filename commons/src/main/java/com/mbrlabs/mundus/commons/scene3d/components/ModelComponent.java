@@ -17,6 +17,7 @@
 package com.mbrlabs.mundus.commons.scene3d.components;
 
 import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -24,6 +25,7 @@ import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset;
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
+import com.mbrlabs.mundus.commons.env.AppEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 
 import java.util.Objects;
@@ -91,9 +93,9 @@ public class ModelComponent extends AbstractComponent implements AssetUsage {
     }
 
     @Override
-    public void render(float delta) {
+    public void render(ModelBatch batch, AppEnvironment environment, float delta) {
         modelInstance.transform.set(gameObject.getTransform());
-        gameObject.sceneGraph.scene.batch.render(modelInstance, gameObject.sceneGraph.scene.environment, shader);
+        batch.render(modelInstance, environment, shader);
     }
 
     @Override

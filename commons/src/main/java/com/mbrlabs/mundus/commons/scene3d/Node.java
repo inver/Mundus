@@ -19,7 +19,8 @@ package com.mbrlabs.mundus.commons.scene3d;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Array;
+
+import java.util.List;
 
 /**
  * Represents a node in a scene graph.
@@ -51,7 +52,7 @@ public interface Node<T extends Node<T>> {
      *
      * @return all children of this node
      */
-    Array<T> getChildren();
+    List<T> getChildren();
 
     /**
      * Tests if this game object is a child of the other one.

@@ -189,7 +189,7 @@ public abstract class TerrainBrush extends Tool {
 
         sm.updateTexture();
         splatmapModified = true;
-        getProjectManager().getCurrent().assetManager.dirty(terrainAsset);
+        getProjectManager().getCurrent().getAssetManager().dirty(terrainAsset);
     }
 
     private void flatten() {
@@ -227,7 +227,7 @@ public abstract class TerrainBrush extends Tool {
 
         terrain.update();
         terrainHeightModified = true;
-        getProjectManager().getCurrent().assetManager.dirty(terrainAsset);
+        getProjectManager().getCurrent().getAssetManager().dirty(terrainAsset);
     }
 
     private void raiseLower(BrushAction action) {
@@ -250,7 +250,7 @@ public abstract class TerrainBrush extends Tool {
 
         terrain.update();
         terrainHeightModified = true;
-        getProjectManager().getCurrent().assetManager.dirty(terrainAsset);
+        getProjectManager().getCurrent().getAssetManager().dirty(terrainAsset);
     }
 
     /**
@@ -423,7 +423,7 @@ public abstract class TerrainBrush extends Tool {
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
         if (terrainAsset != null) {
-            Ray ray = getProjectManager().getCurrent().currScene.viewport.getPickRay(screenX, screenY);
+            Ray ray = getProjectManager().getCurrent().getCurrentScene().viewport.getPickRay(screenX, screenY);
             terrainAsset.getTerrain().getRayIntersection(brushPos, ray);
         }
 

@@ -99,7 +99,7 @@ class StatusBar(
 
     override fun act(delta: Float) {
         setFps(Gdx.graphics.framesPerSecond)
-        setCamPos(projectManager.current.currScene.cam.position)
+        setCamPos(projectManager.current.currentCamera.position)
         super.act(delta)
     }
 

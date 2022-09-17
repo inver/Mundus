@@ -29,7 +29,9 @@ public class FogConverter {
      * Converts {@link FogDTO} to {@link Fog}.
      */
     public static Fog convert(FogDTO dto) {
-        if (dto == null) return null;
+        if (dto == null) {
+            return null;
+        }
         Fog fog = new Fog();
         fog.density = dto.getDensity();
         fog.gradient = dto.getGradient();
@@ -42,7 +44,10 @@ public class FogConverter {
      * Converts {@link Fog} to {@link FogDTO}.
      */
     public static FogDTO convert(Fog fog) {
-        if (fog == null) return null;
+        if (fog == null) {
+            return null;
+        }
+
         FogDTO fogDescriptor = new FogDTO();
         fogDescriptor.setDensity(fog.density);
         fogDescriptor.setGradient(fog.gradient);

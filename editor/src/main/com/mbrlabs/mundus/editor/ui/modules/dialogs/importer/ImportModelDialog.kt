@@ -46,6 +46,7 @@ import com.mbrlabs.mundus.commons.core.ModelFiles
 import com.mbrlabs.mundus.commons.loader.ModelImporter
 import com.mbrlabs.mundus.editor.assets.MetaSaver
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
+import com.mbrlabs.mundus.editor.core.registry.Registry
 import com.mbrlabs.mundus.editor.events.AssetImportEvent
 import com.mbrlabs.mundus.editor.events.EventBus
 import com.mbrlabs.mundus.editor.ui.AppUi
@@ -71,7 +72,8 @@ class ImportModelDialog(
     private val modelImporter: ModelImporter,
     private val projectManager: ProjectManager,
     private val eventBus: EventBus,
-    private val fileChooserFieldPresenter: FileChooserFieldPresenter
+    private val fileChooserFieldPresenter: FileChooserFieldPresenter,
+    private val registry: Registry
 ) : BaseDialog("Import Mesh"), Disposable {
 
     companion object {
@@ -196,7 +198,7 @@ class ImportModelDialog(
         private fun importModel(): ModelAsset {
 
             // create model asset
-            val assetManager = projectManager.current.assetManager
+            val assetManager = projectManager.current.getAssetManager()
             val modelAsset = assetManager.createModelAsset(importedModel!!)
 
             // create materials
@@ -217,7 +219,8 @@ class ImportModelDialog(
         }
 
         private fun loadAndShowPreview(model: FileHandle) {
-            importedModel = modelImporter.importToTempFolder(model)
+            val tmpFolder = registry.createTempFolder()
+            importedModel = modelImporter.importToTempFolder(tmpFolder, model)
 
             if (importedModel == null) {
                 if (isCollada(model) || isFBX(model)) {

@@ -1,17 +1,15 @@
 package com.mbrlabs.mundus.editor.exporter;
 
 import com.badlogic.gdx.utils.JsonWriter;
-import com.mbrlabs.mundus.commons.dto.GameObjectDTO;
-import com.mbrlabs.mundus.commons.dto.SceneDTO;
-import com.mbrlabs.mundus.commons.dto.TerrainComponentDTO;
-import com.mbrlabs.mundus.editor.core.kryo.KryoManager;
+import com.mbrlabs.mundus.commons.dto.GameObjectDto;
+import com.mbrlabs.mundus.commons.dto.SceneDto;
+import com.mbrlabs.mundus.commons.dto.TerrainComponentDto;
 import com.mbrlabs.mundus.editor.core.project.ProjectContext;
-import com.mbrlabs.mundus.editor.history.CommandHistory;
-import com.mbrlabs.mundus.editor.history.HistoryTest;
+import com.mbrlabs.mundus.editor.core.project.ProjectStorage;
+import com.mbrlabs.mundus.editor.core.scene.SceneStorage;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.lwjgl.system.CallbackI;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
@@ -28,10 +26,11 @@ public class ExporterTest {
 
     @Before
     public void setUp() {
-        KryoManager manager = mock(KryoManager.class);
+        ProjectStorage manager = mock(ProjectStorage.class);
         ProjectContext context = mock(ProjectContext.class);
+        SceneStorage sceneStorage = mock(SceneStorage.class);
 
-        exporter = new Exporter(manager, context);
+        exporter = new Exporter(manager, context, sceneStorage);
     }
 
     @Test
@@ -39,7 +38,7 @@ public class ExporterTest {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         OutputStreamWriter writer = new OutputStreamWriter(baos);
 
-        SceneDTO scene = new SceneDTO();
+        SceneDto scene = new SceneDto();
         scene.setName("Scene 1");
         exporter.exportScene(scene, writer, JsonWriter.OutputType.json);
 
@@ -52,8 +51,8 @@ public class ExporterTest {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         OutputStreamWriter writer = new OutputStreamWriter(baos);
 
-        GameObjectDTO terrain = buildTerrain("Terrain 1");
-        SceneDTO scene = new SceneDTO();
+        GameObjectDto terrain = buildTerrain("Terrain 1");
+        SceneDto scene = new SceneDto();
         scene.setName("Scene 1");
         scene.getGameObjects().add(terrain);
 
@@ -63,11 +62,11 @@ public class ExporterTest {
         assertEquals("{\"id\":0,\"name\":\"Scene 1\",\"gos\":[{\"i\":0,\"n\":\"Terrain 1\",\"a\":false,\"t\":[0,0,0,0,0,0,0,0,0,0],\"g\":[\"grass\"],\"ct\":{\"i\":null}}]}", result);
     }
 
-    private GameObjectDTO buildTerrain(String name) {
-        GameObjectDTO terrain = new GameObjectDTO();
+    private GameObjectDto buildTerrain(String name) {
+        GameObjectDto terrain = new GameObjectDto();
         terrain.setName(name);
 
-        TerrainComponentDTO terrainComponent = new TerrainComponentDTO();
+        TerrainComponentDto terrainComponent = new TerrainComponentDto();
         terrain.setTerrainComponent(terrainComponent);
 
         List<String> tags = new ArrayList<>();

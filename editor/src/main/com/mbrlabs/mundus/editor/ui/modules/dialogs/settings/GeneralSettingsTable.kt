@@ -18,7 +18,7 @@ package com.mbrlabs.mundus.editor.ui.modules.dialogs.settings
 
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisSelectBox
-import com.mbrlabs.mundus.commons.core.registry.KeyboardLayout
+import com.mbrlabs.mundus.editor.core.registry.KeyboardLayout
 import com.mbrlabs.mundus.editor.ui.UiConstants
 import com.mbrlabs.mundus.editor.ui.widgets.FileChooserField
 

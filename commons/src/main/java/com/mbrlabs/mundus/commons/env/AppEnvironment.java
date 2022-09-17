@@ -28,12 +28,7 @@ public class AppEnvironment extends Environment {
     private Fog fog;
     private BaseLight ambientLight;
 
-    public AppEnvironment() {
-        super();
-        ambientLight = new BaseLight();
-        fog = null;
-    }
-
+    //todo refactor this methods to operate with BaseLight
     public AppEnvironment add(SunLight light) {
         var sunLights = (SunLightsAttribute) get(SunLightsAttribute.Type);
         if (sunLights == null) {

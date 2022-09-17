@@ -19,9 +19,7 @@ package com.mbrlabs.mundus.editor.core.project;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
-import com.mbrlabs.mundus.commons.Scene;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.assets.AssetManager;
 import com.mbrlabs.mundus.commons.assets.AssetType;
@@ -34,34 +32,36 @@ import com.mbrlabs.mundus.commons.assets.model.ModelService;
 import com.mbrlabs.mundus.commons.assets.pixmap.PixmapTextureService;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainService;
 import com.mbrlabs.mundus.commons.assets.texture.TextureService;
-import com.mbrlabs.mundus.commons.core.registry.ProjectRef;
-import com.mbrlabs.mundus.commons.core.registry.Registry;
-import com.mbrlabs.mundus.commons.dto.SceneDTO;
-import com.mbrlabs.mundus.commons.env.Fog;
+import com.mbrlabs.mundus.commons.importer.SceneConverter;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
-import com.mbrlabs.mundus.commons.scene3d.SceneGraph;
 import com.mbrlabs.mundus.commons.scene3d.components.Component;
 import com.mbrlabs.mundus.commons.scene3d.components.ModelComponent;
 import com.mbrlabs.mundus.commons.scene3d.components.TerrainComponent;
 import com.mbrlabs.mundus.editor.Main;
 import com.mbrlabs.mundus.editor.assets.EditorAssetManager;
 import com.mbrlabs.mundus.editor.core.EditorScene;
-import com.mbrlabs.mundus.editor.core.converter.SceneConverter;
-import com.mbrlabs.mundus.editor.core.kryo.KryoManager;
-import com.mbrlabs.mundus.editor.core.scene.SceneManager;
+import com.mbrlabs.mundus.editor.core.assets.AssetsStorage;
+import com.mbrlabs.mundus.editor.core.registry.ProjectRef;
+import com.mbrlabs.mundus.editor.core.registry.Registry;
+import com.mbrlabs.mundus.editor.core.scene.SceneStorage;
+import com.mbrlabs.mundus.editor.core.shader.ShaderStorage;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.LogEvent;
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent;
 import com.mbrlabs.mundus.editor.events.SceneChangedEvent;
 import com.mbrlabs.mundus.editor.scene3d.components.PickableComponent;
-import com.mbrlabs.mundus.editor.utils.Log;
 import com.mbrlabs.mundus.editor.utils.SkyboxBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.mbrlabs.mundus.editor.core.ProjectConstants.PROJECT_ASSETS_DIR;
+import static com.mbrlabs.mundus.editor.core.ProjectConstants.PROJECT_SCENES_DIR;
 
 /**
  * Manages Mundus projects and scenes.
@@ -73,20 +73,11 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class ProjectManager implements Disposable {
-
-    private static final String TAG = ProjectManager.class.getSimpleName();
-
-    private static final String DEFAULT_SCENE_NAME = "Main Scene";
-    public static final String PROJECT_ASSETS_DIR = "assets/";
-    public static final String PROJECT_SCENES_DIR = "scenes/";
-    public static final String PROJECT_SCENE_EXTENSION = "mundus";
-    public static final String PROJECT_EXTENSION = "pro";
-
     private ProjectContext current = new ProjectContext(-1);
 
     private final Registry registry;
-    private final KryoManager kryoManager;
-    private final ModelBatch modelBatch;
+    private final ProjectStorage projectStorage;
+    private ModelBatch modelBatch;
     private final MetaService metaService;
     private final TextureService textureService;
     private final TerrainService terrainService;
@@ -95,13 +86,23 @@ public class ProjectManager implements Disposable {
     private final ModelService modelService;
 
     private final EventBus eventBus;
+    private final SceneStorage sceneStorage;
+    private final ShaderStorage shaderStorage;
+    private final AssetsStorage assetsStorage;
+
+    // test interop.
+    @Autowired(required = false)
+    public void setModelBatch(ModelBatch modelBatch) {
+        this.modelBatch = modelBatch;
+    }
 
     public ProjectContext getCurrent() {
         return current;
     }
 
+
     public GameObject getCurrentSelection() {
-        return getCurrent().getSelected();
+        return getCurrent().getSelectedGameObject();
     }
 
     private EditorAssetManager createAssetManager(String rootPath) {
@@ -130,36 +131,31 @@ public class ProjectManager implements Disposable {
      * @return new project context
      */
     public ProjectContext createProject(String name, String folder) {
-        ProjectRef ref = registry.createProjectRef(name, folder);
-        String path = ref.getPath();
+        var ref = registry.createProjectRef(name, folder);
+        var path = ref.getPath();
         new File(path).mkdirs();
         new File(path, PROJECT_ASSETS_DIR).mkdirs();
         new File(path, PROJECT_SCENES_DIR).mkdirs();
 
-        // create currentProject current
-        ProjectContext newProjectContext = new ProjectContext(-1);
-        newProjectContext.path = path;
-        newProjectContext.name = ref.getName();
-        newProjectContext.assetManager = createAssetManager(path + "/" + ProjectManager.PROJECT_ASSETS_DIR);
+        var ctx = new ProjectContext(-1);
+        ctx.path = path;
+        ctx.name = ref.getName();
 
-        // create default scene & save .mundus
-        EditorScene scene = new EditorScene();
-        scene.setName(DEFAULT_SCENE_NAME);
-        scene.skybox = SkyboxBuilder.createDefaultSkybox();
-        scene.environment.setFog(new Fog());
-        scene.setId(newProjectContext.obtainID());
-        SceneManager.saveScene(newProjectContext, scene);
-        scene.sceneGraph.scene.batch = modelBatch;
+
+        //todo
+        ctx.setAssetManager(createAssetManager(path + "/" + PROJECT_ASSETS_DIR));
+
+        var scene = sceneStorage.createDefault(ctx.path, ctx.obtainID());
 
         // save .pro file
-        newProjectContext.scenes.add(scene.getName());
-        newProjectContext.currScene = scene;
-        saveProject(newProjectContext);
+        ctx.getScenes().add(scene.getName());
+        ctx.setCurrentScene(scene);
+        saveProject(ctx);
 
         // create standard assets
-        newProjectContext.assetManager.loadStandardAssets();
+        ctx.getAssetManager().loadStandardAssets();
 
-        return newProjectContext;
+        return ctx;
     }
 
     /**
@@ -186,7 +182,7 @@ public class ProjectManager implements Disposable {
             ProjectContext context = loadProject(ref);
             ref.setName(context.name);
             registry.getProjects().add(ref);
-            kryoManager.saveRegistry(registry);
+            projectStorage.saveRegistry(registry);
             return context;
         } catch (Exception e) {
             throw new ProjectOpenException(e.getMessage());
@@ -204,12 +200,20 @@ public class ProjectManager implements Disposable {
      */
     public ProjectContext loadProject(ProjectRef ref)
             throws FileNotFoundException, MetaFileParseException, AssetNotFoundException {
-        ProjectContext context = kryoManager.loadProjectContext(ref);
-        context.path = ref.getPath();
+        var context = projectStorage.loadProjectContext(ref);
+        if (context == null) {
+            // project doesn't exist, but ref is exist - create default project
+            return createProject(ref.getName(), ref.getPath());
+        }
+
+        context.getShaderLibrary().putAll(shaderStorage.loadDefault());
+        context.getAssetLibrary().putAll(assetsStorage.loadDefault());
+
+        context.setCurrentScene(loadScene(context, context.activeSceneName));
 
         // load assets
-        context.assetManager = createAssetManager(ref.getPath() + "/" + ProjectManager.PROJECT_ASSETS_DIR);
-        context.assetManager.loadAssets(new AssetManager.AssetLoadingListener() {
+        context.setAssetManager(createAssetManager(ref.getPath() + "/" + PROJECT_ASSETS_DIR));
+        context.getAssetManager().loadAssets(new AssetManager.AssetLoadingListener() {
             @Override
             public void onLoad(Asset asset, int progress, int assetCount) {
                 log.debug("Loaded {} asset ({}/{})", asset.getMeta().getType(), progress, assetCount);
@@ -221,7 +225,6 @@ public class ProjectManager implements Disposable {
             }
         }, false);
 
-        context.currScene = loadScene(context, context.activeSceneName);
 
         return context;
     }
@@ -233,7 +236,7 @@ public class ProjectManager implements Disposable {
      */
     public void saveProject(ProjectContext projectContext) {
         // save modified assets
-        var assetManager = projectContext.assetManager;
+        var assetManager = projectContext.getAssetManager();
         assetManager.getDirtyAssets().forEach(asset -> {
             try {
                 log.debug("Saving dirty asset: {}", asset);
@@ -245,11 +248,11 @@ public class ProjectManager implements Disposable {
         assetManager.getDirtyAssets().clear();
 
         // save current in .pro file
-        kryoManager.saveProjectContext(projectContext);
+        projectStorage.saveProjectContext(projectContext);
         // save scene in .mundus file
-        SceneManager.saveScene(projectContext, projectContext.currScene);
+        sceneStorage.saveScene(projectContext.path, projectContext.getCurrentScene());
 
-        Log.debug(TAG, "Saving currentProject {}", projectContext.name + " [" + projectContext.path + "]");
+        log.debug("Saving currentProject {}", projectContext.name + " [" + projectContext.path + "]");
         eventBus.post(new LogEvent("Saving currentProject " + projectContext.name + " [" + projectContext.path + "]"));
     }
 
@@ -261,7 +264,7 @@ public class ProjectManager implements Disposable {
      * @return project context of last project
      */
     public ProjectContext loadLastProject() {
-        ProjectRef lastOpenedProject = registry.getLastOpenedProject();
+        ProjectRef lastOpenedProject = registry.getLastProject();
         if (lastOpenedProject != null) {
             try {
                 return loadProject(lastOpenedProject);
@@ -289,10 +292,10 @@ public class ProjectManager implements Disposable {
         current = context;
         // currentProject.copyFrom(context);
         registry.setLastProject(new ProjectRef());
-        registry.getLastOpenedProject().setName(context.name);
-        registry.getLastOpenedProject().setPath(context.path);
+        registry.getLastProject().setName(context.name);
+        registry.getLastProject().setPath(context.path);
 
-        kryoManager.saveRegistry(registry);
+        projectStorage.saveRegistry(registry);
 
         Gdx.graphics.setTitle(constructWindowTitle());
         eventBus.post(new ProjectChangedEvent(context));
@@ -305,17 +308,17 @@ public class ProjectManager implements Disposable {
      * @param name    scene name
      * @return newly created scene
      */
-    public Scene createScene(ProjectContext project, String name) {
-        Scene scene = new Scene();
-        long id = project.obtainID();
-        scene.setId(id);
-        scene.setName(name);
-        scene.skybox = SkyboxBuilder.createDefaultSkybox();
-        project.scenes.add(scene.getName());
-        SceneManager.saveScene(project, scene);
-
-        return scene;
-    }
+//    public Scene createScene(ProjectContext project, String name) {
+//        Scene scene = new Scene();
+//        long id = project.obtainID();
+//        scene.setId(id);
+//        scene.setName(name);
+//        scene.skybox = SkyboxBuilder.createDefaultSkybox();
+//        project.getScenes().add(scene.getName());
+//        sceneStorage.saveScene(project.path, scene);
+//
+//        return scene;
+//    }
 
     /**
      * Loads a scene.
@@ -328,27 +331,29 @@ public class ProjectManager implements Disposable {
      * @throws FileNotFoundException if scene file not found
      */
     public EditorScene loadScene(ProjectContext context, String sceneName) throws FileNotFoundException {
-        SceneDTO sceneDTO = SceneManager.loadScene(context, sceneName);
+        var dto = sceneStorage.loadScene(context.path, sceneName);
 
-        EditorScene scene = SceneConverter.convert(sceneDTO, context.assetManager.getAssetIndex());
-        scene.skybox = SkyboxBuilder.createDefaultSkybox();
-        scene.batch = modelBatch;
+        var scene = new EditorScene();
 
-        SceneGraph sceneGraph = scene.sceneGraph;
+        //todo preload assets to cache
+        SceneConverter.fillScene(scene, dto, context.getAssetLibrary(), context.getShaderLibrary());
+        scene.setSkybox(SkyboxBuilder.createDefaultSkybox());
+
+        var sceneGraph = scene.getSceneGraph();
         for (GameObject go : sceneGraph.getGameObjects()) {
             initGameObject(context, go);
         }
 
         // create TerrainGroup for active scene
-        Array<Component> terrainComponents = new Array<>();
+        List<Component> terrainComponents = new ArrayList<>();
         for (GameObject go : sceneGraph.getGameObjects()) {
             go.findComponentsByType(terrainComponents, Component.Type.TERRAIN, true);
         }
-        for (Component c : terrainComponents) {
-            if (c instanceof TerrainComponent) {
-                scene.terrains.add(((TerrainComponent) c).getTerrain());
-            }
-        }
+//        for (Component c : terrainComponents) {
+//            if (c instanceof TerrainComponent) {
+//                scene.terrains.add(((TerrainComponent) c).getTerrain());
+//            }
+//        }
 
         return scene;
     }
@@ -362,14 +367,13 @@ public class ProjectManager implements Disposable {
     public void changeScene(ProjectContext projectContext, String sceneName) {
         try {
             EditorScene newScene = loadScene(projectContext, sceneName);
-            projectContext.currScene.dispose();
-            projectContext.currScene = newScene;
+            projectContext.getCurrentScene().dispose();
+            projectContext.setCurrentScene(newScene);
 
             Gdx.graphics.setTitle(constructWindowTitle());
             eventBus.post(new SceneChangedEvent());
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            Log.error(TAG, e.getMessage());
+            log.error("ERROR, e");
         }
     }
 
@@ -383,7 +387,7 @@ public class ProjectManager implements Disposable {
     }
 
     private void initComponents(ProjectContext context, GameObject go) {
-        List<Asset> models = context.assetManager.getAssetsByType(AssetType.MODEL);
+        List<Asset> models = context.getAssetManager().getAssetsByType(AssetType.MODEL);
         var iterator = go.getComponents().iterator();
         while (iterator.hasNext()) {
             var c = iterator.next();
@@ -412,13 +416,13 @@ public class ProjectManager implements Disposable {
 
             // encode id for picking
             if (c instanceof PickableComponent) {
-                ((PickableComponent) c).encodeRaypickColorId();
+                ((PickableComponent) c).encodeRayPickColorId();
             }
         }
     }
 
     private String constructWindowTitle() {
-        return current.name + " - " + current.currScene.getName() + " [" + current.path + "]"
+        return current.name + " - " + current.getCurrentScene().getName() + " [" + current.path + "]"
                 + " - " + Main.TITLE;
     }
 

@@ -7,7 +7,6 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.UBJsonReader;
 import com.mbrlabs.mundus.commons.core.AppModelLoader;
 import com.mbrlabs.mundus.commons.core.ModelFiles;
-import com.mbrlabs.mundus.commons.core.registry.Registry;
 import com.mbrlabs.mundus.commons.loader.ac3d.Ac3dModelLoader;
 import com.mbrlabs.mundus.commons.loader.ac3d.Ac3dParser;
 import com.mbrlabs.mundus.commons.loader.g3d.MG3dModelLoader;
@@ -24,27 +23,24 @@ import java.util.Map;
 public class ModelImporter {
 
     private final Map<String, AppModelLoader> loaders = new HashMap<>();
-    private final Registry registry;
 
-    public ModelImporter(Registry registry) {
-        this.registry = registry;
+    public ModelImporter() {
         loaders.put(FileFormatUtils.FORMAT_3D_AC3D, new Ac3dModelLoader(new Ac3dParser()));
         loaders.put(FileFormatUtils.FORMAT_3D_WAVEFONT, new ObjModelLoader());
         loaders.put(FileFormatUtils.FORMAT_3D_G3DB, new MG3dModelLoader(new UBJsonReader()));
         loaders.put(FileFormatUtils.FORMAT_3D_GLTF, new GltfLoaderWrapper(new Json()));
     }
 
-    public ModelFiles importToTempFolder(FileHandle file) {
+    public ModelFiles importToTempFolder(FileHandle tempFolder, FileHandle file) {
         if (file == null || !file.exists()) {
             log.warn("Try to import <null> file");
             return null;
         }
 
         var modelFile = loaders.get(FileFormatUtils.getFileExtension(file)).getFileWithDependencies(file);
-        var tempModelCache = registry.createTempFolder();
-        modelFile.copyTo(tempModelCache);
+        modelFile.copyTo(tempFolder);
 
-        var rawModelFile = Gdx.files.absolute(FilenameUtils.concat(tempModelCache.path(), modelFile.name()));
+        var rawModelFile = Gdx.files.absolute(FilenameUtils.concat(tempFolder.path(), modelFile.name()));
         if (!rawModelFile.exists()) {
             return null;
         }

@@ -94,7 +94,7 @@ public class PickerShader extends BaseShader {
     public void render(Renderable renderable) {
         set(UNIFORM_TRANS_MATRIX, renderable.worldTransform);
 
-        PickerIDAttribute goID = (PickerIDAttribute) renderable.material.get(PickerIDAttribute.Type);
+        PickerIDAttribute goID = (PickerIDAttribute) renderable.material.get(PickerIDAttribute.TYPE);
         if (goID != null) {
             set(UNIFORM_COLOR, vec3.set(goID.r, goID.g, goID.b));
         }

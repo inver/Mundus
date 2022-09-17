@@ -26,11 +26,13 @@ import com.badlogic.gdx.graphics.g3d.attributes.CubemapAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Disposable;
+import lombok.NoArgsConstructor;
 
 /**
  * @author Marcus Brummer
  * @version 08-01-2016
  */
+@NoArgsConstructor //for test needs
 public class Skybox implements Disposable {
 
     protected ShaderProgram shader;

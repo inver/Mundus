@@ -48,7 +48,7 @@ public class ToolbarPresenter {
                         new InputDialogAdapter() {
                             @Override
                             public void finished(String input) {
-                                var assetManager = projectManager.getCurrent().assetManager;
+                                var assetManager = projectManager.getCurrent().getAssetManager();
                                 try {
                                     var material = assetManager.createMaterialAsset(input);
                                     eventBus.post(new AssetImportEvent(material));

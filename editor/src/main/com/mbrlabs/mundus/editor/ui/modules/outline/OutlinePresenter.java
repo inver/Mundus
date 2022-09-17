@@ -58,7 +58,7 @@ public class OutlinePresenter {
                 var pos = new Vector3();
                 go.getTransform().getTranslation(pos);
 
-                var cam = projectManager.getCurrent().currScene.cam;
+                var cam = projectManager.getCurrent().getCurrentScene().getCurrentCamera();
                 // just lerp in the direction of the object if certain distance away
                 if (pos.dst(cam.position) > 100) {
                     cam.position.lerp(pos.cpy().add(0f, 40f, 0f), 0.5f);
@@ -98,7 +98,7 @@ public class OutlinePresenter {
                 var selection = outline.getTree().getSelection();
                 if (selection != null && selection.size() > 0) {
                     var go = selection.first().getValue();
-                    projectManager.getCurrent().setSelected(go);
+                    projectManager.getCurrent().setSelectedGameObject(go);
                     toolManager.translateTool.gameObjectSelected(go);
 
                     eventBus.post(new GameObjectSelectedEvent(go));
@@ -112,12 +112,12 @@ public class OutlinePresenter {
         return new OutlineDragAndDrop.DropListener() {
             @Override
             public void movedToRoot(GameObject obj) {
-                projectManager.getCurrent().currScene.sceneGraph.addGameObject(obj);
+                projectManager.getCurrent().getCurrentScene().getSceneGraph().addGameObject(obj);
             }
 
             @Override
             public void updateTree() {
-                outline.buildTree(projectManager.getCurrent().currScene.sceneGraph);
+                outline.buildTree(projectManager.getCurrent().getCurrentScene());
             }
         };
     }

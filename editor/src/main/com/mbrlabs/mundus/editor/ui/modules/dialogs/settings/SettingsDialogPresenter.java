@@ -3,9 +3,9 @@ package com.mbrlabs.mundus.editor.ui.modules.dialogs.settings;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.mbrlabs.mundus.commons.core.registry.Registry;
-import com.mbrlabs.mundus.editor.core.kryo.KryoManager;
 import com.mbrlabs.mundus.editor.core.project.ProjectManager;
+import com.mbrlabs.mundus.editor.core.project.ProjectStorage;
+import com.mbrlabs.mundus.editor.core.registry.Registry;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent;
 import com.mbrlabs.mundus.editor.events.SettingsChangedEvent;
@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 public class SettingsDialogPresenter {
     private final Registry registry;
     private final FileChooserFieldPresenter fileChooserFieldPresenter;
-    private final KryoManager kryoManager;
+    private final ProjectStorage projectStorage;
     private final EventBus eventBus;
     private final Toaster toaster;
     private final ProjectManager projectManager;
@@ -37,7 +37,7 @@ public class SettingsDialogPresenter {
         table.getFbxBinary().setText(registry.getSettings().getFbxConvBinary());
         table.setSaveListener(() -> {
             registry.getSettings().setFbxConvBinary(table.getFbxBinary().getPath());
-            kryoManager.saveRegistry(registry);
+            projectStorage.saveRegistry(registry);
             eventBus.post(new SettingsChangedEvent(registry.getSettings()));
             toaster.success("Settings saved");
         });
@@ -69,7 +69,7 @@ public class SettingsDialogPresenter {
             exportSettings.jsonType = table.getJsonType().getSelected();
             exportSettings.outputFolder = new FileHandle(table.getFileChooserField().getPath());
 
-            kryoManager.saveProjectContext(projectManager.getCurrent());
+            projectStorage.saveProjectContext(projectManager.getCurrent());
             toaster.success("Settings saved");
         });
 

@@ -16,19 +16,16 @@
 
 package com.mbrlabs.mundus.commons;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.utils.Disposable;
-import com.mbrlabs.mundus.commons.assets.material.MaterialAsset;
-import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset;
-import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
+import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.env.AppEnvironment;
-import com.mbrlabs.mundus.commons.env.lights.DirectionalLight;
 import com.mbrlabs.mundus.commons.scene3d.SceneGraph;
 import com.mbrlabs.mundus.commons.skybox.Skybox;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,53 +36,38 @@ import java.util.List;
  */
 public class Scene implements Disposable {
 
-    private String name;
     private long id;
+    private String name;
 
-    public SceneGraph sceneGraph;
-    public AppEnvironment environment;
-    public Skybox skybox;
+    @Setter
+    private SceneGraph sceneGraph = new SceneGraph();
 
     @Getter
-    private final List<MaterialAsset> materials = new ArrayList<>();
+    private final AppEnvironment environment = new AppEnvironment();
+    //todo move skybox to environment
+    @Setter
+    private Skybox skybox;
     @Getter
-    private final List<TextureAsset> textures = new ArrayList<>();
+    private final List<Asset> assets = new ArrayList<>();
+    @Getter
+    private final List<Camera> cameras = new ArrayList<>();
+    @Getter
+    private final List<BaseShader> shaders = new ArrayList<>();
+//    @Getter
+//    private final List<BaseLight> lights = new ArrayList<>();
+//    @Getter
+//    private final List<MaterialAsset> materials = new ArrayList<>();
+//    @Getter
+//    private final List<TextureAsset> textures = new ArrayList<>();
+//
+//    @Deprecated // TODO not here
+//    public Array<TerrainAsset> terrains;
 
-    @Deprecated // TODO not here
-    public Array<TerrainAsset> terrains;
+    //    public PerspectiveCamera cam;
+//    public ModelBatch batch;
 
-    public PerspectiveCamera cam;
-    public ModelBatch batch;
-
-    public Scene() {
-        environment = new AppEnvironment();
-        terrains = new Array<>();
-
-        cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        cam.position.set(0, 1, -3);
-        cam.lookAt(0, 1, -1);
-        cam.near = 0.2f;
-        cam.far = 10000;
-
-        var dirLight = new DirectionalLight();
-        dirLight.color.set(1, 1, 1, 1);
-        dirLight.intensity = 1f;
-        dirLight.direction.set(0, -1f, 0);
-        dirLight.direction.nor();
-        environment.add(dirLight);
-        environment.getAmbientLight().intensity = 0.3f;
-
-        sceneGraph = new SceneGraph(this);
-    }
-
-    public void render() {
-        render(Gdx.graphics.getDeltaTime());
-    }
-
-    public void render(float delta) {
-        batch.begin(cam);
-        sceneGraph.render(delta);
-        batch.end();
+    public void render(ModelBatch batch, float delta) {
+        sceneGraph.render(batch, environment, delta);
     }
 
     public String getName() {
@@ -104,12 +86,12 @@ public class Scene implements Disposable {
         this.id = id;
     }
 
-    public void addMaterial(MaterialAsset asset) {
-        materials.add(asset);
+    public SceneGraph getSceneGraph() {
+        return sceneGraph;
     }
 
-    public void addTexture(TextureAsset asset) {
-        textures.add(asset);
+    public Skybox getSkybox() {
+        return skybox;
     }
 
     @Override

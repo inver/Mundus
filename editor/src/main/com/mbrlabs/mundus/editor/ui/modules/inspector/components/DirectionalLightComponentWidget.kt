@@ -29,8 +29,9 @@ import com.mbrlabs.mundus.commons.scene3d.GameObject
 import com.mbrlabs.mundus.commons.scene3d.components.Component
 import com.mbrlabs.mundus.editor.config.UiWidgetsHolder
 import com.mbrlabs.mundus.editor.ui.AppUi
-import com.mbrlabs.mundus.editor.ui.widgets.ColorPickerField
 import com.mbrlabs.mundus.editor.ui.widgets.FloatFieldWithLabel
+import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerField
+import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerPresenter
 import com.mbrlabs.mundus.editor.utils.formatFloat
 
 /**
@@ -41,7 +42,8 @@ class DirectionalLightComponentWidget(
     separatorStyle: Separator.SeparatorStyle,
     dirLightComponent: DirectionalLightComponent,
     uiWidgetsHolder: UiWidgetsHolder,
-    appUi: AppUi
+    appUi: AppUi,
+    colorPickerPresenter: ColorPickerPresenter
 ) : ComponentWidget<DirectionalLightComponent>(separatorStyle, "Directional Light Component", dirLightComponent) {
 
     private val FIELD_SIZE = 65
@@ -49,10 +51,12 @@ class DirectionalLightComponentWidget(
     private val dirY = FloatFieldWithLabel("y", FIELD_SIZE)
     private val dirZ = FloatFieldWithLabel("z", FIELD_SIZE)
 
-    private val colorField: ColorPickerField = ColorPickerField(uiWidgetsHolder.colorPicker, appUi)
+    val colorField: ColorPickerField = ColorPickerField()
     private val intensityField: VisTextField = VisTextField()
 
     init {
+        colorPickerPresenter.init(colorField)
+
         this.component = dirLightComponent
         setupUI()
         setupListeners()

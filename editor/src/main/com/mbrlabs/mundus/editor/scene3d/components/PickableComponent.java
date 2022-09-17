@@ -16,15 +16,15 @@
 
 package com.mbrlabs.mundus.editor.scene3d.components;
 
+import com.mbrlabs.mundus.commons.scene3d.components.Renderable;
+
 /**
  * Mouse pickable by color code picking system.
  *
  * @author Marcus Brummer
  * @version 24-02-2016
  */
-public interface PickableComponent {
-
-    void encodeRaypickColorId();
-    void renderPick();
+public interface PickableComponent extends Renderable {
+    void encodeRayPickColorId();
 
 }

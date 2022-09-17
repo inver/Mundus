@@ -16,6 +16,7 @@
 
 package com.mbrlabs.mundus.editor.core;
 
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mbrlabs.mundus.commons.Scene;
 
@@ -27,8 +28,13 @@ public class EditorScene extends Scene {
 
     public Viewport viewport;
 
-    public EditorScene() {
-        super();
+    private Camera currentCamera;
+
+    public Camera getCurrentCamera() {
+        return currentCamera;
     }
 
+    public void setCurrentCamera(Camera currentCamera) {
+        this.currentCamera = currentCamera;
+    }
 }

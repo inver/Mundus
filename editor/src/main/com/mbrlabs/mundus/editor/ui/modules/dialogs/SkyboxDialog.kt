@@ -98,10 +98,10 @@ class SkyboxDialog(
         // create btn
         createBtn.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                val oldSkybox = projectContext.currScene.skybox
+                val oldSkybox = projectContext.getCurrentScene().skybox
                 oldSkybox?.dispose()
 
-                projectContext.currScene.skybox = Skybox(
+                projectContext.getCurrentScene().skybox = Skybox(
                     positiveX.file, negativeX.file,
                     positiveY.file, negativeY.file, positiveZ.file, negativeZ.file
                 )
@@ -112,10 +112,10 @@ class SkyboxDialog(
         // default skybox btn
         defaultBtn.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                if (projectContext.currScene.skybox != null) {
-                    projectContext.currScene.skybox.dispose()
+                if (projectContext.getCurrentScene().skybox != null) {
+                    projectContext.getCurrentScene().skybox.dispose()
                 }
-                projectContext.currScene.skybox = createDefaultSkybox()
+                projectContext.getCurrentScene().skybox = createDefaultSkybox()
                 resetImages()
             }
         })
@@ -123,8 +123,8 @@ class SkyboxDialog(
         // delete skybox btn
         deleteBtn.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                projectContext.currScene.skybox.dispose()
-                projectContext.currScene.skybox = null
+                projectContext.getCurrentScene().skybox.dispose()
+                projectContext.getCurrentScene().skybox = null
                 resetImages()
             }
         })
@@ -132,7 +132,7 @@ class SkyboxDialog(
     }
 
     private fun resetImages() {
-        val skybox = projectManager.current.currScene.skybox
+        val skybox = projectManager.current.getCurrentScene().skybox
         if (skybox != null) {
             positiveX.setImage(skybox.positiveX)
             negativeX.setImage(skybox.negativeX)

@@ -8,13 +8,13 @@ import com.mbrlabs.mundus.editor.scene3d.components.PickableModelComponent;
 
 public final class GameObjectUtils {
     public static GameObject createModelGO(SceneGraph sg, ModelShader shader, int id, String name, ModelAsset asset) {
-        var res = new GameObject(sg, name, id);
+        var res = new GameObject(name, id);
 
 //        asset.
         var modelComponent = new PickableModelComponent(res, shader);
         modelComponent.setModel(asset, true);
         res.getComponents().add(modelComponent);
-        modelComponent.encodeRaypickColorId();
+        modelComponent.encodeRayPickColorId();
 
         return res;
     }

@@ -104,7 +104,7 @@ class AssetPickerDialog(
     }
 
     private fun reloadData() {
-        val assetManager = projectManager.current.assetManager
+        val assetManager = projectManager.current.getAssetManager()
         listAdapter.clear()
 
         // filter assets
