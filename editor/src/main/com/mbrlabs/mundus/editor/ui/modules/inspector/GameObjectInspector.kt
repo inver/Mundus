@@ -71,7 +71,7 @@ class GameObjectInspector(
         add(addComponentBtn).expandX().fill().top().center().pad(10f).row()
     }
 
-    fun setGameObject(gameObject: GameObject) {
+    fun setGameObject(gameObject: GameObject?) {
         this.gameObject = gameObject
 
         // build ui

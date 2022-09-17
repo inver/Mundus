@@ -16,18 +16,16 @@
 
 package com.mbrlabs.mundus.editor.core.project;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mbrlabs.mundus.editor.core.kryo.DescriptorConverter;
-import com.mbrlabs.mundus.editor.core.kryo.descriptors.RegistryDescriptor;
 import com.mbrlabs.mundus.editor.core.registry.ProjectRef;
 import com.mbrlabs.mundus.editor.core.registry.Registry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.charset.Charset;
@@ -76,8 +74,6 @@ public class ProjectStorage {
      */
     public void saveRegistry(Registry registry) {
         try (var fos = new FileOutputStream(HOME_DATA_FILE)) {
-            RegistryDescriptor descriptor = DescriptorConverter.convert(registry);
-
             mapper.writeValue(fos, registry);
         } catch (Exception e) {
             log.error("ERROR", e);
@@ -111,18 +107,17 @@ public class ProjectStorage {
      */
     public ProjectContext loadProjectContext(ProjectRef ref) {
         // find .pro file
-        FileHandle projectFile = null;
-        for (FileHandle f : Gdx.files.absolute(ref.getPath()).list()) {
-            if (f.extension().equals(PROJECT_EXTENSION)) {
-                projectFile = f;
-                break;
-            }
-        }
+        File projectFile = FileUtils
+                .listFiles(new File(ref.getPath()), new String[]{PROJECT_EXTENSION}, false)
+                .stream()
+                .findFirst()
+                .orElse(null);
 
         if (projectFile != null) {
-            try (var fis = new FileInputStream(projectFile.path())) {
+            try (var fis = new FileInputStream(projectFile)) {
                 var res = mapper.readValue(fis, ProjectContext.class);
                 res.path = ref.getPath();
+                return res;
             } catch (Exception e) {
                 log.error("ERROR", e);
             }

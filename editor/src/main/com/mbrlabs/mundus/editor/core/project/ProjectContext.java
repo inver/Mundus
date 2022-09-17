@@ -17,11 +17,12 @@
 package com.mbrlabs.mundus.editor.core.project;
 
 import com.badlogic.gdx.utils.Disposable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mbrlabs.mundus.commons.Scene;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -41,15 +42,18 @@ public class ProjectContext implements Disposable {
     public String path;
     public String name;
 
-    private final List<String> scenes = new ArrayList<>();
+//    @JsonIgnore
+//    private final List<String> scenes = new ArrayList<>();
 
+    @JsonIgnore
     private Scene currentScene;
     /**
-     * set by kryo when project is loaded. do not use this
+     * set by jackson when project is deserialized from json file
      */
-    public String activeSceneName;
+    @Getter
+    private String activeSceneName;
 
-    public ProjectContext(int startId) {
+    public ProjectContext(@JsonProperty("idProvider") int startId) {
         settings = new ProjectSettings();
         currentScene = new Scene();
         idProvider = new AtomicInteger(startId);
@@ -71,9 +75,9 @@ public class ProjectContext implements Disposable {
 //        }
     }
 
-    public List<String> getScenes() {
-        return scenes;
-    }
+//    public List<String> getScenes() {
+//        return scenes;
+//    }
 
     public Scene getCurrentScene() {
         return currentScene;
@@ -81,6 +85,13 @@ public class ProjectContext implements Disposable {
 
     public void setCurrentScene(Scene currentScene) {
         this.currentScene = currentScene;
+        if (currentScene != null) {
+            activeSceneName = currentScene.getName();
+        }
+    }
+
+    public int getIdProvider() {
+        return inspectCurrentID();
     }
 
 //    public Camera getCurrentCamera() {

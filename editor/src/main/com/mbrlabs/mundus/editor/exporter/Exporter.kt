@@ -29,7 +29,6 @@ import com.mbrlabs.mundus.commons.dto.TerrainComponentDto
 import com.mbrlabs.mundus.commons.importer.JsonScene
 import com.mbrlabs.mundus.commons.importer.SceneConverter
 import com.mbrlabs.mundus.editor.assets.EditorAssetManager
-import com.mbrlabs.mundus.editor.core.ProjectConstants.PROJECT_SCENE_EXTENSION
 import com.mbrlabs.mundus.editor.core.project.ProjectContext
 import com.mbrlabs.mundus.editor.core.project.ProjectStorage
 import com.mbrlabs.mundus.editor.core.scene.SceneStorage
@@ -57,7 +56,7 @@ class Exporter(
 
         val task = object : AsyncTask("export_${project.name}") {
             override fun doInBackground() {
-                val step = 100f / (assetManager.assets.size + project.scenes.size)
+                val step = 100f / (assetManager.assets.size)
                 var progress = 0f
 
                 // create folder structure
@@ -79,29 +78,29 @@ class Exporter(
                 }
 
                 // load, convert & copy scenes
-                for (sceneName in project.scenes) {
-                    val file = FileHandle(
-                        FilenameUtils.concat(
-                            scenesFolder.path(),
-                            "$sceneName.$PROJECT_SCENE_EXTENSION"
-                        )
-                    )
-
-                    // load from disk or convert current scene
-                    var scene: SceneDto
-                    if (project.getCurrentScene().name == sceneName) {
-                        scene = currentSceneDTO
-                    } else {
-                        scene = sceneStorage.loadScene(project.path, sceneName)
-                    }
-
-                    // convert & export
-                    exportScene(scene, file, jsonType)
-                    progress += step
-                    setProgressPercent(progress.toInt())
-                    setMessage(scene.name)
-                    Thread.sleep(50)
-                }
+//                for (sceneName in project.scenes) {
+//                    val file = FileHandle(
+//                        FilenameUtils.concat(
+//                            scenesFolder.path(),
+//                            "$sceneName.$PROJECT_SCENE_EXTENSION"
+//                        )
+//                    )
+//
+//                    // load from disk or convert current scene
+//                    var scene: SceneDto
+//                    if (project.getCurrentScene().name == sceneName) {
+//                        scene = currentSceneDTO
+//                    } else {
+//                        scene = sceneStorage.loadScene(project.path, sceneName)
+//                    }
+//
+//                    // convert & export
+//                    exportScene(scene, file, jsonType)
+//                    progress += step
+//                    setProgressPercent(progress.toInt())
+//                    setMessage(scene.name)
+//                    Thread.sleep(50)
+//                }
             }
         }
 

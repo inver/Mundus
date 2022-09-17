@@ -27,8 +27,6 @@ public class ProjectManagerTest {
         var res = projectManager.createProject("testProject", PROJECT_PATH);
         Assert.assertNotNull(res);
         Assert.assertNotNull(res.getCurrentScene().getEnvironment().getAmbientLight());
-//        Assert.assertNotNull(res.getCurrentCamera());
-//        Assert.assertEquals(res.getCurrentCamera(), res.getCurrentScene().getCurrentCamera());
     }
 
     @SneakyThrows

@@ -126,7 +126,7 @@ public class ProjectManager implements Disposable {
         var scene = sceneStorage.createDefault(ctx.path, ctx.obtainID());
 
         // save .pro file
-        ctx.getScenes().add(scene.getName());
+//        ctx.getScenes().add(scene.getName());
         ctx.setCurrentScene(scene);
         saveProject(ctx);
 
@@ -188,7 +188,7 @@ public class ProjectManager implements Disposable {
 //        context.getShaderLibrary().putAll(shaderStorage.loadDefault());
 //        context.getAssetLibrary().putAll(assetsStorage.loadDefault());
 
-        context.setCurrentScene(loadScene(context, context.activeSceneName));
+        context.setCurrentScene(loadScene(context, context.getActiveSceneName()));
 
         // load assets
 //        context.setAssetManager(createAssetManager(ref.getPath() + "/" + PROJECT_ASSETS_DIR));
