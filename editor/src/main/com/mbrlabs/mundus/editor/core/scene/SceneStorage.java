@@ -29,7 +29,6 @@ import com.mbrlabs.mundus.commons.env.lights.BaseLight;
 import com.mbrlabs.mundus.commons.env.lights.DirectionalLight;
 import com.mbrlabs.mundus.commons.importer.SceneConverter;
 import com.mbrlabs.mundus.commons.skybox.Skybox;
-import com.mbrlabs.mundus.editor.core.EditorScene;
 import com.mbrlabs.mundus.editor.core.assets.AssetsStorage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,8 +48,8 @@ public class SceneStorage {
     private final ObjectMapper mapper;
     protected final AssetsStorage assetsStorage;
 
-    public EditorScene createDefault(String projectPath, int id) {
-        var scene = new EditorScene();
+    public Scene createDefault(String projectPath, int id) {
+        var scene = new Scene();
         scene.setName(DEFAULT_SCENE_NAME);
         scene.setSkybox(createDefaultSkybox());
         scene.getEnvironment().setFog(new Fog());
@@ -58,7 +57,7 @@ public class SceneStorage {
 
         var defCamera = createDefaultCamera();
         scene.getCameras().add(defCamera);
-        scene.setCurrentCamera(defCamera);
+//        scene.setCurrentCamera(defCamera);
 
         scene.getEnvironment().add(createDefaultDirectionalLight());
         scene.getEnvironment().setAmbientLight(createDefaultAmbientLight());

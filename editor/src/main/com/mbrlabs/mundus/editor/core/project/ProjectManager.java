@@ -18,6 +18,7 @@ package com.mbrlabs.mundus.editor.core.project;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Disposable;
+import com.mbrlabs.mundus.commons.Scene;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.assets.AssetManager;
 import com.mbrlabs.mundus.commons.assets.AssetType;
@@ -37,7 +38,6 @@ import com.mbrlabs.mundus.commons.scene3d.components.ModelComponent;
 import com.mbrlabs.mundus.commons.scene3d.components.TerrainComponent;
 import com.mbrlabs.mundus.editor.Main;
 import com.mbrlabs.mundus.editor.assets.EditorAssetManager;
-import com.mbrlabs.mundus.editor.core.EditorScene;
 import com.mbrlabs.mundus.editor.core.assets.AssetsStorage;
 import com.mbrlabs.mundus.editor.core.registry.ProjectRef;
 import com.mbrlabs.mundus.editor.core.registry.Registry;
@@ -204,7 +204,6 @@ public class ProjectManager implements Disposable {
             }
         }, false);
 
-
         return context;
     }
 
@@ -269,6 +268,8 @@ public class ProjectManager implements Disposable {
         }
 
         editorCtx.setCurrent(context);
+        editorCtx.setCamera(context.getCurrentScene().getCameras().get(0));
+
         // currentProject.copyFrom(context);
         registry.setLastProject(new ProjectRef());
         registry.getLastProject().setName(context.name);
@@ -309,10 +310,10 @@ public class ProjectManager implements Disposable {
      * @return loaded scene
      * @throws FileNotFoundException if scene file not found
      */
-    public EditorScene loadScene(ProjectContext context, String sceneName) throws FileNotFoundException {
+    public Scene loadScene(ProjectContext context, String sceneName) throws FileNotFoundException {
         var dto = sceneStorage.loadScene(context.path, sceneName);
 
-        var scene = new EditorScene();
+        var scene = new Scene();
 
         //todo preload assets to cache
         SceneConverter.fillScene(scene, dto, editorCtx.getAssetLibrary(), editorCtx.getShaderLibrary());
@@ -345,7 +346,7 @@ public class ProjectManager implements Disposable {
      */
     public void changeScene(ProjectContext projectContext, String sceneName) {
         try {
-            EditorScene newScene = loadScene(projectContext, sceneName);
+            Scene newScene = loadScene(projectContext, sceneName);
             projectContext.getCurrentScene().dispose();
             projectContext.setCurrentScene(newScene);
 

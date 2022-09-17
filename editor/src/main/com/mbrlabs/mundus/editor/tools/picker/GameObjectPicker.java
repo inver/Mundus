@@ -22,7 +22,7 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.mbrlabs.mundus.commons.Scene;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.scene3d.components.Component;
-import com.mbrlabs.mundus.editor.core.EditorScene;
+import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.scene3d.components.PickableComponent;
 import lombok.RequiredArgsConstructor;
 
@@ -40,17 +40,17 @@ import lombok.RequiredArgsConstructor;
 @org.springframework.stereotype.Component
 @RequiredArgsConstructor
 public class GameObjectPicker extends BasePicker {
-
+    private final EditorCtx ctx;
     private final ModelBatch batch;
 
-    public GameObject pick(EditorScene scene, int screenX, int screenY) {
-        begin(scene.viewport);
+    public GameObject pick(Scene scene, int screenX, int screenY) {
+        begin(ctx.getViewport());
         renderPickableScene(scene);
         end();
-        Pixmap pm = getFrameBufferPixmap(scene.viewport);
+        Pixmap pm = getFrameBufferPixmap(ctx.getViewport());
 
-        int x = screenX - scene.viewport.getScreenX();
-        int y = screenY - (Gdx.graphics.getHeight() - (scene.viewport.getScreenY() + scene.viewport.getScreenHeight()));
+        int x = screenX - ctx.getViewport().getScreenX();
+        int y = screenY - (Gdx.graphics.getHeight() - (ctx.getViewport().getScreenY() + ctx.getViewport().getScreenHeight()));
 
         int id = PickerColorEncoder.decode(pm.getPixel(x, y));
         for (GameObject go : scene.getSceneGraph().getGameObjects()) {
@@ -63,8 +63,8 @@ public class GameObjectPicker extends BasePicker {
         return null;
     }
 
-    private void renderPickableScene(EditorScene scene) {
-        batch.begin(scene.getCurrentCamera());
+    private void renderPickableScene(Scene scene) {
+        batch.begin(ctx.getCamera());
         for (GameObject go : scene.getSceneGraph().getGameObjects()) {
             renderPickableGameObject(scene, go);
         }

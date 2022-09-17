@@ -137,7 +137,7 @@ public class TranslateTool extends TransformTool {
     public void render() {
         super.render();
         if (getCtx().getSelected() != null) {
-            getBatch().begin(getCtx().getCurrent().getCurrentScene().getCurrentCamera());
+            getBatch().begin(getCtx().getCamera());
             GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
             xHandle.render(getBatch());
             yHandle.render(getBatch());
@@ -156,9 +156,9 @@ public class TranslateTool extends TransformTool {
             translateHandles();
             if (state == TransformState.IDLE) return;
 
-            Ray ray = getCtx().getCurrent().getCurrentScene().viewport.getPickRay(Gdx.input.getX(), Gdx.input.getY());
+            Ray ray = getCtx().getViewport().getPickRay(Gdx.input.getX(), Gdx.input.getY());
             Vector3 rayEnd = getCtx().getSelected().getLocalPosition(temp0);
-            float dst = getCtx().getCurrent().getCurrentScene().getCurrentCamera().position.dst(rayEnd);
+            float dst = getCtx().getCamera().position.dst(rayEnd);
             rayEnd = ray.getEndPoint(rayEnd, dst);
 
             if (initTranslate) {
@@ -208,7 +208,7 @@ public class TranslateTool extends TransformTool {
         }
 
         Vector3 pos = getCtx().getSelected().getPosition(temp0);
-        float scaleFactor = getCtx().getCurrent().getCurrentScene().getCurrentCamera().position.dst(pos) * 0.25f;
+        float scaleFactor = getCtx().getCamera().position.dst(pos) * 0.25f;
         xHandle.getScale().set(scaleFactor * 0.7f, scaleFactor / 2, scaleFactor / 2);
         xHandle.applyTransform();
 

@@ -20,7 +20,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.mbrlabs.mundus.editor.core.EditorScene;
+import com.mbrlabs.mundus.commons.Scene;
+import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.tools.ToolHandle;
 import com.mbrlabs.mundus.editor.utils.Log;
 import lombok.RequiredArgsConstructor;
@@ -33,17 +34,17 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class ToolHandlePicker extends BasePicker {
-
+    private final EditorCtx ctx;
     private final ModelBatch batch;
 
-    public ToolHandle pick(ToolHandle[] handles, EditorScene scene, int screenX, int screenY) {
-        begin(scene.viewport);
-        renderPickableScene(handles, batch, scene.getCurrentCamera());
+    public ToolHandle pick(ToolHandle[] handles, Scene scene, int screenX, int screenY) {
+        begin(ctx.getViewport());
+        renderPickableScene(handles, batch, ctx.getCamera());
         end();
-        Pixmap pm = getFrameBufferPixmap(scene.viewport);
+        Pixmap pm = getFrameBufferPixmap(ctx.getViewport());
 
-        int x = screenX - scene.viewport.getScreenX();
-        int y = screenY - (Gdx.graphics.getHeight() - (scene.viewport.getScreenY() + scene.viewport.getScreenHeight()));
+        int x = screenX - ctx.getViewport().getScreenX();
+        int y = screenY - (Gdx.graphics.getHeight() - (ctx.getViewport().getScreenY() + ctx.getViewport().getScreenHeight()));
 
         int id = PickerColorEncoder.decode(pm.getPixel(x, y));
         Log.trace("ToolHandlePicker", "Picking handle with id {}", id);

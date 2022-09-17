@@ -16,10 +16,8 @@
 
 package com.mbrlabs.mundus.editor.core.project;
 
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.utils.Disposable;
-import com.mbrlabs.mundus.commons.scene3d.GameObject;
-import com.mbrlabs.mundus.editor.core.EditorScene;
+import com.mbrlabs.mundus.commons.Scene;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -45,12 +43,7 @@ public class ProjectContext implements Disposable {
 
     private final List<String> scenes = new ArrayList<>();
 
-//    private EditorAssetManager assetManager;
-
-    // Assets imported in editor and stored in <home dir>/.mundus
-
-    private EditorScene currentScene;
-    private GameObject selectedGameObject;
+    private Scene currentScene;
     /**
      * set by kryo when project is loaded. do not use this
      */
@@ -58,7 +51,7 @@ public class ProjectContext implements Disposable {
 
     public ProjectContext(int startId) {
         settings = new ProjectSettings();
-        currentScene = new EditorScene();
+        currentScene = new Scene();
         idProvider = new AtomicInteger(startId);
     }
 
@@ -78,35 +71,19 @@ public class ProjectContext implements Disposable {
 //        }
     }
 
-//    public GameObject getSelectedGameObject() {
-//        return selectedGameObject;
-//    }
-
-//    public void setSelectedGameObject(GameObject selectedGameObject) {
-//        this.selectedGameObject = selectedGameObject;
-//    }
-
     public List<String> getScenes() {
         return scenes;
     }
 
-//    public EditorAssetManager getAssetManager() {
-//        return assetManager;
-//    }
-
-//    public void setAssetManager(EditorAssetManager assetManager) {
-//        this.assetManager = assetManager;
-//    }
-
-    public EditorScene getCurrentScene() {
+    public Scene getCurrentScene() {
         return currentScene;
     }
 
-    public void setCurrentScene(EditorScene currentScene) {
+    public void setCurrentScene(Scene currentScene) {
         this.currentScene = currentScene;
     }
 
-    public Camera getCurrentCamera() {
-        return currentScene.getCurrentCamera();
-    }
+//    public Camera getCurrentCamera() {
+//        return currentScene.getCurrentCamera();
+//    }
 }

@@ -114,7 +114,7 @@ public class ScaleTool extends TransformTool {
         GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
         ProjectContext projectContext = getCtx().getCurrent();
         if (getCtx().getSelected() != null) {
-            getBatch().begin(projectContext.getCurrentScene().getCurrentCamera());
+            getBatch().begin(getCtx().getCamera());
             xHandle.render(getBatch());
             yHandle.render(getBatch());
             zHandle.render(getBatch());
@@ -127,7 +127,7 @@ public class ScaleTool extends TransformTool {
                 viewport3d = appUi.getSceneWidget().getViewport();
             }
 
-            Vector3 pivot = projectContext.getCurrentScene().getCurrentCamera().project(temp0, viewport3d.getScreenX(),
+            Vector3 pivot = getCtx().getCamera().project(temp0, viewport3d.getScreenX(),
                     viewport3d.getScreenY(), viewport3d.getWorldWidth(), viewport3d.getWorldHeight());
 
             shapeRenderMat.setToOrtho2D(viewport3d.getScreenX(), viewport3d.getScreenY(), viewport3d.getScreenWidth(),
@@ -230,7 +230,7 @@ public class ScaleTool extends TransformTool {
         final GameObject selection = getCtx().getSelected();
         if (selection != null) {
             selection.getTransform().getTranslation(temp0);
-            Vector3 pivot = projectContext.getCurrentScene().getCurrentCamera().project(temp0, viewport3d.getScreenX(),
+            Vector3 pivot = getCtx().getCamera().project(temp0, viewport3d.getScreenX(),
                     viewport3d.getScreenY(), viewport3d.getWorldWidth(), viewport3d.getWorldHeight());
             Vector3 mouse = temp1.set(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), 0);
 
@@ -352,7 +352,7 @@ public class ScaleTool extends TransformTool {
     @Override
     protected void scaleHandles() {
         Vector3 pos = getCtx().getSelected().getPosition(temp0);
-        float scaleFactor = getCtx().getCurrent().getCurrentScene().getCurrentCamera().position.dst(pos) * 0.01f;
+        float scaleFactor = getCtx().getCamera().position.dst(pos) * 0.01f;
         xHandle.getScale().set(scaleFactor, scaleFactor, scaleFactor);
 
         xHandle.applyTransform();

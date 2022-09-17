@@ -3,6 +3,7 @@ package com.mbrlabs.mundus.editor.core.project;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import lombok.Getter;
@@ -16,6 +17,7 @@ public class EditorCtx implements Disposable {
 
     private ProjectContext current;
     private Camera camera;
+    private Viewport viewport;
 
     @Getter
     private final Map<String, Asset> assetLibrary = new HashMap<>();
@@ -46,6 +48,14 @@ public class EditorCtx implements Disposable {
 
     public void setCamera(Camera camera) {
         this.camera = camera;
+    }
+
+    public Viewport getViewport() {
+        return viewport;
+    }
+
+    public void setViewport(Viewport viewport) {
+        this.viewport = viewport;
     }
 
     @Override

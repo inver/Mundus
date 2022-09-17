@@ -69,7 +69,7 @@ public class SelectionTool extends Tool {
     @Override
     public void render() {
         if (getCtx().getSelected() != null) {
-            getBatch().begin(getCtx().getCurrent().getCurrentScene().getCurrentCamera());
+            getBatch().begin(getCtx().getCamera());
             for (GameObject go : getCtx().getSelected()) {
                 // model component
                 ModelComponent mc = (ModelComponent) go.findComponentByType(Component.Type.MODEL);

@@ -97,7 +97,7 @@ public class ModelPlacementTool extends Tool {
     @Override
     public void render() {
         if (modelInstance != null) {
-            getBatch().begin(getCtx().getCurrent().getCurrentScene().getCurrentCamera());
+            getBatch().begin(getCtx().getCamera());
             getBatch().render(modelInstance, getCtx().getCurrent().getCurrentScene().getEnvironment(), getShader());
             getBatch().end();
         }
@@ -143,7 +143,7 @@ public class ModelPlacementTool extends Tool {
 
         final ProjectContext context = getCtx().getCurrent();
 
-        final Ray ray = getCtx().getCurrent().getCurrentScene().viewport.getPickRay(screenX, screenY);
+        final Ray ray = getCtx().getViewport().getPickRay(screenX, screenY);
 //        if (context.getCurrentScene().terrains.size > 0 && modelInstance != null) {
 //            MeshPartBuilder.VertexInfo vi = TerrainUtils.getRayIntersectionAndUp(context.getCurrentScene().terrains, ray);
 //            if (vi != null) {

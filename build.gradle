@@ -52,6 +52,11 @@ allprojects {
 project(":commons") {
     apply plugin: "java"
 
+    java {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+
     dependencies {
         compileOnly 'org.projectlombok:lombok:1.18.24'
         annotationProcessor 'org.projectlombok:lombok:1.18.24'
@@ -97,6 +102,11 @@ project(":commons") {
 project(":editor") {
     apply plugin: "java"
     apply plugin: "kotlin"
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
 
     dependencies {
         implementation project(":commons")

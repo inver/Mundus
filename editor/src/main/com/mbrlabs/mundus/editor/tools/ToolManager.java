@@ -22,7 +22,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Disposable;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.editor.assets.EditorAssetManager;
-import com.mbrlabs.mundus.editor.core.EditorScene;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
@@ -153,7 +152,7 @@ public class ToolManager extends InputAdapter implements Disposable {
         if (activeTool == null) {
             return null;
         }
-        EditorScene scene = ctx.getCurrent().getCurrentScene();
+        var scene = ctx.getCurrent().getCurrentScene();
 
         if (scene == null) {
             return null;

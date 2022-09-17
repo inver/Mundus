@@ -96,8 +96,7 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
             throw new GdxRuntimeException("Couldn't open a project");
         }
 
-        compass = new Compass(context.getCurrentScene().getCurrentCamera());
-
+        compass = new Compass(ctx.getCamera());
         // change project; this will fire a ProjectChangedEvent
         projectManager.changeProject(context);
     }
@@ -159,16 +158,16 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
         var scene = ctx.getCurrent().getCurrentScene();
         var sg = scene.getSceneGraph();
 
-        appUi.getSceneWidget().setCam(scene.getCurrentCamera());
+        appUi.getSceneWidget().setCam(ctx.getCamera());
         appUi.getSceneWidget().setRenderer(camera -> {
             if (scene.getSkybox() != null) {
-                batch.begin(scene.getCurrentCamera());
+                batch.begin(ctx.getCamera());
                 batch.render(scene.getSkybox().getSkyboxInstance(), scene.getEnvironment(), Shaders.INSTANCE.getSkyboxShader());
                 batch.end();
             }
 
             sg.update();
-            batch.begin(scene.getCurrentCamera());
+            batch.begin(ctx.getCamera());
             scene.render(batch, Gdx.graphics.getDeltaTime());
             batch.end();
 
@@ -176,10 +175,10 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
             compass.render(batch);
         });
 
-        compass.setWorldCam(scene.getCurrentCamera());
-        camController.setCamera(scene.getCurrentCamera());
-        appUi.getSceneWidget().setCam(scene.getCurrentCamera());
-        scene.viewport = appUi.getSceneWidget().getViewport();
+        compass.setWorldCam(ctx.getCamera());
+        camController.setCamera(ctx.getCamera());
+        appUi.getSceneWidget().setCam(ctx.getCamera());
+        ctx.setViewport(appUi.getSceneWidget().getViewport());
     }
 
     public void render() {

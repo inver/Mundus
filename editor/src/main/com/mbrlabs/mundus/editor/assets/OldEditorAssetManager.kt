@@ -35,9 +35,7 @@ import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset
 import com.mbrlabs.mundus.commons.core.ModelFiles
 import com.mbrlabs.mundus.commons.scene3d.GameObject
-import com.mbrlabs.mundus.commons.scene3d.components.AssetUsage
 import com.mbrlabs.mundus.commons.utils.FileFormatUtils
-import com.mbrlabs.mundus.editor.core.EditorScene
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.utils.Log
 import org.apache.commons.io.FileUtils
@@ -442,20 +440,20 @@ class OldEditorAssetManager(assetsRoot: FileHandle) : OldAssetManager(assetsRoot
         return objectsWithAssets
     }
 
-    private fun checkSceneForAssetUsage(
-        scene: EditorScene?,
-        asset: Asset,
-        objectsWithAssets: HashMap<GameObject, String>
-    ) {
-        for (gameObject in scene!!.sceneGraph.gameObjects) {
-            for (component in gameObject.components) {
-                if (component is AssetUsage) {
-                    if (component.usesAsset(asset))
-                        objectsWithAssets[gameObject] = scene.name
-                }
-            }
-        }
-    }
+//    private fun checkSceneForAssetUsage(
+//        scene: EditorScene?,
+//        asset: Asset,
+//        objectsWithAssets: HashMap<GameObject, String>
+//    ) {
+//        for (gameObject in scene!!.sceneGraph.gameObjects) {
+//            for (component in gameObject.components) {
+//                if (component is AssetUsage) {
+//                    if (component.usesAsset(asset))
+//                        objectsWithAssets[gameObject] = scene.name
+//                }
+//            }
+//        }
+//    }
 
     /**
      * Saves an existing terrainAsset asset.
