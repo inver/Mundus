@@ -6,7 +6,7 @@ sourceSets.main.resources.srcDirs = ["src/main", "assets"]
 sourceSets.test.java.srcDirs = ["src/test/java", "src/test/kotlin"]
 
 project.ext.mainClassName = "com.mbrlabs.mundus.editor.Main"
-project.ext.assetsDir = new File("assets");
+project.ext.assetsDir = new File("assets")
 
 
 task run(dependsOn: classes, type: JavaExec) {
@@ -23,7 +23,7 @@ task run(dependsOn: classes, type: JavaExec) {
 
 task distEditor(type: Jar) {
     baseName = 'Mundus'
-    version = '0.3.0'
+//    version = '0.3.0'
 
     manifest {
         attributes 'Main-Class': project.mainClassName
@@ -36,4 +36,6 @@ task distEditor(type: Jar) {
     duplicatesStrategy 'exclude'
 }
 
-distEditor.dependsOn classes
+build {
+    finalizedBy distEditor
+}
