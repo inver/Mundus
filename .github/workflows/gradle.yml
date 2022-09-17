@@ -49,6 +49,6 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           tag: nightly
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.OLOLO_SECRET }}
           removeArtifacts: true
           artifacts: "editor/build/libs/Mundus.jar"
