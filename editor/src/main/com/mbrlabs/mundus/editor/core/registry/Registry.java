@@ -18,14 +18,14 @@ package com.mbrlabs.mundus.editor.core.registry;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.apache.commons.io.FilenameUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import static com.mbrlabs.mundus.editor.core.ProjectConstants.TEMP_DIR;
 
 /**
  * Manages global settings.
@@ -35,8 +35,12 @@ import static com.mbrlabs.mundus.editor.core.ProjectConstants.TEMP_DIR;
  * @author Marcus Brummer
  * @version 12-12-2015
  */
+@RequiredArgsConstructor
 public class Registry {
     private final List<ProjectRef> projects = new ArrayList<>();
+
+    @JsonIgnore
+    private final String tmpDir;
 
     @Setter
     private ProjectRef lastProject;
@@ -44,7 +48,7 @@ public class Registry {
     private Settings settings = new Settings();
 
     public FileHandle createTempFolder() {
-        String tempFolderPath = FilenameUtils.concat(TEMP_DIR, UUID.randomUUID().toString()) + "/";
+        String tempFolderPath = FilenameUtils.concat(tmpDir, UUID.randomUUID().toString()) + "/";
         FileHandle tempFolder = Gdx.files.absolute(tempFolderPath);
         tempFolder.mkdirs();
 
@@ -52,7 +56,7 @@ public class Registry {
     }
 
     public void purgeTempDirectory() {
-        for (FileHandle f : Gdx.files.absolute(TEMP_DIR).list()) {
+        for (FileHandle f : Gdx.files.absolute(tmpDir).list()) {
             f.deleteDirectory();
         }
     }

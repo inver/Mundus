@@ -1,4 +1,4 @@
-package com.mbrlabs.mundus.editor.assets;
+package com.mbrlabs.mundus.editor.core.assets;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -7,12 +7,11 @@ import com.badlogic.gdx.graphics.PixmapIO;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.assets.AssetManager;
 import com.mbrlabs.mundus.commons.assets.AssetType;
-import com.mbrlabs.mundus.commons.assets.exceptions.AssetAlreadyExistsException;
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset;
 import com.mbrlabs.mundus.commons.assets.material.MaterialService;
-import com.mbrlabs.mundus.commons.assets.meta.Meta;
 import com.mbrlabs.mundus.commons.assets.meta.MetaService;
-import com.mbrlabs.mundus.commons.assets.meta.MetaTerrain;
+import com.mbrlabs.mundus.commons.assets.meta.dto.Meta;
+import com.mbrlabs.mundus.commons.assets.meta.dto.MetaTerrain;
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset;
 import com.mbrlabs.mundus.commons.assets.model.ModelService;
 import com.mbrlabs.mundus.commons.assets.pixmap.PixmapTextureAsset;
@@ -23,6 +22,9 @@ import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
 import com.mbrlabs.mundus.commons.assets.texture.TextureService;
 import com.mbrlabs.mundus.commons.core.ModelFiles;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
+import com.mbrlabs.mundus.editor.assets.MetaSaver;
+import com.mbrlabs.mundus.editor.config.AppEnvironment;
+import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
 import com.mbrlabs.mundus.editor.core.shader.ShaderStorage;
 import com.mbrlabs.mundus.editor.scene3d.components.PickableModelComponent;
@@ -34,34 +36,38 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Component;
 
-import java.io.BufferedOutputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import javax.annotation.PostConstruct;
+import java.io.*;
+import java.util.*;
 
-import static com.mbrlabs.mundus.editor.core.ProjectConstants.*;
+import static com.mbrlabs.mundus.editor.core.ProjectConstants.BUNDLED_FOLDER;
+import static com.mbrlabs.mundus.editor.core.ProjectConstants.PROJECT_ASSETS_DIR;
 
 @Component
 @Slf4j
 public class EditorAssetManager extends AssetManager {
-
+    private final EditorCtx ctx;
     private final ShaderStorage shaderStorage;
     @Getter
     private final Set<Asset> dirtyAssets = new HashSet<>();
     private final MetaSaver metaSaver = new MetaSaver();
 
-    public EditorAssetManager(MetaService metaFileService, TextureService textureService,
+    public EditorAssetManager(AppEnvironment appEnvironment, MetaService metaFileService, TextureService textureService,
                               TerrainService terrainService, MaterialService materialService,
-                              PixmapTextureService pixmapTextureService, ModelService modelService, ShaderStorage shaderStorage) {
-        super(new FileHandle(HOME_DIR + "/" + PROJECT_ASSETS_DIR), metaFileService, textureService,
-                terrainService, materialService, pixmapTextureService, modelService);
+                              PixmapTextureService pixmapTextureService, ModelService modelService,
+                              EditorCtx ctx, ShaderStorage shaderStorage) {
+        super(new FileHandle(appEnvironment.getHomeDir() + "/" + PROJECT_ASSETS_DIR), metaFileService,
+                textureService, terrainService, materialService, pixmapTextureService, modelService);
+        this.ctx = ctx;
         this.shaderStorage = shaderStorage;
         if (rootFolder != null && (!rootFolder.exists() || !rootFolder.isDirectory())) {
             log.error("Folder {} doesn't exist or is not a directory", rootFolder.file());
         }
+    }
+
+    @PostConstruct
+    public void init() {
+        loadStandardAssets(ctx.getAssetLibrary());
     }
 
     public void saveAsset(Asset asset) {
@@ -76,46 +82,66 @@ public class EditorAssetManager extends AssetManager {
         }
     }
 
-    public void loadStandardAssets() {
+    void loadStandardAssets(Map<String, Asset> assets) {
         try {
-            loadByType(BUNDLED_FOLDER + "textures", AssetType.TEXTURE);
+            loadByType(assets, BUNDLED_FOLDER + "textures", AssetType.TEXTURE);
+            loadByType(assets, BUNDLED_FOLDER + "models", AssetType.MODEL);
         } catch (Exception e) {
             log.error("ERROR", e);
         }
     }
 
-    private void loadByType(String path, AssetType type) {
-        for (FileHandle file : Gdx.files.internal(path).list()) {
-            if (type == AssetType.TEXTURE) {
-                loadNewTextureAsset(file);
+    @SneakyThrows
+    private void loadByType(Map<String, Asset> assets, String path, AssetType type) {
+        for (var fileName : getResourceFiles(path)) {
+            var file = new FileHandle(new File(getClass().getClassLoader().getResource(path + "/" + fileName).toURI()));
+
+            var assetFile = new FileHandle(getAssetPath(file));
+            var metaFile = new FileHandle(getMetaPath(file));
+            try {
+                Meta meta;
+                if (!metaFile.exists()) {
+                    meta = createNewMetaFile(file, type);
+                    file.copyTo(assetFile);
+                } else {
+                    meta = metaService.load(metaFile);
+                }
+
+                Asset asset = null;
+                if (type == AssetType.TEXTURE) {
+                    asset = textureService.load(meta, assetFile);
+                } else if (type == AssetType.MODEL) {
+                    asset = modelService.load(meta, assetFile);
+                }
+                if (asset != null) {
+                    assets.put(file.path(), asset);
+                }
+            } catch (Exception e) {
+                log.error("ERROR", e);
             }
         }
     }
 
-    protected TextureAsset loadNewTextureAsset(FileHandle file) {
-        var meta = createMetaFileFromAsset(file, AssetType.TEXTURE);
-        var importedAssetFile = copyAssetToProjectFolder(file);
-
-        return textureService.load(meta, importedAssetFile);
+    private Meta createMetaFileFromAsset(FileHandle file, AssetType type) {
+        return createNewMetaFile(new FileHandle(getMetaPath(file)), type);
     }
 
-    private Meta createMetaFileFromAsset(FileHandle file, AssetType type) {
-        var metaName = file.name() + "." + Meta.META_EXTENSION;
-        var metaPath = FilenameUtils.concat(rootFolder.path(), metaName);
-        return createNewMetaFile(new FileHandle(metaPath), type);
+    private String getMetaPath(FileHandle file) {
+        var name = file.name() + "." + Meta.META_EXTENSION;
+        return FilenameUtils.concat(rootFolder.path(), name);
+    }
+
+    private String getAssetPath(FileHandle file) {
+        return FilenameUtils.concat(rootFolder.path(), file.name());
     }
 
     private Meta createNewMetaFile(FileHandle file, AssetType type) {
-        if (file.exists()) {
-            log.error("\"Tried to create new Meta File that already exists: {}", file.name());
-            throw new AssetAlreadyExistsException();
-        }
-
         var meta = new Meta(file);
         meta.setUuid(clearedUUID());
         meta.setVersion(Meta.CURRENT_VERSION);
         meta.setLastModified(System.currentTimeMillis());
         meta.setType(type);
+        //todo replace with metaService
         metaSaver.save(meta);
 
         return meta;
@@ -307,5 +333,22 @@ public class EditorAssetManager extends AssetManager {
         }
 
         return res;
+    }
+
+    private List<String> getResourceFiles(String path) {
+        var filenames = new ArrayList<String>();
+
+        try (var in = getClass().getClassLoader().getResourceAsStream(path);
+             var br = new BufferedReader(new InputStreamReader(in))) {
+            String resource;
+
+            while ((resource = br.readLine()) != null) {
+                filenames.add(resource);
+            }
+        } catch (Exception e) {
+            log.error("ERROR", e);
+        }
+
+        return filenames;
     }
 }

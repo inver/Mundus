@@ -5,7 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.util.dialog.InputDialogAdapter;
-import com.mbrlabs.mundus.editor.assets.EditorAssetManager;
+import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager;
 import com.mbrlabs.mundus.editor.events.AssetImportEvent;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.ui.AppUi;

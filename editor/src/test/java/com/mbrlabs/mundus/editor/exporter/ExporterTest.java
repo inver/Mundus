@@ -4,7 +4,7 @@ import com.badlogic.gdx.utils.JsonWriter;
 import com.mbrlabs.mundus.commons.dto.GameObjectDto;
 import com.mbrlabs.mundus.commons.dto.SceneDto;
 import com.mbrlabs.mundus.commons.dto.TerrainComponentDto;
-import com.mbrlabs.mundus.editor.assets.EditorAssetManager;
+import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager;
 import com.mbrlabs.mundus.editor.core.project.ProjectContext;
 import com.mbrlabs.mundus.editor.core.project.ProjectStorage;
 import com.mbrlabs.mundus.editor.core.scene.SceneStorage;

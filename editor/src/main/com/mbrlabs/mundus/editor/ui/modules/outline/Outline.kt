@@ -26,7 +26,7 @@ import com.mbrlabs.mundus.commons.Scene
 import com.mbrlabs.mundus.commons.scene3d.GameObject
 import com.mbrlabs.mundus.commons.scene3d.components.Component
 import com.mbrlabs.mundus.commons.terrain.Terrain
-import com.mbrlabs.mundus.editor.assets.EditorAssetManager
+import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.core.shader.ShaderConstants
 import com.mbrlabs.mundus.editor.core.shader.ShaderStorage

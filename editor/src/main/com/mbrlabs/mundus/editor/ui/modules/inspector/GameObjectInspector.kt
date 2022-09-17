@@ -24,8 +24,8 @@ import com.mbrlabs.mundus.commons.scene3d.GameObject
 import com.mbrlabs.mundus.commons.scene3d.components.Component
 import com.mbrlabs.mundus.commons.scene3d.components.ModelComponent
 import com.mbrlabs.mundus.commons.scene3d.components.TerrainComponent
-import com.mbrlabs.mundus.editor.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.config.UiWidgetsHolder
+import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.history.CommandHistory
 import com.mbrlabs.mundus.editor.ui.AppUi

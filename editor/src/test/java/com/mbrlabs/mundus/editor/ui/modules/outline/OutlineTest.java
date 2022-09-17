@@ -1,20 +1,13 @@
 package com.mbrlabs.mundus.editor.ui.modules.outline;
 
-import com.mbrlabs.mundus.editor.config.GdxTestRunner;
-import com.mbrlabs.mundus.editor.config.TestConfig;
+import com.mbrlabs.mundus.editor.config.BaseCtxTest;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.GameObjectSelectedEvent;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
 
-@RunWith(GdxTestRunner.class)
-@ContextConfiguration(classes = {
-        TestConfig.class
-})
-public class OutlineTest {
+public class OutlineTest extends BaseCtxTest {
 
     @Autowired
     private Outline outline;

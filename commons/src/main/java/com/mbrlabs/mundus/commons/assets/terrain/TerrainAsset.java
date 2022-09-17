@@ -19,7 +19,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.FloatArray;
 import com.mbrlabs.mundus.commons.assets.Asset;
-import com.mbrlabs.mundus.commons.assets.meta.Meta;
+import com.mbrlabs.mundus.commons.assets.meta.dto.Meta;
 import com.mbrlabs.mundus.commons.assets.pixmap.PixmapTextureAsset;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
 import com.mbrlabs.mundus.commons.terrain.SplatMap;

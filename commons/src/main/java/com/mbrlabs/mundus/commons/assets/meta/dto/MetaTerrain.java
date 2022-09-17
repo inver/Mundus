@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mbrlabs.mundus.commons.assets.meta;
+package com.mbrlabs.mundus.commons.assets.meta.dto;
 
 /**
  *

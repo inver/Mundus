@@ -17,7 +17,7 @@
 package com.mbrlabs.mundus.editor.ui.modules.inspector.components;
 
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.mbrlabs.mundus.commons.env.AppEnvironment;
+import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.env.lights.DirectionalLight;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.scene3d.components.AbstractComponent;
@@ -45,7 +45,7 @@ public class DirectionalLightComponent extends AbstractComponent {
     }
 
     @Override
-    public void render(ModelBatch batch, AppEnvironment environment, float delta) {
+    public void render(ModelBatch batch, SceneEnvironment environment, float delta) {
 
     }
 

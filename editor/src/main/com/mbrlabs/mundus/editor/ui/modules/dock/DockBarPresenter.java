@@ -6,7 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
-import com.mbrlabs.mundus.editor.assets.EditorAssetManager;
+import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.project.ProjectManager;
 import com.mbrlabs.mundus.editor.events.*;
@@ -46,7 +46,7 @@ public class DockBarPresenter {
     private void reloadAssets(AssetsDock assetsDock) {
         assetsDock.getAssetsView().clearChildren();
 
-        for (var asset : assetManager.getAssets()) {
+        for (var asset : ctx.getAssetLibrary().values()) {
             var assetItem = new AssetItem(asset, previewGenerator);
             assetsDock.getAssetsView().addActor(assetItem);
             assetItem.addListener(new InputListener() {

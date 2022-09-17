@@ -25,7 +25,7 @@ import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.kotcrab.vis.ui.widget.file.FileChooser
 import com.mbrlabs.mundus.commons.assets.exceptions.AssetAlreadyExistsException
-import com.mbrlabs.mundus.editor.assets.EditorAssetManager
+import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.events.AssetImportEvent
 import com.mbrlabs.mundus.editor.events.EventBus
 import com.mbrlabs.mundus.editor.ui.AppUi

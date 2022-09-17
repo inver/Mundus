@@ -23,13 +23,13 @@ import com.mbrlabs.mundus.commons.env.lights.*;
  * @author Marcus Brummer
  * @version 04-01-2016
  */
-public class AppEnvironment extends Environment {
+public class SceneEnvironment extends Environment {
 
     private Fog fog;
     private BaseLight ambientLight;
 
     //todo refactor this methods to operate with BaseLight
-    public AppEnvironment add(SunLight light) {
+    public SceneEnvironment add(SunLight light) {
         var sunLights = (SunLightsAttribute) get(SunLightsAttribute.Type);
         if (sunLights == null) {
             sunLights = new SunLightsAttribute();
@@ -40,7 +40,7 @@ public class AppEnvironment extends Environment {
         return this;
     }
 
-    public AppEnvironment add(DirectionalLight light) {
+    public SceneEnvironment add(DirectionalLight light) {
         DirectionalLightsAttribute dirLights = ((DirectionalLightsAttribute) get(DirectionalLightsAttribute.TYPE));
         if (dirLights == null) {
             set(dirLights = new DirectionalLightsAttribute());
@@ -50,7 +50,7 @@ public class AppEnvironment extends Environment {
         return this;
     }
 
-    public AppEnvironment remove(SunLight light) {
+    public SceneEnvironment remove(SunLight light) {
         SunLightsAttribute sunLights = ((SunLightsAttribute) get(SunLightsAttribute.Type));
         if (sunLights != null) {
             sunLights.lights.removeValue(light, true);
@@ -58,7 +58,7 @@ public class AppEnvironment extends Environment {
         return this;
     }
 
-    public AppEnvironment remove(DirectionalLight light) {
+    public SceneEnvironment remove(DirectionalLight light) {
         DirectionalLightsAttribute dirLights = ((DirectionalLightsAttribute) get(DirectionalLightsAttribute.TYPE));
         if (dirLights != null) {
             dirLights.lights.removeValue(light, true);

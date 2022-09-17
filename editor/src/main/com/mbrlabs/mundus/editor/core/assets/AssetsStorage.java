@@ -5,7 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.assets.AssetType;
-import com.mbrlabs.mundus.commons.assets.meta.Meta;
+import com.mbrlabs.mundus.commons.assets.meta.dto.Meta;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
 import com.mbrlabs.mundus.commons.assets.texture.TextureService;
 import com.mbrlabs.mundus.editor.core.registry.ProjectRef;

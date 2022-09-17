@@ -24,8 +24,8 @@ import com.badlogic.gdx.utils.Align
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisScrollPane
 import com.kotcrab.vis.ui.widget.VisTable
-import com.mbrlabs.mundus.editor.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.config.UiWidgetsHolder
+import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.events.AssetSelectedEvent

@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.math.Matrix4;
-import com.mbrlabs.mundus.commons.env.AppEnvironment;
+import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 
 public class MaterialPreviewShader extends AppBaseShader {
 
@@ -23,7 +23,7 @@ public class MaterialPreviewShader extends AppBaseShader {
 
     @Override
     public void render(Renderable renderable) {
-        final AppEnvironment env = (AppEnvironment) renderable.environment;
+        final SceneEnvironment env = (SceneEnvironment) renderable.environment;
 
         setLights(env);
         set(UNIFORM_TRANS_MATRIX, renderable.worldTransform);

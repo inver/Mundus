@@ -27,8 +27,8 @@ import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Array;
-import com.mbrlabs.mundus.commons.env.AppEnvironment;
 import com.mbrlabs.mundus.commons.env.Fog;
+import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.env.lights.DirectionalLight;
 import com.mbrlabs.mundus.commons.env.lights.DirectionalLightsAttribute;
 import com.mbrlabs.mundus.commons.utils.ShaderUtils;
@@ -105,7 +105,7 @@ public class ModelShader extends BaseShader {
 
     @Override
     public void render(Renderable renderable) {
-        final AppEnvironment env = (AppEnvironment) renderable.environment;
+        final SceneEnvironment env = (SceneEnvironment) renderable.environment;
 
         setLights(env);
         set(UNIFORM_TRANS_MATRIX, renderable.worldTransform);
@@ -143,7 +143,7 @@ public class ModelShader extends BaseShader {
         renderable.meshPart.render(program);
     }
 
-    private void setLights(AppEnvironment env) {
+    private void setLights(SceneEnvironment env) {
         // ambient
         set(UNIFORM_AMBIENT_LIGHT_COLOR, env.getAmbientLight().color);
         set(UNIFORM_AMBIENT_LIGHT_INTENSITY, env.getAmbientLight().intensity);

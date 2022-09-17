@@ -20,8 +20,8 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.mbrlabs.mundus.commons.assets.Asset;
+import com.mbrlabs.mundus.commons.assets.meta.dto.Meta;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
-import com.mbrlabs.mundus.commons.assets.meta.Meta;
 
 import java.util.Map;
 

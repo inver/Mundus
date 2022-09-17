@@ -17,7 +17,7 @@ import com.kotcrab.vis.ui.widget.VisImage;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
-import com.mbrlabs.mundus.commons.env.AppEnvironment;
+import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.env.lights.SunLight;
 import com.mbrlabs.mundus.editor.shader.MaterialPreviewShader;
 import com.mbrlabs.mundus.editor.ui.widgets.RenderWidget;
@@ -87,7 +87,7 @@ public class PreviewGenerator {
         var sunLight = new SunLight();
         sunLight.position.set(new Vector3(-10, -10, -10));
 
-        var environment = new AppEnvironment();
+        var environment = new SceneEnvironment();
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 1f, 1f, 1f, 1f));
         environment.add(sunLight);
 

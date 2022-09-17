@@ -23,8 +23,6 @@ import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static com.mbrlabs.mundus.editor.core.ProjectConstants.LOGS_DIR;
-
 /**
  * Log messages with different log levels. To save performance during runtime,
  * string concatination is only run if log level is present. Use for example:
@@ -77,8 +75,8 @@ public class Log {
     }
 
     private static void prepareLogFile() {
-        File logDirectory = new File(LOGS_DIR);
-        System.out.println("INFO: Ensuring log directory(" + LOGS_DIR + ") exists...");
+        File logDirectory = new File("/tmp/mundus");
+        System.out.println("INFO: Ensuring log directory(" + "/tmp/mundus" + ") exists...");
         logDirectory.mkdirs();
 
         SimpleDateFormat fileDateFormat = new SimpleDateFormat("yy-MM-dd");

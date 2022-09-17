@@ -40,12 +40,12 @@ import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.mbrlabs.mundus.commons.assets.exceptions.AssetAlreadyExistsException
-import com.mbrlabs.mundus.commons.assets.meta.MetaModel
+import com.mbrlabs.mundus.commons.assets.meta.dto.MetaModel
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset
 import com.mbrlabs.mundus.commons.core.ModelFiles
 import com.mbrlabs.mundus.commons.loader.ModelImporter
-import com.mbrlabs.mundus.editor.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.assets.MetaSaver
+import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.registry.Registry
 import com.mbrlabs.mundus.editor.events.AssetImportEvent
 import com.mbrlabs.mundus.editor.events.EventBus

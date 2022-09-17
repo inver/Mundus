@@ -17,6 +17,7 @@
 package com.mbrlabs.mundus.editor.core.project;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mbrlabs.mundus.editor.config.AppEnvironment;
 import com.mbrlabs.mundus.editor.core.registry.ProjectRef;
 import com.mbrlabs.mundus.editor.core.registry.Registry;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.charset.Charset;
 
-import static com.mbrlabs.mundus.editor.core.ProjectConstants.HOME_DATA_FILE;
 import static com.mbrlabs.mundus.editor.core.ProjectConstants.PROJECT_EXTENSION;
 
 /**
@@ -49,6 +49,7 @@ import static com.mbrlabs.mundus.editor.core.ProjectConstants.PROJECT_EXTENSION;
 public class ProjectStorage {
 
     private final ObjectMapper mapper;
+    private final AppEnvironment appEnvironment;
 
     /**
      * Loads the registry.
@@ -58,13 +59,13 @@ public class ProjectStorage {
      * @return mundus registry
      */
     public Registry loadRegistry() {
-        try (var fis = new FileInputStream(HOME_DATA_FILE)) {
+        try (var fis = new FileInputStream(appEnvironment.getHomeDataFile())) {
             return mapper.readValue(fis, Registry.class);
         } catch (Exception e) {
             log.error("ERROR", e);
         }
 
-        return new Registry();
+        return new Registry(appEnvironment.getTempDir());
     }
 
     /**
@@ -73,7 +74,7 @@ public class ProjectStorage {
      * @param registry mundus registry
      */
     public void saveRegistry(Registry registry) {
-        try (var fos = new FileOutputStream(HOME_DATA_FILE)) {
+        try (var fos = new FileOutputStream(appEnvironment.getHomeDataFile())) {
             mapper.writeValue(fos, registry);
         } catch (Exception e) {
             log.error("ERROR", e);

@@ -23,7 +23,7 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.UBJsonReader;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset;
-import com.mbrlabs.mundus.commons.assets.meta.Meta;
+import com.mbrlabs.mundus.commons.assets.meta.dto.Meta;
 import com.mbrlabs.mundus.commons.loader.ac3d.Ac3dModelLoader;
 import com.mbrlabs.mundus.commons.loader.ac3d.Ac3dParser;
 import com.mbrlabs.mundus.commons.loader.g3d.MG3dModelLoader;

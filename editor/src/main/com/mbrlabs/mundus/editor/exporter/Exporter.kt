@@ -28,7 +28,7 @@ import com.mbrlabs.mundus.commons.dto.SceneDto
 import com.mbrlabs.mundus.commons.dto.TerrainComponentDto
 import com.mbrlabs.mundus.commons.importer.JsonScene
 import com.mbrlabs.mundus.commons.importer.SceneConverter
-import com.mbrlabs.mundus.editor.assets.EditorAssetManager
+import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.project.ProjectContext
 import com.mbrlabs.mundus.editor.core.project.ProjectStorage
 import com.mbrlabs.mundus.editor.core.scene.SceneStorage

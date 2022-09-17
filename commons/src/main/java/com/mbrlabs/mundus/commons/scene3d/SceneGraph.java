@@ -18,7 +18,7 @@ package com.mbrlabs.mundus.commons.scene3d;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.mbrlabs.mundus.commons.env.AppEnvironment;
+import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.components.Renderable;
 
 import java.util.List;
@@ -56,7 +56,7 @@ public class SceneGraph implements Renderable {
     }
 
     @Override
-    public void render(ModelBatch batch, AppEnvironment environment, float delta) {
+    public void render(ModelBatch batch, SceneEnvironment environment, float delta) {
         for (GameObject go : root.getChildren()) {
             go.render(batch, environment, delta);
         }

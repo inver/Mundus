@@ -23,6 +23,9 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonWriter;
 import com.mbrlabs.mundus.commons.assets.AssetType;
 import com.mbrlabs.mundus.commons.assets.exceptions.MetaFileParseException;
+import com.mbrlabs.mundus.commons.assets.meta.dto.Meta;
+import com.mbrlabs.mundus.commons.assets.meta.dto.MetaModel;
+import com.mbrlabs.mundus.commons.assets.meta.dto.MetaTerrain;
 import com.mbrlabs.mundus.commons.terrain.Terrain;
 import lombok.SneakyThrows;
 

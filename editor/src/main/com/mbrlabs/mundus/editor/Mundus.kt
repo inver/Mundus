@@ -19,7 +19,6 @@ package com.mbrlabs.mundus.editor
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.kotcrab.vis.ui.VisUI
-import com.mbrlabs.mundus.editor.shader.Shaders
 import com.mbrlabs.mundus.editor.utils.Fa
 
 /**
@@ -54,7 +53,6 @@ object Mundus {
      */
     fun dispose() {
         VisUI.dispose()
-        Shaders.dispose()
         fa.dispose()
     }
 

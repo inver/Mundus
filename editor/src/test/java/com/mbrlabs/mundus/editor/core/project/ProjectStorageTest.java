@@ -1,20 +1,22 @@
 package com.mbrlabs.mundus.editor.core.project;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mbrlabs.mundus.commons.Scene;
+import com.mbrlabs.mundus.editor.config.BaseCtxTest;
 import com.mbrlabs.mundus.editor.core.registry.ProjectRef;
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.util.UUID;
 
-public class ProjectStorageTest {
+public class ProjectStorageTest extends BaseCtxTest {
 
     private static final String PROJECT_PATH = "/tmp/" + UUID.randomUUID() + "/ProjectStorageTest";
 
-    private final ProjectStorage storage = new ProjectStorage(new ObjectMapper());
+    @Autowired
+    private ProjectStorage storage;
 
     @Test
     public void testSaveProject() {

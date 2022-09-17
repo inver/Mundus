@@ -19,6 +19,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
+import java.util.UUID;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -39,21 +41,20 @@ import static org.mockito.Mockito.when;
 public class TestConfig {
 
     @Bean
+    public AppEnvironment appEnvironment() {
+        return new AppEnvironment() {
+            @Override
+            public String getHomeDir() {
+                return "/tmp/" + UUID.randomUUID() + ".mundus";
+            }
+        };
+    }
+
+    @Bean
     public ObjectMapper mapper() {
         return new ObjectMapper();
     }
 
-    //    @Bean
-//    public Registry registry() {
-//        return new Registry();
-//    }
-//
-//
-//    @Bean
-//    public MetaService metaService() {
-//        return new MetaService();
-//    }
-//
     @Bean
     public TextureService textureService() {
         return new TextureService();

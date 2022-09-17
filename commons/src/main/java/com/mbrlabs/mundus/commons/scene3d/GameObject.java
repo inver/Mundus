@@ -17,7 +17,7 @@
 package com.mbrlabs.mundus.commons.scene3d;
 
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.mbrlabs.mundus.commons.env.AppEnvironment;
+import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.components.Component;
 import com.mbrlabs.mundus.commons.scene3d.components.Renderable;
 import com.mbrlabs.mundus.commons.scene3d.traversal.DepthFirstIterator;
@@ -74,7 +74,7 @@ public class GameObject extends SimpleNode<GameObject> implements Iterable<GameO
 
 
     @Override
-    public void render(ModelBatch batch, AppEnvironment environment, float delta) {
+    public void render(ModelBatch batch, SceneEnvironment environment, float delta) {
         if (active) {
             for (Component component : this.components) {
                 component.render(batch, environment, delta);

@@ -20,7 +20,7 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
-import com.mbrlabs.mundus.commons.env.AppEnvironment;
+import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.scene3d.components.Component;
 import com.mbrlabs.mundus.commons.scene3d.components.ModelComponent;
@@ -46,7 +46,7 @@ public class PickableModelComponent extends ModelComponent implements PickableCo
     }
 
     @Override
-    public void render(ModelBatch batch, AppEnvironment environment, float delta) {
+    public void render(ModelBatch batch, SceneEnvironment environment, float delta) {
         batch.render(modelInstance, pickShader);
     }
 

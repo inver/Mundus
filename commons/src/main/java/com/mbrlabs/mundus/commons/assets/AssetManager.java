@@ -7,8 +7,8 @@ import com.badlogic.gdx.utils.Disposable;
 import com.mbrlabs.mundus.commons.assets.exceptions.AssetNotFoundException;
 import com.mbrlabs.mundus.commons.assets.exceptions.MetaFileParseException;
 import com.mbrlabs.mundus.commons.assets.material.MaterialService;
-import com.mbrlabs.mundus.commons.assets.meta.Meta;
 import com.mbrlabs.mundus.commons.assets.meta.MetaService;
+import com.mbrlabs.mundus.commons.assets.meta.dto.Meta;
 import com.mbrlabs.mundus.commons.assets.model.ModelService;
 import com.mbrlabs.mundus.commons.assets.pixmap.PixmapTextureService;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainService;
@@ -34,7 +34,7 @@ public class AssetManager implements Disposable {
 
     protected final FileHandle rootFolder;
 
-    protected final MetaService metaFileService;
+    protected final MetaService metaService;
     protected final TextureService textureService;
     protected final TerrainService terrainService;
     protected final MaterialService materialService;
@@ -129,7 +129,7 @@ public class AssetManager implements Disposable {
 
         // load assets
         for (FileHandle meta : metaFiles) {
-            var asset = loadAsset(metaFileService.load(meta));
+            var asset = loadAsset(metaService.load(meta));
             if (listener != null) {
                 listener.onLoad(asset, assets.size(), metaFiles.size());
             }

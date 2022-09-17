@@ -20,7 +20,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.mbrlabs.mundus.editor.assets.EditorAssetManager;
+import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.utils.Fa;

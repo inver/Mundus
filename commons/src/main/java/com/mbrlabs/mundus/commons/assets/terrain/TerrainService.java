@@ -2,7 +2,7 @@ package com.mbrlabs.mundus.commons.assets.terrain;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.mbrlabs.mundus.commons.assets.AssetService;
-import com.mbrlabs.mundus.commons.assets.meta.Meta;
+import com.mbrlabs.mundus.commons.assets.meta.dto.Meta;
 import org.apache.commons.lang3.NotImplementedException;
 
 public class TerrainService implements AssetService<TerrainAsset> {
@@ -16,5 +16,10 @@ public class TerrainService implements AssetService<TerrainAsset> {
         TerrainAsset asset = new TerrainAsset(meta, assetFile);
         asset.load();
         return asset;
+    }
+
+    @Override
+    public void copy(FileHandle from, FileHandle to) {
+
     }
 }

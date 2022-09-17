@@ -23,7 +23,7 @@ import com.mbrlabs.mundus.commons.assets.material.MaterialAsset
 import com.mbrlabs.mundus.commons.scene3d.GameObject
 import com.mbrlabs.mundus.commons.scene3d.components.Component
 import com.mbrlabs.mundus.commons.scene3d.components.ModelComponent
-import com.mbrlabs.mundus.editor.assets.EditorAssetManager
+import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.PreviewGenerator

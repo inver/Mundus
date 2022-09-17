@@ -5,20 +5,22 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
+import com.kotcrab.vis.ui.widget.MenuItem;
+import com.kotcrab.vis.ui.widget.PopupMenu;
 import com.kotcrab.vis.ui.widget.file.FileChooser;
 import com.kotcrab.vis.ui.widget.file.SingleFileChooserListener;
-import com.mbrlabs.mundus.editor.appUimodules.menu.FileMenu;
 import com.mbrlabs.mundus.editor.core.project.ProjectAlreadyImportedException;
 import com.mbrlabs.mundus.editor.core.project.ProjectManager;
 import com.mbrlabs.mundus.editor.core.project.ProjectOpenException;
+import com.mbrlabs.mundus.editor.core.registry.Registry;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.ui.AppUi;
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.*;
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.importer.ImportModelDialog;
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.settings.SettingsDialog;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 
@@ -27,6 +29,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class MenuBarPresenter {
 
+    private final Registry registry;
     private final AppUi appUi;
     private final ProjectManager projectManager;
     private final NewProjectDialog newProjectDialog;
@@ -73,16 +76,23 @@ public class MenuBarPresenter {
         return appUi.createOpenDialogListener(exitDialog);
     }
 
-    @NotNull
-    public FileMenu.RecentProjectListener recentProjectListener() {
-        return project -> {
-            try {
-                projectManager.changeProject(projectManager.loadProject(project));
-            } catch (Exception e) {
-                log.error("ERROR", e);
-                Dialogs.showErrorDialog(appUi, "Could not open project");
-            }
-        };
+    @SneakyThrows
+    public void initRecentProjectsMenu(PopupMenu recentProjectsPopup) {
+        for (var proj : registry.getProjects()) {
+            var menu = new MenuItem(proj.getName() + " - [" + proj.getPath() + "]");
+            menu.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    try {
+                        projectManager.changeProject(projectManager.loadProject(proj));
+                    } catch (Exception e) {
+                        log.error("ERROR", e);
+                        Dialogs.showErrorDialog(appUi, "Could not open project");
+                    }
+                }
+            });
+            recentProjectsPopup.addItem(menu);
+        }
     }
 
     @Nullable

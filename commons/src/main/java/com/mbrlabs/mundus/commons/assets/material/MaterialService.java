@@ -2,9 +2,8 @@ package com.mbrlabs.mundus.commons.assets.material;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.mbrlabs.mundus.commons.assets.AssetService;
-import com.mbrlabs.mundus.commons.assets.meta.Meta;
 import com.mbrlabs.mundus.commons.assets.meta.MetaService;
-import com.mbrlabs.mundus.commons.assets.model.ModelAsset;
+import com.mbrlabs.mundus.commons.assets.meta.dto.Meta;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -48,5 +47,10 @@ public class MaterialService implements AssetService<MaterialAsset> {
         var asset = new MaterialAsset(meta, assetFile);
         asset.load();
         return asset;
+    }
+
+    @Override
+    public void copy(FileHandle from, FileHandle to) {
+
     }
 }

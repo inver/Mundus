@@ -20,7 +20,7 @@ import com.kotcrab.vis.ui.util.async.AsyncTaskListener
 import com.kotcrab.vis.ui.widget.VisDialog
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisProgressBar
-import com.mbrlabs.mundus.editor.assets.EditorAssetManager
+import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.core.project.ProjectStorage
 import com.mbrlabs.mundus.editor.core.scene.SceneStorage

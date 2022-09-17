@@ -7,10 +7,9 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.kotcrab.vis.ui.widget.VisTable;
+import com.mbrlabs.mundus.editor.config.AppEnvironment;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
-import com.mbrlabs.mundus.editor.core.project.ProjectContext;
 import com.mbrlabs.mundus.editor.core.project.ProjectManager;
-import com.mbrlabs.mundus.editor.core.registry.Registry;
 import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
 import com.mbrlabs.mundus.editor.core.shader.ShaderStorage;
 import com.mbrlabs.mundus.editor.events.EventBus;
@@ -36,14 +35,10 @@ import com.mbrlabs.mundus.editor.utils.Compass;
 import com.mbrlabs.mundus.editor.utils.GlUtils;
 import com.mbrlabs.mundus.editor.utils.UsefulMeshs;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-
-import static com.mbrlabs.mundus.editor.core.ProjectConstants.HOME_DIR;
 
 @Component
 @RequiredArgsConstructor
@@ -54,7 +49,6 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
     private final ShortcutController shortcutController;
     private final InputManager inputManager;
     private final ProjectManager projectManager;
-    private final Registry registry;
     private final ToolManager toolManager;
     private final ModelBatch batch;
     private final EventBus eventBus;
@@ -63,17 +57,19 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
     private final ShaderStorage shaderStorage;
     private final MenuBarPresenter menuBarPresenter;
     private final DockBarPresenter dockBarPresenter;
-    private Compass compass;
     private final Outline outline;
     private final MundusToolbar toolbar;
     private final StatusBar statusBar;
     private final Inspector inspector;
+    private final AppEnvironment appEnvironment;
+
     private DockBar dockBar;
+    private Compass compass;
 
     public void create() {
-        var homeDir = new File(HOME_DIR);
-        if (!homeDir.exists()) {
-            homeDir.mkdirs();
+        var homeDirFile = new File(appEnvironment.getHomeDir());
+        if (!homeDirFile.exists()) {
+            homeDirFile.mkdirs();
         }
 
         // init stuff
@@ -90,7 +86,7 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
         // open last edited project or create default project
         var context = projectManager.loadLastProject();
         if (context == null) {
-            context = createDefaultProject();
+            context = projectManager.createDefaultProject();
         }
 
         if (context == null) {
@@ -104,7 +100,7 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
 
 
     private void setupUI() {
-        MundusMenuBar menuBar = new MundusMenuBar(registry, menuBarPresenter);
+        MundusMenuBar menuBar = new MundusMenuBar(menuBarPresenter);
 
         var root = new VisTable();
         appUi.addActor(root);
@@ -207,16 +203,6 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
     @Override
     public void onSceneChanged(@NotNull SceneChangedEvent event) {
         setupSceneWidget();
-    }
-
-    private ProjectContext createDefaultProject() {
-        if (registry.getLastProject() == null || registry.getProjects().size() == 0) {
-            var path = FilenameUtils.concat(FileUtils.getUserDirectoryPath(), "MundusProjects");
-
-            return projectManager.createProject("Default Project", path);
-        }
-
-        return null;
     }
 
     public boolean closeRequested() {

@@ -37,8 +37,8 @@ import com.mbrlabs.mundus.commons.scene3d.components.Component;
 import com.mbrlabs.mundus.commons.scene3d.components.ModelComponent;
 import com.mbrlabs.mundus.commons.scene3d.components.TerrainComponent;
 import com.mbrlabs.mundus.editor.Main;
-import com.mbrlabs.mundus.editor.assets.EditorAssetManager;
 import com.mbrlabs.mundus.editor.core.assets.AssetsStorage;
+import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager;
 import com.mbrlabs.mundus.editor.core.registry.ProjectRef;
 import com.mbrlabs.mundus.editor.core.registry.Registry;
 import com.mbrlabs.mundus.editor.core.scene.SceneStorage;
@@ -51,6 +51,8 @@ import com.mbrlabs.mundus.editor.scene3d.components.PickableComponent;
 import com.mbrlabs.mundus.editor.utils.SkyboxBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -87,11 +89,6 @@ public class ProjectManager implements Disposable {
     private final ShaderStorage shaderStorage;
     private final AssetsStorage assetsStorage;
 
-//    private EditorAssetManager createAssetManager(String rootPath) {
-//        return new EditorAssetManager(new FileHandle(rootPath), metaService, textureService, terrainService,
-//                materialService, pixmapTextureService, modelService);
-//    }
-
     /**
      * Saves the active project
      */
@@ -118,7 +115,6 @@ public class ProjectManager implements Disposable {
         var ctx = new ProjectContext(-1);
         ctx.path = path;
         ctx.name = ref.getName();
-
 
         //todo
 //        ctx.setAssetManager(createAssetManager(path + "/" + PROJECT_ASSETS_DIR));
@@ -409,5 +405,15 @@ public class ProjectManager implements Disposable {
     @Override
     public void dispose() {
         editorCtx.dispose();
+    }
+
+    public ProjectContext createDefaultProject() {
+        if (registry.getLastProject() == null || registry.getProjects().size() == 0) {
+            var path = FilenameUtils.concat(FileUtils.getUserDirectoryPath(), "MundusProjects");
+
+            return createProject("Default Project", path);
+        }
+
+        return null;
     }
 }

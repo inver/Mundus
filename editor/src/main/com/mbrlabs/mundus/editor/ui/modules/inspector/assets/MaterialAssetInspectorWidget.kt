@@ -19,7 +19,7 @@ package com.mbrlabs.mundus.editor.ui.modules.inspector.assets
 import com.kotcrab.vis.ui.widget.Separator.SeparatorStyle
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset
 import com.mbrlabs.mundus.commons.scene3d.GameObject
-import com.mbrlabs.mundus.editor.assets.EditorAssetManager
+import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.PreviewGenerator

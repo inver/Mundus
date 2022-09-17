@@ -21,6 +21,7 @@ import org.springframework.context.annotation.Configuration;
         "com.mbrlabs.mundus.editor"
 })
 public class RootConfig {
+
     @Bean
     public ObjectMapper mapper() {
         return new ObjectMapper();

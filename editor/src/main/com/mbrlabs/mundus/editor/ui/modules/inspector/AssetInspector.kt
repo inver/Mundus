@@ -24,7 +24,7 @@ import com.mbrlabs.mundus.commons.assets.material.MaterialAsset
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset
-import com.mbrlabs.mundus.editor.assets.EditorAssetManager
+import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.tools.ToolManager

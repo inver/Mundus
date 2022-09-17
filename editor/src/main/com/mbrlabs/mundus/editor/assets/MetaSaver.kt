@@ -19,9 +19,9 @@ package com.mbrlabs.mundus.editor.assets
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonWriter
 import com.mbrlabs.mundus.commons.assets.AssetType
-import com.mbrlabs.mundus.commons.assets.meta.Meta
-import com.mbrlabs.mundus.commons.assets.meta.MetaModel
-import com.mbrlabs.mundus.commons.assets.meta.MetaTerrain
+import com.mbrlabs.mundus.commons.assets.meta.dto.Meta
+import com.mbrlabs.mundus.commons.assets.meta.dto.MetaModel
+import com.mbrlabs.mundus.commons.assets.meta.dto.MetaTerrain
 
 /**
  *

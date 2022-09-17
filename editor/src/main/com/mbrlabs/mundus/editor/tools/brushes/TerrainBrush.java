@@ -31,7 +31,7 @@ import com.mbrlabs.mundus.commons.terrain.SplatMap;
 import com.mbrlabs.mundus.commons.terrain.SplatTexture;
 import com.mbrlabs.mundus.commons.terrain.Terrain;
 import com.mbrlabs.mundus.commons.utils.MathUtils;
-import com.mbrlabs.mundus.editor.assets.EditorAssetManager;
+import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.history.commands.TerrainHeightCommand;

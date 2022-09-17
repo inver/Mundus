@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
-import com.mbrlabs.mundus.commons.env.AppEnvironment;
+import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.env.lights.SunLightsAttribute;
 import com.mbrlabs.mundus.commons.utils.ShaderUtils;
 import lombok.Getter;
@@ -61,7 +61,7 @@ public abstract class AppBaseShader extends BaseShader {
         set(UNIFORM_CAM_POS, camera.position);
     }
 
-    protected void setLights(AppEnvironment env) {
+    protected void setLights(SceneEnvironment env) {
         // ambient
         set(UNIFORM_LIGHT_COLOR, new Color(1f, 1f, 1f, 1f));
 

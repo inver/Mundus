@@ -1,22 +1,16 @@
 package com.mbrlabs.mundus.editor.core.project;
 
-import com.mbrlabs.mundus.editor.config.GdxTestRunner;
-import com.mbrlabs.mundus.editor.config.TestConfig;
+import com.mbrlabs.mundus.editor.config.BaseCtxTest;
 import com.mbrlabs.mundus.editor.core.registry.ProjectRef;
 import lombok.SneakyThrows;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
 
 import java.util.UUID;
 
-@RunWith(GdxTestRunner.class)
-@ContextConfiguration(classes = {
-        TestConfig.class
-})
-public class ProjectManagerTest {
+
+public class ProjectManagerTest extends BaseCtxTest {
     private static final String PROJECT_PATH = "/tmp/" + UUID.randomUUID() + "/mundusProject";
 
     @Autowired

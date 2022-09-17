@@ -1,8 +1,9 @@
 package com.mbrlabs.mundus.commons.assets.texture;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.assets.AssetService;
-import com.mbrlabs.mundus.commons.assets.meta.Meta;
+import com.mbrlabs.mundus.commons.assets.meta.dto.Meta;
 import org.apache.commons.lang3.NotImplementedException;
 
 public class TextureService implements AssetService<TextureAsset> {
@@ -19,5 +20,14 @@ public class TextureService implements AssetService<TextureAsset> {
         asset.generateMipmaps(true);
         asset.load();
         return asset;
+    }
+
+    @Override
+    public void copy(FileHandle from, FileHandle to) {
+
+    }
+
+    public Asset load(FileHandle metaFile) {
+        return null;
     }
 }

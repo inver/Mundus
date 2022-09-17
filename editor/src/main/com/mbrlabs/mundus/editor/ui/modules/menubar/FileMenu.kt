@@ -17,29 +17,22 @@
 package com.mbrlabs.mundus.editor.appUimodules.menu
 
 import com.badlogic.gdx.Input
-import com.badlogic.gdx.scenes.scene2d.InputEvent
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.kotcrab.vis.ui.widget.Menu
 import com.kotcrab.vis.ui.widget.MenuItem
 import com.kotcrab.vis.ui.widget.PopupMenu
-import com.mbrlabs.mundus.editor.core.registry.ProjectRef
-import com.mbrlabs.mundus.editor.core.registry.Registry
 
 /**
  * @author Marcus Brummer
  * *
  * @version 22-11-2015
  */
-class FileMenu(
-    private val registry: Registry,
-) : Menu("File") {
-
+class FileMenu : Menu("File") {
     val newProject = MenuItem("New Project")
     val importProject = MenuItem("Import Project")
     val exit = MenuItem("Exit")
 
     private val recentProjects = MenuItem("Recent Projects")
-    private val recentProjectsPopup = PopupMenu()
+    val recentProjectsPopup = PopupMenu()
     private val saveProject = MenuItem("Save Project")
 
     init {
@@ -55,21 +48,5 @@ class FileMenu(
         addItem(recentProjects)
         addSeparator()
         addItem(exit)
-    }
-
-    fun addRecentProjectsListener(listener: RecentProjectListener) {
-        for (proj in registry.projects) {
-            val menu = MenuItem(proj.name + " - [" + proj.path + "]")
-            menu.addListener(object : ClickListener() {
-                override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                    listener.clicked(proj);
-                }
-            })
-            recentProjectsPopup.addItem(menu)
-        }
-    }
-
-    interface RecentProjectListener {
-        fun clicked(project: ProjectRef)
     }
 }

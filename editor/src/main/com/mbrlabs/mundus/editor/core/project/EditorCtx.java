@@ -12,6 +12,9 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Used as singleton current state of editor
+ */
 @Component
 public class EditorCtx implements Disposable {
 

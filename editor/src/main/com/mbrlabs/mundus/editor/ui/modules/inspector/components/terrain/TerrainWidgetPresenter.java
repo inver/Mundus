@@ -10,7 +10,7 @@ import com.mbrlabs.mundus.commons.assets.meta.MetaService;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
 import com.mbrlabs.mundus.commons.terrain.SplatTexture;
 import com.mbrlabs.mundus.editor.assets.AssetTextureFilter;
-import com.mbrlabs.mundus.editor.assets.EditorAssetManager;
+import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager;
 import com.mbrlabs.mundus.editor.core.project.ProjectManager;
 import com.mbrlabs.mundus.editor.events.AssetImportEvent;
 import com.mbrlabs.mundus.editor.events.EventBus;

@@ -21,7 +21,7 @@ import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.math.Vector2;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset;
-import com.mbrlabs.mundus.commons.env.AppEnvironment;
+import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 
 import java.util.Objects;
@@ -62,7 +62,7 @@ public class TerrainComponent extends AbstractComponent implements AssetUsage {
     }
 
     @Override
-    public void render(ModelBatch batch, AppEnvironment environment, float delta) {
+    public void render(ModelBatch batch, SceneEnvironment environment, float delta) {
         batch.render(terrain.getTerrain(), environment, shader);
     }
 

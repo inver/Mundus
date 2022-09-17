@@ -24,8 +24,8 @@ import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
-import com.mbrlabs.mundus.commons.env.AppEnvironment;
 import com.mbrlabs.mundus.commons.env.Fog;
+import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.utils.ShaderUtils;
 
 /**
@@ -91,7 +91,7 @@ public class SkyboxShader extends BaseShader {
         }
 
         // Fog
-        Fog fog = ((AppEnvironment) renderable.environment).getFog();
+        Fog fog = ((SceneEnvironment) renderable.environment).getFog();
         if (fog == null) {
             set(UNIFORM_FOG, 0);
         } else {

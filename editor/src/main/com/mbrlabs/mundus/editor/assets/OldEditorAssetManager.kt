@@ -27,8 +27,8 @@ import com.mbrlabs.mundus.commons.assets.AssetType
 import com.mbrlabs.mundus.commons.assets.OldAssetManager
 import com.mbrlabs.mundus.commons.assets.exceptions.AssetAlreadyExistsException
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset
-import com.mbrlabs.mundus.commons.assets.meta.Meta
-import com.mbrlabs.mundus.commons.assets.meta.MetaTerrain
+import com.mbrlabs.mundus.commons.assets.meta.dto.Meta
+import com.mbrlabs.mundus.commons.assets.meta.dto.MetaTerrain
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset
 import com.mbrlabs.mundus.commons.assets.pixmap.PixmapTextureAsset
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset

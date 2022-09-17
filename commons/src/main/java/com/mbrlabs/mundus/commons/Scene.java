@@ -21,7 +21,7 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.utils.Disposable;
 import com.mbrlabs.mundus.commons.assets.Asset;
-import com.mbrlabs.mundus.commons.env.AppEnvironment;
+import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.SceneGraph;
 import com.mbrlabs.mundus.commons.skybox.Skybox;
 import lombok.Getter;
@@ -43,7 +43,7 @@ public class Scene implements Disposable {
     private SceneGraph sceneGraph = new SceneGraph();
 
     @Getter
-    private final AppEnvironment environment = new AppEnvironment();
+    private final SceneEnvironment environment = new SceneEnvironment();
     //todo move skybox to environment
     @Setter
     private Skybox skybox;

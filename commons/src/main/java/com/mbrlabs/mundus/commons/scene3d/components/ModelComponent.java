@@ -25,7 +25,7 @@ import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset;
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
-import com.mbrlabs.mundus.commons.env.AppEnvironment;
+import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 
 import java.util.Objects;
@@ -93,7 +93,7 @@ public class ModelComponent extends AbstractComponent implements AssetUsage {
     }
 
     @Override
-    public void render(ModelBatch batch, AppEnvironment environment, float delta) {
+    public void render(ModelBatch batch, SceneEnvironment environment, float delta) {
         modelInstance.transform.set(gameObject.getTransform());
         batch.render(modelInstance, environment, shader);
     }
