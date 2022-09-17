@@ -43,9 +43,9 @@ jobs:
         run: |
           echo -e "ref: $GITHUB_REF \ncommit: $GITHUB_SHA\nbuild: $(date +"%Y-%m-%dT%H:%M:%SZ")" > editor/build/libs/info.txt
       - name: Update nightly release
-        uses: ncipollo/release-action@v1
+        uses: eine/tip@master
         with:
           tag: nightly
+          rm: true
           token: ${{ secrets.GITHUB_TOKEN }}
-          removeArtifacts: true
           artifacts: "editor/build/libs/Mundus.jar"
