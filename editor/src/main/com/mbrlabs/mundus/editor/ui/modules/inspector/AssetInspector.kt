@@ -42,7 +42,7 @@ import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerPresenter
  * @version 13-10-2016
  */
 class AssetInspector(
-    separatorStyle: Separator.SeparatorStyle,
+    separatorStyle: Separator.SeparatorStyle?,
     private val ctx: EditorCtx,
     private val appUi: AppUi,
     private val assetManager: EditorAssetManager,

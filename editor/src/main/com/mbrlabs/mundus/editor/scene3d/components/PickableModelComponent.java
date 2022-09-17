@@ -19,11 +19,11 @@ package com.mbrlabs.mundus.editor.scene3d.components;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.Shader;
+import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.mbrlabs.mundus.commons.env.AppEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.scene3d.components.Component;
 import com.mbrlabs.mundus.commons.scene3d.components.ModelComponent;
-import com.mbrlabs.mundus.editor.shader.Shaders;
 import com.mbrlabs.mundus.editor.tools.picker.PickerColorEncoder;
 
 /**
@@ -32,8 +32,11 @@ import com.mbrlabs.mundus.editor.tools.picker.PickerColorEncoder;
  */
 public class PickableModelComponent extends ModelComponent implements PickableComponent {
 
-    public PickableModelComponent(GameObject go, Shader shader) {
+    private final BaseShader pickShader;
+
+    public PickableModelComponent(GameObject go, Shader shader, BaseShader pickShader) {
         super(go, shader);
+        this.pickShader = pickShader;
     }
 
     @Override
@@ -44,12 +47,12 @@ public class PickableModelComponent extends ModelComponent implements PickableCo
 
     @Override
     public void render(ModelBatch batch, AppEnvironment environment, float delta) {
-        batch.render(modelInstance, Shaders.INSTANCE.getPickerShader());
+        batch.render(modelInstance, pickShader);
     }
 
     @Override
     public Component clone(GameObject go) {
-        PickableModelComponent mc = new PickableModelComponent(go, shader);
+        PickableModelComponent mc = new PickableModelComponent(go, shader, pickShader);
         mc.modelAsset = this.modelAsset;
         mc.modelInstance = new ModelInstance(modelAsset.getModel());
         mc.shader = this.shader;

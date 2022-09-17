@@ -28,7 +28,7 @@ import org.apache.commons.io.FileUtils
  * @author Marcus Brummer
  * @version 15-10-2016
  */
-class TextureAssetInspectorWidget(separatorStyle: SeparatorStyle) :
+class TextureAssetInspectorWidget(separatorStyle: SeparatorStyle?) :
     BaseInspectorWidget(separatorStyle, "Texture Asset") {
 
     private val name = VisLabel()

@@ -18,6 +18,7 @@ package com.mbrlabs.mundus.editor.tools.brushes;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.mbrlabs.mundus.editor.assets.EditorAssetManager;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
@@ -30,13 +31,8 @@ import com.mbrlabs.mundus.editor.utils.Fa;
  */
 public class ConfettiBrush extends TerrainBrush {
 
-    public ConfettiBrush(EditorCtx ctx, EditorAssetManager assetManager, ModelBatch batch, CommandHistory history) {
-        super(ctx, assetManager, batch, history, Gdx.files.internal("brushes/confetti.png"));
-    }
-
-    @Override
-    public String getName() {
-        return "Confetti brush";
+    public ConfettiBrush(EditorCtx ctx, BaseShader shader, EditorAssetManager assetManager, ModelBatch batch, CommandHistory history) {
+        super(ctx, shader, assetManager, batch, history, Gdx.files.internal("brushes/confetti.png"), "Confetti brush");
     }
 
     @Override

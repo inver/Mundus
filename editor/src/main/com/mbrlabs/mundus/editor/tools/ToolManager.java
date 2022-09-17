@@ -23,6 +23,8 @@ import com.badlogic.gdx.utils.Disposable;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.editor.assets.EditorAssetManager;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
+import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
+import com.mbrlabs.mundus.editor.core.shader.ShaderStorage;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.input.InputManager;
@@ -57,7 +59,7 @@ public class ToolManager extends InputAdapter implements Disposable {
 
     private final InputManager inputManager;
 
-    public ToolManager(EditorCtx ctx, AppUi appUi, EventBus eventBus, InputManager inputManager,
+    public ToolManager(EditorCtx ctx, ShaderStorage shaderStorage, AppUi appUi, EventBus eventBus, InputManager inputManager,
                        EditorAssetManager assetManager, GameObjectPicker goPicker,
                        ToolHandlePicker toolHandlePicker, ModelBatch modelBatch, ShapeRenderer shapeRenderer,
                        CommandHistory history) {
@@ -66,16 +68,20 @@ public class ToolManager extends InputAdapter implements Disposable {
         this.activeTool = null;
 
         terrainBrushes = new ArrayList<>();
-        terrainBrushes.add(new SmoothCircleBrush(ctx, assetManager, modelBatch, history));
-        terrainBrushes.add(new CircleBrush(ctx, assetManager, modelBatch, history));
-        terrainBrushes.add(new StarBrush(ctx, assetManager, modelBatch, history));
-        terrainBrushes.add(new ConfettiBrush(ctx, assetManager, modelBatch, history));
+        terrainBrushes.add(new SmoothCircleBrush(ctx, shaderStorage.get(ShaderConstants.TERRAIN),
+                assetManager, modelBatch, history));
+        terrainBrushes.add(new CircleBrush(ctx, shaderStorage.get(ShaderConstants.TERRAIN),
+                assetManager, modelBatch, history));
+        terrainBrushes.add(new StarBrush(ctx, shaderStorage.get(ShaderConstants.TERRAIN),
+                assetManager, modelBatch, history));
+        terrainBrushes.add(new ConfettiBrush(ctx, shaderStorage.get(ShaderConstants.TERRAIN),
+                assetManager, modelBatch, history));
 
-        modelPlacementTool = new ModelPlacementTool(ctx, modelBatch, history, appUi, eventBus);
-        selectionTool = new SelectionTool(ctx, goPicker, modelBatch, history, eventBus);
-        translateTool = new TranslateTool(ctx, goPicker, toolHandlePicker, modelBatch, history, eventBus);
-        rotateTool = new RotateTool(ctx, goPicker, toolHandlePicker, shapeRenderer, modelBatch, history, eventBus);
-        scaleTool = new ScaleTool(ctx, goPicker, toolHandlePicker, shapeRenderer, modelBatch, history, appUi, eventBus);
+        modelPlacementTool = new ModelPlacementTool(ctx, shaderStorage.get(ShaderConstants.MODEL), modelBatch, history, appUi, eventBus);
+        selectionTool = new SelectionTool(ctx, shaderStorage.get(ShaderConstants.WIREFRAME), goPicker, modelBatch, history, eventBus);
+        translateTool = new TranslateTool(ctx, shaderStorage.get(ShaderConstants.WIREFRAME), goPicker, toolHandlePicker, modelBatch, history, eventBus);
+        rotateTool = new RotateTool(ctx, shaderStorage.get(ShaderConstants.WIREFRAME), goPicker, toolHandlePicker, shapeRenderer, modelBatch, history, eventBus);
+        scaleTool = new ScaleTool(ctx, shaderStorage.get(ShaderConstants.WIREFRAME), goPicker, toolHandlePicker, shapeRenderer, modelBatch, history, appUi, eventBus);
     }
 
     public void activateTool(Tool tool) {

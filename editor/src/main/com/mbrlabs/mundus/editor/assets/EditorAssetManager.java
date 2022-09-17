@@ -23,8 +23,9 @@ import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
 import com.mbrlabs.mundus.commons.assets.texture.TextureService;
 import com.mbrlabs.mundus.commons.core.ModelFiles;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
+import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
+import com.mbrlabs.mundus.editor.core.shader.ShaderStorage;
 import com.mbrlabs.mundus.editor.scene3d.components.PickableModelComponent;
-import com.mbrlabs.mundus.editor.shader.Shaders;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -47,15 +48,17 @@ import static com.mbrlabs.mundus.editor.core.ProjectConstants.*;
 @Slf4j
 public class EditorAssetManager extends AssetManager {
 
+    private final ShaderStorage shaderStorage;
     @Getter
     private final Set<Asset> dirtyAssets = new HashSet<>();
     private final MetaSaver metaSaver = new MetaSaver();
 
     public EditorAssetManager(MetaService metaFileService, TextureService textureService,
                               TerrainService terrainService, MaterialService materialService,
-                              PixmapTextureService pixmapTextureService, ModelService modelService) {
+                              PixmapTextureService pixmapTextureService, ModelService modelService, ShaderStorage shaderStorage) {
         super(new FileHandle(HOME_DIR + "/" + PROJECT_ASSETS_DIR), metaFileService, textureService,
                 terrainService, materialService, pixmapTextureService, modelService);
+        this.shaderStorage = shaderStorage;
         if (rootFolder != null && (!rootFolder.exists() || !rootFolder.isDirectory())) {
             log.error("Folder {} doesn't exist or is not a directory", rootFolder.file());
         }
@@ -294,7 +297,7 @@ public class EditorAssetManager extends AssetManager {
         if (asset.getType() == AssetType.MODEL) {
             var modelAsset = (ModelAsset) asset;
 
-            var modelComponent = new PickableModelComponent(res, Shaders.INSTANCE.getModelShader());
+            var modelComponent = new PickableModelComponent(res, shaderStorage.get(ShaderConstants.PICKER), shaderStorage.get(ShaderConstants.PICKER));
             modelComponent.setModel(modelAsset, true);
             modelComponent.encodeRayPickColorId();
 

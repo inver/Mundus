@@ -19,6 +19,7 @@ package com.mbrlabs.mundus.editor.tools;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -32,7 +33,6 @@ import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.SceneGraphChangedEvent;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.scene3d.components.PickableModelComponent;
-import com.mbrlabs.mundus.editor.shader.Shaders;
 import com.mbrlabs.mundus.editor.ui.AppUi;
 
 /**
@@ -55,12 +55,11 @@ public class ModelPlacementTool extends Tool {
     private final AppUi appUi;
     private final EventBus eventBus;
 
-    public ModelPlacementTool(EditorCtx ctx, ModelBatch batch, CommandHistory history, AppUi appUi, EventBus eventBus) {
-        super(ctx, batch, history);
+    public ModelPlacementTool(EditorCtx ctx, BaseShader shader, ModelBatch batch, CommandHistory history,
+                              AppUi appUi, EventBus eventBus) {
+        super(ctx, shader, batch, history, NAME);
         this.appUi = appUi;
         this.eventBus = eventBus;
-
-        setShader(Shaders.INSTANCE.getModelShader());
         this.model = null;
         this.modelInstance = null;
     }
@@ -69,11 +68,6 @@ public class ModelPlacementTool extends Tool {
         this.model = model;
         modelInstance = null;
         this.modelInstance = new ModelInstance(model.getModel());
-    }
-
-    @Override
-    public String getName() {
-        return NAME;
     }
 
     @Override
@@ -119,7 +113,7 @@ public class ModelPlacementTool extends Tool {
             modelInstance.transform.getTranslation(tempV3);
             modelGo.translate(tempV3);
 
-            PickableModelComponent modelComponent = new PickableModelComponent(modelGo, Shaders.INSTANCE.getModelShader());
+            PickableModelComponent modelComponent = new PickableModelComponent(modelGo, getShader(), getShader());
             modelComponent.setShader(getShader());
             modelComponent.setModel(model, true);
             modelComponent.encodeRayPickColorId();

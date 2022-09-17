@@ -11,13 +11,14 @@ import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.project.ProjectContext;
 import com.mbrlabs.mundus.editor.core.project.ProjectManager;
 import com.mbrlabs.mundus.editor.core.registry.Registry;
+import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
+import com.mbrlabs.mundus.editor.core.shader.ShaderStorage;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent;
 import com.mbrlabs.mundus.editor.events.SceneChangedEvent;
 import com.mbrlabs.mundus.editor.input.FreeCamController;
 import com.mbrlabs.mundus.editor.input.InputManager;
 import com.mbrlabs.mundus.editor.input.ShortcutController;
-import com.mbrlabs.mundus.editor.shader.Shaders;
 import com.mbrlabs.mundus.editor.tools.ToolManager;
 import com.mbrlabs.mundus.editor.ui.AppUi;
 import com.mbrlabs.mundus.editor.ui.modules.StatusBar;
@@ -59,7 +60,7 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
     private final EventBus eventBus;
     private final AppUi appUi;
     private final ExitDialog exitDialog;
-
+    private final ShaderStorage shaderStorage;
     private final MenuBarPresenter menuBarPresenter;
     private final DockBarPresenter dockBarPresenter;
     private Compass compass;
@@ -162,7 +163,7 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
         appUi.getSceneWidget().setRenderer(camera -> {
             if (scene.getSkybox() != null) {
                 batch.begin(ctx.getCamera());
-                batch.render(scene.getSkybox().getSkyboxInstance(), scene.getEnvironment(), Shaders.INSTANCE.getSkyboxShader());
+                batch.render(scene.getSkybox().getSkyboxInstance(), scene.getEnvironment(), shaderStorage.get(ShaderConstants.SKYBOX));
                 batch.end();
             }
 

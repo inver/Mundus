@@ -17,6 +17,7 @@ package com.mbrlabs.mundus.editor.tools;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.scene3d.components.Component;
@@ -40,20 +41,22 @@ public class SelectionTool extends Tool {
     private GameObjectPicker goPicker;
     protected final EventBus eventBus;
 
-    public SelectionTool(EditorCtx ctx, GameObjectPicker goPicker, ModelBatch batch,
+    public SelectionTool(EditorCtx ctx, BaseShader shader, GameObjectPicker goPicker, ModelBatch batch,
+                         CommandHistory history, EventBus eventBus, String name) {
+        super(ctx, shader, batch, history, name);
+        this.goPicker = goPicker;
+        this.eventBus = eventBus;
+    }
+
+    public SelectionTool(EditorCtx ctx, BaseShader shader, GameObjectPicker goPicker, ModelBatch batch,
                          CommandHistory history, EventBus eventBus) {
-        super(ctx, batch, history);
+        super(ctx, shader, batch, history, NAME);
         this.goPicker = goPicker;
         this.eventBus = eventBus;
     }
 
     public void gameObjectSelected(GameObject selection) {
         getCtx().setSelected(selection);
-    }
-
-    @Override
-    public String getName() {
-        return NAME;
     }
 
     @Override

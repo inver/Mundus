@@ -1,5 +1,6 @@
 package com.mbrlabs.mundus.editor.core.project;
 
+import com.mbrlabs.mundus.editor.config.GdxTestRunner;
 import com.mbrlabs.mundus.editor.config.TestConfig;
 import com.mbrlabs.mundus.editor.core.registry.ProjectRef;
 import lombok.SneakyThrows;
@@ -8,11 +9,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.UUID;
 
-@RunWith(SpringRunner.class)
+@RunWith(GdxTestRunner.class)
 @ContextConfiguration(classes = {
         TestConfig.class
 })

@@ -21,7 +21,6 @@ import com.badlogic.gdx.graphics.g3d.Shader;
 import com.mbrlabs.mundus.commons.env.AppEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.scene3d.components.TerrainComponent;
-import com.mbrlabs.mundus.editor.shader.Shaders;
 import com.mbrlabs.mundus.editor.tools.picker.PickerColorEncoder;
 import com.mbrlabs.mundus.editor.tools.picker.PickerIDAttribute;
 
@@ -43,6 +42,6 @@ public class PickableTerrainComponent extends TerrainComponent implements Pickab
 
     @Override
     public void render(ModelBatch batch, AppEnvironment environment, float delta) {
-        batch.render(terrain.getTerrain(), Shaders.INSTANCE.getPickerShader());
+        batch.render(terrain.getTerrain(), shader);
     }
 }

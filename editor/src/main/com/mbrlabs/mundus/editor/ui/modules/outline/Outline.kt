@@ -28,10 +28,11 @@ import com.mbrlabs.mundus.commons.scene3d.components.Component
 import com.mbrlabs.mundus.commons.terrain.Terrain
 import com.mbrlabs.mundus.editor.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
+import com.mbrlabs.mundus.editor.core.shader.ShaderConstants
+import com.mbrlabs.mundus.editor.core.shader.ShaderStorage
 import com.mbrlabs.mundus.editor.events.*
 import com.mbrlabs.mundus.editor.history.CommandHistory
 import com.mbrlabs.mundus.editor.history.commands.DeleteCommand
-import com.mbrlabs.mundus.editor.shader.Shaders
 import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.modules.outline.OutlineNode.RootNode
 import com.mbrlabs.mundus.editor.utils.TextureUtils
@@ -54,7 +55,8 @@ class Outline(
     private val history: CommandHistory,
     private val eventBus: EventBus,
     private val appUi: AppUi,
-    outlinePresenter: OutlinePresenter
+    outlinePresenter: OutlinePresenter,
+    private val shaderStorage: ShaderStorage
 ) : VisTable(),
     ProjectChangedEvent.ProjectChangedListener,
     SceneChangedEvent.SceneChangedListener,
@@ -239,9 +241,14 @@ class Outline(
     }
 
     override fun onGameObjectSelected(event: GameObjectSelectedEvent) {
-        val node = tree.findNode(event.gameObject!!)
-        log.trace("Select game object [{}].", node?.value)
         tree.selection.clear()
+
+        if (event.gameObject == null) {
+            return
+        }
+
+        val node = tree.findNode(event.gameObject)
+        log.trace("Select game object [{}].", node?.value)
         if (node != null) {
             tree.selection.add(node)
             node.expandTo()
@@ -307,8 +314,9 @@ class Outline(
                         asset.applyDependencies()
 
                         val terrainGO = createTerrainGO(
-                            sceneGraph,
-                            Shaders.terrainShader, goID, name, asset
+                            shaderStorage.get(ShaderConstants.TERRAIN),
+                            goID, name, asset,
+                            shaderStorage.get(ShaderConstants.PICKER)
                         )
                         // update sceneGraph
                         sceneGraph.addGameObject(terrainGO)

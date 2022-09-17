@@ -22,6 +22,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
@@ -35,7 +36,7 @@ import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.history.commands.TerrainHeightCommand;
 import com.mbrlabs.mundus.editor.history.commands.TerrainPaintCommand;
-import com.mbrlabs.mundus.editor.shader.Shaders;
+import com.mbrlabs.mundus.editor.terrain.EditorTerrainShader;
 import com.mbrlabs.mundus.editor.tools.Tool;
 
 /**
@@ -133,9 +134,9 @@ public abstract class TerrainBrush extends Tool {
 
     private final EditorAssetManager assetManager;
 
-    public TerrainBrush(EditorCtx ctx, EditorAssetManager assetManager, ModelBatch batch, CommandHistory history,
-                        FileHandle pixmapBrush) {
-        super(ctx, batch, history);
+    public TerrainBrush(EditorCtx ctx, BaseShader shader, EditorAssetManager assetManager, ModelBatch batch,
+                        CommandHistory history, FileHandle pixmapBrush, String name) {
+        super(ctx, shader, batch, history, name);
 
         this.assetManager = assetManager;
         brushPixmap = new Pixmap(pixmapBrush);
@@ -430,7 +431,7 @@ public abstract class TerrainBrush extends Tool {
 
         mouseMoved = true;
 
-        Shaders.INSTANCE.getTerrainShader().setPickerPosition(brushPos.x, brushPos.y, brushPos.z);
+        ((EditorTerrainShader) getShader()).setPickerPosition(brushPos.x, brushPos.y, brushPos.z);
 
         return false;
     }
@@ -442,7 +443,7 @@ public abstract class TerrainBrush extends Tool {
         } else {
             scale(1.1f);
         }
-        Shaders.INSTANCE.getTerrainShader().setPickerRadius(radius);
+        ((EditorTerrainShader) getShader()).setPickerRadius(radius);
 
         return false;
     }
@@ -454,14 +455,14 @@ public abstract class TerrainBrush extends Tool {
 
     @Override
     public void onDisabled() {
-        Shaders.INSTANCE.getTerrainShader().activatePicker(false);
+        ((EditorTerrainShader) getShader()).activatePicker(false);
     }
 
     @Override
     public void onActivated() {
-        Shaders.INSTANCE.getTerrainShader().activatePicker(true);
-        Shaders.INSTANCE.getTerrainShader().setPickerPosition(brushPos.x, brushPos.y, brushPos.z);
-        Shaders.INSTANCE.getTerrainShader().setPickerRadius(radius);
+        ((EditorTerrainShader) getShader()).activatePicker(true);
+        ((EditorTerrainShader) getShader()).setPickerPosition(brushPos.x, brushPos.y, brushPos.z);
+        ((EditorTerrainShader) getShader()).setPickerRadius(radius);
     }
 
 }

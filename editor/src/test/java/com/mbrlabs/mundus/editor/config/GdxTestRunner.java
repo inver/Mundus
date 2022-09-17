@@ -1,87 +1,42 @@
 package com.mbrlabs.mundus.editor.config;
 
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Files;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3NativesLoader;
 import com.badlogic.gdx.graphics.GL20;
-import org.junit.runner.notification.RunNotifier;
-import org.junit.runners.model.FrameworkMethod;
+import com.kotcrab.vis.ui.VisUI;
 import org.junit.runners.model.InitializationError;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-public class GdxTestRunner extends SpringJUnit4ClassRunner implements ApplicationListener {
-
-    private final Map<FrameworkMethod, RunNotifier> invokeInRender = new HashMap<>();
+public class GdxTestRunner extends SpringJUnit4ClassRunner {
 
     public GdxTestRunner(Class<?> klass) throws InitializationError {
         super(klass);
 
         Lwjgl3NativesLoader.load();
-
-        Gdx.gl = mock(GL20.class);
+        var gl20 = mock(GL20.class);
+        Gdx.gl = gl20;
+        Gdx.gl20 = gl20;
         Gdx.files = new Lwjgl3Files();
-    }
+        Gdx.app = mock(Application.class);
 
-    @Override
-    public void create() {
-    }
+        when(Gdx.app.getPreferences(any())).thenReturn(mock(Preferences.class));
 
-    @Override
-    public void resume() {
-    }
+        var graphics = mock(Graphics.class);
+        Gdx.graphics = graphics;
 
-    @Override
-    public void render() {
-        synchronized (invokeInRender) {
-            for (Map.Entry<FrameworkMethod, RunNotifier> each : invokeInRender.entrySet()) {
-                super.runChild(each.getKey(), each.getValue());
-            }
-            invokeInRender.clear();
-        }
-    }
+        when(graphics.getWidth()).thenReturn(1024);
+        when(graphics.getHeight()).thenReturn(768);
 
-    @Override
-    public void resize(int width, int height) {
-    }
+        Gdx.input = mock(Input.class);
 
-    @Override
-    public void pause() {
-    }
-
-    @Override
-    public void dispose() {
-    }
-
-    @Override
-    protected void runChild(FrameworkMethod method, RunNotifier notifier) {
-//        synchronized (invokeInRender) {
-//            // add for invoking in render phase, where gl context is available
-//            invokeInRender.put(method, notifier);
-//        }
-//        // wait until that test was invoked
-//        waitUntilInvokedInRenderMethod();
-    }
-
-    /**
-     *
-     */
-    private void waitUntilInvokedInRenderMethod() {
-        try {
-            while (true) {
-                Thread.sleep(10);
-                synchronized (invokeInRender) {
-                    if (invokeInRender.isEmpty())
-                        break;
-                }
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        //for parallel running
+        if (!VisUI.isLoaded()) {
+            VisUI.load();
         }
     }
 

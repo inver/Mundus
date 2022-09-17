@@ -18,31 +18,29 @@
 
 package com.mbrlabs.mundus.editor.utils
 
+import com.badlogic.gdx.graphics.g3d.shaders.BaseShader
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder.VertexInfo
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.math.collision.Ray
 import com.badlogic.gdx.utils.Array
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset
 import com.mbrlabs.mundus.commons.scene3d.GameObject
-import com.mbrlabs.mundus.commons.scene3d.SceneGraph
-import com.mbrlabs.mundus.commons.shaders.TerrainShader
 import com.mbrlabs.mundus.editor.scene3d.components.PickableTerrainComponent
-import com.mbrlabs.mundus.editor.shader.Shaders
 
 private var tempVI = VertexInfo()
 
 fun createTerrainGO(
-    sg: SceneGraph,
-    shader: TerrainShader,
+    shader: BaseShader,
     goID: Int,
     goName: String,
-    terrain: TerrainAsset
+    terrain: TerrainAsset,
+    pickShader: BaseShader
 ): GameObject {
     val terrainGO = GameObject(null as String, goID)
     terrainGO.name = goName
 
     terrain.terrain.setTransform(terrainGO.transform)
-    val terrainComponent = PickableTerrainComponent(terrainGO, Shaders.terrainShader)
+    val terrainComponent = PickableTerrainComponent(terrainGO, pickShader)
     terrainComponent.terrain = terrain
     terrainGO.components.add(terrainComponent)
     terrainComponent.shader = shader

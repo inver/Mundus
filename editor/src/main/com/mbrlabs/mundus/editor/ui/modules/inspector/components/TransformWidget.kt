@@ -37,7 +37,7 @@ import com.mbrlabs.mundus.editor.utils.formatFloat
  * @version 16-01-2016
  */
 class TransformWidget(
-    separator: SeparatorStyle,
+    separator: SeparatorStyle?,
     private val ctx: EditorCtx,
     private val history: CommandHistory
 ) : BaseInspectorWidget(separator, "Transformation") {

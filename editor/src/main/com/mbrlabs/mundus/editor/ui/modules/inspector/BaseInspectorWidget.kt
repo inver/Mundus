@@ -33,7 +33,7 @@ import com.mbrlabs.mundus.editor.utils.Fa
  * @version 19-01-2016
  */
 abstract class BaseInspectorWidget(
-    private val separatorStyle: SeparatorStyle,
+    private val separatorStyle: SeparatorStyle?,
     title: String
 ) : VisTable() {
 

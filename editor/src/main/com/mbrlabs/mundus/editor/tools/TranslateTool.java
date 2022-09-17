@@ -26,6 +26,7 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
@@ -36,7 +37,6 @@ import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.GameObjectModifiedEvent;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.history.commands.TranslateCommand;
-import com.mbrlabs.mundus.editor.shader.Shaders;
 import com.mbrlabs.mundus.editor.tools.picker.GameObjectPicker;
 import com.mbrlabs.mundus.editor.tools.picker.ToolHandlePicker;
 import com.mbrlabs.mundus.editor.utils.Fa;
@@ -70,10 +70,10 @@ public class TranslateTool extends TransformTool {
 
     private TranslateCommand command;
 
-    public TranslateTool(EditorCtx ctx, GameObjectPicker goPicker, ToolHandlePicker handlePicker,
+    public TranslateTool(EditorCtx ctx, BaseShader shader, GameObjectPicker goPicker, ToolHandlePicker handlePicker,
                          ModelBatch batch, CommandHistory history, EventBus eventBus) {
 
-        super(ctx, goPicker, handlePicker, batch, history, eventBus);
+        super(ctx, shader, goPicker, handlePicker, batch, history, eventBus, NAME);
 
         ModelBuilder modelBuilder = new ModelBuilder();
 
@@ -97,11 +97,6 @@ public class TranslateTool extends TransformTool {
         handles = new TranslateHandle[]{xHandle, yHandle, zHandle, xzPlaneHandle};
 
         gameObjectModifiedEvent = new GameObjectModifiedEvent(null);
-    }
-
-    @Override
-    public String getName() {
-        return NAME;
     }
 
     @Override
@@ -336,7 +331,7 @@ public class TranslateTool extends TransformTool {
 
         @Override
         public void renderPick(ModelBatch modelBatch) {
-            getBatch().render(modelInstance, Shaders.INSTANCE.getPickerShader());
+            getBatch().render(modelInstance, getShader());
         }
 
         @Override

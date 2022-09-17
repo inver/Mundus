@@ -23,6 +23,7 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
@@ -36,7 +37,6 @@ import com.mbrlabs.mundus.editor.core.project.ProjectContext;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.history.commands.RotateCommand;
-import com.mbrlabs.mundus.editor.shader.Shaders;
 import com.mbrlabs.mundus.editor.tools.picker.GameObjectPicker;
 import com.mbrlabs.mundus.editor.tools.picker.ToolHandlePicker;
 import com.mbrlabs.mundus.editor.utils.Fa;
@@ -70,9 +70,9 @@ public class RotateTool extends TransformTool {
     private RotateCommand currentRotateCommand;
     private float lastRot = 0;
 
-    public RotateTool(EditorCtx ctx, GameObjectPicker goPicker, ToolHandlePicker handlePicker,
+    public RotateTool(EditorCtx ctx, BaseShader shader, GameObjectPicker goPicker, ToolHandlePicker handlePicker,
                       ShapeRenderer shapeRenderer, ModelBatch batch, CommandHistory history, EventBus eventBus) {
-        super(ctx, goPicker, handlePicker, batch, history, eventBus);
+        super(ctx, shader, goPicker, handlePicker, batch, history, eventBus, NAME);
         this.shapeRenderer = shapeRenderer;
         xHandle = new RotateHandle(X_HANDLE_ID, COLOR_X);
         yHandle = new RotateHandle(Y_HANDLE_ID, COLOR_Y);
@@ -289,11 +289,6 @@ public class RotateTool extends TransformTool {
     }
 
     @Override
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
     public Drawable getIcon() {
         return null;
     }
@@ -351,7 +346,7 @@ public class RotateTool extends TransformTool {
 
         @Override
         public void renderPick(ModelBatch modelBatch) {
-            getBatch().render(modelInstance, Shaders.INSTANCE.getPickerShader());
+            getBatch().render(modelInstance, getShader());
         }
 
         @Override

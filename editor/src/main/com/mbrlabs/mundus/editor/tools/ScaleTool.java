@@ -24,6 +24,7 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
@@ -38,7 +39,6 @@ import com.mbrlabs.mundus.editor.core.project.ProjectContext;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.history.commands.ScaleCommand;
-import com.mbrlabs.mundus.editor.shader.Shaders;
 import com.mbrlabs.mundus.editor.tools.picker.GameObjectPicker;
 import com.mbrlabs.mundus.editor.tools.picker.ToolHandlePicker;
 import com.mbrlabs.mundus.editor.ui.AppUi;
@@ -54,7 +54,6 @@ import org.lwjgl.opengl.GL11;
  * @author codenigma, mbrlabs
  * @version 07-10-2016
  */
-@org.springframework.stereotype.Component
 public class ScaleTool extends TransformTool {
 
     public static final String NAME = "Scale Tool";
@@ -80,10 +79,10 @@ public class ScaleTool extends TransformTool {
     private TransformState state = TransformState.IDLE;
     private ScaleCommand command;
 
-    public ScaleTool(EditorCtx ctx, GameObjectPicker goPicker, ToolHandlePicker handlePicker,
+    public ScaleTool(EditorCtx ctx, BaseShader shader, GameObjectPicker goPicker, ToolHandlePicker handlePicker,
                      ShapeRenderer shapeRenderer, ModelBatch batch, CommandHistory history, AppUi appUi,
                      EventBus eventBus) {
-        super(ctx, goPicker, handlePicker, batch, history, eventBus);
+        super(ctx, shader, goPicker, handlePicker, batch, history, eventBus, NAME);
 
         this.shapeRenderer = shapeRenderer;
         this.appUi = appUi;
@@ -112,7 +111,6 @@ public class ScaleTool extends TransformTool {
         super.render();
 
         GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
-        ProjectContext projectContext = getCtx().getCurrent();
         if (getCtx().getSelected() != null) {
             getBatch().begin(getCtx().getCamera());
             xHandle.render(getBatch());
@@ -175,8 +173,6 @@ public class ScaleTool extends TransformTool {
     @Override
     public void act() {
         super.act();
-        ProjectContext projectContext = getCtx().getCurrent();
-
         final GameObject selection = getCtx().getSelected();
         if (!isScalable(selection)) {
             return;
@@ -368,11 +364,6 @@ public class ScaleTool extends TransformTool {
     }
 
     @Override
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
     public Drawable getIcon() {
         return null;
     }
@@ -416,7 +407,7 @@ public class ScaleTool extends TransformTool {
 
         @Override
         public void renderPick(ModelBatch modelBatch) {
-            getBatch().render(modelInstance, Shaders.INSTANCE.getPickerShader());
+            getBatch().render(modelInstance, getShader());
         }
 
         @Override
