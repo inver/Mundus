@@ -1,7 +1,7 @@
 package com.mbrlabs.mundus.commons.assets.terrain;
 
 import com.mbrlabs.mundus.commons.assets.AssetLoader;
-import com.mbrlabs.mundus.commons.assets.meta.dto.Meta;
+import com.mbrlabs.mundus.commons.assets.meta.Meta;
 
 public class TerrainAssetLoader implements AssetLoader<TerrainAsset, TerrainMeta> {
     @Override

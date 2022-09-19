@@ -27,13 +27,9 @@ import com.mbrlabs.mundus.commons.assets.AssetType;
 import com.mbrlabs.mundus.commons.assets.exceptions.AssetNotFoundException;
 import com.mbrlabs.mundus.commons.assets.exceptions.MetaFileParseException;
 import com.mbrlabs.mundus.commons.assets.material.MaterialMeta;
-import com.mbrlabs.mundus.commons.assets.meta.dto.Meta;
-import com.mbrlabs.mundus.commons.assets.meta.dto.MetaModel;
-import com.mbrlabs.mundus.commons.assets.meta.dto.MetaTerrain;
 import com.mbrlabs.mundus.commons.assets.model.ModelMeta;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainMeta;
 import com.mbrlabs.mundus.commons.assets.texture.TextureMeta;
-import com.mbrlabs.mundus.commons.terrain.Terrain;
 import com.mbrlabs.mundus.commons.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,18 +48,6 @@ import static com.mbrlabs.mundus.commons.assets.AssetConstants.META_FILE_NAME;
 public class MetaLoader {
 
     private final ObjectMapper mapper;
-
-    public void save(Meta<?> meta) {
-        try (var fw = new FileWriter(meta.getFile().file())) {
-            var res = mapper.writeValueAsString(meta);
-            IOUtils.write(res, fw);
-        } catch (Exception e) {
-            log.error("ERROR", e);
-        }
-    }
-
-
-    private final JsonReader reader = new JsonReader();
 
     public Meta loadCommon(FileHandle assetFolderPath) {
         var metaHandle = assetFolderPath.child(META_FILE_NAME);
@@ -94,6 +78,7 @@ public class MetaLoader {
         }, metaHandle);
     }
 
+    @SuppressWarnings("unchecked")
     private <T> Meta<T> loadMeta(TypeReference<Meta<T>> tr, FileHandle handle) {
         if (handle.type() == Files.FileType.Classpath) {
             return FileUtils.readFullFromClassPath(mapper, handle, tr).withFile(handle.parent());
@@ -101,6 +86,19 @@ public class MetaLoader {
 
         return FileUtils.readFullFromFileSystem(mapper, handle, tr).withFile(handle.parent());
     }
+
+
+    public void save(Meta<?> meta) {
+        try (var fw = new FileWriter(meta.getFile().file())) {
+            var res = mapper.writeValueAsString(meta);
+            IOUtils.write(res, fw);
+        } catch (Exception e) {
+            log.error("ERROR", e);
+        }
+    }
+
+
+    private final JsonReader reader = new JsonReader();
 
 
     public Meta load(FileHandle file) throws MetaFileParseException {
@@ -130,14 +128,14 @@ public class MetaLoader {
         if (jsonTerrain == null) return;
 
         var terrain = new TerrainMeta();
-        terrain.setSize(jsonTerrain.getInt(MetaTerrain.JSON_SIZE));
-        terrain.setUv(jsonTerrain.getFloat(MetaTerrain.JSON_UV_SCALE, Terrain.DEFAULT_UV_SCALE));
-        terrain.setSplatmap(jsonTerrain.getString(MetaTerrain.JSON_SPLATMAP, null));
-        terrain.setSplatBase(jsonTerrain.getString(MetaTerrain.JSON_SPLAT_BASE, null));
-        terrain.setSplatR(jsonTerrain.getString(MetaTerrain.JSON_SPLAT_R, null));
-        terrain.setSplatG(jsonTerrain.getString(MetaTerrain.JSON_SPLAT_G, null));
-        terrain.setSplatB(jsonTerrain.getString(MetaTerrain.JSON_SPLAT_B, null));
-        terrain.setSplatA(jsonTerrain.getString(MetaTerrain.JSON_SPLAT_A, null));
+//        terrain.setSize(jsonTerrain.getInt(MetaTerrain.JSON_SIZE));
+//        terrain.setUv(jsonTerrain.getFloat(MetaTerrain.JSON_UV_SCALE, Terrain.DEFAULT_UV_SCALE));
+//        terrain.setSplatmap(jsonTerrain.getString(MetaTerrain.JSON_SPLATMAP, null));
+//        terrain.setSplatBase(jsonTerrain.getString(MetaTerrain.JSON_SPLAT_BASE, null));
+//        terrain.setSplatR(jsonTerrain.getString(MetaTerrain.JSON_SPLAT_R, null));
+//        terrain.setSplatG(jsonTerrain.getString(MetaTerrain.JSON_SPLAT_G, null));
+//        terrain.setSplatB(jsonTerrain.getString(MetaTerrain.JSON_SPLAT_B, null));
+//        terrain.setSplatA(jsonTerrain.getString(MetaTerrain.JSON_SPLAT_A, null));
 
         meta.setAdditional(terrain);
     }
@@ -146,14 +144,14 @@ public class MetaLoader {
         if (jsonModel == null) return;
 
         final ModelMeta model = new ModelMeta();
-        final JsonValue materials = jsonModel.get(MetaModel.JSON_DEFAULT_MATERIALS);
-
-        for (final JsonValue mat : materials) {
-            System.out.println(mat.name);
-            final String g3dbID = mat.name;
-            final String assetUUID = materials.getString(g3dbID);
-            model.getMaterials().put(g3dbID, assetUUID);
-        }
+//        final JsonValue materials = jsonModel.get(MetaModel.JSON_DEFAULT_MATERIALS);
+//
+//        for (final JsonValue mat : materials) {
+//            System.out.println(mat.name);
+//            final String g3dbID = mat.name;
+//            final String assetUUID = materials.getString(g3dbID);
+//            model.getMaterials().put(g3dbID, assetUUID);
+//        }
 
         meta.setAdditional(model);
     }

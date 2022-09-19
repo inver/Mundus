@@ -18,7 +18,7 @@ package com.mbrlabs.mundus.commons.assets.texture;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.mbrlabs.mundus.commons.assets.Asset;
-import com.mbrlabs.mundus.commons.assets.meta.dto.Meta;
+import com.mbrlabs.mundus.commons.assets.meta.Meta;
 import com.mbrlabs.mundus.commons.utils.TextureProvider;
 import lombok.Getter;
 import lombok.Setter;

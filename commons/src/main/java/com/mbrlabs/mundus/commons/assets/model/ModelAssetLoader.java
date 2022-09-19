@@ -1,7 +1,7 @@
 package com.mbrlabs.mundus.commons.assets.model;
 
 import com.mbrlabs.mundus.commons.assets.AssetLoader;
-import com.mbrlabs.mundus.commons.assets.meta.dto.Meta;
+import com.mbrlabs.mundus.commons.assets.meta.Meta;
 
 public class ModelAssetLoader implements AssetLoader<ModelAsset, ModelMeta> {
 

@@ -23,7 +23,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.mbrlabs.mundus.commons.assets.Asset;
-import com.mbrlabs.mundus.commons.assets.meta.dto.Meta;
+import com.mbrlabs.mundus.commons.assets.meta.Meta;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
 import lombok.extern.slf4j.Slf4j;
 

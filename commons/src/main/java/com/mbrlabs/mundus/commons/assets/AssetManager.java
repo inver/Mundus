@@ -3,14 +3,13 @@ package com.mbrlabs.mundus.commons.assets;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.Disposable;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mbrlabs.mundus.commons.assets.exceptions.AssetNotFoundException;
 import com.mbrlabs.mundus.commons.assets.exceptions.AssetTypeNotSupportException;
 import com.mbrlabs.mundus.commons.assets.exceptions.MetaFileParseException;
 import com.mbrlabs.mundus.commons.assets.material.MaterialAssetLoader;
+import com.mbrlabs.mundus.commons.assets.meta.Meta;
 import com.mbrlabs.mundus.commons.assets.meta.MetaLoader;
-import com.mbrlabs.mundus.commons.assets.meta.dto.Meta;
 import com.mbrlabs.mundus.commons.assets.model.ModelAssetLoader;
 import com.mbrlabs.mundus.commons.assets.pixmap.PixmapTextureAssetLoader;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAssetLoader;
@@ -24,14 +23,8 @@ import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
-public class AssetManager implements Disposable {
+public class AssetManager {
 
-//    @Getter
-//    protected final List<Asset> assets = new ArrayList<>();
-//    @Getter
-//    protected final Map<String, Asset> assetIndex = new HashMap<>();
-
-    //    protected final FileHandle rootFolder;
     protected final ObjectMapper mapper;
     protected final MetaLoader metaService;
     protected final TextureAssetLoader textureService;
@@ -111,10 +104,6 @@ public class AssetManager implements Disposable {
         return asset;
     }
 
-    @Override
-    public void dispose() {
-
-    }
 
     public void loadAssets(AssetLoadingListener listener, boolean isRuntime) {
         // create meta file filter

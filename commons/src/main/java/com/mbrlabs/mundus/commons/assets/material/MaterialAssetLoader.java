@@ -1,7 +1,7 @@
 package com.mbrlabs.mundus.commons.assets.material;
 
 import com.mbrlabs.mundus.commons.assets.AssetLoader;
-import com.mbrlabs.mundus.commons.assets.meta.dto.Meta;
+import com.mbrlabs.mundus.commons.assets.meta.Meta;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

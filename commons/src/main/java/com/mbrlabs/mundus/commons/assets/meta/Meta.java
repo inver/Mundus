@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mbrlabs.mundus.commons.assets.meta.dto;
+package com.mbrlabs.mundus.commons.assets.meta;
 
 
 import com.badlogic.gdx.files.FileHandle;

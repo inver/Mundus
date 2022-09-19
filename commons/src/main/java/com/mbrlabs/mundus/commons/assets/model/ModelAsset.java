@@ -19,7 +19,7 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset;
-import com.mbrlabs.mundus.commons.assets.meta.dto.Meta;
+import com.mbrlabs.mundus.commons.assets.meta.Meta;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;

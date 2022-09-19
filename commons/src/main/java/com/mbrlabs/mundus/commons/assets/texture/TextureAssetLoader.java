@@ -3,7 +3,7 @@ package com.mbrlabs.mundus.commons.assets.texture;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.mbrlabs.mundus.commons.assets.AssetLoader;
-import com.mbrlabs.mundus.commons.assets.meta.dto.Meta;
+import com.mbrlabs.mundus.commons.assets.meta.Meta;
 
 public class TextureAssetLoader implements AssetLoader<TextureAsset, TextureMeta> {
 

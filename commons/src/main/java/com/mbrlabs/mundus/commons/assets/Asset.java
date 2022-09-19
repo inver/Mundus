@@ -17,7 +17,7 @@
 package com.mbrlabs.mundus.commons.assets;
 
 import com.badlogic.gdx.utils.Disposable;
-import com.mbrlabs.mundus.commons.assets.meta.dto.Meta;
+import com.mbrlabs.mundus.commons.assets.meta.Meta;
 import com.mbrlabs.mundus.commons.scene3d.components.AssetUsage;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
