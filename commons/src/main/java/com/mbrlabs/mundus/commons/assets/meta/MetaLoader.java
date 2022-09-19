@@ -16,29 +16,96 @@
 
 package com.mbrlabs.mundus.commons.assets.meta;
 
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
-import com.badlogic.gdx.utils.JsonWriter;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mbrlabs.mundus.commons.assets.AssetType;
+import com.mbrlabs.mundus.commons.assets.exceptions.AssetNotFoundException;
 import com.mbrlabs.mundus.commons.assets.exceptions.MetaFileParseException;
+import com.mbrlabs.mundus.commons.assets.material.MaterialMeta;
 import com.mbrlabs.mundus.commons.assets.meta.dto.Meta;
 import com.mbrlabs.mundus.commons.assets.meta.dto.MetaModel;
 import com.mbrlabs.mundus.commons.assets.meta.dto.MetaTerrain;
+import com.mbrlabs.mundus.commons.assets.model.ModelMeta;
+import com.mbrlabs.mundus.commons.assets.terrain.TerrainMeta;
+import com.mbrlabs.mundus.commons.assets.texture.TextureMeta;
 import com.mbrlabs.mundus.commons.terrain.Terrain;
-import lombok.SneakyThrows;
+import com.mbrlabs.mundus.commons.utils.FileUtils;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
+
+import java.io.FileWriter;
+
+import static com.mbrlabs.mundus.commons.assets.AssetConstants.META_FILE_NAME;
 
 /**
  * @author Marcus Brummer
  * @version 26-10-2016
  */
-public class MetaService {
+@Slf4j
+@RequiredArgsConstructor
+public class MetaLoader {
+
+    private final ObjectMapper mapper;
+
+    public void save(Meta<?> meta) {
+        try (var fw = new FileWriter(meta.getFile().file())) {
+            var res = mapper.writeValueAsString(meta);
+            IOUtils.write(res, fw);
+        } catch (Exception e) {
+            log.error("ERROR", e);
+        }
+    }
+
 
     private final JsonReader reader = new JsonReader();
 
+    public Meta loadCommon(FileHandle assetFolderPath) {
+        var metaHandle = assetFolderPath.child(META_FILE_NAME);
+        if (!metaHandle.exists()) {
+            throw new AssetNotFoundException(META_FILE_NAME + " not found in asset folder: " + assetFolderPath);
+        }
+
+        return loadCommonMeta(metaHandle);
+    }
+
+    private Meta loadCommonMeta(FileHandle handle) {
+        if (handle.type() == Files.FileType.Classpath) {
+            return FileUtils.readFromClassPath(mapper, handle, Meta.class).withFile(handle.parent());
+        }
+
+        return FileUtils.readFromFileSystem(mapper, handle, Meta.class).withFile(handle.parent());
+    }
+
+    public Meta<MaterialMeta> loadMaterialMeta(FileHandle assetFolderPath) {
+        var metaHandle = assetFolderPath.child(META_FILE_NAME);
+        return loadMeta(new TypeReference<>() {
+        }, metaHandle);
+    }
+
+    public Meta<TextureMeta> loadTextureMeta(FileHandle assetFolderPath) {
+        var metaHandle = assetFolderPath.child(META_FILE_NAME);
+        return loadMeta(new TypeReference<>() {
+        }, metaHandle);
+    }
+
+    private <T> Meta<T> loadMeta(TypeReference<Meta<T>> tr, FileHandle handle) {
+        if (handle.type() == Files.FileType.Classpath) {
+            return FileUtils.readFullFromClassPath(mapper, handle, tr).withFile(handle.parent());
+        }
+
+        return FileUtils.readFullFromFileSystem(mapper, handle, tr).withFile(handle.parent());
+    }
+
+
     public Meta load(FileHandle file) throws MetaFileParseException {
-        Meta meta = new Meta(file);
+        Meta meta = new Meta();
+        meta.setFile(file);
 
         JsonValue json = reader.parse(file);
         parseBasics(meta, json);
@@ -59,10 +126,10 @@ public class MetaService {
         meta.setType(AssetType.valueOf(jsonRoot.getString(Meta.JSON_TYPE)));
     }
 
-    private void parseTerrain(Meta meta, JsonValue jsonTerrain) {
+    private void parseTerrain(Meta<TerrainMeta> meta, JsonValue jsonTerrain) {
         if (jsonTerrain == null) return;
 
-        final MetaTerrain terrain = new MetaTerrain();
+        var terrain = new TerrainMeta();
         terrain.setSize(jsonTerrain.getInt(MetaTerrain.JSON_SIZE));
         terrain.setUv(jsonTerrain.getFloat(MetaTerrain.JSON_UV_SCALE, Terrain.DEFAULT_UV_SCALE));
         terrain.setSplatmap(jsonTerrain.getString(MetaTerrain.JSON_SPLATMAP, null));
@@ -72,43 +139,43 @@ public class MetaService {
         terrain.setSplatB(jsonTerrain.getString(MetaTerrain.JSON_SPLAT_B, null));
         terrain.setSplatA(jsonTerrain.getString(MetaTerrain.JSON_SPLAT_A, null));
 
-        meta.setTerrain(terrain);
+        meta.setAdditional(terrain);
     }
 
-    private void parseModel(Meta meta, JsonValue jsonModel) {
+    private void parseModel(Meta<ModelMeta> meta, JsonValue jsonModel) {
         if (jsonModel == null) return;
 
-        final MetaModel model = new MetaModel();
+        final ModelMeta model = new ModelMeta();
         final JsonValue materials = jsonModel.get(MetaModel.JSON_DEFAULT_MATERIALS);
 
         for (final JsonValue mat : materials) {
             System.out.println(mat.name);
             final String g3dbID = mat.name;
             final String assetUUID = materials.getString(g3dbID);
-            model.getDefaultMaterials().put(g3dbID, assetUUID);
+            model.getMaterials().put(g3dbID, assetUUID);
         }
 
-        meta.setModel(model);
+        meta.setAdditional(model);
     }
 
-    @SneakyThrows
-    public void save(Meta meta) {
-        var json = new Json(JsonWriter.OutputType.json);
-
-        json.setWriter(meta.getFile().writer(false));
-
-        json.writeObjectStart();
-        addBasics(meta, json);
-        if (meta.getType() == AssetType.TERRAIN) {
-            addTerrain(meta, json);
-        } else if (meta.getType() == AssetType.MODEL) {
-            addModel(meta, json);
-        }
-        json.writeObjectEnd();
-
-        // Close stream, otherwise file becomes locked
-        json.getWriter().close();
-    }
+//    @SneakyThrows
+//    public void save(Meta meta) {
+//        var json = new Json(JsonWriter.OutputType.json);
+//
+//        json.setWriter(meta.getFile().writer(false));
+//
+//        json.writeObjectStart();
+//        addBasics(meta, json);
+//        if (meta.getType() == AssetType.TERRAIN) {
+//            addTerrain(meta, json);
+//        } else if (meta.getType() == AssetType.MODEL) {
+//            addModel(meta, json);
+//        }
+//        json.writeObjectEnd();
+//
+//        // Close stream, otherwise file becomes locked
+//        json.getWriter().close();
+//    }
 
     private void addBasics(Meta meta, Json json) {
         json.writeValue(Meta.JSON_VERSION, meta.getVersion());

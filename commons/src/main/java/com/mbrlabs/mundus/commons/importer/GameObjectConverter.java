@@ -39,7 +39,7 @@ public class GameObjectConverter {
     /**
      * Converts {@link GameObjectDto} to {@link GameObject}.
      */
-    public static GameObject convert(GameObjectDto dto, Map<String, Asset> assets, Map<String, BaseShader> shaders) {
+    public static GameObject convert(GameObjectDto dto, Map<String, Asset<?>> assets, Map<String, BaseShader> shaders) {
         final GameObject go = new GameObject(dto.getName(), dto.getId());
         go.setActive(dto.isActive());
 

@@ -64,7 +64,7 @@ public class SceneConverter {
         return dto;
     }
 
-    public static void fillScene(Scene scene, SceneDto dto, Map<String, Asset> assets, Map<String, BaseShader> shaders) {
+    public static void fillScene(Scene scene, SceneDto dto, Map<String, Asset<?>> assets, Map<String, BaseShader> shaders) {
         scene.setId(dto.getId());
         scene.setName(dto.getName());
 

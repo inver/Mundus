@@ -35,7 +35,7 @@ public class TerrainComponentConverter {
     private final static String TAG = TerrainComponentConverter.class.getSimpleName();
 
     public static TerrainComponent convert(TerrainComponentDto dto, GameObject go,
-                                           Map<String, Asset> assets, Map<String, BaseShader> shaders) {
+                                           Map<String, Asset<?>> assets, Map<String, BaseShader> shaders) {
         // find terrainAsset
         TerrainAsset terrain = (TerrainAsset) assets.get(dto.getTerrainID());
 

@@ -16,21 +16,17 @@
 
 package com.mbrlabs.mundus.commons.assets.material;
 
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.PropertiesUtils;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.assets.meta.dto.Meta;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.IOException;
-import java.io.Reader;
 import java.util.Map;
 
 /**
@@ -38,7 +34,7 @@ import java.util.Map;
  * @version 09-10-2016
  */
 @Slf4j
-public class MaterialAsset extends Asset {
+public class MaterialAsset extends Asset<MaterialMeta> {
 
     private static final ObjectMap<String, String> MAP = new ObjectMap<>();
 
@@ -61,43 +57,43 @@ public class MaterialAsset extends Asset {
     private float shininess = 0f;
     private float opacity = 0f;
 
-    public MaterialAsset(Meta meta, FileHandle assetFile) {
-        super(meta, assetFile);
+    public MaterialAsset(Meta meta) {
+        super(meta);
     }
 
     @Override
     public void load() {
         MAP.clear();
-        try {
-            Reader reader = file.reader();
-            PropertiesUtils.load(MAP, reader);
-            reader.close();
-            // shininess & opacity
-            try {
-                String value = MAP.get(PROP_SHININESS, null);
-                if (value != null) {
-                    shininess = Float.valueOf(value);
-                }
-                value = MAP.get(PROP_OPACITY, null);
-                if (value != null) {
-                    opacity = Float.valueOf(value);
-                }
-            } catch (NumberFormatException nfe) {
-                nfe.printStackTrace();
-            }
-
-            // diffuse color
-            String diffuseHex = MAP.get(PROP_DIFFUSE_COLOR);
-            if (diffuseHex != null) {
-                diffuseColor = Color.valueOf(diffuseHex);
-            }
-
-            // asset dependencies
-            diffuseTextureID = MAP.get(PROP_DIFFUSE_TEXTURE, null);
-            normalMapID = MAP.get(PROP_MAP_NORMAL, null);
-        } catch (IOException e) {
-            log.error("ERROR", e);
-        }
+//        try {
+//            Reader reader = file.reader();
+//            PropertiesUtils.load(MAP, reader);
+//            reader.close();
+//            // shininess & opacity
+//            try {
+//                String value = MAP.get(PROP_SHININESS, null);
+//                if (value != null) {
+//                    shininess = Float.valueOf(value);
+//                }
+//                value = MAP.get(PROP_OPACITY, null);
+//                if (value != null) {
+//                    opacity = Float.valueOf(value);
+//                }
+//            } catch (NumberFormatException nfe) {
+//                nfe.printStackTrace();
+//            }
+//
+//            // diffuse color
+//            String diffuseHex = MAP.get(PROP_DIFFUSE_COLOR);
+//            if (diffuseHex != null) {
+//                diffuseColor = Color.valueOf(diffuseHex);
+//            }
+//
+//            // asset dependencies
+//            diffuseTextureID = MAP.get(PROP_DIFFUSE_TEXTURE, null);
+//            normalMapID = MAP.get(PROP_MAP_NORMAL, null);
+//        } catch (IOException e) {
+//            log.error("ERROR", e);
+//        }
     }
 
     /**
@@ -185,10 +181,10 @@ public class MaterialAsset extends Asset {
     @Override
     public boolean usesAsset(Asset assetToCheck) {
         if (assetToCheck instanceof TextureAsset) {
-            boolean diffuseMatch = diffuseTexture != null && diffuseTexture.getFile().path().equals(assetToCheck.getFile().path());
-            boolean normalMatch = normalMap != null && normalMap.getFile().path().equals(assetToCheck.getFile().path());
+//            boolean diffuseMatch = diffuseTexture != null && diffuseTexture.getFile().path().equals(assetToCheck.getFile().path());
+//            boolean normalMatch = normalMap != null && normalMap.getFile().path().equals(assetToCheck.getFile().path());
 
-            return diffuseMatch || normalMatch;
+//            return diffuseMatch || normalMatch;
         }
         return false;
     }

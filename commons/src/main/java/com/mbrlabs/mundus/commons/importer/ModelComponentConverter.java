@@ -33,7 +33,7 @@ import java.util.Map;
 @Slf4j
 public class ModelComponentConverter {
 
-    public static ModelComponent convert(ModelComponentDto dto, GameObject go, Map<String, Asset> assets, Map<String, BaseShader> shaders) {
+    public static ModelComponent convert(ModelComponentDto dto, GameObject go, Map<String, Asset<?>> assets, Map<String, BaseShader> shaders) {
         var model = (ModelAsset) assets.get(dto.getModelID());
 
         if (model == null) {

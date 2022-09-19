@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "lastModified": 1663444124794,
+  "type": "MODEL",
+  "additional": {
+    "materials": {
+    },
+    "objFile": "sphere.glb"
+  }
+}

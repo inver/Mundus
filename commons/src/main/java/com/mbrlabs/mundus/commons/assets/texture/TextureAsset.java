@@ -16,12 +16,12 @@
 
 package com.mbrlabs.mundus.commons.assets.texture;
 
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.assets.meta.dto.Meta;
 import com.mbrlabs.mundus.commons.utils.TextureProvider;
-import com.mbrlabs.mundus.commons.utils.TextureUtils;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Map;
 
@@ -29,42 +29,27 @@ import java.util.Map;
  * @author Marcus Brummer
  * @version 01-10-2016
  */
-public class TextureAsset extends Asset implements TextureProvider {
+public class TextureAsset extends Asset<TextureMeta> implements TextureProvider {
 
+    @Getter
+    @Setter
     private Texture texture;
-    private boolean generateMipMaps;
-    private boolean tileable;
 
-    public TextureAsset(Meta meta, FileHandle assetFile) {
-        super(meta, assetFile);
+    public TextureAsset(Meta<TextureMeta> meta) {
+        super(meta);
     }
 
-    public TextureAsset generateMipmaps(boolean mipmaps) {
-        this.generateMipMaps = mipmaps;
-        return this;
+    public boolean isGenerateMipMaps() {
+        return meta.getAdditional().isGenerateMipMaps();
     }
 
-    public TextureAsset setTileable(boolean tileable) {
-        this.tileable = tileable;
-        return this;
-    }
-
-    @Override
-    public Texture getTexture() {
-        return texture;
+    public boolean isTileable() {
+        return meta.getAdditional().isTileable();
     }
 
     @Override
     public void load() {
-        if (generateMipMaps) {
-            texture = TextureUtils.loadMipmapTexture(file, false);
-        } else {
-            texture = new Texture(file);
-        }
-
-        if (tileable) {
-            texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
-        }
+        throw new UnsupportedOperationException("Load asset from asset is not supported! User Loader instead of");
     }
 
     @Override
