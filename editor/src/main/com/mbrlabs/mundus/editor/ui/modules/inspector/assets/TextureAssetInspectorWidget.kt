@@ -17,9 +17,11 @@
 package com.mbrlabs.mundus.editor.ui.modules.inspector.assets
 
 import com.kotcrab.vis.ui.widget.Separator.SeparatorStyle
+import com.kotcrab.vis.ui.widget.VisImage
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset
 import com.mbrlabs.mundus.commons.scene3d.GameObject
+import com.mbrlabs.mundus.editor.ui.UiConstants.PREVIEW_SIZE
 import com.mbrlabs.mundus.editor.ui.modules.inspector.BaseInspectorWidget
 
 import org.apache.commons.io.FileUtils
@@ -35,10 +37,12 @@ class TextureAssetInspectorWidget(separatorStyle: SeparatorStyle?) :
     private val width = VisLabel()
     private val height = VisLabel()
     private val fileSize = VisLabel()
+    private val previewImage = VisImage()
 
     private var textureAsset: TextureAsset? = null
 
     init {
+        collapsibleContent.add(previewImage).height(PREVIEW_SIZE).width(PREVIEW_SIZE).row()
         collapsibleContent.add(name).growX().row()
         collapsibleContent.add(width).growX().row()
         collapsibleContent.add(height).growX().row()
@@ -50,11 +54,14 @@ class TextureAssetInspectorWidget(separatorStyle: SeparatorStyle?) :
     }
 
     private fun updateUI() {
+        previewImage.setDrawable(textureAsset?.texture)
         name.setText("Name: " + textureAsset?.name)
         width.setText("Width: " + textureAsset?.texture?.width + " px")
         height.setText("Height: " + textureAsset?.texture?.height + " px")
 
-        val mb = FileUtils.sizeOf(textureAsset?.file?.file()) / 1000000f
+        val mb =
+            FileUtils.sizeOf(textureAsset?.meta?.file?.child(textureAsset?.meta?.additional?.file)?.file()) / 1000000f
+
         fileSize.setText("Size: $mb mb")
     }
 

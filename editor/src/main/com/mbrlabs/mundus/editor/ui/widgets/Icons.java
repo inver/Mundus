@@ -10,6 +10,8 @@ public enum Icons {
     MATERIAL("material.png"),
     TEXTURE("texture.png"),
     MODEL("model.png"),
+    CAMERA("camera.png"),
+    LIGHT("light.png"),
     SCENE("scene.png");
 
     private final String fileName;

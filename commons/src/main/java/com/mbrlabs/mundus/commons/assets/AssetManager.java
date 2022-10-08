@@ -36,6 +36,8 @@ public class AssetManager {
     public Asset loadAsset(FileHandle assetFolderPath) {
         var meta = metaService.loadCommon(assetFolderPath);
         switch (meta.getType()) {
+            case MODEL:
+                return modelService.load(metaService.loadModelMeta(assetFolderPath));
             case MATERIAL:
                 return materialService.load(metaService.loadMaterialMeta(assetFolderPath));
             case TEXTURE:

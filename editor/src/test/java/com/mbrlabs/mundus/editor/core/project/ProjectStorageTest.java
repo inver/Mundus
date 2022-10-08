@@ -4,6 +4,7 @@ package com.mbrlabs.mundus.editor.core.project;
 import com.mbrlabs.mundus.commons.Scene;
 import com.mbrlabs.mundus.editor.config.BaseCtxTest;
 import com.mbrlabs.mundus.editor.core.registry.ProjectRef;
+import com.mbrlabs.mundus.editor.core.registry.Registry;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,5 +41,23 @@ public class ProjectStorageTest extends BaseCtxTest {
         Assert.assertEquals(project.path, res.path);
         Assert.assertEquals(project.name, res.name);
         Assert.assertEquals("ololo", project.getActiveSceneName());
+    }
+
+    @Test
+    public void testSerializeAndDeserializeRegistry() {
+        var ref = new ProjectRef();
+        ref.setPath("alala");
+        ref.setName("ololo");
+
+        var registry = new Registry("/tmp/tmp");
+        registry.setLastProject(ref);
+        registry.getProjects().add(ref);
+        registry.getSettings().setFbxConvBinary("binary");
+
+        storage.saveRegistry(registry);
+        var input = storage.loadRegistry();
+        Assert.assertEquals(1, input.getProjects().size());
+        Assert.assertEquals(ref, input.getProjects().get(0));
+        Assert.assertEquals(ref, input.getLastProject());
     }
 }

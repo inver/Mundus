@@ -46,6 +46,8 @@ public class ModelImporter {
         }
 
         ModelFiles res;
+
+        ///todo add converter usage
         // convert copied importer
         var convertNeeded = FileFormatUtils.isFBX(rawModelFile) || FileFormatUtils.isCollada(rawModelFile);
         if (convertNeeded) {

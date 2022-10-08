@@ -5,9 +5,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.assets.AssetType;
-import com.mbrlabs.mundus.commons.assets.meta.dto.Meta;
+import com.mbrlabs.mundus.commons.assets.meta.Meta;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
-import com.mbrlabs.mundus.commons.assets.texture.TextureService;
+import com.mbrlabs.mundus.commons.assets.texture.TextureAssetLoader;
 import com.mbrlabs.mundus.editor.core.registry.ProjectRef;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +25,7 @@ import static com.mbrlabs.mundus.editor.core.ProjectConstants.BUNDLED_FOLDER;
 @RequiredArgsConstructor
 public class AssetsStorage {
 
-    private final TextureService textureService;
+    private final TextureAssetLoader textureService;
 
     public Map<String, Asset> load(ProjectRef ref) {
         var res = new HashMap<String, Asset>();
@@ -110,17 +110,19 @@ public class AssetsStorage {
     }
 
     private TextureAsset loadExistingTextureAsset(FileHandle file) {
-        var meta = createMeta(file, AssetType.TEXTURE);
-        return textureService.load(meta, file);
+//        var meta = createMeta(file, AssetType.TEXTURE);
+//        return textureService.load(meta, file);
+        return null;
     }
 
     private Meta createMeta(FileHandle file, AssetType type) {
-        var res = new Meta(file);
-        res.setUuid(clearedUUID());
-        res.setVersion(Meta.CURRENT_VERSION);
-        res.setLastModified(System.currentTimeMillis());
-        res.setType(type);
-        return res;
+//        var res = new Meta(file);
+//        res.setUuid(clearedUUID());
+//        res.setVersion(Meta.CURRENT_VERSION);
+//        res.setLastModified(System.currentTimeMillis());
+//        res.setType(type);
+//        return res;
+        return null;
     }
 
     private String clearedUUID() {

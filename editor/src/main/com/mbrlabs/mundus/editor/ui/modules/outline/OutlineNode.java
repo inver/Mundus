@@ -47,6 +47,8 @@ public class OutlineNode extends Tree.Node<OutlineNode, GameObject, VisTable> {
         private final OutlineNode materials = new OutlineNode("Materials", Icons.MATERIAL);
         private final OutlineNode textures = new OutlineNode("Textures", Icons.TEXTURE);
         private final OutlineNode models = new OutlineNode("Models", Icons.MODEL);
+        private final OutlineNode cameras = new OutlineNode("Cameras", Icons.CAMERA);
+        private final OutlineNode lights = new OutlineNode("Lights", Icons.LIGHT);
 
         public RootNode() {
             super("Scene", Icons.SCENE);
@@ -56,7 +58,9 @@ public class OutlineNode extends Tree.Node<OutlineNode, GameObject, VisTable> {
             add(terrains);
             add(materials);
             add(textures);
+            add(cameras);
             add(shaders);
+            add(lights);
         }
 
         public OutlineNode getHierarchy() {

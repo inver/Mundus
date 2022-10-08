@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "lastModified": 1663444124794,
+  "type": "TEXTURE",
+  "additional": {
+    "file": "stone.jpg",
+    "tileable": true
+  }
+}

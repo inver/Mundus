@@ -17,15 +17,14 @@
 package com.mbrlabs.mundus.commons.assets.material;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
-import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
-import com.badlogic.gdx.utils.ObjectMap;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.assets.meta.Meta;
-import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.Map;
 
@@ -34,28 +33,21 @@ import java.util.Map;
  * @version 09-10-2016
  */
 @Slf4j
+@Getter
+@Setter
 public class MaterialAsset extends Asset<MaterialMeta> {
 
-    private static final ObjectMap<String, String> MAP = new ObjectMap<>();
-
-    public static final String EXTENSION = ".mat";
-
-    // property keys
-    public static final String PROP_DIFFUSE_COLOR = "diffuse.color";
-    public static final String PROP_DIFFUSE_TEXTURE = "diffuse.texture";
-    public static final String PROP_MAP_NORMAL = "map.normal";
-    public static final String PROP_SHININESS = "shininess";
-    public static final String PROP_OPACITY = "opacity";
-
-    // ids of dependent assets
-    private String diffuseTextureID;
-    private String normalMapID;
-
-    private Color diffuseColor = Color.WHITE.cpy();
-    private TextureAsset diffuseTexture;
-    private TextureAsset normalMap;
+    private Color diffuseColor = Color.WHITE;
     private float shininess = 0f;
-    private float opacity = 0f;
+    private float opacity = 1f;
+
+    private Texture diffuseTexture = null;
+    private Texture ambientOcclusionTexture = null;
+    private Texture albedoTexture = null;
+    private Texture heightTexture = null;
+    private Texture metallicTexture = null;
+    private Texture normalTexture = null;
+    private Texture roughnessTexture = null;
 
     public MaterialAsset(Meta meta) {
         super(meta);
@@ -63,37 +55,7 @@ public class MaterialAsset extends Asset<MaterialMeta> {
 
     @Override
     public void load() {
-        MAP.clear();
-//        try {
-//            Reader reader = file.reader();
-//            PropertiesUtils.load(MAP, reader);
-//            reader.close();
-//            // shininess & opacity
-//            try {
-//                String value = MAP.get(PROP_SHININESS, null);
-//                if (value != null) {
-//                    shininess = Float.valueOf(value);
-//                }
-//                value = MAP.get(PROP_OPACITY, null);
-//                if (value != null) {
-//                    opacity = Float.valueOf(value);
-//                }
-//            } catch (NumberFormatException nfe) {
-//                nfe.printStackTrace();
-//            }
-//
-//            // diffuse color
-//            String diffuseHex = MAP.get(PROP_DIFFUSE_COLOR);
-//            if (diffuseHex != null) {
-//                diffuseColor = Color.valueOf(diffuseHex);
-//            }
-//
-//            // asset dependencies
-//            diffuseTextureID = MAP.get(PROP_DIFFUSE_TEXTURE, null);
-//            normalMapID = MAP.get(PROP_MAP_NORMAL, null);
-//        } catch (IOException e) {
-//            log.error("ERROR", e);
-//        }
+        throw new UnsupportedOperationException("Load asset from asset is not supported! User Loader instead of");
     }
 
     /**
@@ -103,55 +65,18 @@ public class MaterialAsset extends Asset<MaterialMeta> {
      * @return
      */
     public Material applyToMaterial(Material material) {
-        if (diffuseColor != null) {
-            material.set(new ColorAttribute(ColorAttribute.Diffuse, diffuseColor));
-        }
-        if (diffuseTexture != null) {
-            material.set(new TextureAttribute(TextureAttribute.Diffuse, diffuseTexture.getTexture()));
-        } else {
-            material.remove(TextureAttribute.Diffuse);
-        }
-        material.set(new FloatAttribute(FloatAttribute.Shininess, shininess));
-
-        return material;
-    }
-
-    public float getShininess() {
-        return shininess;
-    }
-
-    public void setShininess(float shininess) {
-        this.shininess = shininess;
-    }
-
-    public float getOpacity() {
-        return opacity;
-    }
-
-    public void setOpacity(float opacity) {
-        this.opacity = opacity;
-    }
-
-    public TextureAsset getNormalMap() {
-        return normalMap;
-    }
-
-    public void setNormalMap(TextureAsset normalMap) {
-        this.normalMap = normalMap;
-        normalMapID = normalMap.getID();
-    }
-
-    public TextureAsset getDiffuseTexture() {
-        return diffuseTexture;
-    }
-
-    public void setDiffuseTexture(TextureAsset diffuseTexture) {
-        this.diffuseTexture = diffuseTexture;
-        if (diffuseTexture != null) {
-            this.diffuseTextureID = diffuseTexture.getID();
-        } else {
-            this.diffuseTextureID = null;
-        }
+        throw new NotImplementedException("TODO");
+//        if (diffuseColor != null) {
+//            material.set(new ColorAttribute(ColorAttribute.Diffuse, diffuseColor));
+//        }
+//        if (diffuseTexture != null) {
+//            material.set(new TextureAttribute(TextureAttribute.Diffuse, diffuseTexture.getTexture()));
+//        } else {
+//            material.remove(TextureAttribute.Diffuse);
+//        }
+//        material.set(new FloatAttribute(FloatAttribute.Shininess, shininess));
+//
+//        return material;
     }
 
     public Color getDiffuseColor() {
@@ -160,12 +85,7 @@ public class MaterialAsset extends Asset<MaterialMeta> {
 
     @Override
     public void resolveDependencies(Map<String, Asset> assets) {
-        if (diffuseTextureID != null && assets.containsKey(diffuseTextureID)) {
-            diffuseTexture = (TextureAsset) assets.get(diffuseTextureID);
-        }
-        if (normalMapID != null && assets.containsKey(normalMapID)) {
-            normalMap = (TextureAsset) assets.get(normalMapID);
-        }
+
     }
 
     @Override
@@ -180,12 +100,11 @@ public class MaterialAsset extends Asset<MaterialMeta> {
 
     @Override
     public boolean usesAsset(Asset assetToCheck) {
-        if (assetToCheck instanceof TextureAsset) {
-//            boolean diffuseMatch = diffuseTexture != null && diffuseTexture.getFile().path().equals(assetToCheck.getFile().path());
-//            boolean normalMatch = normalMap != null && normalMap.getFile().path().equals(assetToCheck.getFile().path());
 
-//            return diffuseMatch || normalMatch;
-        }
         return false;
+    }
+
+    public String getPreview() {
+        return meta.getAdditional().getPreview();
     }
 }

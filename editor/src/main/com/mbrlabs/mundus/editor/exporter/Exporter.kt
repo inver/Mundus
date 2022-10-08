@@ -19,7 +19,6 @@ package com.mbrlabs.mundus.editor.exporter
 import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonWriter
-import com.kotcrab.vis.ui.util.async.AsyncTask
 import com.kotcrab.vis.ui.util.async.AsyncTaskListener
 import com.mbrlabs.mundus.commons.assets.Asset
 import com.mbrlabs.mundus.commons.dto.GameObjectDto
@@ -27,10 +26,8 @@ import com.mbrlabs.mundus.commons.dto.ModelComponentDto
 import com.mbrlabs.mundus.commons.dto.SceneDto
 import com.mbrlabs.mundus.commons.dto.TerrainComponentDto
 import com.mbrlabs.mundus.commons.importer.JsonScene
-import com.mbrlabs.mundus.commons.importer.SceneConverter
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.project.ProjectContext
-import com.mbrlabs.mundus.editor.core.project.ProjectStorage
 import com.mbrlabs.mundus.editor.core.scene.SceneStorage
 import org.apache.commons.io.FilenameUtils
 import java.io.File
@@ -41,71 +38,70 @@ import java.io.Writer
  * @version 26-10-2016
  */
 class Exporter(
-    val kryo: ProjectStorage,
     val project: ProjectContext,
     val sceneStorage: SceneStorage,
     val assetManager: EditorAssetManager
 ) {
     fun exportAsync(outputFolder: FileHandle, listener: AsyncTaskListener) {
-
-        // convert current project on the main thread to avoid nested array iterators
-        // because it would iterate over the scene graph arrays while rendering (on the main thread)
-        // and while converting (on the other thread)
-        val currentSceneDTO = SceneConverter.convert(project.getCurrentScene())
-        val jsonType = project.settings.export.jsonType
-
-        val task = object : AsyncTask("export_${project.name}") {
-            override fun doInBackground() {
-                val step = 100f / (assetManager.assets.size)
-                var progress = 0f
-
-                // create folder structure
-                createFolders(outputFolder)
-
-                // copy assets
-                val assetFolder = FileHandle(FilenameUtils.concat(outputFolder.path(), "assets/"))
-                val scenesFolder = FileHandle(FilenameUtils.concat(outputFolder.path(), "scenes/"))
-
-                // sleep a bit to open the progress dialog
-                Thread.sleep(250)
-
-                for (asset in assetManager.assets) {
-                    exportAsset(asset, assetFolder)
-                    progress += step
-                    setProgressPercent(progress.toInt())
-                    setMessage(asset.id)
-                    Thread.sleep(50)
-                }
-
-                // load, convert & copy scenes
-//                for (sceneName in project.scenes) {
-//                    val file = FileHandle(
-//                        FilenameUtils.concat(
-//                            scenesFolder.path(),
-//                            "$sceneName.$PROJECT_SCENE_EXTENSION"
-//                        )
-//                    )
 //
-//                    // load from disk or convert current scene
-//                    var scene: SceneDto
-//                    if (project.getCurrentScene().name == sceneName) {
-//                        scene = currentSceneDTO
-//                    } else {
-//                        scene = sceneStorage.loadScene(project.path, sceneName)
-//                    }
+//        // convert current project on the main thread to avoid nested array iterators
+//        // because it would iterate over the scene graph arrays while rendering (on the main thread)
+//        // and while converting (on the other thread)
+//        val currentSceneDTO = SceneConverter.convert(project.getCurrentScene())
+//        val jsonType = project.settings.export.jsonType
 //
-//                    // convert & export
-//                    exportScene(scene, file, jsonType)
+//        val task = object : AsyncTask("export_${project.name}") {
+//            override fun doInBackground() {
+//                val step = 100f / (assetManager.assets.size)
+//                var progress = 0f
+//
+//                // create folder structure
+//                createFolders(outputFolder)
+//
+//                // copy assets
+//                val assetFolder = FileHandle(FilenameUtils.concat(outputFolder.path(), "assets/"))
+//                val scenesFolder = FileHandle(FilenameUtils.concat(outputFolder.path(), "scenes/"))
+//
+//                // sleep a bit to open the progress dialog
+//                Thread.sleep(250)
+//
+//                for (asset in assetManager.assets) {
+//                    exportAsset(asset, assetFolder)
 //                    progress += step
 //                    setProgressPercent(progress.toInt())
-//                    setMessage(scene.name)
+//                    setMessage(asset.id)
 //                    Thread.sleep(50)
 //                }
-            }
-        }
-
-        task.addListener(listener)
-        task.execute()
+//
+//                // load, convert & copy scenes
+////                for (sceneName in project.scenes) {
+////                    val file = FileHandle(
+////                        FilenameUtils.concat(
+////                            scenesFolder.path(),
+////                            "$sceneName.$PROJECT_SCENE_EXTENSION"
+////                        )
+////                    )
+////
+////                    // load from disk or convert current scene
+////                    var scene: SceneDto
+////                    if (project.getCurrentScene().name == sceneName) {
+////                        scene = currentSceneDTO
+////                    } else {
+////                        scene = sceneStorage.loadScene(project.path, sceneName)
+////                    }
+////
+////                    // convert & export
+////                    exportScene(scene, file, jsonType)
+////                    progress += step
+////                    setProgressPercent(progress.toInt())
+////                    setMessage(scene.name)
+////                    Thread.sleep(50)
+////                }
+//            }
+//        }
+//
+//        task.addListener(listener)
+//        task.execute()
     }
 
     private fun createFolders(exportRootFolder: FileHandle) {
@@ -118,9 +114,9 @@ class Exporter(
         scenes.mkdirs()
     }
 
-    private fun exportAsset(asset: Asset, folder: FileHandle) {
-        asset.file.copyTo(folder)
-        asset.meta.file.copyTo(folder)
+    private fun exportAsset(asset: Asset<Any>, folder: FileHandle) {
+//        asset.file.copyTo(folder)
+//        asset.meta.file.copyTo(folder)
     }
 
     private fun exportScene(scene: SceneDto, file: FileHandle, jsonType: JsonWriter.OutputType) {

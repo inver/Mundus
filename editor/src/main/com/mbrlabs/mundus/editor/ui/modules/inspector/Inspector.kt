@@ -39,7 +39,7 @@ import com.mbrlabs.mundus.editor.ui.PreviewGenerator
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.TerrainWidgetPresenter
 import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerPresenter
-import com.mbrlabs.mundus.editor.utils.Log
+import org.slf4j.LoggerFactory.getLogger
 import org.springframework.stereotype.Component
 
 /**
@@ -67,6 +67,10 @@ class Inspector(
 
     companion object {
         private val TAG = Inspector::class.java.simpleName
+
+
+        @JvmStatic
+        private val log = getLogger(Inspector::class.java)
     }
 
     enum class InspectorMode {
@@ -136,7 +140,7 @@ class Inspector(
             root.clear()
             root.add(goInspector).grow().row()
         }
-        goInspector.setGameObject(event.gameObject!!)
+        goInspector.setGameObject(event.gameObject)
     }
 
     override fun onGameObjectModified(event: GameObjectModifiedEvent) {
@@ -144,7 +148,7 @@ class Inspector(
     }
 
     override fun onAssetSelected(event: AssetSelectedEvent) {
-        Log.debug(TAG, event.asset.toString())
+        log.debug(event.asset.toString())
         if (mode != InspectorMode.ASSET) {
             mode = InspectorMode.ASSET
             root.clear()

@@ -78,6 +78,12 @@ public class MetaLoader {
         }, metaHandle);
     }
 
+    public Meta<ModelMeta> loadModelMeta(FileHandle assetFolderPath) {
+        var metaHandle = assetFolderPath.child(META_FILE_NAME);
+        return loadMeta(new TypeReference<>() {
+        }, metaHandle);
+    }
+
     @SuppressWarnings("unchecked")
     private <T> Meta<T> loadMeta(TypeReference<Meta<T>> tr, FileHandle handle) {
         if (handle.type() == Files.FileType.Classpath) {
@@ -213,4 +219,6 @@ public class MetaLoader {
 //        if (terrain.splatA != null) json.writeValue(MetaTerrain.JSON_SPLAT_A, terrain.splatA)
 //        json.writeObjectEnd()
     }
+
+
 }

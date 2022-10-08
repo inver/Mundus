@@ -29,14 +29,14 @@ public class PreviewGenerator {
     private final float previewWidth = 80;
     private final float previewHeight = 80;
 
-    private final MaterialPreviewShader shader;
+    private final MaterialPreviewShader shader = null;
 
     public PreviewGenerator() {
-        shader = new MaterialPreviewShader(
-                "bundled/shaders/material_preview.vert.glsl",
-                "bundled/shaders/material_preview.frag.glsl"
-        );
-        shader.init();
+//        shader = new MaterialPreviewShader(
+//                "bundled/shaders/material_preview.vert.glsl",
+//                "bundled/shaders/material_preview.frag.glsl"
+//        );
+//        shader.init();
     }
 
     public Actor generate(Asset asset) {

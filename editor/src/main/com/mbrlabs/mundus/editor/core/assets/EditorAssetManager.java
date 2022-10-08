@@ -1,29 +1,23 @@
 package com.mbrlabs.mundus.editor.core.assets;
 
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.PixmapIO;
-import com.mbrlabs.mundus.commons.assets.Asset;
-import com.mbrlabs.mundus.commons.assets.AssetManager;
-import com.mbrlabs.mundus.commons.assets.AssetType;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mbrlabs.mundus.commons.assets.*;
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset;
-import com.mbrlabs.mundus.commons.assets.material.MaterialService;
-import com.mbrlabs.mundus.commons.assets.meta.MetaService;
-import com.mbrlabs.mundus.commons.assets.meta.dto.Meta;
-import com.mbrlabs.mundus.commons.assets.meta.dto.MetaTerrain;
+import com.mbrlabs.mundus.commons.assets.material.MaterialAssetLoader;
+import com.mbrlabs.mundus.commons.assets.meta.Meta;
+import com.mbrlabs.mundus.commons.assets.meta.MetaLoader;
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset;
-import com.mbrlabs.mundus.commons.assets.model.ModelService;
+import com.mbrlabs.mundus.commons.assets.model.ModelAssetLoader;
 import com.mbrlabs.mundus.commons.assets.pixmap.PixmapTextureAsset;
-import com.mbrlabs.mundus.commons.assets.pixmap.PixmapTextureService;
+import com.mbrlabs.mundus.commons.assets.pixmap.PixmapTextureAssetLoader;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset;
-import com.mbrlabs.mundus.commons.assets.terrain.TerrainService;
+import com.mbrlabs.mundus.commons.assets.terrain.TerrainAssetLoader;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
-import com.mbrlabs.mundus.commons.assets.texture.TextureService;
+import com.mbrlabs.mundus.commons.assets.texture.TextureAssetLoader;
 import com.mbrlabs.mundus.commons.core.ModelFiles;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
-import com.mbrlabs.mundus.editor.assets.MetaSaver;
-import com.mbrlabs.mundus.editor.config.AppEnvironment;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
 import com.mbrlabs.mundus.editor.core.shader.ShaderStorage;
@@ -31,17 +25,15 @@ import com.mbrlabs.mundus.editor.scene3d.components.PickableModelComponent;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.InputStreamReader;
 import java.util.*;
 
 import static com.mbrlabs.mundus.editor.core.ProjectConstants.BUNDLED_FOLDER;
-import static com.mbrlabs.mundus.editor.core.ProjectConstants.PROJECT_ASSETS_DIR;
 
 @Component
 @Slf4j
@@ -50,20 +42,28 @@ public class EditorAssetManager extends AssetManager {
     private final ShaderStorage shaderStorage;
     @Getter
     private final Set<Asset> dirtyAssets = new HashSet<>();
-    private final MetaSaver metaSaver = new MetaSaver();
 
-    public EditorAssetManager(AppEnvironment appEnvironment, MetaService metaFileService, TextureService textureService,
-                              TerrainService terrainService, MaterialService materialService,
-                              PixmapTextureService pixmapTextureService, ModelService modelService,
+    public EditorAssetManager(ObjectMapper mapper, MetaLoader metaService, TextureAssetLoader textureService,
+                              TerrainAssetLoader terrainService, MaterialAssetLoader materialService,
+                              PixmapTextureAssetLoader pixmapTextureService, ModelAssetLoader modelService,
                               EditorCtx ctx, ShaderStorage shaderStorage) {
-        super(new FileHandle(appEnvironment.getHomeDir() + "/" + PROJECT_ASSETS_DIR), metaFileService,
-                textureService, terrainService, materialService, pixmapTextureService, modelService);
+        super(mapper, metaService, textureService, terrainService, materialService, pixmapTextureService, modelService);
         this.ctx = ctx;
         this.shaderStorage = shaderStorage;
-        if (rootFolder != null && (!rootFolder.exists() || !rootFolder.isDirectory())) {
-            log.error("Folder {} doesn't exist or is not a directory", rootFolder.file());
-        }
     }
+
+//    public EditorAssetManager(AppEnvironment appEnvironment, MetaLoader metaFileService, TextureAssetLoader textureService,
+//                              TerrainAssetLoader terrainService, MaterialAssetLoader materialService,
+//                              PixmapTextureAssetLoader pixmapTextureService, ModelAssetLoader modelService,
+//                              EditorCtx ctx, ShaderStorage shaderStorage) {
+//        super(new FileHandle(appEnvironment.getHomeDir() + "/" + PROJECT_ASSETS_DIR), metaFileService,
+//                textureService, terrainService, materialService, pixmapTextureService, modelService);
+//        this.ctx = ctx;
+//        this.shaderStorage = shaderStorage;
+//        if (rootFolder != null && (!rootFolder.exists() || !rootFolder.isDirectory())) {
+//            log.error("Folder {} doesn't exist or is not a directory", rootFolder.file());
+//        }
+//    }
 
     @PostConstruct
     public void init() {
@@ -71,28 +71,56 @@ public class EditorAssetManager extends AssetManager {
     }
 
     public void saveAsset(Asset asset) {
-        if (asset instanceof MaterialAsset) {
-            materialService.save((MaterialAsset) asset);
-        } else if (asset instanceof TerrainAsset) {
-            terrainService.save((TerrainAsset) asset);
-        } else if (asset instanceof ModelAsset) {
-            modelService.save((ModelAsset) asset);
-        } else {
-            throw new NotImplementedException();
-        }
+//        if (asset instanceof MaterialAsset) {
+//            materialService.save((MaterialAsset) asset);
+//        } else if (asset instanceof TerrainAsset) {
+//            terrainService.save((TerrainAsset) asset);
+//        } else if (asset instanceof ModelAsset) {
+//            modelService.save((ModelAsset) asset);
+//        } else {
+//            throw new NotImplementedException();
+//        }
     }
 
-    void loadStandardAssets(Map<String, Asset> assets) {
+    void loadStandardAssets(Map<String, Asset<?>> assets) {
         try {
-            loadByType(assets, BUNDLED_FOLDER + "textures", AssetType.TEXTURE);
-            loadByType(assets, BUNDLED_FOLDER + "models", AssetType.MODEL);
+            var metaPaths = getMetas(BUNDLED_FOLDER);
+
+            for (var metaPath : metaPaths) {
+                var assetFolder = new AppFileHandle(metaPath, Files.FileType.Classpath).parent();
+                var asset = loadAsset(assetFolder);
+                assets.put(assetFolder.path(), asset);
+            }
         } catch (Exception e) {
             log.error("ERROR", e);
         }
     }
 
+    private List<String> getMetas(String root) {
+        try {
+            var res = new ArrayList<String>();
+            for (var folder : getResourceFiles(root)) {
+                var dir = root + "/" + folder;
+                var file = new File(getClass().getClassLoader().getResource(dir).toURI());
+                if (file.isDirectory()) {
+                    var path = dir + "/" + AssetConstants.META_FILE_NAME;
+                    if (getClass().getClassLoader().getResource(path) != null) {
+                        res.add(path);
+                    } else {
+                        res.addAll(getMetas(dir));
+                    }
+                }
+            }
+            return res;
+        } catch (Exception e) {
+            log.error("ERROR", e);
+        }
+
+        return Collections.emptyList();
+    }
+
     @SneakyThrows
-    private void loadByType(Map<String, Asset> assets, String path, AssetType type) {
+    private void loadByType(Map<String, Asset<?>> assets, String path) {
         for (var fileName : getResourceFiles(path)) {
             var file = new FileHandle(new File(getClass().getClassLoader().getResource(path + "/" + fileName).toURI()));
 
@@ -100,19 +128,19 @@ public class EditorAssetManager extends AssetManager {
             var metaFile = new FileHandle(getMetaPath(file));
             try {
                 Meta meta;
-                if (!metaFile.exists()) {
-                    meta = createNewMetaFile(file, type);
-                    file.copyTo(assetFile);
-                } else {
-                    meta = metaService.load(metaFile);
-                }
+//                if (!metaFile.exists()) {
+//                    meta = createNewMetaFile(file, type);
+//                    file.copyTo(assetFile);
+//                } else {
+//                    meta = metaService.load(metaFile);
+//                }
 
                 Asset asset = null;
-                if (type == AssetType.TEXTURE) {
-                    asset = textureService.load(meta, assetFile);
-                } else if (type == AssetType.MODEL) {
-                    asset = modelService.load(meta, assetFile);
-                }
+//                if (type == AssetType.TEXTURE) {
+//                    asset = textureService.load(meta, assetFile);
+//                } else if (type == AssetType.MODEL) {
+//                    asset = modelService.load(meta, assetFile);
+//                }
                 if (asset != null) {
                     assets.put(file.path(), asset);
                 }
@@ -127,138 +155,147 @@ public class EditorAssetManager extends AssetManager {
     }
 
     private String getMetaPath(FileHandle file) {
-        var name = file.name() + "." + Meta.META_EXTENSION;
-        return FilenameUtils.concat(rootFolder.path(), name);
+//        var name = file.name() + "." + Meta.META_EXTENSION;
+//        return FilenameUtils.concat(rootFolder.path(), name);
+        return "";
     }
 
     private String getAssetPath(FileHandle file) {
-        return FilenameUtils.concat(rootFolder.path(), file.name());
+//        return FilenameUtils.concat(rootFolder.path(), file.name());
+        return null;
     }
 
-    private Meta createNewMetaFile(FileHandle file, AssetType type) {
-        var meta = new Meta(file);
-        meta.setUuid(clearedUUID());
-        meta.setVersion(Meta.CURRENT_VERSION);
-        meta.setLastModified(System.currentTimeMillis());
-        meta.setType(type);
-        //todo replace with metaService
-        metaSaver.save(meta);
-
-        return meta;
+    private <T> Meta<T> createNewMetaFile(FileHandle file, AssetType type) {
+//        var meta = new Meta<T>(file);
+//        meta.setUuid(clearedUUID());
+//        meta.setVersion(Meta.CURRENT_VERSION);
+//        meta.setLastModified(System.currentTimeMillis());
+//        meta.setType(type);
+//        metaService.save(meta);
+//
+//        return meta;
+        return null;
     }
 
     public ModelAsset createModelAsset(ModelFiles model) {
-        var meta = createMetaFileFromAsset(model.getMain(), AssetType.MODEL);
+//        var meta = createMetaFileFromAsset(model.getMain(), AssetType.MODEL);
+//
+//        // copy model file
+//        model.copyTo(new FileHandle(rootFolder.path()));
+//
+//        // load & return asset
+//        var assetFile = new FileHandle(FilenameUtils.concat(rootFolder.path(), model.name()));
+//        var asset = new ModelAsset(meta);
+//        asset.load();
+//
+//        addAsset(asset);
+//        return asset;
 
-        // copy model file
-        model.copyTo(new FileHandle(rootFolder.path()));
-
-        // load & return asset
-        var assetFile = new FileHandle(FilenameUtils.concat(rootFolder.path(), model.name()));
-        var asset = new ModelAsset(meta, assetFile);
-        asset.load();
-
-        addAsset(asset);
-        return asset;
+        return null;
     }
 
     @SneakyThrows
     public MaterialAsset createMaterialAsset(String name) {
         // create empty material file
-        var path = FilenameUtils.concat(rootFolder.path(), name) + MaterialAsset.EXTENSION;
-        var matFile = Gdx.files.absolute(path);
-        FileUtils.touch(matFile.file());
-
-        var meta = createMetaFileFromAsset(matFile, AssetType.MATERIAL);
-        var asset = new MaterialAsset(meta, matFile);
-        asset.load();
-
-        saveAsset(asset);
-        addAsset(asset);
-        return asset;
+//        var path = FilenameUtils.concat(rootFolder.path(), name) + MaterialAsset.EXTENSION;
+//        var matFile = Gdx.files.absolute(path);
+//        FileUtils.touch(matFile.file());
+//
+//        var meta = createMetaFileFromAsset(matFile, AssetType.MATERIAL);
+//        var asset = new MaterialAsset(meta);
+//        asset.load();
+//
+//        saveAsset(asset);
+//        addAsset(asset);
+//        return asset;
+        return null;
     }
 
     public TextureAsset createTextureAsset(FileHandle texture) {
-        var meta = createMetaFileFromAsset(texture, AssetType.TEXTURE);
-        texture.copyTo(new FileHandle(rootFolder.path()));
-
-        var asset = new TextureAsset(meta, new FileHandle(FilenameUtils.concat(rootFolder.path(), texture.name())));
-        // TODO parse special texture instead of always setting them
-        asset.setTileable(true);
-        asset.generateMipmaps(true);
-        asset.load();
-
-        addAsset(asset);
-        return asset;
+//        var meta = createMetaFileFromAsset(texture, AssetType.TEXTURE);
+//        texture.copyTo(new FileHandle(rootFolder.path()));
+//
+//        var asset = new TextureAsset(meta, new FileHandle(FilenameUtils.concat(rootFolder.path(), texture.name())));
+//        // TODO parse special texture instead of always setting them
+//        asset.setTileable(true);
+//        asset.generateMipmaps(true);
+//        asset.load();
+//
+//        addAsset(asset);
+//        return asset;
+        return null;
     }
 
     public PixmapTextureAsset createPixmapTextureAsset(int size) {
-        var pixmapFilename = clearedUUID().substring(0, 5) + ".png";
-        var metaFilename = pixmapFilename + ".meta";
-
-        // create meta file
-        var metaPath = FilenameUtils.concat(rootFolder.path(), metaFilename);
-        var meta = createNewMetaFile(new FileHandle(metaPath), AssetType.PIXMAP_TEXTURE);
-
-        // create pixmap
-        var pixmapPath = FilenameUtils.concat(rootFolder.path(), pixmapFilename);
-        var pixmap = new Pixmap(size, size, Pixmap.Format.RGBA8888);
-        var pixmapAssetFile = new FileHandle(pixmapPath);
-        PixmapIO.writePNG(pixmapAssetFile, pixmap);
-        pixmap.dispose();
-
-        // load & return asset
-        var asset = new PixmapTextureAsset(meta, pixmapAssetFile);
-        asset.load();
-
-        addAsset(asset);
-        return asset;
+//        var pixmapFilename = clearedUUID().substring(0, 5) + ".png";
+//        var metaFilename = pixmapFilename + ".meta";
+//
+//        // create meta file
+//        var metaPath = FilenameUtils.concat(rootFolder.path(), metaFilename);
+//        var meta = createNewMetaFile(new FileHandle(metaPath), AssetType.PIXMAP_TEXTURE);
+//
+//        // create pixmap
+//        var pixmapPath = FilenameUtils.concat(rootFolder.path(), pixmapFilename);
+//        var pixmap = new Pixmap(size, size, Pixmap.Format.RGBA8888);
+//        var pixmapAssetFile = new FileHandle(pixmapPath);
+//        PixmapIO.writePNG(pixmapAssetFile, pixmap);
+//        pixmap.dispose();
+//
+//        // load & return asset
+//        var asset = new PixmapTextureAsset(meta, pixmapAssetFile);
+//        asset.load();
+//
+//        addAsset(asset);
+//        return asset;
+        return null;
     }
 
     @SneakyThrows
     public TerrainAsset createTerrainAsset(String name, int vertexResolution, int size) {
-        var terraFilename = name + ".terrain";
-        var metaFilename = terraFilename + "meta";
-
-        // create meta file
-        var metaPath = FilenameUtils.concat(rootFolder.path(), metaFilename);
-        var meta = createNewMetaFile(new FileHandle(metaPath), AssetType.TERRAIN);
-        meta.setTerrain(new MetaTerrain());
-        meta.getTerrain().setSize(size);
-        meta.getTerrain().setUv(60f);
-        metaSaver.save(meta);
-
-        // create terra file
-        var terraPath = FilenameUtils.concat(rootFolder.path(), terraFilename);
-        var terraFile = new File(terraPath);
-        FileUtils.touch(terraFile);
-
-        // create initial height data
-        var data = new float[vertexResolution * vertexResolution];
-
-        // write terra file
-        var outputStream = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(terraFile)));
-        for (var f : data) {
-            outputStream.writeFloat(f);
-        }
-        outputStream.flush();
-        outputStream.close();
-
-        // load & apply standard chessboard texture
-        var asset = new TerrainAsset(meta, new FileHandle(terraFile));
-        asset.load();
-
-        //todo
-        // set base texture
-//        var chessboard = findAssetByID(STANDARD_ASSET_TEXTURE_CHESSBOARD)
-//        if (chessboard != null) {
-//            asset.splatBase = chessboard as TextureAsset
-//            asset.applyDependencies()
-//            metaSaver.save(asset.meta)
+//        var terraFilename = name + ".terrain";
+//        var metaFilename = terraFilename + "meta";
+//
+//        // create meta file
+//        var metaPath = FilenameUtils.concat(rootFolder.path(), metaFilename);
+//        Meta<TerrainMeta> meta = createNewMetaFile(new FileHandle(metaPath), AssetType.TERRAIN);
+//        meta.setAdditional(new TerrainMeta());
+//        meta.getAdditional().setSize(size);
+//        meta.getAdditional().setUv(60f);
+//        metaService.save(meta);
+//
+//        // create terra file
+//        var terraPath = FilenameUtils.concat(rootFolder.path(), terraFilename);
+//        var terraFile = new File(terraPath);
+//        FileUtils.touch(terraFile);
+//
+//        // create initial height data
+//        var data = new float[vertexResolution * vertexResolution];
+//
+//        // write terra file
+//        var outputStream = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(terraFile)));
+//        for (var f : data) {
+//            outputStream.writeFloat(f);
 //        }
+//        outputStream.flush();
+//        outputStream.close();
+//
+//        // load & apply standard chessboard texture
+//        var asset = new TerrainAsset(meta);
+//        asset.load();
+//
+//        //todo
+//        // set base texture
+////        var chessboard = findAssetByID(STANDARD_ASSET_TEXTURE_CHESSBOARD)
+////        if (chessboard != null) {
+////            asset.splatBase = chessboard as TextureAsset
+////            asset.applyDependencies()
+////            metaSaver.save(asset.meta)
+////        }
+//
+//        addAsset(asset);
+//        return asset;
 
-        addAsset(asset);
-        return asset;
+        return null;
     }
 
     public void deleteAsset(Asset asset) {
@@ -308,9 +345,10 @@ public class EditorAssetManager extends AssetManager {
     }
 
     private FileHandle copyAssetToProjectFolder(FileHandle file) {
-        var copy = new FileHandle(FilenameUtils.concat(rootFolder.path(), file.name()));
-        file.copyTo(copy);
-        return copy;
+//        var copy = new FileHandle(FilenameUtils.concat(rootFolder.path(), file.name()));
+//        file.copyTo(copy);
+//        return copy;
+        return null;
     }
 
     public void dirty(Asset asset) {

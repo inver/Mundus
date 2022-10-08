@@ -79,7 +79,7 @@ class ExportDialog(
 
         show(appUi)
 
-        Exporter(projectStorage, ctx.current, sceneStorage, assetManager).exportAsync(
+        Exporter(ctx.current, sceneStorage, assetManager).exportAsync(
             export.outputFolder,
             object : AsyncTaskListener {
                 private var error = false

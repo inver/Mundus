@@ -23,7 +23,7 @@ public class EditorCtx implements Disposable {
     private Viewport viewport;
 
     @Getter
-    private final Map<String, Asset> assetLibrary = new HashMap<>();
+    private final Map<String, Asset<?>> assetLibrary = new HashMap<>();
     @Getter
     private final Map<String, BaseShader> shaderLibrary = new HashMap<>();
 

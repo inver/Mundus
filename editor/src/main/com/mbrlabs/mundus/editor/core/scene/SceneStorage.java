@@ -20,7 +20,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.utils.Json;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mbrlabs.mundus.commons.Scene;
 import com.mbrlabs.mundus.commons.dto.SceneDto;
@@ -36,7 +35,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Component;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import static com.mbrlabs.mundus.editor.core.ProjectConstants.*;
 
@@ -123,10 +122,9 @@ public class SceneStorage {
      * @param sceneName name of the scene to load
      * @return loaded scene
      */
-    public SceneDto loadScene(String projectPath, String sceneName) throws FileNotFoundException {
-        String sceneDir = getScenePath(projectPath, sceneName);
-        Json json = new Json();
-        return json.fromJson(SceneDto.class, new FileInputStream(sceneDir));
+    public SceneDto loadScene(String projectPath, String sceneName) throws IOException {
+        var sceneDir = getScenePath(projectPath, sceneName);
+        return mapper.readValue(new FileInputStream(sceneDir), SceneDto.class);
     }
 
     private static String getScenePath(String projectPath, String sceneName) {

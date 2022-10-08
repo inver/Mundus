@@ -35,9 +35,14 @@ public class ProjectManagerTest extends BaseCtxTest {
         Assert.assertNotNull(res.getCurrentScene().getEnvironment().getAmbientLight());
     }
 
+    @SneakyThrows
     @Test
-    public void testRenderScene() {
-        var project = projectManager.createProject("ololo", PROJECT_PATH);
+    public void loadProject() {
+        var ref = new ProjectRef();
+        ref.setName("Ololo");
+        ref.setPath("src/test/resources/testProject");
 
+        var project = projectManager.loadProject(ref);
+        Assert.assertNotNull(project);
     }
 }

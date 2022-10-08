@@ -40,11 +40,9 @@ import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.mbrlabs.mundus.commons.assets.exceptions.AssetAlreadyExistsException
-import com.mbrlabs.mundus.commons.assets.meta.dto.MetaModel
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset
 import com.mbrlabs.mundus.commons.core.ModelFiles
 import com.mbrlabs.mundus.commons.loader.ModelImporter
-import com.mbrlabs.mundus.editor.assets.MetaSaver
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.registry.Registry
 import com.mbrlabs.mundus.editor.events.AssetImportEvent
@@ -200,17 +198,18 @@ class ImportModelDialog(
             // create model asset
             val modelAsset = assetManager.createModelAsset(importedModel!!)
 
+            TODO()
             // create materials
-            modelAsset.meta.model = MetaModel()
-            for (mat in modelAsset.model.materials) {
-                val materialAsset = assetManager.createMaterialAsset(modelAsset.id.substring(0, 4) + "_" + mat.id)
-                modelAsset.meta.model.defaultMaterials.put(mat.id, materialAsset.id)
-                modelAsset.defaultMaterials.put(mat.id, materialAsset)
-            }
+//            modelAsset.meta.model = MetaModel()
+//            for (mat in modelAsset.model.materials) {
+//                val materialAsset = assetManager.createMaterialAsset(modelAsset.id.substring(0, 4) + "_" + mat.id)
+//                modelAsset.meta.model.defaultMaterials.put(mat.id, materialAsset.id)
+//                modelAsset.defaultMaterials.put(mat.id, materialAsset)
+//            }
 
-            // save meta file
-            val saver = MetaSaver()
-            saver.save(modelAsset.meta)
+//            // save meta file
+//            val saver = MetaSaver()
+//            saver.save(modelAsset.meta)
 
             modelAsset.applyDependencies()
 

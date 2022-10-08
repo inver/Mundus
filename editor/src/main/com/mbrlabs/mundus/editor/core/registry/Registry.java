@@ -18,8 +18,9 @@ package com.mbrlabs.mundus.editor.core.registry;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.RequiredArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Setter;
 import org.apache.commons.io.FilenameUtils;
 
@@ -35,7 +36,6 @@ import java.util.UUID;
  * @author Marcus Brummer
  * @version 12-12-2015
  */
-@RequiredArgsConstructor
 public class Registry {
     private final List<ProjectRef> projects = new ArrayList<>();
 
@@ -46,6 +46,11 @@ public class Registry {
     private ProjectRef lastProject;
     @Setter
     private Settings settings = new Settings();
+
+    @JsonCreator
+    public Registry(@JsonProperty("tmpDir") String tmpDir) {
+        this.tmpDir = tmpDir;
+    }
 
     public FileHandle createTempFolder() {
         String tempFolderPath = FilenameUtils.concat(tmpDir, UUID.randomUUID().toString()) + "/";

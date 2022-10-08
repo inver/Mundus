@@ -32,7 +32,7 @@ public class ExporterTest {
         SceneStorage sceneStorage = mock(SceneStorage.class);
         EditorAssetManager assetManager = mock(EditorAssetManager.class);
 
-        exporter = new Exporter(manager, context, sceneStorage, assetManager);
+        exporter = new Exporter(context, sceneStorage, assetManager);
     }
 
     @Test

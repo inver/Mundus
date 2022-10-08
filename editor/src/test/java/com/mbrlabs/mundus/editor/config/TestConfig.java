@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mbrlabs.mundus.commons.assets.texture.TextureService;
+import com.mbrlabs.mundus.commons.assets.texture.TextureAssetLoader;
 import com.mbrlabs.mundus.commons.skybox.Skybox;
 import com.mbrlabs.mundus.editor.core.assets.AssetsStorage;
 import com.mbrlabs.mundus.editor.core.scene.SceneStorage;
@@ -19,6 +19,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
+import java.io.File;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -42,10 +43,12 @@ public class TestConfig {
 
     @Bean
     public AppEnvironment appEnvironment() {
+        var homeDir = "/tmp/" + UUID.randomUUID() + ".mundus";
+        new File(homeDir).mkdirs();
         return new AppEnvironment() {
             @Override
             public String getHomeDir() {
-                return "/tmp/" + UUID.randomUUID() + ".mundus";
+                return homeDir;
             }
         };
     }
@@ -56,8 +59,8 @@ public class TestConfig {
     }
 
     @Bean
-    public TextureService textureService() {
-        return new TextureService();
+    public TextureAssetLoader textureService() {
+        return new TextureAssetLoader();
     }
 //
 //    @Bean

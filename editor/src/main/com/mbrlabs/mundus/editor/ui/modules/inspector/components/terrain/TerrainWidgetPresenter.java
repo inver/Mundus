@@ -6,7 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
-import com.mbrlabs.mundus.commons.assets.meta.MetaService;
+import com.mbrlabs.mundus.commons.assets.meta.MetaLoader;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
 import com.mbrlabs.mundus.commons.terrain.SplatTexture;
 import com.mbrlabs.mundus.editor.assets.AssetTextureFilter;
@@ -42,7 +42,7 @@ public class TerrainWidgetPresenter {
     private final ProjectManager projectManager;
     private final AssetPickerDialog assetPickerDialog;
     private final Toaster toaster;
-    private final MetaService metaService;
+    private final MetaLoader metaService;
     private final FileChooserFieldPresenter fileChooserFieldPresenter;
     private final CommandHistory history;
 

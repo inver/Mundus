@@ -24,36 +24,32 @@ import com.kotcrab.vis.ui.widget.VisTextField
 import com.mbrlabs.mundus.commons.assets.Asset
 import com.mbrlabs.mundus.editor.assets.AssetFilter
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
+import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerListener
 
 /**
  * @author Marcus Brummer
  * @version 13-10-2016
  */
-class AssetSelectionField(
-    private val assetSelectionDialog: AssetPickerDialog
-) : VisTable() {
+class AssetSelectionField(private val assetSelectionDialog: AssetPickerDialog) : VisTable() {
 
-    private val textField: VisTextField
+    private val textField: VisTextField = VisTextField()
     private val btn: VisTextButton
 
-    var pickerListener: AssetPickerDialog.AssetPickerListener? = null
+    var pickerListener: AssetPickerListener? = null
     var assetFilter: AssetFilter? = null
 
-    private val internalListener: AssetPickerDialog.AssetPickerListener
+    private val internalListener: AssetPickerListener
 
     init {
-        textField = VisTextField()
         textField.isDisabled = true
         btn = VisTextButton("Select")
 
         add(textField).grow()
         add(btn).padLeft(5f).row()
 
-        internalListener = object : AssetPickerDialog.AssetPickerListener {
-            override fun onSelected(asset: Asset?) {
-                setAsset(asset)
-                pickerListener?.onSelected(asset)
-            }
+        internalListener = AssetPickerListener { asset ->
+            setAsset(asset)
+            pickerListener?.onSelected(asset)
         }
 
         btn.addListener(object : ClickListener() {
@@ -63,7 +59,7 @@ class AssetSelectionField(
         })
     }
 
-    fun setAsset(asset: Asset?) {
+    fun setAsset(asset: Asset<*>?) {
         textField.text = if (asset == null) "None" else asset.name
     }
 

@@ -3,8 +3,6 @@
   "lastModified": 1663444124794,
   "type": "MODEL",
   "additional": {
-    "materials": {
-    },
-    "objFile": "sphere.glb"
+    "file": "sphere.glb"
   }
 }

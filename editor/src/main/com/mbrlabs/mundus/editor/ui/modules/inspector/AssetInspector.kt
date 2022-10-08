@@ -74,7 +74,7 @@ class AssetInspector(
     private val textureWidget = TextureAssetInspectorWidget(separatorStyle)
     private val terrainWidget = TerrainAssetInspectorWidget(separatorStyle)
 
-    var asset: Asset? = null
+    var asset: Asset<*>? = null
         set(value) {
             field = value
             clear()

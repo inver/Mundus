@@ -29,9 +29,7 @@ import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.kotcrab.vis.ui.widget.VisTextField
 import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter
-import com.mbrlabs.mundus.commons.assets.Asset
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset
-import com.mbrlabs.mundus.commons.assets.texture.TextureAsset
 import com.mbrlabs.mundus.commons.scene3d.components.Component
 import com.mbrlabs.mundus.commons.scene3d.components.ModelComponent
 import com.mbrlabs.mundus.editor.assets.AssetMaterialFilter
@@ -41,6 +39,7 @@ import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.PreviewGenerator
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
+import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerListener
 import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerField
 
 /**
@@ -61,7 +60,7 @@ class MaterialWidget(
 
     private val matFilter: AssetMaterialFilter = AssetMaterialFilter()
     private val matChangedBtn: VisTextButton = VisTextButton("change")
-    private val matPickerListener: AssetPickerDialog.AssetPickerListener
+    private val matPickerListener: AssetPickerListener
 
     private val matNameLabel: VisLabel = VisLabel()
     val diffuseColorField: ColorPickerField = ColorPickerField()
@@ -78,9 +77,9 @@ class MaterialWidget(
             if (value != null) {
                 field = value
                 diffuseColorField.selectedColor = value.diffuseColor
-                diffuseAssetField.setAsset(value.diffuseTexture)
+//                diffuseAssetField.setAsset(value.diffuseTexture)
                 matNameLabel.setText(value.name)
-                shininessField.text = value.shininess.toString()
+//                shininessField.text = value.shininess.toString()
 
                 previewWidgetContainer.clearChildren()
                 previewWidgetContainer.add(previewGenerator.createPreviewWidget(appUi, value)).expand().fill()
@@ -101,11 +100,9 @@ class MaterialWidget(
         align(Align.topLeft)
         matNameLabel.setWrap(true)
 
-        matPickerListener = object : AssetPickerDialog.AssetPickerListener {
-            override fun onSelected(asset: Asset?) {
-                material = asset as? MaterialAsset
-                matChangedListener?.materialChanged(material!!)
-            }
+        matPickerListener = AssetPickerListener { asset ->
+            material = asset as? MaterialAsset
+            matChangedListener?.materialChanged(material!!)
         }
 
         setupWidgets()
@@ -137,13 +134,11 @@ class MaterialWidget(
 
         // diffuse texture
         diffuseAssetField.assetFilter = AssetTextureFilter()
-        diffuseAssetField.pickerListener = object : AssetPickerDialog.AssetPickerListener {
-            override fun onSelected(asset: Asset?) {
-                material?.diffuseTexture = asset as? TextureAsset
-                applyMaterialToModelAssets()
-                applyMaterialToModelComponents()
-                assetManager.dirty(material!!)
-            }
+        diffuseAssetField.pickerListener = AssetPickerListener { asset ->
+//            material?.diffuseTexture = asset as? TextureAsset
+//            applyMaterialToModelAssets()
+//            applyMaterialToModelComponents()
+//            assetManager.dirty(material!!)
         }
 
         // diffuse color
@@ -161,10 +156,10 @@ class MaterialWidget(
         shininessField.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent?, actor: Actor?) {
                 if (shininessField.isInputValid && !shininessField.isEmpty) {
-                    material?.shininess = shininessField.text.toFloat()
-                    applyMaterialToModelAssets()
-                    applyMaterialToModelComponents()
-                    assetManager.dirty(material!!)
+//                    material?.shininess = shininessField.text.toFloat()
+//                    applyMaterialToModelAssets()
+//                    applyMaterialToModelComponents()
+//                    assetManager.dirty(material!!)
                 }
             }
         })
@@ -184,9 +179,9 @@ class MaterialWidget(
 
     // TODO find better solution than iterating through all assets
     private fun applyMaterialToModelAssets() {
-        for (modelAsset in assetManager.assets) {
-            modelAsset.applyDependencies()
-        }
+//        for (modelAsset in assetManager.assets) {
+//            modelAsset.applyDependencies()
+//        }
     }
 
     /**

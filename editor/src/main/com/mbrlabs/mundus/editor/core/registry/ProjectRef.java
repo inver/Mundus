@@ -18,6 +18,8 @@ package com.mbrlabs.mundus.editor.core.registry;
 
 import lombok.Setter;
 
+import java.util.Objects;
+
 /**
  * A reference to a Mundus project, stored in the registry.
  *
@@ -36,5 +38,18 @@ public class ProjectRef {
 
     public String getPath() {
         return path;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ProjectRef that = (ProjectRef) o;
+        return Objects.equals(name, that.name) && Objects.equals(path, that.path);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, path);
     }
 }

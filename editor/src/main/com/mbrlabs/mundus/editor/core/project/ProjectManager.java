@@ -19,23 +19,15 @@ package com.mbrlabs.mundus.editor.core.project;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Disposable;
 import com.mbrlabs.mundus.commons.Scene;
-import com.mbrlabs.mundus.commons.assets.Asset;
-import com.mbrlabs.mundus.commons.assets.AssetManager;
-import com.mbrlabs.mundus.commons.assets.AssetType;
-import com.mbrlabs.mundus.commons.assets.exceptions.AssetNotFoundException;
-import com.mbrlabs.mundus.commons.assets.exceptions.MetaFileParseException;
-import com.mbrlabs.mundus.commons.assets.material.MaterialService;
-import com.mbrlabs.mundus.commons.assets.meta.MetaService;
-import com.mbrlabs.mundus.commons.assets.model.ModelAsset;
-import com.mbrlabs.mundus.commons.assets.model.ModelService;
-import com.mbrlabs.mundus.commons.assets.pixmap.PixmapTextureService;
-import com.mbrlabs.mundus.commons.assets.terrain.TerrainService;
-import com.mbrlabs.mundus.commons.assets.texture.TextureService;
+import com.mbrlabs.mundus.commons.assets.material.MaterialAssetLoader;
+import com.mbrlabs.mundus.commons.assets.meta.MetaLoader;
+import com.mbrlabs.mundus.commons.assets.model.ModelAssetLoader;
+import com.mbrlabs.mundus.commons.assets.pixmap.PixmapTextureAssetLoader;
+import com.mbrlabs.mundus.commons.assets.terrain.TerrainAssetLoader;
+import com.mbrlabs.mundus.commons.assets.texture.TextureAssetLoader;
 import com.mbrlabs.mundus.commons.importer.SceneConverter;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.scene3d.components.Component;
-import com.mbrlabs.mundus.commons.scene3d.components.ModelComponent;
-import com.mbrlabs.mundus.commons.scene3d.components.TerrainComponent;
 import com.mbrlabs.mundus.editor.Main;
 import com.mbrlabs.mundus.editor.core.assets.AssetsStorage;
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager;
@@ -47,15 +39,16 @@ import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.LogEvent;
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent;
 import com.mbrlabs.mundus.editor.events.SceneChangedEvent;
-import com.mbrlabs.mundus.editor.scene3d.components.PickableComponent;
 import com.mbrlabs.mundus.editor.utils.SkyboxBuilder;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,12 +70,12 @@ public class ProjectManager implements Disposable {
     private final Registry registry;
     private final ProjectStorage projectStorage;
     private final EditorAssetManager assetManager;
-    private final MetaService metaService;
-    private final TextureService textureService;
-    private final TerrainService terrainService;
-    private final MaterialService materialService;
-    private final PixmapTextureService pixmapTextureService;
-    private final ModelService modelService;
+    private final MetaLoader metaService;
+    private final TextureAssetLoader textureService;
+    private final TerrainAssetLoader terrainService;
+    private final MaterialAssetLoader materialService;
+    private final PixmapTextureAssetLoader pixmapTextureService;
+    private final ModelAssetLoader modelService;
 
     private final EventBus eventBus;
     private final SceneStorage sceneStorage;
@@ -172,8 +165,7 @@ public class ProjectManager implements Disposable {
      * @return loaded project context
      * @throws FileNotFoundException if project can't be found
      */
-    public ProjectContext loadProject(ProjectRef ref)
-            throws FileNotFoundException, MetaFileParseException, AssetNotFoundException {
+    public ProjectContext loadProject(ProjectRef ref) throws Exception {
         var context = projectStorage.loadProjectContext(ref);
         if (context == null) {
             // project doesn't exist, but ref is exist - create default project
@@ -188,17 +180,17 @@ public class ProjectManager implements Disposable {
 
         // load assets
 //        context.setAssetManager(createAssetManager(ref.getPath() + "/" + PROJECT_ASSETS_DIR));
-        assetManager.loadAssets(new AssetManager.AssetLoadingListener() {
-            @Override
-            public void onLoad(Asset asset, int progress, int assetCount) {
-                log.debug("Loaded {} asset ({}/{})", asset.getMeta().getType(), progress, assetCount);
-            }
-
-            @Override
-            public void onFinish(int assetCount) {
-                log.debug("Finished loading {} assets", assetCount);
-            }
-        }, false);
+//        assetManager.loadAssets(new AssetManager.AssetLoadingListener() {
+//            @Override
+//            public void onLoad(Asset asset, int progress, int assetCount) {
+//                log.debug("Loaded {} asset ({}/{})", asset.getMeta().getType(), progress, assetCount);
+//            }
+//
+//            @Override
+//            public void onFinish(int assetCount) {
+//                log.debug("Finished loading {} assets", assetCount);
+//            }
+//        }, false);
 
         return context;
     }
@@ -242,7 +234,7 @@ public class ProjectManager implements Disposable {
         if (lastOpenedProject != null) {
             try {
                 return loadProject(lastOpenedProject);
-            } catch (FileNotFoundException | AssetNotFoundException | MetaFileParseException e) {
+            } catch (Exception e) {
                 log.error("ERROR", e);
             }
             return null;
@@ -306,7 +298,7 @@ public class ProjectManager implements Disposable {
      * @return loaded scene
      * @throws FileNotFoundException if scene file not found
      */
-    public Scene loadScene(ProjectContext context, String sceneName) throws FileNotFoundException {
+    public Scene loadScene(ProjectContext context, String sceneName) throws IOException {
         var dto = sceneStorage.loadScene(context.path, sceneName);
 
         var scene = new Scene();
@@ -334,6 +326,7 @@ public class ProjectManager implements Disposable {
         return scene;
     }
 
+    @SneakyThrows
     /**
      * Loads and opens scene
      *
@@ -363,38 +356,38 @@ public class ProjectManager implements Disposable {
     }
 
     private void initComponents(ProjectContext context, GameObject go) {
-        List<Asset> models = assetManager.getAssetsByType(AssetType.MODEL);
-        var iterator = go.getComponents().iterator();
-        while (iterator.hasNext()) {
-            var c = iterator.next();
-            if (c == null) {
-                // To prevent crashing, log a warning statement and remove the corrupted component
-                iterator.remove();
-                log.warn("A component for {} was null on load, this may be caused by deleting an asset that is still in " +
-                        "a scene.", go);
-                go.name = go.name + " [COMPONENT ERROR]";
-                continue;
-            }
-            // Model component
-            if (c.getType() == Component.Type.MODEL) {
-                ModelComponent modelComponent = (ModelComponent) c;
-                var modelOpt = models.stream()
-                        .filter(m -> m.getID().equals(modelComponent.getModelAsset().getID()))
-                        .findFirst();
-                if (modelOpt.isPresent()) {
-                    modelComponent.setModel((ModelAsset) modelOpt.get(), false);
-                } else {
-                    log.error("ERROR", "model for modelInstance not found: {}", modelComponent.getModelAsset().getID());
-                }
-            } else if (c.getType() == Component.Type.TERRAIN) {
-                ((TerrainComponent) c).getTerrain().getTerrain().setTransform(go.getTransform());
-            }
-
-            // encode id for picking
-            if (c instanceof PickableComponent) {
-                ((PickableComponent) c).encodeRayPickColorId();
-            }
-        }
+//        List<Asset> models = assetManager.getAssetsByType(AssetType.MODEL);
+//        var iterator = go.getComponents().iterator();
+//        while (iterator.hasNext()) {
+//            var c = iterator.next();
+//            if (c == null) {
+//                // To prevent crashing, log a warning statement and remove the corrupted component
+//                iterator.remove();
+//                log.warn("A component for {} was null on load, this may be caused by deleting an asset that is still in " +
+//                        "a scene.", go);
+//                go.name = go.name + " [COMPONENT ERROR]";
+//                continue;
+//            }
+//            // Model component
+//            if (c.getType() == Component.Type.MODEL) {
+//                ModelComponent modelComponent = (ModelComponent) c;
+//                var modelOpt = models.stream()
+//                        .filter(m -> m.getID().equals(modelComponent.getModelAsset().getID()))
+//                        .findFirst();
+//                if (modelOpt.isPresent()) {
+//                    modelComponent.setModel((ModelAsset) modelOpt.get(), false);
+//                } else {
+//                    log.error("ERROR", "model for modelInstance not found: {}", modelComponent.getModelAsset().getID());
+//                }
+//            } else if (c.getType() == Component.Type.TERRAIN) {
+//                ((TerrainComponent) c).getTerrain().getTerrain().setTransform(go.getTransform());
+//            }
+//
+//            // encode id for picking
+//            if (c instanceof PickableComponent) {
+//                ((PickableComponent) c).encodeRayPickColorId();
+//            }
+//        }
     }
 
     private String constructWindowTitle() {
