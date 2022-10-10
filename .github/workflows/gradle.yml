@@ -42,6 +42,14 @@ jobs:
       - name: Create info file
         run: |
           echo -e "ref: $GITHUB_REF \ncommit: $GITHUB_SHA\nbuild: $(date +"%Y-%m-%dT%H:%M:%SZ")" > editor/build/libs/info.txt
+      - name: Add coverage to PR
+        id: jacoco
+        uses: madrapps/jacoco-report@v1.3
+        with:
+          paths: ${{ github.workspace }}/build/reports/jacoco/testCoverage/testCoverage.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          min-coverage-overall: 40
+          min-coverage-changed-files: 60
       - name: Update nightly release
         uses: eine/tip@master
         with:
