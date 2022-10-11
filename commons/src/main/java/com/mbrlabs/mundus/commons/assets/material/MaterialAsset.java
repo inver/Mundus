@@ -19,12 +19,12 @@ package com.mbrlabs.mundus.commons.assets.material;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.assets.meta.Meta;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.Map;
 
@@ -65,7 +65,9 @@ public class MaterialAsset extends Asset<MaterialMeta> {
      * @return
      */
     public Material applyToMaterial(Material material) {
-        throw new NotImplementedException("TODO");
+        if (diffuseColor != null) {
+            material.set(new ColorAttribute(ColorAttribute.Diffuse, diffuseColor));
+        }
 //        if (diffuseColor != null) {
 //            material.set(new ColorAttribute(ColorAttribute.Diffuse, diffuseColor));
 //        }
@@ -75,8 +77,7 @@ public class MaterialAsset extends Asset<MaterialMeta> {
 //            material.remove(TextureAttribute.Diffuse);
 //        }
 //        material.set(new FloatAttribute(FloatAttribute.Shininess, shininess));
-//
-//        return material;
+        return material;
     }
 
     public Color getDiffuseColor() {

@@ -16,51 +16,33 @@
 
 package com.mbrlabs.mundus.editor.ui.widgets
 
-import com.badlogic.gdx.scenes.scene2d.InputEvent
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.kotcrab.vis.ui.widget.VisTextField
 import com.mbrlabs.mundus.commons.assets.Asset
 import com.mbrlabs.mundus.editor.assets.AssetFilter
-import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerListener
 
 /**
  * @author Marcus Brummer
  * @version 13-10-2016
  */
-class AssetSelectionField(private val assetSelectionDialog: AssetPickerDialog) : VisTable() {
+class AssetSelectionField : VisTable() {
 
-    private val textField: VisTextField = VisTextField()
-    private val btn: VisTextButton
+    private val textField = VisTextField()
+    val selectButton = VisTextButton("Select")
 
     var pickerListener: AssetPickerListener? = null
     var assetFilter: AssetFilter? = null
 
-    private val internalListener: AssetPickerListener
-
     init {
         textField.isDisabled = true
-        btn = VisTextButton("Select")
 
         add(textField).grow()
-        add(btn).padLeft(5f).row()
-
-        internalListener = AssetPickerListener { asset ->
-            setAsset(asset)
-            pickerListener?.onSelected(asset)
-        }
-
-        btn.addListener(object : ClickListener() {
-            override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                assetSelectionDialog.show(true, assetFilter, internalListener)
-            }
-        })
+        add(selectButton).padLeft(5f).row()
     }
 
     fun setAsset(asset: Asset<*>?) {
         textField.text = if (asset == null) "None" else asset.name
     }
-
 }

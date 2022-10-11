@@ -33,7 +33,6 @@ import com.mbrlabs.mundus.commons.assets.material.MaterialAsset
 import com.mbrlabs.mundus.commons.scene3d.components.Component
 import com.mbrlabs.mundus.commons.scene3d.components.ModelComponent
 import com.mbrlabs.mundus.editor.assets.AssetMaterialFilter
-import com.mbrlabs.mundus.editor.assets.AssetTextureFilter
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.ui.AppUi
@@ -63,9 +62,18 @@ class MaterialWidget(
     private val matPickerListener: AssetPickerListener
 
     private val matNameLabel: VisLabel = VisLabel()
-    val diffuseColorField: ColorPickerField = ColorPickerField()
-    private val diffuseAssetField: AssetSelectionField = AssetSelectionField(assetSelectionDialog)
-    private val shininessField = VisTextField()
+    val previewPathFiled = FileChooserField()
+    val diffuseTextureField = AssetSelectionField()
+    val ambientOcclusionTextureField = AssetSelectionField()
+    val albedoTextureField = AssetSelectionField()
+    val heightTextureField = AssetSelectionField()
+    val metallicTextureField = AssetSelectionField()
+    val normalTextureField = AssetSelectionField()
+    val roughnessTextureField = AssetSelectionField()
+
+    val diffuseColorField = ColorPickerField()
+    val shininessField = VisTextField()
+    val opacityField = VisTextField()
 
     private val previewWidgetContainer = VisTable()
 
@@ -119,10 +127,10 @@ class MaterialWidget(
 
         addSeparator().growX().row()
 
-        add(VisLabel("Diffuse texture")).grow().row()
-        add(diffuseAssetField).growX().row()
         add(VisLabel("Diffuse color")).grow().row()
         add(diffuseColorField).growX().row()
+        add(VisLabel("Diffuse texture")).grow().row()
+        add(diffuseTextureField).growX().row()
         add(VisLabel("Shininess")).growX().row()
         add(shininessField).growX().row()
 
@@ -133,13 +141,13 @@ class MaterialWidget(
         })
 
         // diffuse texture
-        diffuseAssetField.assetFilter = AssetTextureFilter()
-        diffuseAssetField.pickerListener = AssetPickerListener { asset ->
-//            material?.diffuseTexture = asset as? TextureAsset
-//            applyMaterialToModelAssets()
-//            applyMaterialToModelComponents()
-//            assetManager.dirty(material!!)
-        }
+//        diffuseAssetField.assetFilter = AssetTextureFilter()
+//        diffuseAssetField.pickerListener = AssetPickerListener { asset ->
+////            material?.diffuseTexture = asset as? TextureAsset
+////            applyMaterialToModelAssets()
+////            applyMaterialToModelComponents()
+////            assetManager.dirty(material!!)
+//        }
 
         // diffuse color
         diffuseColorField.colorAdapter = object : ColorPickerAdapter() {
