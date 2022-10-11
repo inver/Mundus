@@ -19,7 +19,8 @@ import com.mbrlabs.mundus.commons.assets.material.MaterialAsset;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.env.lights.SunLight;
-import com.mbrlabs.mundus.editor.shader.MaterialPreviewShader;
+import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
+import com.mbrlabs.mundus.editor.core.shader.ShaderStorage;
 import com.mbrlabs.mundus.editor.ui.widgets.RenderWidget;
 import org.springframework.stereotype.Component;
 
@@ -29,12 +30,15 @@ public class PreviewGenerator {
     private final float previewWidth = 80;
     private final float previewHeight = 80;
 
-    private final MaterialPreviewShader shader = null;
+    private final ShaderStorage shaderStorage;
 
-    public PreviewGenerator() {
+//    private final BaseShader shader;
+
+    public PreviewGenerator(ShaderStorage shaderStorage) {
+        this.shaderStorage = shaderStorage;
 //        shader = new MaterialPreviewShader(
-//                "bundled/shaders/material_preview.vert.glsl",
-//                "bundled/shaders/material_preview.frag.glsl"
+//                "bundled/shaders/default.vert.glsl",
+//                "bundled/shaders/default.frag.glsl"
 //        );
 //        shader.init();
     }
@@ -52,7 +56,7 @@ public class PreviewGenerator {
 
                 Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT);
                 modelBatch.begin(camera);
-                modelBatch.render(instance, environment, shader);
+                modelBatch.render(instance, environment, shaderStorage.get(ShaderConstants.DEFAULT));
                 modelBatch.end();
 
                 fb.end();
@@ -107,7 +111,7 @@ public class PreviewGenerator {
             widget.setRenderer(cam -> {
                 Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT);
                 modelBatch.begin(cam);
-                modelBatch.render(instance, environment, shader);
+                modelBatch.render(instance, environment, shaderStorage.get(ShaderConstants.DEFAULT));
                 modelBatch.end();
             });
             return widget;

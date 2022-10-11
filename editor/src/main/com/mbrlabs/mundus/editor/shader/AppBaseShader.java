@@ -2,16 +2,12 @@ package com.mbrlabs.mundus.editor.shader;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.env.lights.SunLightsAttribute;
-import com.mbrlabs.mundus.commons.utils.ShaderUtils;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import com.mbrlabs.mundus.commons.shaders.DefaultBaseShader;
 
-@RequiredArgsConstructor
-public abstract class AppBaseShader extends BaseShader {
+public abstract class AppBaseShader extends DefaultBaseShader {
 
     // ============================ MATERIALS ============================
     protected final int UNIFORM_MATERIAL_DIFFUSE_TEXTURE = register(new Uniform("u_diffuseTexture"));
@@ -37,14 +33,18 @@ public abstract class AppBaseShader extends BaseShader {
     protected final int UNIFORM_LIGHT_COLOR = register(new Uniform("lightColor"));
     protected final int UNIFORM_OBJECT_COLOR = register(new Uniform("objectColor"));
 
-    protected final String vertexShaderPath;
-    protected final String fragmentShaderPath;
-    @Getter
-    protected final boolean bundled;
+    //    protected final String vertexShaderPath;
+//    protected final String fragmentShaderPath;
+//    @Getter
+//    protected final boolean bundled;
 
-    public void compile() {
-        program = ShaderUtils.compile(vertexShaderPath, fragmentShaderPath);
+    public AppBaseShader(String vertexShader, String fragmentShader) {
+        super(vertexShader, fragmentShader);
     }
+
+//    public void compile() {
+//        program = ShaderUtils.compile(vertexShaderPath, fragmentShaderPath);
+//    }
 
     @Override
     public void begin(Camera camera, RenderContext context) {
@@ -85,11 +85,5 @@ public abstract class AppBaseShader extends BaseShader {
 //        }
 
         // TODO point lights, spot lights
-    }
-
-    @Override
-    public void init() {
-        compile();
-        init(program, null);
     }
 }

@@ -12,6 +12,7 @@ import com.mbrlabs.mundus.commons.assets.model.ModelAsset;
 import com.mbrlabs.mundus.commons.assets.model.ModelAssetLoader;
 import com.mbrlabs.mundus.commons.assets.pixmap.PixmapTextureAsset;
 import com.mbrlabs.mundus.commons.assets.pixmap.PixmapTextureAssetLoader;
+import com.mbrlabs.mundus.commons.assets.shader.ShaderAssetLoader;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAssetLoader;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
@@ -46,8 +47,10 @@ public class EditorAssetManager extends AssetManager {
     public EditorAssetManager(ObjectMapper mapper, MetaLoader metaService, TextureAssetLoader textureService,
                               TerrainAssetLoader terrainService, MaterialAssetLoader materialService,
                               PixmapTextureAssetLoader pixmapTextureService, ModelAssetLoader modelService,
+                              ShaderAssetLoader shaderAssetLoader,
                               EditorCtx ctx, ShaderStorage shaderStorage) {
-        super(mapper, metaService, textureService, terrainService, materialService, pixmapTextureService, modelService);
+        super(mapper, metaService, textureService, terrainService, materialService, pixmapTextureService, modelService,
+                shaderAssetLoader);
         this.ctx = ctx;
         this.shaderStorage = shaderStorage;
     }

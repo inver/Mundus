@@ -1,5 +1,7 @@
 package com.mbrlabs.mundus.editor.core;
 
+import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
+
 public final class ProjectConstants {
 
 
@@ -11,8 +13,10 @@ public final class ProjectConstants {
     public static final String PROJECT_EXTENSION = "json";
     public static final String BUNDLED_FOLDER = "bundled";
     public static final String DEFAULT_SHADERS_DIR = BUNDLED_FOLDER + "/shaders";
+    public static final String SHADER_DEFAULT_PATH = DEFAULT_SHADERS_DIR + "/" + ShaderConstants.DEFAULT;
+    public static final String SHADER_SKYBOX_PATH = DEFAULT_SHADERS_DIR + "/" + ShaderConstants.SKYBOX;
     public static final String SHADER_MATERIAL_PREVIEW = "materialPreview";
-    public static final String SHADER_MATERIAL_PREVIEW_FRAG = DEFAULT_SHADERS_DIR + "material_preview.frag.glsl";
-    public static final String SHADER_MATERIAL_PREVIEW_VERT = DEFAULT_SHADERS_DIR + "material_preview.vert.glsl";
+    public static final String SHADER_MATERIAL_PREVIEW_FRAG = DEFAULT_SHADERS_DIR + "default.frag.glsl";
+    public static final String SHADER_MATERIAL_PREVIEW_VERT = DEFAULT_SHADERS_DIR + "default.vert.glsl";
 
 }

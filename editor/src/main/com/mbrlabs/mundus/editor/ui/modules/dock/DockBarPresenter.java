@@ -104,7 +104,7 @@ public class DockBarPresenter {
 
 //                        asset.load()
 //                        asset.applyDependencies()
-                    GameObject go = assetManager.convert(goID, name, asset);
+                    var go = assetManager.convert(goID, name, asset);
 
 //                    var modelGO = GameObjectUtils.createModelGO(
 //                            sceneGraph, Shaders.modelShader, goID, name,

@@ -13,7 +13,7 @@ public class MaterialPreviewShader extends AppBaseShader {
     private final Matrix4 modelPos = new Matrix4();
 
     public MaterialPreviewShader(String vertexShaderPath, String fragmentShaderPath) {
-        super(vertexShaderPath, fragmentShaderPath, true);
+        super(vertexShaderPath, fragmentShaderPath);
     }
 
     @Override

@@ -39,8 +39,8 @@ import com.mbrlabs.mundus.commons.utils.ShaderUtils;
  */
 public class ModelShader extends BaseShader {
 
-    private static final String VERTEX_SHADER = "shaders/model.vert.glsl";
-    private static final String FRAGMENT_SHADER = "shaders/model.frag.glsl";
+    private static final String VERTEX_SHADER = "bundled/shaders/model.vert.glsl";
+    private static final String FRAGMENT_SHADER = "bundled/shaders/model.frag.glsl";
 
     // ============================ MATERIALS ============================
     protected final int UNIFORM_MATERIAL_DIFFUSE_TEXTURE = register(new Uniform("u_diffuseTexture"));

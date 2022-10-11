@@ -63,6 +63,7 @@ public abstract class Asset<M> implements Disposable, AssetUsage {
      * <p>
      * Loads the asset from disk and creates it.
      */
+    @Deprecated
     //todo remove this method
     public abstract void load();
 

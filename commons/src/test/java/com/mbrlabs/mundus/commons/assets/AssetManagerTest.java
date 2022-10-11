@@ -11,6 +11,7 @@ import com.mbrlabs.mundus.commons.assets.meta.MetaLoader;
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset;
 import com.mbrlabs.mundus.commons.assets.model.ModelAssetLoader;
 import com.mbrlabs.mundus.commons.assets.pixmap.PixmapTextureAssetLoader;
+import com.mbrlabs.mundus.commons.assets.shader.ShaderAssetLoader;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAssetLoader;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAssetLoader;
@@ -32,9 +33,10 @@ public class AssetManagerTest {
     protected final MaterialAssetLoader materialService = new MaterialAssetLoader();
     protected final PixmapTextureAssetLoader pixmapTextureService = new PixmapTextureAssetLoader();
     protected final ModelAssetLoader modelService = new ModelAssetLoader(new ModelImporter());
+    protected final ShaderAssetLoader shaderAssetLoader = new ShaderAssetLoader();
 
     private final AssetManager assetManager = new AssetManager(mapper, metaLoader, textureService, terrainService,
-            materialService, pixmapTextureService, modelService);
+            materialService, pixmapTextureService, modelService, shaderAssetLoader);
 
     @Before
     public void init() {

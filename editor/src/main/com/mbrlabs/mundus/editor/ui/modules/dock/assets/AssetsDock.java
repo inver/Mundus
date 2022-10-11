@@ -19,6 +19,7 @@ package com.mbrlabs.mundus.editor.ui.modules.dock.assets;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.layout.GridGroup;
 import com.kotcrab.vis.ui.widget.*;
 import com.kotcrab.vis.ui.widget.tabbedpane.Tab;
@@ -91,6 +92,7 @@ public class AssetsDock extends Tab/*(false, false)*/ {
         selected = assetItem;
         for (var child : assetsView.getChildren()) {
             var item = (AssetItem) child;
+            //todo
             if (assetItem != null && assetItem == item) {
 //                item.background(VisUI.getSkin().getDrawable("default-select-selection"));
             } else {

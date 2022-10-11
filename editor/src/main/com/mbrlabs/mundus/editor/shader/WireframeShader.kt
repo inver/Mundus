@@ -26,8 +26,8 @@ import com.badlogic.gdx.graphics.g3d.utils.RenderContext
 import com.mbrlabs.mundus.commons.utils.ShaderUtils
 import com.mbrlabs.mundus.editor.utils.GlUtils
 
-private const val VERTEX_SHADER = "com/mbrlabs/mundus/editor/shader/wire.vert.glsl"
-private const val FRAGMENT_SHADER = "com/mbrlabs/mundus/editor/shader/wire.frag.glsl"
+private const val VERTEX_SHADER = "bundled/shaders/wireframe/wire.vert.glsl"
+private const val FRAGMENT_SHADER = "bundled/shaders/wireframe/wire.frag.glsl"
 
 /**
  * @author Marcus Brummer

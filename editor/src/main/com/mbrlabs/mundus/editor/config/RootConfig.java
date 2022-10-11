@@ -7,6 +7,7 @@ import com.mbrlabs.mundus.commons.assets.material.MaterialAssetLoader;
 import com.mbrlabs.mundus.commons.assets.meta.MetaLoader;
 import com.mbrlabs.mundus.commons.assets.model.ModelAssetLoader;
 import com.mbrlabs.mundus.commons.assets.pixmap.PixmapTextureAssetLoader;
+import com.mbrlabs.mundus.commons.assets.shader.ShaderAssetLoader;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAssetLoader;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAssetLoader;
 import com.mbrlabs.mundus.commons.loader.ModelImporter;
@@ -75,5 +76,10 @@ public class RootConfig {
     @Bean
     public ModelImporter modelImporter() {
         return new ModelImporter();
+    }
+
+    @Bean
+    public ShaderAssetLoader shaderAssetLoader(){
+        return new ShaderAssetLoader();
     }
 }

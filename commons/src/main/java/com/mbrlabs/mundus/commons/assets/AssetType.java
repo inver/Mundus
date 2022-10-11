@@ -50,5 +50,10 @@ public enum AssetType {
     /**
      * Material file. Mundus material file contains material information.
      */
-    MATERIAL
+    MATERIAL,
+
+    /**
+     * Shader asset
+     */
+    SHADER
 }

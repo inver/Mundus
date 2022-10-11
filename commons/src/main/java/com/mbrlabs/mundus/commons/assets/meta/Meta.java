@@ -34,6 +34,8 @@ public class Meta<M> {
     private String uuid;
     private AssetType type;
     private M additional;
+
+    // Path of meta file
     private FileHandle file;
 
     public Meta withFile(FileHandle file) {

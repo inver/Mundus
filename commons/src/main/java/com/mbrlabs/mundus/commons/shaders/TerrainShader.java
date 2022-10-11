@@ -37,8 +37,8 @@ import com.mbrlabs.mundus.commons.utils.ShaderUtils;
  */
 public class TerrainShader extends BaseShader {
 
-    protected static final String VERTEX_SHADER = "shaders/terrain.vert.glsl";
-    protected static final String FRAGMENT_SHADER = "shaders/terrain.frag.glsl";
+    protected static final String VERTEX_SHADER = "bundled/shaders/terrain.vert.glsl";
+    protected static final String FRAGMENT_SHADER = "bundled/shaders/terrain.frag.glsl";
 
     // ============================ MATRICES & CAM POSITION ============================
     protected final int UNIFORM_PROJ_VIEW_MATRIX = register(new Uniform("u_projViewMatrix"));
