@@ -264,7 +264,10 @@ public class RotateTool extends TransformTool {
 
     @Override
     protected void translateHandles() {
-        ProjectContext projectContext = getCtx().getCurrent();
+        if (getCtx().getSelected()== null) {
+            return;
+        }
+
         final Vector3 pos = getCtx().getSelected().getTransform().getTranslation(temp0);
         xHandle.getPosition().set(pos);
         xHandle.applyTransform();
@@ -276,8 +279,12 @@ public class RotateTool extends TransformTool {
 
     @Override
     protected void scaleHandles() {
-        Vector3 pos = getCtx().getSelected().getPosition(temp0);
-        float scaleFactor = getCtx().getCamera().position.dst(pos) * 0.005f;
+        if (getCtx().getSelected()== null) {
+            return;
+        }
+
+        var pos = getCtx().getSelected().getPosition(temp0);
+        var scaleFactor = getCtx().getCamera().position.dst(pos) * 0.005f;
         xHandle.getScale().set(scaleFactor, scaleFactor, scaleFactor);
         xHandle.applyTransform();
 

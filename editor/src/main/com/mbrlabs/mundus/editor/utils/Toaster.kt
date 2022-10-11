@@ -46,7 +46,7 @@ class Toaster(private val appUi: AppUi) {
      */
     fun info(msg: String) {
         val table = newTable(msg)
-        val toast = Toast(ToastType.INFO.name.toLowerCase(), table)
+        val toast = Toast(ToastType.INFO.name.lowercase(), table)
         toastManager.show(toast, 3f)
     }
 
@@ -57,7 +57,7 @@ class Toaster(private val appUi: AppUi) {
      */
     fun error(msg: String) {
         val table = newTable(msg)
-        val toast = Toast(ToastType.ERROR.name.toLowerCase(), table)
+        val toast = Toast(ToastType.ERROR.name.lowercase(), table)
         toastManager.show(toast, 5f)
     }
 
@@ -68,7 +68,7 @@ class Toaster(private val appUi: AppUi) {
      */
     fun success(msg: String) {
         val table = newTable(msg)
-        val toast = Toast(ToastType.SUCCESS.name.toLowerCase(), table)
+        val toast = Toast(ToastType.SUCCESS.name.lowercase(), table)
         toastManager.show(toast, 3f)
     }
 
@@ -82,11 +82,11 @@ class Toaster(private val appUi: AppUi) {
         val table = newTable(msg)
         var toast: Toast? = null
         if (type == ToastType.SUCCESS) {
-            toast = Toast(ToastType.SUCCESS.name.toLowerCase(), table)
+            toast = Toast(ToastType.SUCCESS.name.lowercase(), table)
         } else if (type == ToastType.INFO) {
-            toast = Toast(ToastType.INFO.name.toLowerCase(), table)
+            toast = Toast(ToastType.INFO.name.lowercase(), table)
         } else if (type == ToastType.ERROR) {
-            toast = Toast(ToastType.ERROR.name.toLowerCase(), table)
+            toast = Toast(ToastType.ERROR.name.lowercase(), table)
         }
 
         toastManager.show(toast)

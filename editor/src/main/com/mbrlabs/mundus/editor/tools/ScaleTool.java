@@ -333,7 +333,9 @@ public class ScaleTool extends TransformTool {
 
     @Override
     protected void translateHandles() {
-        ProjectContext projectContext = getCtx().getCurrent();
+        if (getCtx().getSelected() == null) {
+            return;
+        }
         final Vector3 pos = getCtx().getSelected().getTransform().getTranslation(temp0);
         xHandle.getPosition().set(pos);
         xHandle.applyTransform();
@@ -347,6 +349,10 @@ public class ScaleTool extends TransformTool {
 
     @Override
     protected void scaleHandles() {
+        if (getCtx().getSelected() == null) {
+            return;
+        }
+
         Vector3 pos = getCtx().getSelected().getPosition(temp0);
         float scaleFactor = getCtx().getCamera().position.dst(pos) * 0.01f;
         xHandle.getScale().set(scaleFactor, scaleFactor, scaleFactor);
