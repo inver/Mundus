@@ -20,10 +20,9 @@ package com.mbrlabs.mundus.editor.utils
 
 import com.mbrlabs.mundus.commons.env.lights.DirectionalLight
 import com.mbrlabs.mundus.commons.scene3d.GameObject
-import com.mbrlabs.mundus.commons.scene3d.SceneGraph
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.DirectionalLightComponent
 
-fun createDirectionalLightGO(sg: SceneGraph, goID: Int, goName: String): GameObject {
+fun createDirectionalLightGO(goID: Int, goName: String): GameObject {
     val lightGO = GameObject(null as String, goID)
     lightGO.name = goName
 

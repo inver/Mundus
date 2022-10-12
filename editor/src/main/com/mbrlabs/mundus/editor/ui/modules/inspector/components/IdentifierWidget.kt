@@ -48,8 +48,6 @@ class IdentifierWidget(private val ctx: EditorCtx) : VisTable() {
     }
 
     private fun setupListeners() {
-        val projectContext = ctx.current
-
         active.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
                 if (ctx.selected == null) {

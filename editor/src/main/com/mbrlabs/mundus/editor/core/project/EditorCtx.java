@@ -21,8 +21,6 @@ public class EditorCtx implements Disposable {
     private ProjectContext current;
     private Camera camera;
     private Viewport viewport;
-
-    @Getter
     private final Map<String, Asset<?>> assetLibrary = new HashMap<>();
     @Getter
     private final Map<String, BaseShader> shaderLibrary = new HashMap<>();
@@ -59,6 +57,11 @@ public class EditorCtx implements Disposable {
 
     public void setViewport(Viewport viewport) {
         this.viewport = viewport;
+    }
+
+
+    public Map<String, Asset<?>> getAssetLibrary() {
+        return assetLibrary;
     }
 
     @Override

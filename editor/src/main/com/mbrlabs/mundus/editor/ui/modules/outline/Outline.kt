@@ -23,6 +23,7 @@ import com.kotcrab.vis.ui.util.dialog.Dialogs
 import com.kotcrab.vis.ui.util.dialog.InputDialogAdapter
 import com.kotcrab.vis.ui.widget.*
 import com.mbrlabs.mundus.commons.Scene
+import com.mbrlabs.mundus.commons.assets.AssetType
 import com.mbrlabs.mundus.commons.scene3d.GameObject
 import com.mbrlabs.mundus.commons.scene3d.components.Component
 import com.mbrlabs.mundus.commons.terrain.Terrain
@@ -137,6 +138,10 @@ class Outline(
         val rootNode = RootNode()
         tree.add(rootNode)
 
+        ctx.assetLibrary.entries.map { it.value }.filter { it.type == AssetType.SHADER }.forEach {
+            val leaf = OutlineNode(it.name, null)
+            rootNode.shaders.add(leaf)
+        }
 //        for (mat in scene.materials) {
 //            todo add materials from models
 //            rootNode.materials.add(OutlineNode(mat.name))
@@ -369,7 +374,7 @@ class Outline(
                     val sceneGraph = ctx.current.getCurrentScene().sceneGraph
                     val id = ctx.current.obtainID()
                     val name = "Directional light " + id
-                    val go = createDirectionalLightGO(sceneGraph, id, name)
+                    val go = createDirectionalLightGO(id, name)
 
                     // update outline
                     if (selectedGO == null) {

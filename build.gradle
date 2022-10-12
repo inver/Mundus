@@ -167,7 +167,3 @@ project(":editor") {
         finalizedBy jacocoTestReport
     }
 }
-
-tasks.eclipse.doLast {
-    delete ".project"
-}

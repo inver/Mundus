@@ -127,8 +127,6 @@ class GameObjectInspector(
                         DirectionalLightComponentWidget(
                             uiWidgetsHolder.separatorStyle,
                             component as DirectionalLightComponent,
-                            uiWidgetsHolder,
-                            appUi,
                             colorPickerPresenter
                         )
                     )

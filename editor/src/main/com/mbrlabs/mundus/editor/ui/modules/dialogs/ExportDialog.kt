@@ -27,8 +27,8 @@ import com.mbrlabs.mundus.editor.core.scene.SceneStorage
 import com.mbrlabs.mundus.editor.exporter.Exporter
 import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.UiConstants
-import com.mbrlabs.mundus.editor.utils.Log
 import com.mbrlabs.mundus.editor.utils.Toaster
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 /**
@@ -44,6 +44,10 @@ class ExportDialog(
     private val appUi: AppUi,
     private val ctx: EditorCtx
 ) : VisDialog("Exporting") {
+
+    companion object {
+        private val log = LoggerFactory.getLogger(javaClass)
+    }
 
     private var lastExport: Long = 0
 
@@ -102,7 +106,7 @@ class ExportDialog(
                 }
 
                 override fun failed(message: String?, exception: Exception?) {
-                    Log.exception("Exporter", exception)
+                    log.error("Exporter", exception)
                     toaster.sticky(Toaster.ToastType.ERROR, "Export failed: " + exception.toString())
                     error = true
                     resetValues()

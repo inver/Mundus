@@ -27,8 +27,6 @@ import com.kotcrab.vis.ui.widget.VisTextField
 import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter
 import com.mbrlabs.mundus.commons.scene3d.GameObject
 import com.mbrlabs.mundus.commons.scene3d.components.Component
-import com.mbrlabs.mundus.editor.config.UiWidgetsHolder
-import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.widgets.FloatFieldWithLabel
 import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerField
 import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerPresenter
@@ -41,8 +39,6 @@ import com.mbrlabs.mundus.editor.utils.formatFloat
 class DirectionalLightComponentWidget(
     separatorStyle: Separator.SeparatorStyle,
     dirLightComponent: DirectionalLightComponent,
-    uiWidgetsHolder: UiWidgetsHolder,
-    appUi: AppUi,
     colorPickerPresenter: ColorPickerPresenter
 ) : ComponentWidget<DirectionalLightComponent>(separatorStyle, "Directional Light Component", dirLightComponent) {
 

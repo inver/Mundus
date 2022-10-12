@@ -23,8 +23,8 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.mbrlabs.mundus.commons.Scene;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.tools.ToolHandle;
-import com.mbrlabs.mundus.editor.utils.Log;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 /**
@@ -33,6 +33,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class ToolHandlePicker extends BasePicker {
     private final EditorCtx ctx;
     private final ModelBatch batch;
@@ -47,7 +48,7 @@ public class ToolHandlePicker extends BasePicker {
         int y = screenY - (Gdx.graphics.getHeight() - (ctx.getViewport().getScreenY() + ctx.getViewport().getScreenHeight()));
 
         int id = PickerColorEncoder.decode(pm.getPixel(x, y));
-        Log.trace("ToolHandlePicker", "Picking handle with id {}", id);
+        log.trace("ToolHandlePicker | Picking handle with id {}", id);
         for (ToolHandle handle : handles) {
             if (handle.getId() == id) {
                 return handle;

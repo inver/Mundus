@@ -23,8 +23,8 @@ import com.mbrlabs.mundus.commons.assets.exceptions.AssetAlreadyExistsException
 import com.mbrlabs.mundus.commons.assets.meta.Meta
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset
 import com.mbrlabs.mundus.commons.core.ModelFiles
-import com.mbrlabs.mundus.editor.utils.Log
 import org.apache.commons.io.FilenameUtils
+import org.slf4j.LoggerFactory
 import java.io.*
 import java.util.*
 
@@ -35,7 +35,7 @@ import java.util.*
 class OldEditorAssetManager(assetsRoot: FileHandle) : OldAssetManager(assetsRoot) {
 
     companion object {
-        private val TAG = OldEditorAssetManager::class.java.simpleName
+        private val log = LoggerFactory.getLogger(OldEditorAssetManager::class.java)
         val STANDARD_ASSET_TEXTURE_CHESSBOARD = "chessboard"
     }
 
@@ -45,7 +45,7 @@ class OldEditorAssetManager(assetsRoot: FileHandle) : OldAssetManager(assetsRoot
 
     init {
         if (rootFolder != null && (!rootFolder.exists() || !rootFolder.isDirectory)) {
-            Log.fatal(TAG, "Root asset folder is not a directory")
+            log.error( "Root asset folder is not a directory")
         }
     }
 

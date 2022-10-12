@@ -31,9 +31,9 @@ import com.mbrlabs.mundus.editor.events.EventBus
 import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.BaseDialog
 import com.mbrlabs.mundus.editor.ui.widgets.ImageChooserField
-import com.mbrlabs.mundus.editor.utils.Log
 import com.mbrlabs.mundus.editor.utils.Toaster
 import com.mbrlabs.mundus.editor.utils.isImage
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.io.IOException
 
@@ -51,7 +51,7 @@ class ImportTextureDialog(
 ) : BaseDialog("Import Texture"), Disposable {
 
     companion object {
-        private val TAG = ImportTextureDialog::class.java.simpleName
+        private val log = LoggerFactory.getLogger(ImportTextureDialog::class.java)
     }
 
     private val importTextureTable: ImportTextureTable
@@ -111,10 +111,10 @@ class ImportTextureDialog(
                             toaster.error("There is nothing to import")
                         }
                     } catch (e: IOException) {
-                        Log.exception(TAG, e)
+                        log.error("ERROR", e)
                         toaster.error("IO error")
                     } catch (ee: AssetAlreadyExistsException) {
-                        Log.exception(TAG, ee)
+                        log.error("ERROR", ee)
                         toaster.error("Error: There already exists a texture with the same name")
                     }
 

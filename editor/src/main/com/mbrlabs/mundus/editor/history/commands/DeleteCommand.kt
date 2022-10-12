@@ -20,7 +20,7 @@ import com.kotcrab.vis.ui.widget.VisTable
 import com.mbrlabs.mundus.commons.scene3d.GameObject
 import com.mbrlabs.mundus.editor.history.Command
 import com.mbrlabs.mundus.editor.ui.modules.outline.OutlineNode
-import com.mbrlabs.mundus.editor.utils.Log
+import org.slf4j.LoggerFactory
 
 /**
  * Delete command for game objects Deletion will update sceneGraph and outline
@@ -31,7 +31,7 @@ import com.mbrlabs.mundus.editor.utils.Log
 class DeleteCommand(private var go: GameObject?, private var node: OutlineNode) : Command {
 
     companion object {
-        private val TAG = DeleteCommand::class.java.simpleName
+        private val log = LoggerFactory.getLogger(DeleteCommand::class.java)
     }
 
     private var parentGO: GameObject? = null
@@ -45,7 +45,7 @@ class DeleteCommand(private var go: GameObject?, private var node: OutlineNode) 
     }
 
     override fun execute() {
-        Log.trace(TAG, "Remove game object [{}]", go)
+        log.trace("Remove game object [{}]", go)
         // remove go from sceneGraph
         go!!.remove()
         // remove from outline tree
@@ -53,7 +53,7 @@ class DeleteCommand(private var go: GameObject?, private var node: OutlineNode) 
     }
 
     override fun undo() {
-        Log.trace(TAG, "Undo remove of game object [{}]", go)
+        log.trace("Undo remove of game object [{}]", go)
         // add to sceneGraph
         parentGO!!.addChild(go)
         // add to outline

@@ -52,10 +52,10 @@ import com.mbrlabs.mundus.editor.ui.modules.dialogs.BaseDialog
 import com.mbrlabs.mundus.editor.ui.widgets.FileChooserField
 import com.mbrlabs.mundus.editor.ui.widgets.RenderWidget
 import com.mbrlabs.mundus.editor.ui.widgets.presenter.FileChooserFieldPresenter
-import com.mbrlabs.mundus.editor.utils.Log
 import com.mbrlabs.mundus.editor.utils.Toaster
 import com.mbrlabs.mundus.editor.utils.isCollada
 import com.mbrlabs.mundus.editor.utils.isFBX
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.io.IOException
 
@@ -75,7 +75,7 @@ class ImportModelDialog(
 ) : BaseDialog("Import Mesh"), Disposable {
 
     companion object {
-        private val TAG = ImportModelDialog::class.java.simpleName
+        private val log = LoggerFactory.getLogger(ImportModelDialog::class.java)
     }
 
     private val importMeshTable: ImportModelTable
@@ -176,10 +176,10 @@ class ImportModelDialog(
                             eventBus.post(AssetImportEvent(modelAsset))
                             toaster.success("Mesh imported")
                         } catch (e: IOException) {
-                            e.printStackTrace()
+                            log.error("ERROR", e)
                             toaster.error("Error while creating a ModelAsset")
                         } catch (ee: AssetAlreadyExistsException) {
-                            Log.exception(TAG, ee)
+                            log.error("ERROR", ee)
                             toaster.error("Error: There already exists a model with the same name")
                         }
 
