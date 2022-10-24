@@ -1,26 +1,22 @@
-//#version 330 core
+//#ifdef позволяет коду работать на слабых телефонах, и мощных пк.Если шейдер используется на телефоне(GL_ES) то
+//используется низкая разрядность (точность) данных.(
+//highp – высокая точность;
+//mediump – средняя точность;
+//lowp – низкая точность)
 
 #ifdef GL_ES
-precision mediump float;
+    #define LOWP lowp
+    precision mediump float;
+#else
+    #define LOWP
 #endif
+varying LOWP vec4 v_color;
+varying vec2 v_texCoords;
 
-uniform vec4 u_diffuseColor;
-uniform vec4 lightColor;
-uniform vec3 u_camPos;
-uniform vec3 u_sunLightPos;
+// sampler2D это специальный формат данных в  glsl для доступа к текстуре
 
-varying vec3 normal;
-varying vec3 fragPos;
+uniform sampler2D u_texture;
 
-void main() {
-    float ambientStrength = 0.8;
-    vec4 ambient = ambientStrength * lightColor;
-
-    vec3 norm = normalize(normal);
-    vec3 lightDir = normalize(u_sunLightPos - fragPos);
-
-    float diff = max(dot(norm, lightDir), 0.0);
-    vec4 diffuse = diff * lightColor;
-
-    gl_FragColor = (ambient + diffuse) * u_diffuseColor;
+void main(){
+    gl_FragColor = v_color;// * texture2D(u_texture, v_texCoords);// итоговый цвет пикселя
 }

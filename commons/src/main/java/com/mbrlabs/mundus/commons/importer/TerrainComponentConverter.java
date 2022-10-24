@@ -16,7 +16,6 @@
 
 package com.mbrlabs.mundus.commons.importer;
 
-import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset;
 import com.mbrlabs.mundus.commons.dto.TerrainComponentDto;
@@ -35,7 +34,7 @@ public class TerrainComponentConverter {
     private final static String TAG = TerrainComponentConverter.class.getSimpleName();
 
     public static TerrainComponent convert(TerrainComponentDto dto, GameObject go,
-                                           Map<String, Asset<?>> assets, Map<String, BaseShader> shaders) {
+                                           Map<String, Asset<?>> assets) {
         // find terrainAsset
         TerrainAsset terrain = (TerrainAsset) assets.get(dto.getTerrainID());
 
@@ -45,7 +44,7 @@ public class TerrainComponentConverter {
         }
 
         terrain.getTerrain().transform = go.getTransform();
-        var terrainComponent = new TerrainComponent(go, shaders.get(dto.getShaderKey()));
+        var terrainComponent = new TerrainComponent(go, dto.getShaderKey());
         terrainComponent.setTerrain(terrain);
 
         return terrainComponent;

@@ -17,7 +17,6 @@
 package com.mbrlabs.mundus.commons.importer;
 
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.mbrlabs.mundus.commons.Scene;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.dto.GameObjectDto;
@@ -64,7 +63,7 @@ public class SceneConverter {
         return dto;
     }
 
-    public static void fillScene(Scene scene, SceneDto dto, Map<String, Asset<?>> assets, Map<String, BaseShader> shaders) {
+    public static void fillScene(Scene scene, SceneDto dto, Map<String, Asset<?>> assets) {
         scene.setId(dto.getId());
         scene.setName(dto.getName());
 
@@ -78,7 +77,7 @@ public class SceneConverter {
         // scene graph
         scene.setSceneGraph(new SceneGraph());
         for (GameObjectDto descriptor : dto.getGameObjects()) {
-            scene.getSceneGraph().addGameObject(GameObjectConverter.convert(descriptor, assets, shaders));
+            scene.getSceneGraph().addGameObject(GameObjectConverter.convert(descriptor, assets));
         }
 
         var camera = new PerspectiveCamera();

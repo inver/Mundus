@@ -20,6 +20,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.components.Renderable;
+import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 
 import java.util.List;
 
@@ -56,9 +57,9 @@ public class SceneGraph implements Renderable {
     }
 
     @Override
-    public void render(ModelBatch batch, SceneEnvironment environment, float delta) {
+    public void render(ModelBatch batch, SceneEnvironment environment, ShaderHolder shaders, float delta) {
         for (GameObject go : root.getChildren()) {
-            go.render(batch, environment, delta);
+            go.render(batch, environment, shaders, delta);
         }
     }
 }

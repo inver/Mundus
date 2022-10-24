@@ -20,8 +20,10 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Disposable;
+import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
-import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager;
+import com.mbrlabs.mundus.commons.scene3d.components.Renderable;
+import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
 import com.mbrlabs.mundus.editor.core.shader.ShaderStorage;
@@ -42,12 +44,12 @@ import java.util.List;
  * @version 25-12-2015
  */
 @Component
-public class ToolManager extends InputAdapter implements Disposable {
+public class ToolManager extends InputAdapter implements Disposable, Renderable {
 
     private static final int KEY_DEACTIVATE = Input.Keys.ESCAPE;
 
     private final EditorCtx ctx;
-
+    private final ShaderStorage shaderStorage;
     private Tool activeTool;
 
     public List<TerrainBrush> terrainBrushes;
@@ -60,28 +62,24 @@ public class ToolManager extends InputAdapter implements Disposable {
     private final InputManager inputManager;
 
     public ToolManager(EditorCtx ctx, ShaderStorage shaderStorage, AppUi appUi, EventBus eventBus, InputManager inputManager,
-                       EditorAssetManager assetManager, GameObjectPicker goPicker,
+                       GameObjectPicker goPicker,
                        ToolHandlePicker toolHandlePicker, ModelBatch modelBatch, ShapeRenderer shapeRenderer,
                        CommandHistory history) {
         this.ctx = ctx;
         this.inputManager = inputManager;
-        this.activeTool = null;
+        this.shaderStorage = shaderStorage;
 
         terrainBrushes = new ArrayList<>();
-        terrainBrushes.add(new SmoothCircleBrush(ctx, shaderStorage.get(ShaderConstants.TERRAIN),
-                assetManager, modelBatch, history));
-        terrainBrushes.add(new CircleBrush(ctx, shaderStorage.get(ShaderConstants.TERRAIN),
-                assetManager, modelBatch, history));
-        terrainBrushes.add(new StarBrush(ctx, shaderStorage.get(ShaderConstants.TERRAIN),
-                assetManager, modelBatch, history));
-        terrainBrushes.add(new ConfettiBrush(ctx, shaderStorage.get(ShaderConstants.TERRAIN),
-                assetManager, modelBatch, history));
+        terrainBrushes.add(new SmoothCircleBrush(ctx, ShaderConstants.TERRAIN, modelBatch, history));
+        terrainBrushes.add(new CircleBrush(ctx, ShaderConstants.TERRAIN, modelBatch, history));
+        terrainBrushes.add(new StarBrush(ctx, ShaderConstants.TERRAIN, modelBatch, history));
+        terrainBrushes.add(new ConfettiBrush(ctx, ShaderConstants.TERRAIN, modelBatch, history));
 
-        modelPlacementTool = new ModelPlacementTool(ctx, shaderStorage.get(ShaderConstants.MODEL), modelBatch, history, appUi, eventBus);
-        selectionTool = new SelectionTool(ctx, shaderStorage.get(ShaderConstants.WIREFRAME), goPicker, modelBatch, history, eventBus);
-        translateTool = new TranslateTool(ctx, shaderStorage.get(ShaderConstants.WIREFRAME), goPicker, toolHandlePicker, modelBatch, history, eventBus);
-        rotateTool = new RotateTool(ctx, shaderStorage.get(ShaderConstants.WIREFRAME), goPicker, toolHandlePicker, shapeRenderer, modelBatch, history, eventBus);
-        scaleTool = new ScaleTool(ctx, shaderStorage.get(ShaderConstants.WIREFRAME), goPicker, toolHandlePicker, shapeRenderer, modelBatch, history, appUi, eventBus);
+        modelPlacementTool = new ModelPlacementTool(ctx, ShaderConstants.MODEL, modelBatch, history, appUi, eventBus);
+        selectionTool = new SelectionTool(ctx, ShaderConstants.WIREFRAME, goPicker, modelBatch, history, eventBus);
+        translateTool = new TranslateTool(ctx, ShaderConstants.WIREFRAME, goPicker, toolHandlePicker, modelBatch, history, eventBus);
+        rotateTool = new RotateTool(ctx, ShaderConstants.WIREFRAME, goPicker, toolHandlePicker, shapeRenderer, modelBatch, history, eventBus);
+        scaleTool = new ScaleTool(ctx, ShaderConstants.WIREFRAME, goPicker, toolHandlePicker, shapeRenderer, modelBatch, history, appUi, eventBus);
     }
 
     public void activateTool(Tool tool) {
@@ -114,9 +112,10 @@ public class ToolManager extends InputAdapter implements Disposable {
 
     }
 
-    public void render() {
+    @Override
+    public void render(ModelBatch batch, SceneEnvironment environment, ShaderHolder shaders, float delta) {
         if (activeTool != null) {
-            activeTool.render();
+            activeTool.render(batch, environment, shaders, delta);
         }
     }
 

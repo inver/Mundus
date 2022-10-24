@@ -20,7 +20,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Disposable;
 import com.mbrlabs.mundus.commons.Scene;
 import com.mbrlabs.mundus.commons.assets.material.MaterialAssetLoader;
-import com.mbrlabs.mundus.commons.assets.meta.MetaLoader;
+import com.mbrlabs.mundus.commons.assets.meta.MetaService;
 import com.mbrlabs.mundus.commons.assets.model.ModelAssetLoader;
 import com.mbrlabs.mundus.commons.assets.pixmap.PixmapTextureAssetLoader;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAssetLoader;
@@ -70,7 +70,7 @@ public class ProjectManager implements Disposable {
     private final Registry registry;
     private final ProjectStorage projectStorage;
     private final EditorAssetManager assetManager;
-    private final MetaLoader metaService;
+    private final MetaService metaService;
     private final TextureAssetLoader textureService;
     private final TerrainAssetLoader terrainService;
     private final MaterialAssetLoader materialService;
@@ -304,7 +304,7 @@ public class ProjectManager implements Disposable {
         var scene = new Scene();
 
         //todo preload assets to cache
-        SceneConverter.fillScene(scene, dto, editorCtx.getAssetLibrary(), editorCtx.getShaderLibrary());
+        SceneConverter.fillScene(scene, dto, editorCtx.getAssetLibrary());
         scene.setSkybox(SkyboxBuilder.createDefaultSkybox());
 
         var sceneGraph = scene.getSceneGraph();

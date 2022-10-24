@@ -8,27 +8,31 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.kotcrab.vis.ui.widget.MenuItem;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
+import com.mbrlabs.mundus.editor.core.assets.AssetsStorage;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
-import com.mbrlabs.mundus.editor.core.project.ProjectManager;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.GameObjectSelectedEvent;
+import com.mbrlabs.mundus.editor.events.SceneGraphChangedEvent;
 import com.mbrlabs.mundus.editor.tools.ToolManager;
 import com.mbrlabs.mundus.editor.ui.AppUi;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class OutlinePresenter {
 
     private final EditorCtx ctx;
     private final EventBus eventBus;
-    private final ProjectManager projectManager;
     private final AppUi appUi;
     private final ToolManager toolManager;
+    private final AssetsStorage assetsStorage;
 
     public void init(@NotNull Outline outline) {
         eventBus.register(outline);
@@ -106,6 +110,48 @@ public class OutlinePresenter {
 
                     eventBus.post(new GameObjectSelectedEvent(go));
                 }
+            }
+        });
+
+        initAddShaderButton(outline, outline.getRightClickMenu().getAddShader());
+        initAddGroupButton(outline, outline.getRightClickMenu().getAddGroup());
+    }
+
+    private void initAddShaderButton(Outline outline, MenuItem menuItem) {
+        menuItem.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                var asset = assetsStorage.createShader();
+                ctx.getCurrent().getCurrentScene().getAssets().add(asset);
+
+                outline.buildTree(ctx.getCurrent().getCurrentScene());
+            }
+        });
+    }
+
+    private void initAddGroupButton(Outline outline, MenuItem menuItem) {
+        menuItem.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                // the new game object
+                var go = new GameObject(GameObject.DEFAULT_NAME, ctx.getCurrent().obtainID());
+                // update outline
+                var selectedGO = outline.getRightClickMenu().getSelectedGO();
+                if (selectedGO == null) {
+                    // update sceneGraph
+                    log.trace("Add empty game object [{}] in root node.", go);
+                    ctx.getCurrent().getCurrentScene().getSceneGraph().addGameObject(go);
+                    // update outline
+                    outline.addGoToTree(null, go);
+                } else {
+                    log.trace("Add empty game object [{}] child in node [{}].", go, selectedGO);
+                    // update sceneGraph
+                    selectedGO.addChild(go);
+                    // update outline
+                    var n = outline.getTree().findNode(selectedGO);
+                    outline.addGoToTree(n, go);
+                }
+                eventBus.post(new SceneGraphChangedEvent());
             }
         });
     }

@@ -2,6 +2,7 @@ package com.mbrlabs.mundus.commons.scene3d.components;
 
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
+import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 
 public interface Renderable {
     /**
@@ -9,5 +10,5 @@ public interface Renderable {
      *
      * @param delta time since last render
      */
-    void render(ModelBatch batch, SceneEnvironment environment, float delta);
+    void render(ModelBatch batch, SceneEnvironment environment, ShaderHolder shaders, float delta);
 }

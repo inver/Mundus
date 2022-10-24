@@ -18,9 +18,9 @@ package com.mbrlabs.mundus.editor.tools
 
 import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.graphics.g3d.ModelBatch
-import com.badlogic.gdx.graphics.g3d.shaders.BaseShader
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Disposable
+import com.mbrlabs.mundus.commons.scene3d.components.Renderable
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.history.CommandHistory
 
@@ -30,11 +30,11 @@ import com.mbrlabs.mundus.editor.history.CommandHistory
  */
 abstract class Tool(
     protected var ctx: EditorCtx,
-    protected var shader: BaseShader?,
+    protected var shaderKey: String,
     protected var batch: ModelBatch,
     protected var history: CommandHistory,
     val name: String
-) : InputAdapter(), Disposable {
+) : Renderable, InputAdapter(), Disposable {
 
 //    protected var shader: Shader = shaderStorage.get(ShaderConstants.WIREFRAME)
 
@@ -42,7 +42,6 @@ abstract class Tool(
     abstract val icon: Drawable
     abstract val iconFont: String
 
-    abstract fun render()
     abstract fun act()
     abstract fun onActivated()
     abstract fun onDisabled()

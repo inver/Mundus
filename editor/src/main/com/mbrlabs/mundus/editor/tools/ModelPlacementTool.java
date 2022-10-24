@@ -19,14 +19,15 @@ package com.mbrlabs.mundus.editor.tools;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset;
+import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.scene3d.InvalidComponentException;
+import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.project.ProjectContext;
 import com.mbrlabs.mundus.editor.events.EventBus;
@@ -44,10 +45,8 @@ public class ModelPlacementTool extends Tool {
     public static final String NAME = "Placement Tool";
     public static Vector3 DEFAULT_ORIENTATION = Vector3.Z.cpy();
 
-    private Vector3 tempV3 = new Vector3();
-
+    private final Vector3 tempV3 = new Vector3();
     private boolean shouldRespectTerrainSlope = false;
-
     // DO NOT DISPOSE THIS
     private ModelAsset model;
     private ModelInstance modelInstance;
@@ -55,9 +54,9 @@ public class ModelPlacementTool extends Tool {
     private final AppUi appUi;
     private final EventBus eventBus;
 
-    public ModelPlacementTool(EditorCtx ctx, BaseShader shader, ModelBatch batch, CommandHistory history,
+    public ModelPlacementTool(EditorCtx ctx, String shaderKey, ModelBatch batch, CommandHistory history,
                               AppUi appUi, EventBus eventBus) {
-        super(ctx, shader, batch, history, NAME);
+        super(ctx, shaderKey, batch, history, NAME);
         this.appUi = appUi;
         this.eventBus = eventBus;
         this.model = null;
@@ -89,11 +88,11 @@ public class ModelPlacementTool extends Tool {
     }
 
     @Override
-    public void render() {
+    public void render(ModelBatch batch, SceneEnvironment environment, ShaderHolder shaders, float delta) {
         if (modelInstance != null) {
-            getBatch().begin(getCtx().getCamera());
-            getBatch().render(modelInstance, getCtx().getCurrent().getCurrentScene().getEnvironment(), getShader());
-            getBatch().end();
+            batch.begin(getCtx().getCamera());
+            batch.render(modelInstance, environment, shaders.get(getShaderKey()));
+            batch.end();
         }
     }
 
@@ -113,8 +112,8 @@ public class ModelPlacementTool extends Tool {
             modelInstance.transform.getTranslation(tempV3);
             modelGo.translate(tempV3);
 
-            PickableModelComponent modelComponent = new PickableModelComponent(modelGo, getShader(), getShader());
-            modelComponent.setShader(getShader());
+            PickableModelComponent modelComponent = new PickableModelComponent(modelGo, getShaderKey());
+//            modelComponent.setShader(getShader());
             modelComponent.setModel(model, true);
             modelComponent.encodeRayPickColorId();
 

@@ -24,15 +24,16 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.scene3d.components.Component;
+import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 import com.mbrlabs.mundus.commons.utils.MathUtils;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.project.ProjectContext;
@@ -79,10 +80,10 @@ public class ScaleTool extends TransformTool {
     private TransformState state = TransformState.IDLE;
     private ScaleCommand command;
 
-    public ScaleTool(EditorCtx ctx, BaseShader shader, GameObjectPicker goPicker, ToolHandlePicker handlePicker,
+    public ScaleTool(EditorCtx ctx, String shaderKey, GameObjectPicker goPicker, ToolHandlePicker handlePicker,
                      ShapeRenderer shapeRenderer, ModelBatch batch, CommandHistory history, AppUi appUi,
                      EventBus eventBus) {
-        super(ctx, shader, goPicker, handlePicker, batch, history, eventBus, NAME);
+        super(ctx, shaderKey, goPicker, handlePicker, batch, history, eventBus, NAME);
 
         this.shapeRenderer = shapeRenderer;
         this.appUi = appUi;
@@ -107,17 +108,17 @@ public class ScaleTool extends TransformTool {
     }
 
     @Override
-    public void render() {
-        super.render();
+    public void render(ModelBatch batch, SceneEnvironment environment, ShaderHolder shaders, float delta) {
+        super.render(batch, environment, shaders, delta);
 
         GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
         if (getCtx().getSelected() != null) {
-            getBatch().begin(getCtx().getCamera());
-            xHandle.render(getBatch());
-            yHandle.render(getBatch());
-            zHandle.render(getBatch());
-            xyzHandle.render(getBatch());
-            getBatch().end();
+            batch.begin(getCtx().getCamera());
+            xHandle.render(batch, environment, shaders.get(getShaderKey()), delta);
+            yHandle.render(batch, environment, shaders.get(getShaderKey()), delta);
+            zHandle.render(batch, environment, shaders.get(getShaderKey()), delta);
+            xyzHandle.render(batch, environment, shaders.get(getShaderKey()), delta);
+            batch.end();
 
             GameObject go = getCtx().getSelected();
             go.getTransform().getTranslation(temp0);
@@ -167,7 +168,6 @@ public class ScaleTool extends TransformTool {
                     break;
             }
         }
-
     }
 
     @Override
@@ -407,13 +407,13 @@ public class ScaleTool extends TransformTool {
         }
 
         @Override
-        public void render(ModelBatch batch) {
+        public void render(ModelBatch batch, SceneEnvironment environment, ShaderHolder shaders, float delta) {
             batch.render(modelInstance);
         }
 
         @Override
-        public void renderPick(ModelBatch modelBatch) {
-            getBatch().render(modelInstance, getShader());
+        public void renderPick(ModelBatch modelBatch, ShaderHolder shaders) {
+            getBatch().render(modelInstance, shaders.get(getShaderKey()));
         }
 
         @Override

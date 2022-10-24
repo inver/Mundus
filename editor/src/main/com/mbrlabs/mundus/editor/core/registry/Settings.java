@@ -16,6 +16,9 @@
 
 package com.mbrlabs.mundus.editor.core.registry;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Global Mundus settings.
  *
@@ -23,9 +26,12 @@ package com.mbrlabs.mundus.editor.core.registry;
  * @version 07-06-2016
  */
 public class Settings {
-
     private String fbxConvBinary = "";
     private KeyboardLayout keyboardLayout;
+
+    @Getter
+    @Setter
+    private boolean reloadShaderFromDisk = true;
 
     public String getFbxConvBinary() {
         return fbxConvBinary;

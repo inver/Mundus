@@ -20,6 +20,8 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch
 import com.badlogic.gdx.math.Quaternion
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.utils.Disposable
+import com.mbrlabs.mundus.commons.scene3d.components.Renderable
+import com.mbrlabs.mundus.commons.shaders.ShaderHolder
 import com.mbrlabs.mundus.editor.tools.picker.PickerColorEncoder
 import com.mbrlabs.mundus.editor.tools.picker.PickerIDAttribute
 
@@ -33,7 +35,7 @@ import com.mbrlabs.mundus.editor.tools.picker.PickerIDAttribute
  * @author Marcus Brummer
  * @version 07-03-2016
  */
-abstract class ToolHandle(val id: Int) : Disposable {
+abstract class ToolHandle(val id: Int) : Disposable, Renderable {
 
     val position: Vector3 = Vector3()
     val rotationEuler: Vector3 = Vector3()
@@ -45,9 +47,7 @@ abstract class ToolHandle(val id: Int) : Disposable {
         PickerColorEncoder.encodeRaypickColorId(id, idAttribute)
     }
 
-    abstract fun render(batch: ModelBatch)
-    abstract fun renderPick(modelBatch: ModelBatch)
+    abstract fun renderPick(modelBatch: ModelBatch, shaders: ShaderHolder)
     abstract fun act()
     abstract fun applyTransform()
-
 }

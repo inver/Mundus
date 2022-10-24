@@ -3,6 +3,7 @@
   "lastModified": 1663444124794,
   "type": "MATERIAL",
   "additional": {
+    "diffuseColor": -16776961,
     "ambientOcclusionTexture": "dented-metal_ao.png",
     "albedoTexture": "dented-metal_albedo.png",
     "heightTexture": "dented-metal_height.png",

@@ -1,12 +1,10 @@
 package com.mbrlabs.mundus.editor.core.project;
 
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
-import lombok.Getter;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -22,8 +20,6 @@ public class EditorCtx implements Disposable {
     private Camera camera;
     private Viewport viewport;
     private final Map<String, Asset<?>> assetLibrary = new HashMap<>();
-    @Getter
-    private final Map<String, BaseShader> shaderLibrary = new HashMap<>();
 
     private GameObject selected = null;
 

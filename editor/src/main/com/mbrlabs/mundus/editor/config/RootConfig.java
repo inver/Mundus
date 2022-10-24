@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mbrlabs.mundus.commons.assets.material.MaterialAssetLoader;
-import com.mbrlabs.mundus.commons.assets.meta.MetaLoader;
+import com.mbrlabs.mundus.commons.assets.meta.MetaService;
 import com.mbrlabs.mundus.commons.assets.model.ModelAssetLoader;
 import com.mbrlabs.mundus.commons.assets.pixmap.PixmapTextureAssetLoader;
 import com.mbrlabs.mundus.commons.assets.shader.ShaderAssetLoader;
@@ -44,8 +44,8 @@ public class RootConfig {
     }
 
     @Bean
-    public MetaLoader metaService() {
-        return new MetaLoader(mapper());
+    public MetaService metaService() {
+        return new MetaService(mapper());
     }
 
     @Bean

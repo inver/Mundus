@@ -105,7 +105,6 @@ class Inspector(
             assetManager,
             assetPickerDialog,
             toolManager,
-            projectManager,
             previewGenerator,
             colorPickerPresenter
         )

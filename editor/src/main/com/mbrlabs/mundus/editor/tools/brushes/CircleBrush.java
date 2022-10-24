@@ -31,8 +31,8 @@ import com.mbrlabs.mundus.editor.utils.Fa;
  */
 public class CircleBrush extends TerrainBrush {
 
-    public CircleBrush(EditorCtx ctx, BaseShader shader, EditorAssetManager assetManager, ModelBatch batch, CommandHistory history) {
-        super(ctx, shader, assetManager, batch, history, Gdx.files.internal("brushes/circle.png"), "Circle brush");
+    public CircleBrush(EditorCtx ctx, String shaderKey, ModelBatch batch, CommandHistory history) {
+        super(ctx, shaderKey, batch, history, Gdx.files.internal("brushes/circle.png"), "Circle brush");
     }
 
     @Override

@@ -17,12 +17,12 @@
 package com.mbrlabs.mundus.commons.scene3d.components;
 
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.math.Vector2;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
+import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 
 import java.util.Objects;
 
@@ -33,11 +33,11 @@ import java.util.Objects;
 public class TerrainComponent extends AbstractComponent implements AssetUsage {
 
     protected TerrainAsset terrain;
-    protected Shader shader;
+    protected String shaderKey;
 
-    public TerrainComponent(GameObject go, Shader shader) {
+    public TerrainComponent(GameObject go, String shaderKey) {
         super(go);
-        this.shader = shader;
+        this.shaderKey = shaderKey;
         type = Component.Type.TERRAIN;
     }
 
@@ -53,17 +53,9 @@ public class TerrainComponent extends AbstractComponent implements AssetUsage {
         return terrain;
     }
 
-    public Shader getShader() {
-        return shader;
-    }
-
-    public void setShader(Shader shader) {
-        this.shader = shader;
-    }
-
     @Override
-    public void render(ModelBatch batch, SceneEnvironment environment, float delta) {
-        batch.render(terrain.getTerrain(), environment, shader);
+    public void render(ModelBatch batch, SceneEnvironment environment, ShaderHolder shaders, float delta) {
+        batch.render(terrain.getTerrain(), environment, shaders.get(shaderKey));
     }
 
     @Override

@@ -26,12 +26,13 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
+import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.GameObjectModifiedEvent;
@@ -70,25 +71,27 @@ public class TranslateTool extends TransformTool {
 
     private TranslateCommand command;
 
-    public TranslateTool(EditorCtx ctx, BaseShader shader, GameObjectPicker goPicker, ToolHandlePicker handlePicker,
+    public TranslateTool(EditorCtx ctx, String shaderKey, GameObjectPicker goPicker, ToolHandlePicker handlePicker,
                          ModelBatch batch, CommandHistory history, EventBus eventBus) {
 
-        super(ctx, shader, goPicker, handlePicker, batch, history, eventBus, NAME);
+        super(ctx, shaderKey, goPicker, handlePicker, batch, history, eventBus, NAME);
 
         ModelBuilder modelBuilder = new ModelBuilder();
 
-        Model xHandleModel = modelBuilder.createArrow(0, 0, 0, 1, 0, 0, ARROW_CAP_SIZE, ARROW_THIKNESS, ARROW_DIVISIONS,
+        Model xHandleModel = modelBuilder.createArrow(0, 0, 0, 1, 0, 0, ARROW_CAP_SIZE,
+                ARROW_THIKNESS, ARROW_DIVISIONS,
                 GL20.GL_TRIANGLES, new Material(ColorAttribute.createDiffuse(COLOR_X)),
                 VertexAttributes.Usage.Position);
-        Model yHandleModel = modelBuilder.createArrow(0, 0, 0, 0, 1, 0, ARROW_CAP_SIZE, ARROW_THIKNESS, ARROW_DIVISIONS,
+        Model yHandleModel = modelBuilder.createArrow(0, 0, 0, 0, 1, 0, ARROW_CAP_SIZE,
+                ARROW_THIKNESS, ARROW_DIVISIONS,
                 GL20.GL_TRIANGLES, new Material(ColorAttribute.createDiffuse(COLOR_Y)),
                 VertexAttributes.Usage.Position);
-        Model zHandleModel = modelBuilder.createArrow(0, 0, 0, 0, 0, 1, ARROW_CAP_SIZE, ARROW_THIKNESS, ARROW_DIVISIONS,
+        Model zHandleModel = modelBuilder.createArrow(0, 0, 0, 0, 0, 1, ARROW_CAP_SIZE,
+                ARROW_THIKNESS, ARROW_DIVISIONS,
                 GL20.GL_TRIANGLES, new Material(ColorAttribute.createDiffuse(COLOR_Z)),
                 VertexAttributes.Usage.Position);
         Model xzPlaneHandleModel = modelBuilder.createSphere(1, 1, 1, 20, 20,
                 new Material(ColorAttribute.createDiffuse(COLOR_XZ)), VertexAttributes.Usage.Position);
-
 
         xHandle = new TranslateHandle(X_HANDLE_ID, xHandleModel);
         yHandle = new TranslateHandle(Y_HANDLE_ID, yHandleModel);
@@ -129,15 +132,15 @@ public class TranslateTool extends TransformTool {
     }
 
     @Override
-    public void render() {
-        super.render();
+    public void render(ModelBatch batch, SceneEnvironment environment, ShaderHolder shaders, float delta) {
+        super.render(batch, environment, shaders, delta);
         if (getCtx().getSelected() != null) {
             getBatch().begin(getCtx().getCamera());
             GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
-            xHandle.render(getBatch());
-            yHandle.render(getBatch());
-            zHandle.render(getBatch());
-            xzPlaneHandle.render(getBatch());
+            xHandle.render(batch, environment, shaders, delta);
+            yHandle.render(batch, environment, shaders, delta);
+            zHandle.render(batch, environment, shaders, delta);
+            xzPlaneHandle.render(batch, environment, shaders, delta);
 
             getBatch().end();
         }
@@ -325,13 +328,13 @@ public class TranslateTool extends TransformTool {
         }
 
         @Override
-        public void render(ModelBatch batch) {
+        public void render(ModelBatch batch, SceneEnvironment environment, ShaderHolder shaders, float delta) {
             batch.render(modelInstance);
         }
 
         @Override
-        public void renderPick(ModelBatch modelBatch) {
-            getBatch().render(modelInstance, getShader());
+        public void renderPick(ModelBatch modelBatch, ShaderHolder shaders) {
+            getBatch().render(modelInstance, shaders.get(getShaderKey()));
         }
 
         @Override

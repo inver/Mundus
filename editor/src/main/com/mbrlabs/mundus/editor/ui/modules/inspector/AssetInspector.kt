@@ -26,7 +26,6 @@ import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
-import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.tools.ToolManager
 import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.PreviewGenerator
@@ -48,7 +47,6 @@ class AssetInspector(
     private val assetManager: EditorAssetManager,
     private val assetSelectionDialog: AssetPickerDialog,
     private val toolManager: ToolManager,
-    private val projectManager: ProjectManager,
     private val previewGenerator: PreviewGenerator,
     private val colorPickerPresenter: ColorPickerPresenter
 ) : VisTable() {

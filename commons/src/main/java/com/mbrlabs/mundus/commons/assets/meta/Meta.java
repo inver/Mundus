@@ -18,9 +18,12 @@ package com.mbrlabs.mundus.commons.assets.meta;
 
 
 import com.badlogic.gdx.files.FileHandle;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mbrlabs.mundus.commons.assets.AssetType;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.UUID;
 
 /**
  * @author Marcus Brummer
@@ -29,13 +32,14 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Meta<M> {
-    private int version;
-    private long lastModified;
-    private String uuid;
+    private int version = 1;
+    private long lastModified = System.currentTimeMillis();
+    private String uuid = UUID.randomUUID().toString();
     private AssetType type;
     private M additional;
 
     // Path of meta file
+    @JsonIgnore
     private FileHandle file;
 
     public Meta withFile(FileHandle file) {

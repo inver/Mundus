@@ -21,6 +21,7 @@ import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.components.Component;
 import com.mbrlabs.mundus.commons.scene3d.components.Renderable;
 import com.mbrlabs.mundus.commons.scene3d.traversal.DepthFirstIterator;
+import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -72,17 +73,16 @@ public class GameObject extends SimpleNode<GameObject> implements Iterable<GameO
         setParent(gameObject.parent);
     }
 
-
     @Override
-    public void render(ModelBatch batch, SceneEnvironment environment, float delta) {
+    public void render(ModelBatch batch, SceneEnvironment environment, ShaderHolder shaders, float delta) {
         if (active) {
             for (Component component : this.components) {
-                component.render(batch, environment, delta);
+                component.render(batch, environment, shaders, delta);
             }
 
             if (getChildren() != null) {
                 for (GameObject node : getChildren()) {
-                    node.render(batch, environment, delta);
+                    node.render(batch, environment, shaders, delta);
                 }
             }
         }

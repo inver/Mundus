@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.mbrlabs.mundus.commons.Scene;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
+import com.mbrlabs.mundus.editor.core.shader.ShaderStorage;
 import com.mbrlabs.mundus.editor.tools.ToolHandle;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +38,7 @@ import org.springframework.stereotype.Component;
 public class ToolHandlePicker extends BasePicker {
     private final EditorCtx ctx;
     private final ModelBatch batch;
+    private final ShaderStorage shaderStorage;
 
     public ToolHandle pick(ToolHandle[] handles, Scene scene, int screenX, int screenY) {
         begin(ctx.getViewport());
@@ -61,7 +63,7 @@ public class ToolHandlePicker extends BasePicker {
     private void renderPickableScene(ToolHandle[] handles, ModelBatch batch, Camera cam) {
         batch.begin(cam);
         for (ToolHandle handle : handles) {
-            handle.renderPick(batch);
+            handle.renderPick(batch, shaderStorage);
         }
         batch.end();
     }

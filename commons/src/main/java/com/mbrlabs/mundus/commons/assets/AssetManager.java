@@ -9,7 +9,7 @@ import com.mbrlabs.mundus.commons.assets.exceptions.AssetTypeNotSupportException
 import com.mbrlabs.mundus.commons.assets.exceptions.MetaFileParseException;
 import com.mbrlabs.mundus.commons.assets.material.MaterialAssetLoader;
 import com.mbrlabs.mundus.commons.assets.meta.Meta;
-import com.mbrlabs.mundus.commons.assets.meta.MetaLoader;
+import com.mbrlabs.mundus.commons.assets.meta.MetaService;
 import com.mbrlabs.mundus.commons.assets.model.ModelAssetLoader;
 import com.mbrlabs.mundus.commons.assets.pixmap.PixmapTextureAssetLoader;
 import com.mbrlabs.mundus.commons.assets.shader.ShaderAssetLoader;
@@ -27,7 +27,7 @@ import java.util.List;
 public class AssetManager {
 
     protected final ObjectMapper mapper;
-    protected final MetaLoader metaService;
+    protected final MetaService metaService;
     protected final TextureAssetLoader textureService;
     protected final TerrainAssetLoader terrainService;
     protected final MaterialAssetLoader materialService;

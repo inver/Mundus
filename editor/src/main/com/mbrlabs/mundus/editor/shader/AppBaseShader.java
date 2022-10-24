@@ -1,7 +1,6 @@
 package com.mbrlabs.mundus.editor.shader;
 
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.env.lights.SunLightsAttribute;
@@ -30,7 +29,7 @@ public abstract class AppBaseShader extends DefaultBaseShader {
     protected final int UNIFORM_SUN_LIGHT_POSITION = register(new Uniform("u_sunLightPos"));
 
 
-    protected final int UNIFORM_LIGHT_COLOR = register(new Uniform("lightColor"));
+    protected final int UNIFORM_LIGHT_COLOR = register(new Uniform("u_lightColor"));
     protected final int UNIFORM_OBJECT_COLOR = register(new Uniform("objectColor"));
 
     //    protected final String vertexShaderPath;
@@ -63,7 +62,10 @@ public abstract class AppBaseShader extends DefaultBaseShader {
 
     protected void setLights(SceneEnvironment env) {
         // ambient
-        set(UNIFORM_LIGHT_COLOR, new Color(1f, 1f, 1f, 1f));
+        if (env.getAmbientLight() != null) {
+            set(UNIFORM_AMBIENT_LIGHT_COLOR, env.getAmbientLight().color);
+            set(UNIFORM_AMBIENT_LIGHT_INTENSITY, env.getAmbientLight().intensity);
+        }
 
         var sunLightAttr = env.get(SunLightsAttribute.class, SunLightsAttribute.Type);
         set(UNIFORM_SUN_LIGHT_POSITION, sunLightAttr.lights.get(0).position);

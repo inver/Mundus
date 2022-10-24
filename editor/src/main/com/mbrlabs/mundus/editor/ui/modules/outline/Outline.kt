@@ -15,6 +15,7 @@
  */
 package com.mbrlabs.mundus.editor.ui.modules.outline
 
+//import com.mbrlabs.mundus.editor.utils.createTerrainGO
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
@@ -29,7 +30,6 @@ import com.mbrlabs.mundus.commons.scene3d.components.Component
 import com.mbrlabs.mundus.commons.terrain.Terrain
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
-import com.mbrlabs.mundus.editor.core.shader.ShaderConstants
 import com.mbrlabs.mundus.editor.core.shader.ShaderStorage
 import com.mbrlabs.mundus.editor.events.*
 import com.mbrlabs.mundus.editor.history.CommandHistory
@@ -38,7 +38,6 @@ import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.modules.outline.OutlineNode.RootNode
 import com.mbrlabs.mundus.editor.utils.TextureUtils
 import com.mbrlabs.mundus.editor.utils.createDirectionalLightGO
-import com.mbrlabs.mundus.editor.utils.createTerrainGO
 import mu.KotlinLogging
 import java.util.function.Consumer
 
@@ -72,20 +71,8 @@ class Outline(
     private val dragAndDrop: OutlineDragAndDrop
     val rightClickMenu = RightClickMenu()
 
-    val addEmpty: MenuItem = MenuItem("Add Empty")
-    val addTerrain: MenuItem = MenuItem("Add terrain")
-    val duplicate: MenuItem = MenuItem("Duplicate")
-    val rename: MenuItem = MenuItem("Rename")
-    val delete: MenuItem = MenuItem("Delete")
-
     init {
         setBackground("window-bg")
-
-//        rightClickMenu.addItem(addEmpty)
-//        rightClickMenu.addItem(addTerrain)
-//        rightClickMenu.addItem(duplicate)
-//        rightClickMenu.addItem(rename)
-//        rightClickMenu.addItem(delete)
 
         content = VisTable()
         content.align(Align.left or Align.top)
@@ -138,10 +125,13 @@ class Outline(
         val rootNode = RootNode()
         tree.add(rootNode)
 
-        ctx.assetLibrary.entries.map { it.value }.filter { it.type == AssetType.SHADER }.forEach {
+        ctx.current.currentScene.assets.forEach {
             val leaf = OutlineNode(it.name, null)
-            rootNode.shaders.add(leaf)
+            if (it.type == AssetType.SHADER) {
+                rootNode.shaders.add(leaf)
+            }
         }
+
 //        for (mat in scene.materials) {
 //            todo add materials from models
 //            rootNode.materials.add(OutlineNode(mat.name))
@@ -180,7 +170,7 @@ class Outline(
      * *
      * @param gameObject
      */
-    private fun addGoToTree(treeParentNode: OutlineNode?, gameObject: GameObject) {
+    fun addGoToTree(treeParentNode: OutlineNode?, gameObject: GameObject) {
         val leaf = OutlineNode(gameObject, null)
         if (treeParentNode == null) {
             tree.add(leaf)
@@ -262,9 +252,10 @@ class Outline(
 
     inner class RightClickMenu : PopupMenu() {
 
-        private val addEmpty: MenuItem = MenuItem("Add Empty")
+        val addGroup = MenuItem("Add group")
         private val addTerrain: MenuItem = MenuItem("Add terrain")
         private val addLight: MenuItem = MenuItem("Add light")
+        val addShader = MenuItem("Add Shader")
         private val duplicate: MenuItem = MenuItem("Duplicate")
         private val rename: MenuItem = MenuItem("Rename")
         private val delete: MenuItem = MenuItem("Delete")
@@ -272,34 +263,9 @@ class Outline(
         private val lightsPopupMenu: PopupMenu = PopupMenu()
         private val addDirectionalLight: MenuItem = MenuItem("Directional Light")
 
-        private var selectedGO: GameObject? = null
+        var selectedGO: GameObject? = null
 
         init {
-            // add empty
-            addEmpty.addListener(object : ClickListener() {
-                override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                    val sceneGraph = ctx.current.getCurrentScene().sceneGraph
-                    val id = ctx.current.obtainID()
-                    // the new game object
-                    val go = GameObject(GameObject.DEFAULT_NAME, id)
-                    // update outline
-                    if (selectedGO == null) {
-                        // update sceneGraph
-                        log.trace("Add empty game object [{}] in root node.", go)
-                        sceneGraph.addGameObject(go)
-                        // update outline
-                        addGoToTree(null, go)
-                    } else {
-                        log.trace("Add empty game object [{}] child in node [{}].", go, selectedGO)
-                        // update sceneGraph
-                        selectedGO!!.addChild(go)
-                        // update outline
-                        val n = tree.findNode(selectedGO!!)
-                        addGoToTree(n, go)
-                    }
-                    eventBus.post(SceneGraphChangedEvent())
-                }
-            })
 
             // add terrainAsset
             addTerrain.addListener(object : ClickListener() {
@@ -318,15 +284,15 @@ class Outline(
                         asset.load()
                         asset.applyDependencies()
 
-                        val terrainGO = createTerrainGO(
-                            shaderStorage.get(ShaderConstants.TERRAIN),
-                            goID, name, asset,
-                            shaderStorage.get(ShaderConstants.PICKER)
-                        )
-                        // update sceneGraph
-                        sceneGraph.addGameObject(terrainGO)
-                        // update outline
-                        addGoToTree(null, terrainGO)
+//                        val terrainGO = createTerrainGO(
+//                            shaderStorage.get(ShaderConstants.TERRAIN),
+//                            goID, name, asset,
+//                            shaderStorage.get(ShaderConstants.PICKER)
+//                        )
+//                        // update sceneGraph
+//                        sceneGraph.addGameObject(terrainGO)
+//                        // update outline
+//                        addGoToTree(null, terrainGO)
 
                         TODO()
 //                        context.getCurrentScene().terrains.add(asset)
@@ -398,9 +364,10 @@ class Outline(
             lightsPopupMenu.addItem(addDirectionalLight)
             addLight.subMenu = lightsPopupMenu
 
-            addItem(addEmpty)
+            addItem(addGroup)
             addItem(addTerrain)
             addItem(addLight)
+            addItem(addShader)
             addItem(rename)
             addItem(duplicate)
             addItem(delete)

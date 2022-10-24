@@ -19,7 +19,6 @@ package com.mbrlabs.mundus.commons.scene3d.components;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset;
@@ -27,6 +26,7 @@ import com.mbrlabs.mundus.commons.assets.model.ModelAsset;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
+import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 
 import java.util.Objects;
 
@@ -38,23 +38,19 @@ public class ModelComponent extends AbstractComponent implements AssetUsage {
 
     protected ModelAsset modelAsset;
     protected ModelInstance modelInstance;
-    protected Shader shader;
+    protected String shaderKey;
 
     protected ObjectMap<String, MaterialAsset> materials;  // g3db material id to material asset uuid
 
-    public ModelComponent(GameObject go, Shader shader) {
+    public ModelComponent(GameObject go, String shaderKey) {
         super(go);
         type = Type.MODEL;
         materials = new ObjectMap<>();
-        this.shader = shader;
+        this.shaderKey = shaderKey;
     }
 
-    public Shader getShader() {
-        return shader;
-    }
-
-    public void setShader(Shader shader) {
-        this.shader = shader;
+    public void setShaderKey(String shaderKey) {
+        this.shaderKey = shaderKey;
     }
 
     public void setModel(ModelAsset model, boolean inheritMaterials) {
@@ -93,17 +89,16 @@ public class ModelComponent extends AbstractComponent implements AssetUsage {
     }
 
     @Override
-    public void render(ModelBatch batch, SceneEnvironment environment, float delta) {
+    public void render(ModelBatch batch, SceneEnvironment environment, ShaderHolder shaders, float delta) {
         modelInstance.transform.set(gameObject.getTransform());
-        batch.render(modelInstance, environment, shader);
+        batch.render(modelInstance, environment, shaders.get(shaderKey));
     }
 
     @Override
     public Component clone(GameObject go) {
-        ModelComponent mc = new ModelComponent(go, shader);
+        ModelComponent mc = new ModelComponent(go, shaderKey);
         mc.modelAsset = this.modelAsset;
         mc.modelInstance = new ModelInstance(modelAsset.getModel());
-        mc.shader = this.shader;
         return mc;
     }
 

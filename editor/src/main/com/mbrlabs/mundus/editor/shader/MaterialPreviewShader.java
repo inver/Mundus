@@ -3,6 +3,7 @@ package com.mbrlabs.mundus.editor.shader;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.math.Matrix4;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 
@@ -30,17 +31,17 @@ public class MaterialPreviewShader extends AppBaseShader {
         set(UNIFORM_MODEL_MATRIX, modelPos);
 
         // texture uniform
-//        TextureAttribute diffuseTexture = ((TextureAttribute) (renderable.material.get(TextureAttribute.Diffuse)));
-        ColorAttribute diffuseColor = ((ColorAttribute) (renderable.material.get(ColorAttribute.Diffuse)));
+        var diffuseTexture = ((TextureAttribute) (renderable.material.get(TextureAttribute.Diffuse)));
+        var diffuseColor = ((ColorAttribute) (renderable.material.get(ColorAttribute.Diffuse)));
 //
-//        if (diffuseTexture != null) {
-//            set(UNIFORM_MATERIAL_DIFFUSE_TEXTURE, diffuseTexture.textureDescription.texture);
-//            set(UNIFORM_MATERIAL_DIFFUSE_USE_TEXTURE, 1);
-//        } else {
-        set(UNIFORM_MATERIAL_DIFFUSE_COLOR, diffuseColor.color);
-//            set(UNIFORM_MATERIAL_DIFFUSE_USE_TEXTURE, 0);
-//        }
-//
+        if (diffuseTexture != null) {
+            set(UNIFORM_MATERIAL_DIFFUSE_TEXTURE, diffuseTexture.textureDescription.texture);
+            set(UNIFORM_MATERIAL_DIFFUSE_USE_TEXTURE, 1);
+        } else {
+            set(UNIFORM_MATERIAL_DIFFUSE_COLOR, diffuseColor.color);
+            set(UNIFORM_MATERIAL_DIFFUSE_USE_TEXTURE, 0);
+        }
+
 //        // shininess
 //        if (renderable.material.has(FloatAttribute.Shininess)) {
 //            float shininess = ((FloatAttribute) renderable.material.get(FloatAttribute.Shininess)).value;

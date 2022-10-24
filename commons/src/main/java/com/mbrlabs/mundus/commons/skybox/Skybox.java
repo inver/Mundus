@@ -35,8 +35,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor //for test needs
 public class Skybox implements Disposable {
 
-    protected ShaderProgram shader;
-
     private Model boxModel;
     private ModelInstance boxInstance;
     private Cubemap cubemap;
@@ -56,8 +54,7 @@ public class Skybox implements Disposable {
     }
 
     private Model createModel() {
-        ModelBuilder modelBuilder = new ModelBuilder();
-        Model model = modelBuilder.createBox(1, 1, 1,
+        var model = new ModelBuilder().createBox(1, 1, 1,
                 new Material(new CubemapAttribute(CubemapAttribute.EnvironmentMap, cubemap)),
                 VertexAttributes.Usage.Position);
         return model;

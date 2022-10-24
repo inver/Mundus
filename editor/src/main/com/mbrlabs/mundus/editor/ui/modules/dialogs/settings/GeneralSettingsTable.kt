@@ -16,6 +16,7 @@
 
 package com.mbrlabs.mundus.editor.ui.modules.dialogs.settings
 
+import com.kotcrab.vis.ui.widget.VisCheckBox
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisSelectBox
 import com.mbrlabs.mundus.editor.core.registry.KeyboardLayout
@@ -30,6 +31,7 @@ class GeneralSettingsTable : BaseSettingsTable() {
 
     val fbxBinary = FileChooserField(500)
     val keyboardLayouts = VisSelectBox<KeyboardLayout>()
+    val autoReloadFromDisk = VisCheckBox("Auto reload from disk");
 
     init {
         top().left()
@@ -44,5 +46,7 @@ class GeneralSettingsTable : BaseSettingsTable() {
 
         add(VisLabel("Keyboard Layout")).growX().row()
         add(keyboardLayouts).growX().row()
+
+        add(autoReloadFromDisk).row();
     }
 }

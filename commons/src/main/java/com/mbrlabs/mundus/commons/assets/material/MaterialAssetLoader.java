@@ -1,10 +1,12 @@
 package com.mbrlabs.mundus.commons.assets.material;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.mbrlabs.mundus.commons.assets.AssetLoader;
 import com.mbrlabs.mundus.commons.assets.meta.Meta;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -13,7 +15,13 @@ public class MaterialAssetLoader implements AssetLoader<MaterialAsset, MaterialM
     @Override
     public MaterialAsset load(Meta<MaterialMeta> meta) {
         var asset = new MaterialAsset(meta);
-        asset.setDiffuseColor(new Color(meta.getAdditional().getDiffuseColor()));
+        var additional = meta.getAdditional();
+        if (additional.getDiffuseColor() != null) {
+            asset.setDiffuseColor(new Color(meta.getAdditional().getDiffuseColor()));
+        }
+        if (StringUtils.isNoneEmpty(additional.getDiffuseTexture())) {
+            asset.setDiffuseTexture(new Texture(meta.getFile().child(meta.getAdditional().getDiffuseTexture())));
+        }
 //        asset.load();
         return asset;
     }

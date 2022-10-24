@@ -58,7 +58,7 @@ public class SceneStorage {
         scene.getCameras().add(defCamera);
 //        scene.setCurrentCamera(defCamera);
 
-        scene.getEnvironment().add(createDefaultDirectionalLight());
+//        scene.getEnvironment().add(createDefaultDirectionalLight());
         scene.getEnvironment().setAmbientLight(createDefaultAmbientLight());
 
         saveScene(projectPath, scene);

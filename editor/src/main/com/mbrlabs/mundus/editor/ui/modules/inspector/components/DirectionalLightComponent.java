@@ -22,6 +22,7 @@ import com.mbrlabs.mundus.commons.env.lights.DirectionalLight;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.scene3d.components.AbstractComponent;
 import com.mbrlabs.mundus.commons.scene3d.components.Component;
+import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 
 /**
  * @author Guilherme Nemeth
@@ -44,8 +45,9 @@ public class DirectionalLightComponent extends AbstractComponent {
         return light;
     }
 
+
     @Override
-    public void render(ModelBatch batch, SceneEnvironment environment, float delta) {
+    public void render(ModelBatch batch, SceneEnvironment environment, ShaderHolder shaders, float delta) {
 
     }
 

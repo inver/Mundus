@@ -16,7 +16,7 @@
 
 package com.mbrlabs.mundus.commons.importer;
 
-import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
+import com.badlogic.gdx.graphics.g3d.Shader;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset;
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset;
@@ -33,15 +33,15 @@ import java.util.Map;
 @Slf4j
 public class ModelComponentConverter {
 
-    public static ModelComponent convert(ModelComponentDto dto, GameObject go, Map<String, Asset<?>> assets, Map<String, BaseShader> shaders) {
+    public static ModelComponent convert(ModelComponentDto dto, GameObject go, Map<String, Asset<?>> assets) {
         var model = (ModelAsset) assets.get(dto.getModelID());
 
         if (model == null) {
-            log.error("MModel for MModelInstance not found: {}", dto.getModelID());
+            log.error("Model for ModelInstance not found: {}", dto.getModelID());
             return null;
         }
 
-        var component = new ModelComponent(go, shaders.get(dto.getShaderKey()));
+        var component = new ModelComponent(go, dto.getShaderKey());
         component.setModel(model, false);
 
         for (String g3dbMatID : dto.getMaterials().keySet()) {

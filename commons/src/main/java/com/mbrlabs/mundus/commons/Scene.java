@@ -18,11 +18,12 @@ package com.mbrlabs.mundus.commons;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.utils.Disposable;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.SceneGraph;
+import com.mbrlabs.mundus.commons.scene3d.components.Renderable;
+import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 import com.mbrlabs.mundus.commons.skybox.Skybox;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,7 +35,7 @@ import java.util.List;
  * @author Marcus Brummer
  * @version 22-12-2015
  */
-public class Scene implements Disposable {
+public class Scene implements Disposable, Renderable {
 
     private long id;
     private String name;
@@ -47,12 +48,11 @@ public class Scene implements Disposable {
     //todo move skybox to environment
     @Setter
     private Skybox skybox;
+
     @Getter
-    private final List<Asset> assets = new ArrayList<>();
+    private final List<Asset<?>> assets = new ArrayList<>();
     @Getter
     private final List<Camera> cameras = new ArrayList<>();
-    @Getter
-    private final List<BaseShader> shaders = new ArrayList<>();
 //    @Getter
 //    private final List<BaseLight> lights = new ArrayList<>();
 //    @Getter
@@ -66,8 +66,10 @@ public class Scene implements Disposable {
     //    public PerspectiveCamera cam;
 //    public ModelBatch batch;
 
-    public void render(ModelBatch batch, float delta) {
-        sceneGraph.render(batch, environment, delta);
+
+    @Override
+    public void render(ModelBatch batch, SceneEnvironment environment, ShaderHolder shaders, float delta) {
+        sceneGraph.render(batch, environment, shaders, delta);
     }
 
     public String getName() {

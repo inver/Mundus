@@ -24,7 +24,6 @@ import com.mbrlabs.mundus.commons.env.lights.*;
  * @version 04-01-2016
  */
 public class SceneEnvironment extends Environment {
-
     private Fog fog;
     private BaseLight ambientLight;
 

@@ -16,7 +16,7 @@ public class MaterialMeta {
     private String normalTexture;
     private String roughnessTexture;
 
-    private int diffuseColor;
-    private float shininess;
-    private float opacity;
+    private Integer diffuseColor;
+    private Float shininess;
+    private Float opacity;
 }

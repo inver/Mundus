@@ -23,6 +23,7 @@ import com.mbrlabs.mundus.commons.Scene;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.scene3d.components.Component;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
+import com.mbrlabs.mundus.editor.core.shader.ShaderStorage;
 import com.mbrlabs.mundus.editor.scene3d.components.PickableComponent;
 import lombok.RequiredArgsConstructor;
 
@@ -42,6 +43,7 @@ import lombok.RequiredArgsConstructor;
 public class GameObjectPicker extends BasePicker {
     private final EditorCtx ctx;
     private final ModelBatch batch;
+    private final ShaderStorage shaderStorage;
 
     public GameObject pick(Scene scene, int screenX, int screenY) {
         begin(ctx.getViewport());
@@ -74,7 +76,7 @@ public class GameObjectPicker extends BasePicker {
     private void renderPickableGameObject(Scene scene, GameObject go) {
         for (Component c : go.getComponents()) {
             if (c instanceof PickableComponent) {
-                c.render(batch, scene.getEnvironment(), Gdx.graphics.getDeltaTime());
+                c.render(batch, scene.getEnvironment(), shaderStorage, Gdx.graphics.getDeltaTime());
             }
         }
 

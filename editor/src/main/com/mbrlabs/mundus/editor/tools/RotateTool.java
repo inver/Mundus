@@ -23,14 +23,14 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.utils.viewport.Viewport;
+import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
+import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 import com.mbrlabs.mundus.commons.utils.MathUtils;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.project.ProjectContext;
@@ -70,9 +70,9 @@ public class RotateTool extends TransformTool {
     private RotateCommand currentRotateCommand;
     private float lastRot = 0;
 
-    public RotateTool(EditorCtx ctx, BaseShader shader, GameObjectPicker goPicker, ToolHandlePicker handlePicker,
+    public RotateTool(EditorCtx ctx, String shaderKey, GameObjectPicker goPicker, ToolHandlePicker handlePicker,
                       ShapeRenderer shapeRenderer, ModelBatch batch, CommandHistory history, EventBus eventBus) {
-        super(ctx, shader, goPicker, handlePicker, batch, history, eventBus, NAME);
+        super(ctx, shaderKey, goPicker, handlePicker, batch, history, eventBus, NAME);
         this.shapeRenderer = shapeRenderer;
         xHandle = new RotateHandle(X_HANDLE_ID, COLOR_X);
         yHandle = new RotateHandle(Y_HANDLE_ID, COLOR_Y);
@@ -81,61 +81,48 @@ public class RotateTool extends TransformTool {
     }
 
     @Override
-    public void render() {
-        super.render();
+    public void render(ModelBatch batch, SceneEnvironment environment, ShaderHolder shaders, float delta) {
+        super.render(batch, environment, shaders, delta);
         GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
 
-        ProjectContext projectContext = getCtx().getCurrent();
-        if (state == TransformState.IDLE && getCtx().getSelected() != null) {
-            getBatch().begin(getCtx().getCamera());
-            xHandle.render(getBatch());
-            yHandle.render(getBatch());
-            zHandle.render(getBatch());
-            getBatch().end();
-        } else if (getCtx().getSelected() != null) {
-            Viewport vp = getCtx().getViewport();
-
-            GameObject go = getCtx().getSelected();
-            go.getTransform().getTranslation(temp0);
-            Vector3 pivot = getCtx().getCamera().project(temp0);
-
-            shapeRenderMat.setToOrtho2D(vp.getScreenX(), vp.getScreenY(), vp.getScreenWidth(), vp.getScreenHeight());
-            switch (state) {
-                case TRANSFORM_X:
-                    shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-                    shapeRenderer.setColor(Color.BLACK);
-                    shapeRenderer.setProjectionMatrix(shapeRenderMat);
-                    shapeRenderer.rectLine(pivot.x, pivot.y, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(),
-                            2);
-                    shapeRenderer.setColor(COLOR_X);
-                    shapeRenderer.circle(pivot.x, pivot.y, 7);
-                    shapeRenderer.end();
-                    break;
-                case TRANSFORM_Y:
-                    shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-                    shapeRenderer.setColor(Color.BLACK);
-                    shapeRenderer.setProjectionMatrix(shapeRenderMat);
-                    shapeRenderer.rectLine(pivot.x, pivot.y, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(),
-                            2);
-                    shapeRenderer.setColor(COLOR_Y);
-                    shapeRenderer.circle(pivot.x, pivot.y, 7);
-                    shapeRenderer.end();
-                    break;
-                case TRANSFORM_Z:
-                    shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-                    shapeRenderer.setColor(Color.BLACK);
-                    shapeRenderer.setProjectionMatrix(shapeRenderMat);
-                    shapeRenderer.rectLine(pivot.x, pivot.y, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(),
-                            2);
-                    shapeRenderer.setColor(COLOR_Z);
-                    shapeRenderer.circle(pivot.x, pivot.y, 7);
-                    shapeRenderer.end();
-                    break;
-                default:
-                    break;
-            }
+        if (getCtx().getSelected() == null) {
+            return;
         }
 
+        if (state == TransformState.IDLE) {
+            batch.begin(getCtx().getCamera());
+            xHandle.render(batch, environment, shaders, delta);
+            yHandle.render(batch, environment, shaders, delta);
+            zHandle.render(batch, environment, shaders, delta);
+            batch.end();
+            return;
+        }
+
+        var vp = getCtx().getViewport();
+        getCtx().getSelected().getTransform().getTranslation(temp0);
+        var pivot = getCtx().getCamera().project(temp0);
+
+        shapeRenderMat.setToOrtho2D(vp.getScreenX(), vp.getScreenY(), vp.getScreenWidth(), vp.getScreenHeight());
+        switch (state) {
+            case TRANSFORM_X:
+                renderTool(pivot, COLOR_X);
+                return;
+            case TRANSFORM_Y:
+                renderTool(pivot, COLOR_Y);
+                return;
+            case TRANSFORM_Z:
+                renderTool(pivot, COLOR_Z);
+        }
+    }
+
+    private void renderTool(Vector3 pivot, Color color) {
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(Color.BLACK);
+        shapeRenderer.setProjectionMatrix(shapeRenderMat);
+        shapeRenderer.rectLine(pivot.x, pivot.y, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), 2);
+        shapeRenderer.setColor(color);
+        shapeRenderer.circle(pivot.x, pivot.y, 7);
+        shapeRenderer.end();
     }
 
     @Override
@@ -264,7 +251,7 @@ public class RotateTool extends TransformTool {
 
     @Override
     protected void translateHandles() {
-        if (getCtx().getSelected()== null) {
+        if (getCtx().getSelected() == null) {
             return;
         }
 
@@ -279,7 +266,7 @@ public class RotateTool extends TransformTool {
 
     @Override
     protected void scaleHandles() {
-        if (getCtx().getSelected()== null) {
+        if (getCtx().getSelected() == null) {
             return;
         }
 
@@ -346,14 +333,15 @@ public class RotateTool extends TransformTool {
             // mi.transform.translate(0, 100, 0);
         }
 
+
         @Override
-        public void render(ModelBatch batch) {
+        public void render(ModelBatch batch, SceneEnvironment environment, ShaderHolder shaders, float delta) {
             batch.render(modelInstance);
         }
 
         @Override
-        public void renderPick(ModelBatch modelBatch) {
-            getBatch().render(modelInstance, getShader());
+        public void renderPick(ModelBatch modelBatch, ShaderHolder shaders) {
+            getBatch().render(modelInstance, shaders.get(getShaderKey()));
         }
 
         @Override

@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.assets.meta.Meta;
 import lombok.Getter;
@@ -67,6 +68,11 @@ public class MaterialAsset extends Asset<MaterialMeta> {
     public Material applyToMaterial(Material material) {
         if (diffuseColor != null) {
             material.set(new ColorAttribute(ColorAttribute.Diffuse, diffuseColor));
+        }
+        if (diffuseTexture != null) {
+            material.set(new TextureAttribute(TextureAttribute.Diffuse, diffuseTexture));
+        } else {
+            material.remove(TextureAttribute.Diffuse);
         }
 //        if (diffuseColor != null) {
 //            material.set(new ColorAttribute(ColorAttribute.Diffuse, diffuseColor));

@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.project.ProjectStorage;
 import com.mbrlabs.mundus.editor.core.registry.Registry;
+import com.mbrlabs.mundus.editor.core.shader.ShaderStorage;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent;
 import com.mbrlabs.mundus.editor.events.SettingsChangedEvent;
@@ -36,8 +37,11 @@ public class SettingsDialogPresenter {
         });
         fileChooserFieldPresenter.initFileChooserField(table.getFbxBinary());
         table.getFbxBinary().setText(registry.getSettings().getFbxConvBinary());
+        table.getAutoReloadFromDisk().setChecked(registry.getSettings().isReloadShaderFromDisk());
         table.setSaveListener(() -> {
             registry.getSettings().setFbxConvBinary(table.getFbxBinary().getPath());
+            registry.getSettings().setReloadShaderFromDisk(table.getAutoReloadFromDisk().isChecked());
+
             projectStorage.saveRegistry(registry);
             eventBus.post(new SettingsChangedEvent(registry.getSettings()));
             toaster.success("Settings saved");

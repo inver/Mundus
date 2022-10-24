@@ -29,25 +29,25 @@ import com.mbrlabs.mundus.editor.scene3d.components.PickableTerrainComponent
 
 private var tempVI = VertexInfo()
 
-fun createTerrainGO(
-    shader: BaseShader,
-    goID: Int,
-    goName: String,
-    terrain: TerrainAsset,
-    pickShader: BaseShader
-): GameObject {
-    val terrainGO = GameObject(null as String, goID)
-    terrainGO.name = goName
-
-    terrain.terrain.setTransform(terrainGO.transform)
-    val terrainComponent = PickableTerrainComponent(terrainGO, pickShader)
-    terrainComponent.terrain = terrain
-    terrainGO.components.add(terrainComponent)
-    terrainComponent.shader = shader
-    terrainComponent.encodeRayPickColorId()
-
-    return terrainGO
-}
+//fun createTerrainGO(
+//    shader: BaseShader,
+//    goID: Int,
+//    goName: String,
+//    terrain: TerrainAsset,
+//    pickShader: BaseShader
+//): GameObject {
+//    val terrainGO = GameObject(null as String, goID)
+//    terrainGO.name = goName
+//
+//    terrain.terrain.setTransform(terrainGO.transform)
+//    val terrainComponent = PickableTerrainComponent(terrainGO, pickShader)
+//    terrainComponent.terrain = terrain
+//    terrainGO.components.add(terrainComponent)
+//    terrainComponent.shader = shader
+//    terrainComponent.encodeRayPickColorId()
+//
+//    return terrainGO
+//}
 
 fun getRayIntersection(terrains: Array<TerrainAsset>, ray: Ray, out: Vector3): Vector3? {
     for (terrain in terrains) {

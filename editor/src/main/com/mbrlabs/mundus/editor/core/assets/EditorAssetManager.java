@@ -7,7 +7,7 @@ import com.mbrlabs.mundus.commons.assets.*;
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset;
 import com.mbrlabs.mundus.commons.assets.material.MaterialAssetLoader;
 import com.mbrlabs.mundus.commons.assets.meta.Meta;
-import com.mbrlabs.mundus.commons.assets.meta.MetaLoader;
+import com.mbrlabs.mundus.commons.assets.meta.MetaService;
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset;
 import com.mbrlabs.mundus.commons.assets.model.ModelAssetLoader;
 import com.mbrlabs.mundus.commons.assets.pixmap.PixmapTextureAsset;
@@ -44,7 +44,7 @@ public class EditorAssetManager extends AssetManager {
     @Getter
     private final Set<Asset> dirtyAssets = new HashSet<>();
 
-    public EditorAssetManager(ObjectMapper mapper, MetaLoader metaService, TextureAssetLoader textureService,
+    public EditorAssetManager(ObjectMapper mapper, MetaService metaService, TextureAssetLoader textureService,
                               TerrainAssetLoader terrainService, MaterialAssetLoader materialService,
                               PixmapTextureAssetLoader pixmapTextureService, ModelAssetLoader modelService,
                               ShaderAssetLoader shaderAssetLoader,
@@ -364,7 +364,7 @@ public class EditorAssetManager extends AssetManager {
         if (asset.getType() == AssetType.MODEL) {
             var modelAsset = (ModelAsset) asset;
 
-            var modelComponent = new PickableModelComponent(res, shaderStorage.get(ShaderConstants.PICKER), shaderStorage.get(ShaderConstants.PICKER));
+            var modelComponent = new PickableModelComponent(res, ShaderConstants.PICKER);
             modelComponent.setModel(modelAsset, true);
             modelComponent.encodeRayPickColorId();
 

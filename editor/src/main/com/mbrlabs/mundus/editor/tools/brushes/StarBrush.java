@@ -31,8 +31,8 @@ import com.mbrlabs.mundus.editor.utils.Fa;
  */
 public class StarBrush extends TerrainBrush {
 
-    public StarBrush(EditorCtx ctx, BaseShader shader, EditorAssetManager assetManager, ModelBatch batch, CommandHistory history) {
-        super(ctx, shader, assetManager, batch, history, Gdx.files.internal("brushes/star.png"), "Star brush");
+    public StarBrush(EditorCtx ctx, String shaderKey, ModelBatch batch, CommandHistory history) {
+        super(ctx, shaderKey, batch, history, Gdx.files.internal("brushes/star.png"), "Star brush");
     }
 
     @Override

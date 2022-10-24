@@ -18,6 +18,8 @@ package com.mbrlabs.mundus.editor.core.project;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.JsonWriter;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Marcus Brummer
@@ -40,5 +42,6 @@ public class ProjectSettings {
         public boolean allAssets = true;
         public FileHandle outputFolder;
     }
+
 
 }

@@ -165,10 +165,10 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
 
             sg.update();
             batch.begin(ctx.getCamera());
-            scene.render(batch, Gdx.graphics.getDeltaTime());
+            scene.render(batch, scene.getEnvironment(), shaderStorage, Gdx.graphics.getDeltaTime());
             batch.end();
 
-            toolManager.render();
+            toolManager.render(batch, scene.getEnvironment(), shaderStorage, Gdx.graphics.getDeltaTime());
             compass.render(batch);
         });
 

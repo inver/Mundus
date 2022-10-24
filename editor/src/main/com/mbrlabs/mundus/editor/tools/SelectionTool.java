@@ -17,12 +17,13 @@ package com.mbrlabs.mundus.editor.tools;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.scene3d.components.Component;
 import com.mbrlabs.mundus.commons.scene3d.components.ModelComponent;
 import com.mbrlabs.mundus.commons.scene3d.components.TerrainComponent;
+import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.GameObjectSelectedEvent;
@@ -38,21 +39,19 @@ public class SelectionTool extends Tool {
 
     public static final String NAME = "Selection Tool";
 
-    private GameObjectPicker goPicker;
+    private final GameObjectPicker goPicker;
     protected final EventBus eventBus;
 
-    public SelectionTool(EditorCtx ctx, BaseShader shader, GameObjectPicker goPicker, ModelBatch batch,
+    public SelectionTool(EditorCtx ctx, String shaderKey, GameObjectPicker goPicker, ModelBatch batch,
                          CommandHistory history, EventBus eventBus, String name) {
-        super(ctx, shader, batch, history, name);
+        super(ctx, shaderKey, batch, history, name);
         this.goPicker = goPicker;
         this.eventBus = eventBus;
     }
 
-    public SelectionTool(EditorCtx ctx, BaseShader shader, GameObjectPicker goPicker, ModelBatch batch,
+    public SelectionTool(EditorCtx ctx, String shaderKey, GameObjectPicker goPicker, ModelBatch batch,
                          CommandHistory history, EventBus eventBus) {
-        super(ctx, shader, batch, history, NAME);
-        this.goPicker = goPicker;
-        this.eventBus = eventBus;
+        this(ctx, shaderKey, goPicker, batch, history, eventBus, NAME);
     }
 
     public void gameObjectSelected(GameObject selection) {
@@ -70,20 +69,20 @@ public class SelectionTool extends Tool {
     }
 
     @Override
-    public void render() {
+    public void render(ModelBatch batch, SceneEnvironment environment, ShaderHolder shaders, float delta) {
         if (getCtx().getSelected() != null) {
             getBatch().begin(getCtx().getCamera());
             for (GameObject go : getCtx().getSelected()) {
                 // model component
                 ModelComponent mc = (ModelComponent) go.findComponentByType(Component.Type.MODEL);
                 if (mc != null) {
-                    getBatch().render(mc.getModelInstance(), getShader());
+                    getBatch().render(mc.getModelInstance(), shaders.get(getShaderKey()));
                 }
 
                 // terrainAsset component
                 TerrainComponent tc = (TerrainComponent) go.findComponentByType(Component.Type.TERRAIN);
                 if (tc != null) {
-                    getBatch().render(tc.getTerrain().getTerrain(), getShader());
+                    getBatch().render(tc.getTerrain().getTerrain(), shaders.get(getShaderKey()));
                 }
             }
             getBatch().end();

@@ -18,12 +18,11 @@ package com.mbrlabs.mundus.editor.scene3d.components;
 
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.Shader;
-import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.scene3d.components.Component;
 import com.mbrlabs.mundus.commons.scene3d.components.ModelComponent;
+import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 import com.mbrlabs.mundus.editor.tools.picker.PickerColorEncoder;
 
 /**
@@ -32,11 +31,8 @@ import com.mbrlabs.mundus.editor.tools.picker.PickerColorEncoder;
  */
 public class PickableModelComponent extends ModelComponent implements PickableComponent {
 
-    private final BaseShader pickShader;
-
-    public PickableModelComponent(GameObject go, Shader shader, BaseShader pickShader) {
-        super(go, shader);
-        this.pickShader = pickShader;
+    public PickableModelComponent(GameObject go, String shaderKey) {
+        super(go, shaderKey);
     }
 
     @Override
@@ -46,16 +42,15 @@ public class PickableModelComponent extends ModelComponent implements PickableCo
     }
 
     @Override
-    public void render(ModelBatch batch, SceneEnvironment environment, float delta) {
-        batch.render(modelInstance, pickShader);
+    public void render(ModelBatch batch, SceneEnvironment environment, ShaderHolder shaders, float delta) {
+        batch.render(modelInstance, shaders.get(shaderKey));
     }
 
     @Override
     public Component clone(GameObject go) {
-        PickableModelComponent mc = new PickableModelComponent(go, shader, pickShader);
+        PickableModelComponent mc = new PickableModelComponent(go, shaderKey);
         mc.modelAsset = this.modelAsset;
         mc.modelInstance = new ModelInstance(modelAsset.getModel());
-        mc.shader = this.shader;
         mc.encodeRayPickColorId();
         return mc;
     }

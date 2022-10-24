@@ -22,21 +22,20 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset;
+import com.mbrlabs.mundus.commons.env.SceneEnvironment;
+import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 import com.mbrlabs.mundus.commons.terrain.SplatMap;
 import com.mbrlabs.mundus.commons.terrain.SplatTexture;
 import com.mbrlabs.mundus.commons.terrain.Terrain;
 import com.mbrlabs.mundus.commons.utils.MathUtils;
-import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.history.commands.TerrainHeightCommand;
 import com.mbrlabs.mundus.editor.history.commands.TerrainPaintCommand;
-import com.mbrlabs.mundus.editor.terrain.EditorTerrainShader;
 import com.mbrlabs.mundus.editor.tools.Tool;
 
 /**
@@ -132,13 +131,10 @@ public abstract class TerrainBrush extends Tool {
     private boolean terrainHeightModified = false;
     private boolean splatmapModified = false;
 
-    private final EditorAssetManager assetManager;
-
-    public TerrainBrush(EditorCtx ctx, BaseShader shader, EditorAssetManager assetManager, ModelBatch batch,
+    public TerrainBrush(EditorCtx ctx, String shaderKey, ModelBatch batch,
                         CommandHistory history, FileHandle pixmapBrush, String name) {
-        super(ctx, shader, batch, history, name);
+        super(ctx, shaderKey, batch, history, name);
 
-        this.assetManager = assetManager;
         brushPixmap = new Pixmap(pixmapBrush);
         pixmapCenter = brushPixmap.getWidth() / 2;
     }
@@ -191,7 +187,8 @@ public abstract class TerrainBrush extends Tool {
 
         sm.updateTexture();
         splatmapModified = true;
-        assetManager.dirty(terrainAsset);
+        //todo
+//        assetManager.dirty(terrainAsset);
     }
 
     private void flatten() {
@@ -229,7 +226,8 @@ public abstract class TerrainBrush extends Tool {
 
         terrain.update();
         terrainHeightModified = true;
-        assetManager.dirty(terrainAsset);
+        //todo
+//        assetManager.dirty(terrainAsset);
     }
 
     private void raiseLower(BrushAction action) {
@@ -252,7 +250,8 @@ public abstract class TerrainBrush extends Tool {
 
         terrain.update();
         terrainHeightModified = true;
-        assetManager.dirty(terrainAsset);
+        //todo
+//        assetManager.dirty(terrainAsset);
     }
 
     /**
@@ -351,7 +350,7 @@ public abstract class TerrainBrush extends Tool {
     }
 
     @Override
-    public void render() {
+    public void render(ModelBatch batch, SceneEnvironment environment, ShaderHolder shaders, float delta) {
         // rendering of the brush is done in the editor terrain shader
     }
 
@@ -431,7 +430,8 @@ public abstract class TerrainBrush extends Tool {
 
         mouseMoved = true;
 
-        ((EditorTerrainShader) getShader()).setPickerPosition(brushPos.x, brushPos.y, brushPos.z);
+        //todo
+//        ((EditorTerrainShader) getShader()).setPickerPosition(brushPos.x, brushPos.y, brushPos.z);
 
         return false;
     }
@@ -443,7 +443,8 @@ public abstract class TerrainBrush extends Tool {
         } else {
             scale(1.1f);
         }
-        ((EditorTerrainShader) getShader()).setPickerRadius(radius);
+        //todo
+//        ((EditorTerrainShader) getShader()).setPickerRadius(radius);
 
         return false;
     }
@@ -455,14 +456,16 @@ public abstract class TerrainBrush extends Tool {
 
     @Override
     public void onDisabled() {
-        ((EditorTerrainShader) getShader()).activatePicker(false);
+        //todo
+//        ((EditorTerrainShader) getShader()).activatePicker(false);
     }
 
     @Override
     public void onActivated() {
-        ((EditorTerrainShader) getShader()).activatePicker(true);
-        ((EditorTerrainShader) getShader()).setPickerPosition(brushPos.x, brushPos.y, brushPos.z);
-        ((EditorTerrainShader) getShader()).setPickerRadius(radius);
+        //todo
+//        ((EditorTerrainShader) getShader()).activatePicker(true);
+//        ((EditorTerrainShader) getShader()).setPickerPosition(brushPos.x, brushPos.y, brushPos.z);
+//        ((EditorTerrainShader) getShader()).setPickerRadius(radius);
     }
 
 }

@@ -16,7 +16,6 @@
 
 package com.mbrlabs.mundus.commons.importer;
 
-import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.mbrlabs.mundus.commons.assets.Asset;
@@ -39,7 +38,7 @@ public class GameObjectConverter {
     /**
      * Converts {@link GameObjectDto} to {@link GameObject}.
      */
-    public static GameObject convert(GameObjectDto dto, Map<String, Asset<?>> assets, Map<String, BaseShader> shaders) {
+    public static GameObject convert(GameObjectDto dto, Map<String, Asset<?>> assets) {
         final GameObject go = new GameObject(dto.getName(), dto.getId());
         go.setActive(dto.isActive());
 
@@ -58,15 +57,15 @@ public class GameObjectConverter {
 
         // convert components
         if (dto.getModelComponent() != null) {
-            go.getComponents().add(ModelComponentConverter.convert(dto.getModelComponent(), go, assets, shaders));
+            go.getComponents().add(ModelComponentConverter.convert(dto.getModelComponent(), go, assets));
         } else if (dto.getTerrainComponent() != null) {
-            go.getComponents().add(TerrainComponentConverter.convert(dto.getTerrainComponent(), go, assets, shaders));
+            go.getComponents().add(TerrainComponentConverter.convert(dto.getTerrainComponent(), go, assets));
         }
 
         // recursively convert children
         if (dto.getChildren() != null) {
             for (GameObjectDto c : dto.getChildren()) {
-                go.addChild(convert(c, assets, shaders));
+                go.addChild(convert(c, assets));
             }
         }
 

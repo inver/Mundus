@@ -17,10 +17,10 @@
 package com.mbrlabs.mundus.editor.scene3d.components;
 
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.Shader;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.scene3d.components.TerrainComponent;
+import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 import com.mbrlabs.mundus.editor.tools.picker.PickerColorEncoder;
 import com.mbrlabs.mundus.editor.tools.picker.PickerIDAttribute;
 
@@ -30,8 +30,8 @@ import com.mbrlabs.mundus.editor.tools.picker.PickerIDAttribute;
  */
 public class PickableTerrainComponent extends TerrainComponent implements PickableComponent {
 
-    public PickableTerrainComponent(GameObject go, Shader shader) {
-        super(go, shader);
+    public PickableTerrainComponent(GameObject go, String shaderKey) {
+        super(go, shaderKey);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class PickableTerrainComponent extends TerrainComponent implements Pickab
     }
 
     @Override
-    public void render(ModelBatch batch, SceneEnvironment environment, float delta) {
-        batch.render(terrain.getTerrain(), shader);
+    public void render(ModelBatch batch, SceneEnvironment environment, ShaderHolder shaders, float delta) {
+        batch.render(terrain.getTerrain(), shaders.get(shaderKey));
     }
 }

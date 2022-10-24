@@ -46,7 +46,7 @@ import static com.mbrlabs.mundus.commons.assets.AssetConstants.META_FILE_NAME;
  */
 @Slf4j
 @RequiredArgsConstructor
-public class MetaLoader {
+public class MetaService {
 
     private final ObjectMapper mapper;
 
@@ -102,7 +102,7 @@ public class MetaLoader {
 
 
     public void save(Meta<?> meta) {
-        try (var fw = new FileWriter(meta.getFile().file())) {
+        try (var fw = new FileWriter(meta.getFile().child(META_FILE_NAME).file())) {
             var res = mapper.writeValueAsString(meta);
             IOUtils.write(res, fw);
         } catch (Exception e) {

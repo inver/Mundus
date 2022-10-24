@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset;
 import com.mbrlabs.mundus.commons.assets.material.MaterialAssetLoader;
-import com.mbrlabs.mundus.commons.assets.meta.MetaLoader;
+import com.mbrlabs.mundus.commons.assets.meta.MetaService;
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset;
 import com.mbrlabs.mundus.commons.assets.model.ModelAssetLoader;
 import com.mbrlabs.mundus.commons.assets.pixmap.PixmapTextureAssetLoader;
@@ -27,7 +27,7 @@ import static org.mockito.Mockito.when;
 public class AssetManagerTest {
 
     protected final ObjectMapper mapper = new ObjectMapper();
-    protected final MetaLoader metaLoader = new MetaLoader(mapper);
+    protected final MetaService metaService = new MetaService(mapper);
     protected final TextureAssetLoader textureService = new TextureAssetLoader();
     protected final TerrainAssetLoader terrainService = new TerrainAssetLoader();
     protected final MaterialAssetLoader materialService = new MaterialAssetLoader();
@@ -35,7 +35,7 @@ public class AssetManagerTest {
     protected final ModelAssetLoader modelService = new ModelAssetLoader(new ModelImporter());
     protected final ShaderAssetLoader shaderAssetLoader = new ShaderAssetLoader();
 
-    private final AssetManager assetManager = new AssetManager(mapper, metaLoader, textureService, terrainService,
+    private final AssetManager assetManager = new AssetManager(mapper, metaService, textureService, terrainService,
             materialService, pixmapTextureService, modelService, shaderAssetLoader);
 
     @Before

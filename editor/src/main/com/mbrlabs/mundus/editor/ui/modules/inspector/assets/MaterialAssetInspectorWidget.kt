@@ -40,8 +40,7 @@ class MaterialAssetInspectorWidget(
     private val assetManager: EditorAssetManager,
     private val previewGenerator: PreviewGenerator,
     colorPickerPresenter: ColorPickerPresenter
-) :
-    BaseInspectorWidget(separatorStyle, "Material Asset") {
+) : BaseInspectorWidget(separatorStyle, "Material Asset") {
 
     private var material: MaterialAsset? = null
     private val materialWidget =
