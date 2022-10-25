@@ -16,6 +16,7 @@
 
 package com.mbrlabs.mundus.editor.ui.modules.inspector.assets
 
+import com.badlogic.gdx.Files
 import com.kotcrab.vis.ui.widget.Separator.SeparatorStyle
 import com.kotcrab.vis.ui.widget.VisImage
 import com.kotcrab.vis.ui.widget.VisLabel
@@ -23,8 +24,9 @@ import com.mbrlabs.mundus.commons.assets.texture.TextureAsset
 import com.mbrlabs.mundus.commons.scene3d.GameObject
 import com.mbrlabs.mundus.editor.ui.UiConstants.PREVIEW_SIZE
 import com.mbrlabs.mundus.editor.ui.modules.inspector.BaseInspectorWidget
-
 import org.apache.commons.io.FileUtils
+import java.io.File
+import kotlin.math.roundToLong
 
 /**
  * @author Marcus Brummer
@@ -46,6 +48,7 @@ class TextureAssetInspectorWidget(separatorStyle: SeparatorStyle?) :
         collapsibleContent.add(name).growX().row()
         collapsibleContent.add(width).growX().row()
         collapsibleContent.add(height).growX().row()
+        collapsibleContent.add(fileSize).growX().row()
     }
 
     fun setTextureAsset(texture: TextureAsset) {
@@ -59,10 +62,28 @@ class TextureAssetInspectorWidget(separatorStyle: SeparatorStyle?) :
         width.setText("Width: " + textureAsset?.texture?.width + " px")
         height.setText("Height: " + textureAsset?.texture?.height + " px")
 
-        val mb =
-            FileUtils.sizeOf(textureAsset?.meta?.file?.child(textureAsset?.meta?.additional?.file)?.file()) / 1000000f
+        val f = textureAsset?.meta?.file?.child(textureAsset?.meta?.additional?.file);
+        if (f == null) {
+            return;
+        }
 
-        fileSize.setText("Size: $mb mb")
+        val type = f.type();
+        var size = 0f;
+        if (type != Files.FileType.Classpath) {
+            size = FileUtils.sizeOf(f.file()) / 1000000f;
+        } else {
+            try {
+                val uri = javaClass.classLoader.getResource(f.path())?.toURI()
+                val bytes = uri?.let { File(it).length() }
+                if (bytes != null) {
+                    size = bytes / 1000f
+                }
+            } catch (e: Exception) {
+                //todo write logs about exception
+            }
+        }
+        val value = size.roundToLong().toString().reversed().chunked(3).joinToString(" ").reversed()
+        fileSize.setText("Size: $value Kb")
     }
 
     override fun onDelete() {
