@@ -69,6 +69,7 @@ public class SceneConverter {
 
         // getEnvironment() stuff
         scene.getEnvironment().setFog(FogConverter.convert(dto.getFog()));
+        scene.getEnvironment().setSkyboxName(dto.getSkyboxName());
         BaseLight ambientLight = BaseLightConverter.convert(dto.getAmbientLight());
         if (ambientLight != null) {
             scene.getEnvironment().setAmbientLight(ambientLight);

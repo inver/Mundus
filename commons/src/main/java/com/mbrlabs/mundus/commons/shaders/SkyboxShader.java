@@ -33,7 +33,6 @@ public class SkyboxShader extends DefaultBaseShader {
     protected final int UNIFORM_PROJ_VIEW_MATRIX = register(new Uniform("u_projViewMatrix"));
     protected final int UNIFORM_TRANS_MATRIX = register(new Uniform("u_transMatrix"));
     protected final int UNIFORM_TEXTURE = register(new Uniform("u_texture"));
-
     protected final int UNIFORM_FOG = register(new Uniform("u_fog"));
     protected final int UNIFORM_FOG_COLOR = register(new Uniform("u_fogColor"));
 

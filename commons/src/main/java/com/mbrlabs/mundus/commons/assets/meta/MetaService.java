@@ -29,6 +29,7 @@ import com.mbrlabs.mundus.commons.assets.exceptions.MetaFileParseException;
 import com.mbrlabs.mundus.commons.assets.material.MaterialMeta;
 import com.mbrlabs.mundus.commons.assets.model.ModelMeta;
 import com.mbrlabs.mundus.commons.assets.shader.ShaderMeta;
+import com.mbrlabs.mundus.commons.assets.skybox.SkyboxMeta;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainMeta;
 import com.mbrlabs.mundus.commons.assets.texture.TextureMeta;
 import com.mbrlabs.mundus.commons.utils.FileUtils;
@@ -86,6 +87,12 @@ public class MetaService {
     }
 
     public Meta<ShaderMeta> loadShaderMeta(FileHandle assetFolderPath) {
+        var metaHandle = assetFolderPath.child(META_FILE_NAME);
+        return loadMeta(new TypeReference<>() {
+        }, metaHandle);
+    }
+
+    public Meta<SkyboxMeta> loadSkyboxMeta(FileHandle assetFolderPath) {
         var metaHandle = assetFolderPath.child(META_FILE_NAME);
         return loadMeta(new TypeReference<>() {
         }, metaHandle);

@@ -29,6 +29,7 @@ import com.mbrlabs.mundus.commons.importer.SceneConverter;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.scene3d.components.Component;
 import com.mbrlabs.mundus.editor.Main;
+import com.mbrlabs.mundus.editor.core.ProjectConstants;
 import com.mbrlabs.mundus.editor.core.assets.AssetsStorage;
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager;
 import com.mbrlabs.mundus.editor.core.registry.ProjectRef;
@@ -39,7 +40,6 @@ import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.LogEvent;
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent;
 import com.mbrlabs.mundus.editor.events.SceneChangedEvent;
-import com.mbrlabs.mundus.editor.utils.SkyboxBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -113,6 +113,10 @@ public class ProjectManager implements Disposable {
 //        ctx.setAssetManager(createAssetManager(path + "/" + PROJECT_ASSETS_DIR));
 
         var scene = sceneStorage.createDefault(ctx.path, ctx.obtainID());
+        //todo rework this to copy asset to project folder and add it from it
+//        sceneStorage.copyAssetToProject(ctx.path, editorCtx.getAssetLibrary().get(ProjectConstants.DEFAULT_SKYBOX_PATH));
+        scene.getAssets().add(editorCtx.getAssetLibrary().get(ProjectConstants.DEFAULT_SKYBOX_PATH));
+//        scene.getAssets().add(editorCtx.getAssetLibrary().)
 
         // save .pro file
 //        ctx.getScenes().add(scene.getName());
@@ -305,7 +309,6 @@ public class ProjectManager implements Disposable {
 
         //todo preload assets to cache
         SceneConverter.fillScene(scene, dto, editorCtx.getAssetLibrary());
-        scene.setSkybox(SkyboxBuilder.createDefaultSkybox());
 
         var sceneGraph = scene.getSceneGraph();
         for (GameObject go : sceneGraph.getGameObjects()) {

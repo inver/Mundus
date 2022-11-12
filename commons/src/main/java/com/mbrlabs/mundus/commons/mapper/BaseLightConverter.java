@@ -29,7 +29,9 @@ public class BaseLightConverter {
      * Converts {@link BaseLightDto} to {@link BaseLight}.
      */
     public static BaseLight convert(BaseLightDto dto) {
-        if (dto == null) return null;
+        if (dto == null) {
+            return null;
+        }
         BaseLight light = new BaseLight();
         light.intensity = dto.getIntensity();
         light.color.set(dto.getColor());

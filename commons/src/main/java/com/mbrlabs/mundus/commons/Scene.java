@@ -24,7 +24,6 @@ import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.SceneGraph;
 import com.mbrlabs.mundus.commons.scene3d.components.Renderable;
 import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
-import com.mbrlabs.mundus.commons.skybox.Skybox;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -45,10 +44,6 @@ public class Scene implements Disposable, Renderable {
 
     @Getter
     private final SceneEnvironment environment = new SceneEnvironment();
-    //todo move skybox to environment
-    @Setter
-    private Skybox skybox;
-
     @Getter
     private final List<Asset<?>> assets = new ArrayList<>();
     @Getter
@@ -92,14 +87,7 @@ public class Scene implements Disposable, Renderable {
         return sceneGraph;
     }
 
-    public Skybox getSkybox() {
-        return skybox;
-    }
-
     @Override
     public void dispose() {
-        if (skybox != null) {
-            skybox.dispose();
-        }
     }
 }

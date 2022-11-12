@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.kotcrab.vis.ui.widget.VisTable;
+import com.mbrlabs.mundus.commons.assets.AssetType;
+import com.mbrlabs.mundus.commons.assets.skybox.SkyboxAsset;
 import com.mbrlabs.mundus.editor.config.AppEnvironment;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.project.ProjectManager;
@@ -157,14 +159,18 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
 
         appUi.getSceneWidget().setCam(ctx.getCamera());
         appUi.getSceneWidget().setRenderer(camera -> {
-            if (scene.getSkybox() != null) {
-                batch.begin(ctx.getCamera());
-                batch.render(scene.getSkybox().getSkyboxInstance(), scene.getEnvironment(), shaderStorage.get(ShaderConstants.SKYBOX));
-                batch.end();
-            }
+            scene.getAssets().stream()
+                    .filter(a -> a.getType() == AssetType.SKYBOX && a.getName().equals(scene.getEnvironment().getSkyboxName()))
+                    .findFirst()
+                    .ifPresent(asset -> {
+                        batch.begin(camera);
+                        batch.render(((SkyboxAsset) asset).getBoxInstance(), scene.getEnvironment(),
+                                shaderStorage.get(ShaderConstants.SKYBOX));
+                        batch.end();
+                    });
 
             sg.update();
-            batch.begin(ctx.getCamera());
+            batch.begin(camera);
             scene.render(batch, scene.getEnvironment(), shaderStorage, Gdx.graphics.getDeltaTime());
             batch.end();
 

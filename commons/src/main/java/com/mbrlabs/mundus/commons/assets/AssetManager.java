@@ -13,6 +13,7 @@ import com.mbrlabs.mundus.commons.assets.meta.MetaService;
 import com.mbrlabs.mundus.commons.assets.model.ModelAssetLoader;
 import com.mbrlabs.mundus.commons.assets.pixmap.PixmapTextureAssetLoader;
 import com.mbrlabs.mundus.commons.assets.shader.ShaderAssetLoader;
+import com.mbrlabs.mundus.commons.assets.skybox.SkyboxAssetLoader;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAssetLoader;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAssetLoader;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,8 @@ public class AssetManager {
     protected final ModelAssetLoader modelService;
     protected final ShaderAssetLoader shaderService;
 
+    protected final SkyboxAssetLoader skyboxAssetLoader;
+
     public Asset loadAsset(FileHandle assetFolderPath) {
         var meta = metaService.loadCommon(assetFolderPath);
         switch (meta.getType()) {
@@ -46,6 +49,8 @@ public class AssetManager {
                 return textureService.load(metaService.loadTextureMeta(assetFolderPath));
             case SHADER:
                 return shaderService.load(metaService.loadShaderMeta(assetFolderPath));
+            case SKYBOX:
+                return skyboxAssetLoader.load(metaService.loadSkyboxMeta(assetFolderPath));
         }
 
         throw new AssetTypeNotSupportException("Asset with type '" + meta.getType() + "' not supported");

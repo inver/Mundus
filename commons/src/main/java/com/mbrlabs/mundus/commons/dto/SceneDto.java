@@ -29,6 +29,7 @@ public class SceneDto {
     private String name;
     private List<GameObjectDto> gameObjects;
     private FogDTO fog;
+    private String skyboxName;
     private BaseLightDto ambientLight;
     private float camPosX;
     private float camPosY;
@@ -111,6 +112,14 @@ public class SceneDto {
 
     public void setFog(FogDTO fog) {
         this.fog = fog;
+    }
+
+    public String getSkyboxName() {
+        return skyboxName;
+    }
+
+    public void setSkyboxName(String skyboxName) {
+        this.skyboxName = skyboxName;
     }
 
     public BaseLightDto getAmbientLight() {

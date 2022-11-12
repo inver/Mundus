@@ -26,6 +26,7 @@ import com.mbrlabs.mundus.commons.env.lights.*;
 public class SceneEnvironment extends Environment {
     private Fog fog;
     private BaseLight ambientLight;
+    private String skyboxName;
 
     //todo refactor this methods to operate with BaseLight
     public SceneEnvironment add(SunLight light) {
@@ -79,5 +80,13 @@ public class SceneEnvironment extends Environment {
 
     public void setFog(Fog fog) {
         this.fog = fog;
+    }
+
+    public void setSkyboxName(String skyboxName) {
+        this.skyboxName = skyboxName;
+    }
+
+    public String getSkyboxName() {
+        return skyboxName;
     }
 }

@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mbrlabs.mundus.commons.Scene;
+import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.dto.SceneDto;
 import com.mbrlabs.mundus.commons.env.Fog;
 import com.mbrlabs.mundus.commons.env.lights.BaseLight;
@@ -30,12 +31,15 @@ import com.mbrlabs.mundus.commons.importer.SceneConverter;
 import com.mbrlabs.mundus.commons.skybox.Skybox;
 import com.mbrlabs.mundus.editor.core.assets.AssetsStorage;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Component;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Paths;
 
 import static com.mbrlabs.mundus.editor.core.ProjectConstants.*;
 
@@ -50,7 +54,7 @@ public class SceneStorage {
     public Scene createDefault(String projectPath, int id) {
         var scene = new Scene();
         scene.setName(DEFAULT_SCENE_NAME);
-        scene.setSkybox(createDefaultSkybox());
+        scene.getEnvironment().setSkyboxName(DEFAULT_SKYBOX_NAME);
         scene.getEnvironment().setFog(new Fog());
         scene.setId(id);
 
@@ -128,9 +132,11 @@ public class SceneStorage {
     }
 
     private static String getScenePath(String projectPath, String sceneName) {
-        return FilenameUtils.concat(
-                projectPath + "/" + PROJECT_SCENES_DIR,
-                sceneName + "." + PROJECT_SCENE_EXTENSION
-        );
+        return FilenameUtils.concat(projectPath + "/" + PROJECT_SCENES_DIR, sceneName + "." + PROJECT_SCENE_EXTENSION);
+    }
+
+    @SneakyThrows
+    public void copyAssetToProject(String projectPath, Asset<?> asset) {
+        FileUtils.copyDirectory(asset.getMeta().getFile().file(), Paths.get(projectPath).toFile());
     }
 }

@@ -105,6 +105,18 @@ class FreeCamController : InputAdapter() {
                 tmp.set(camera!!.up).nor().scl(-deltaY / velocity)
                 camera!!.position.add(tmp)
             }
+        } else if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
+            var deltaX: Float = (-Gdx.input.deltaX).toFloat()
+            var deltaY: Float = (-Gdx.input.deltaY).toFloat()
+
+            if (!pan) {
+                deltaX *= degreesPerPixel
+                deltaY *= degreesPerPixel
+
+                camera!!.direction.rotate(camera!!.up, deltaX)
+                tmp.set(camera!!.direction).crs(camera!!.up).nor()
+                camera!!.direction.rotate(tmp, deltaY)
+            }
         }
         return false
     }

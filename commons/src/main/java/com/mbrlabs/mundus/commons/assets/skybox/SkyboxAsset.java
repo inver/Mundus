@@ -1,0 +1,53 @@
+package com.mbrlabs.mundus.commons.assets.skybox;
+
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.mbrlabs.mundus.commons.assets.Asset;
+import com.mbrlabs.mundus.commons.assets.meta.Meta;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.Map;
+
+@Setter
+public class SkyboxAsset extends Asset<SkyboxMeta> {
+//    private Texture top;
+//    private Texture bottom;
+//    private Texture left;
+//    private Texture right;
+//    private Texture front;
+//    private Texture back;
+
+    @Setter
+    @Getter
+    private ModelInstance boxInstance;
+
+    public SkyboxAsset(Meta<SkyboxMeta> meta) {
+        super(meta);
+    }
+
+
+    @Override
+    public void load() {
+
+    }
+
+    @Override
+    public void resolveDependencies(Map<String, Asset> assets) {
+
+    }
+
+    @Override
+    public void applyDependencies() {
+
+    }
+
+    @Override
+    public void dispose() {
+
+    }
+
+    @Override
+    public boolean usesAsset(Asset assetToCheck) {
+        return false;
+    }
+}
