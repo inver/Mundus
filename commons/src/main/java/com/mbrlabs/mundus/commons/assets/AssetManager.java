@@ -35,7 +35,6 @@ public class AssetManager {
     protected final PixmapTextureAssetLoader pixmapTextureService;
     protected final ModelAssetLoader modelService;
     protected final ShaderAssetLoader shaderService;
-
     protected final SkyboxAssetLoader skyboxAssetLoader;
 
     public Asset loadAsset(FileHandle assetFolderPath) {
@@ -118,7 +117,7 @@ public class AssetManager {
 
     public void loadAssets(AssetLoadingListener listener, boolean isRuntime) {
         // create meta file filter
-        FileFilter metaFileFilter = file -> file.getName().endsWith(Meta.META_EXTENSION);
+//        FileFilter metaFileFilter = file -> file.getName().endsWith(Meta.META_EXTENSION);
 
         List<FileHandle> metaFiles;
 

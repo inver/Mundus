@@ -26,6 +26,8 @@ import com.mbrlabs.mundus.commons.scene3d.components.Renderable;
 import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +45,8 @@ public class Scene implements Disposable, Renderable {
     private SceneGraph sceneGraph = new SceneGraph();
 
     @Getter
-    private final SceneEnvironment environment = new SceneEnvironment();
+    @Setter
+    private SceneEnvironment environment = new SceneEnvironment();
     @Getter
     private final List<Asset<?>> assets = new ArrayList<>();
     @Getter
@@ -89,5 +92,34 @@ public class Scene implements Disposable, Renderable {
 
     @Override
     public void dispose() {
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Scene scene = (Scene) o;
+
+        return new EqualsBuilder().append(id, scene.id)
+                .append(name, scene.name)
+                .append(environment, scene.environment)
+                .append(assets, scene.assets)
+                .append(cameras, scene.cameras)
+                .append(sceneGraph, scene.sceneGraph)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(id)
+                .append(name)
+                .append(sceneGraph)
+                .append(environment)
+                .append(assets)
+                .append(cameras)
+                .toHashCode();
     }
 }

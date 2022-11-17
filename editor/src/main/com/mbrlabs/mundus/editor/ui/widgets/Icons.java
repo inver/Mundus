@@ -12,7 +12,8 @@ public enum Icons {
     MODEL("model.png"),
     CAMERA("camera.png"),
     LIGHT("light.png"),
-    SCENE("scene.png");
+    SCENE("scene.png"),
+    SKYBOX("scene.png");
 
     private final String fileName;
 

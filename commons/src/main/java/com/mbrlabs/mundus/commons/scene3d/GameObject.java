@@ -22,6 +22,8 @@ import com.mbrlabs.mundus.commons.scene3d.components.Component;
 import com.mbrlabs.mundus.commons.scene3d.components.Renderable;
 import com.mbrlabs.mundus.commons.scene3d.traversal.DepthFirstIterator;
 import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -208,21 +210,21 @@ public class GameObject extends SimpleNode<GameObject> implements Iterable<GameO
         return new DepthFirstIterator(this);
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
+
         if (o == null || getClass() != o.getClass()) return false;
+
         GameObject that = (GameObject) o;
 
-        if (id != that.id) return false;
-        return name.equals(that.name);
+        return new EqualsBuilder().append(active, that.active).append(name, that.name).append(tags, that.tags).append(components, that.components).isEquals();
     }
 
     @Override
     public int hashCode() {
-        int result = (id ^ (id >>> 16));
-        result = 31 * result + name.hashCode();
-        return result;
+        return new HashCodeBuilder(17, 37).append(name).append(active).append(tags).append(components).toHashCode();
     }
 
     @Override

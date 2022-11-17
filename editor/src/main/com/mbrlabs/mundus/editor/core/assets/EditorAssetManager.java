@@ -20,9 +20,10 @@ import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAssetLoader;
 import com.mbrlabs.mundus.commons.core.ModelFiles;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
+import com.mbrlabs.mundus.commons.utils.FileUtils;
+import com.mbrlabs.mundus.editor.core.ProjectConstants;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
-import com.mbrlabs.mundus.editor.core.shader.ShaderStorage;
 import com.mbrlabs.mundus.editor.scene3d.components.PickableModelComponent;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -30,9 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.InputStreamReader;
 import java.util.*;
 
 import static com.mbrlabs.mundus.editor.core.ProjectConstants.BUNDLED_FOLDER;
@@ -41,19 +40,16 @@ import static com.mbrlabs.mundus.editor.core.ProjectConstants.BUNDLED_FOLDER;
 @Slf4j
 public class EditorAssetManager extends AssetManager {
     private final EditorCtx ctx;
-    private final ShaderStorage shaderStorage;
     @Getter
     private final Set<Asset> dirtyAssets = new HashSet<>();
 
     public EditorAssetManager(ObjectMapper mapper, MetaService metaService, TextureAssetLoader textureService,
                               TerrainAssetLoader terrainService, MaterialAssetLoader materialService,
                               PixmapTextureAssetLoader pixmapTextureService, ModelAssetLoader modelService,
-                              ShaderAssetLoader shaderAssetLoader,
-                              EditorCtx ctx, ShaderStorage shaderStorage, SkyboxAssetLoader skyboxAssetLoader) {
+                              ShaderAssetLoader shaderAssetLoader, EditorCtx ctx, SkyboxAssetLoader skyboxAssetLoader) {
         super(mapper, metaService, textureService, terrainService, materialService, pixmapTextureService, modelService,
                 shaderAssetLoader, skyboxAssetLoader);
         this.ctx = ctx;
-        this.shaderStorage = shaderStorage;
     }
 
 //    public EditorAssetManager(AppEnvironment appEnvironment, MetaLoader metaFileService, TextureAssetLoader textureService,
@@ -86,9 +82,20 @@ public class EditorAssetManager extends AssetManager {
 //        }
     }
 
+    public Asset<?> loadProjectAsset(String projectPath, String assetName) {
+        try {
+            var assetFolder = new FileHandle(projectPath + "/" + ProjectConstants.PROJECT_ASSETS_DIR + assetName);
+            return loadAsset(assetFolder);
+        } catch (Exception e) {
+            log.error("ERROR", e);
+        }
+        throw new IllegalStateException("Failed to load asset: "
+                + projectPath + "/" + ProjectConstants.PROJECT_ASSETS_DIR + assetName);
+    }
+
     void loadStandardAssets(Map<String, Asset<?>> assets) {
         try {
-            var metaPaths = getMetas(BUNDLED_FOLDER);
+            var metaPaths = getClasspathMetas(BUNDLED_FOLDER);
 
             for (var metaPath : metaPaths) {
                 var assetFolder = new AppFileHandle(metaPath, Files.FileType.Classpath).parent();
@@ -100,10 +107,10 @@ public class EditorAssetManager extends AssetManager {
         }
     }
 
-    private List<String> getMetas(String root) {
+    private List<String> getClasspathMetas(String root) {
         try {
             var res = new ArrayList<String>();
-            for (var folder : getResourceFiles(root)) {
+            for (var folder : FileUtils.getResourceFiles(root)) {
                 var dir = root + "/" + folder;
                 var file = new File(getClass().getClassLoader().getResource(dir).toURI());
                 if (file.isDirectory()) {
@@ -111,7 +118,7 @@ public class EditorAssetManager extends AssetManager {
                     if (getClass().getClassLoader().getResource(path) != null) {
                         res.add(path);
                     } else {
-                        res.addAll(getMetas(dir));
+                        res.addAll(getClasspathMetas(dir));
                     }
                 }
             }
@@ -125,7 +132,7 @@ public class EditorAssetManager extends AssetManager {
 
     @SneakyThrows
     private void loadByType(Map<String, Asset<?>> assets, String path) {
-        for (var fileName : getResourceFiles(path)) {
+        for (var fileName : FileUtils.getResourceFiles(path)) {
             var file = new FileHandle(new File(getClass().getClassLoader().getResource(path + "/" + fileName).toURI()));
 
             var assetFile = new FileHandle(getAssetPath(file));
@@ -375,22 +382,5 @@ public class EditorAssetManager extends AssetManager {
         }
 
         return res;
-    }
-
-    private List<String> getResourceFiles(String path) {
-        var filenames = new ArrayList<String>();
-
-        try (var in = getClass().getClassLoader().getResourceAsStream(path);
-             var br = new BufferedReader(new InputStreamReader(in))) {
-            String resource;
-
-            while ((resource = br.readLine()) != null) {
-                filenames.add(resource);
-            }
-        } catch (Exception e) {
-            log.error("ERROR", e);
-        }
-
-        return filenames;
     }
 }

@@ -10,12 +10,6 @@ import java.util.Map;
 
 @Setter
 public class SkyboxAsset extends Asset<SkyboxMeta> {
-//    private Texture top;
-//    private Texture bottom;
-//    private Texture left;
-//    private Texture right;
-//    private Texture front;
-//    private Texture back;
 
     @Setter
     @Getter

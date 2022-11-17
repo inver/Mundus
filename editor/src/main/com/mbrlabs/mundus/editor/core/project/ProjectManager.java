@@ -48,12 +48,10 @@ import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.mbrlabs.mundus.editor.core.ProjectConstants.PROJECT_ASSETS_DIR;
-import static com.mbrlabs.mundus.editor.core.ProjectConstants.PROJECT_SCENES_DIR;
+import static com.mbrlabs.mundus.editor.core.ProjectConstants.*;
 
 /**
  * Manages Mundus projects and scenes.
@@ -109,24 +107,26 @@ public class ProjectManager implements Disposable {
         ctx.path = path;
         ctx.name = ref.getName();
 
-        //todo
-//        ctx.setAssetManager(createAssetManager(path + "/" + PROJECT_ASSETS_DIR));
-
         var scene = sceneStorage.createDefault(ctx.path, ctx.obtainID());
-        //todo rework this to copy asset to project folder and add it from it
-//        sceneStorage.copyAssetToProject(ctx.path, editorCtx.getAssetLibrary().get(ProjectConstants.DEFAULT_SKYBOX_PATH));
-        scene.getAssets().add(editorCtx.getAssetLibrary().get(ProjectConstants.DEFAULT_SKYBOX_PATH));
-//        scene.getAssets().add(editorCtx.getAssetLibrary().)
+        scene.getEnvironment().setSkyboxName(DEFAULT_SKYBOX_NAME);
+        sceneStorage.copyAssetToProject(ctx.path,
+                editorCtx.getAssetLibrary().get(ProjectConstants.DEFAULT_SKYBOX_PATH));
+        loadSkybox(ctx, scene);
 
-        // save .pro file
-//        ctx.getScenes().add(scene.getName());
         ctx.setCurrentScene(scene);
         saveProject(ctx);
 
-        // create standard assets
-//        ctx.getAssetManager().loadStandardAssets();
 
+        var newCtx = loadProject(ref);
+//        ctx.getCurrentScene().setEnvironment(newCtx.getCurrentScene().getEnvironment());
+//        ctx.getCurrentScene().getCameras().clear();
+//        ctx.getCurrentScene().getCameras().addAll(newCtx.getCurrentScene().getCameras());
+        log.info("contexts equals: " + ctx.equals(newCtx));
         return ctx;
+    }
+
+    private void loadSkybox(ProjectContext ctx, Scene scene) {
+        scene.getAssets().add(assetManager.loadProjectAsset(ctx.path, scene.getEnvironment().getSkyboxName()));
     }
 
     /**
@@ -169,32 +169,14 @@ public class ProjectManager implements Disposable {
      * @return loaded project context
      * @throws FileNotFoundException if project can't be found
      */
-    public ProjectContext loadProject(ProjectRef ref) throws Exception {
+    public ProjectContext loadProject(ProjectRef ref) {
         var context = projectStorage.loadProjectContext(ref);
         if (context == null) {
             // project doesn't exist, but ref is exist - create default project
             return createProject(ref.getName(), ref.getPath());
         }
 
-        //todo
-//        context.getShaderLibrary().putAll(shaderStorage.loadDefault());
-//        context.getAssetLibrary().putAll(assetsStorage.loadDefault());
-
         context.setCurrentScene(loadScene(context, context.getActiveSceneName()));
-
-        // load assets
-//        context.setAssetManager(createAssetManager(ref.getPath() + "/" + PROJECT_ASSETS_DIR));
-//        assetManager.loadAssets(new AssetManager.AssetLoadingListener() {
-//            @Override
-//            public void onLoad(Asset asset, int progress, int assetCount) {
-//                log.debug("Loaded {} asset ({}/{})", asset.getMeta().getType(), progress, assetCount);
-//            }
-//
-//            @Override
-//            public void onFinish(int assetCount) {
-//                log.debug("Finished loading {} assets", assetCount);
-//            }
-//        }, false);
 
         return context;
     }
@@ -207,15 +189,15 @@ public class ProjectManager implements Disposable {
     public void saveProject(ProjectContext projectContext) {
         // save modified assets
 //        var assetManager = projectContext.getAssetManager();
-        assetManager.getDirtyAssets().forEach(asset -> {
-            try {
-                log.debug("Saving dirty asset: {}", asset);
-                assetManager.saveAsset(asset);
-            } catch (Exception e) {
-                log.error("ERROR", e);
-            }
-        });
-        assetManager.getDirtyAssets().clear();
+//        assetManager.getDirtyAssets().forEach(asset -> {
+//            try {
+//                log.debug("Saving dirty asset: {}", asset);
+//                assetManager.saveAsset(asset);
+//            } catch (Exception e) {
+//                log.error("ERROR", e);
+//            }
+//        });
+//        assetManager.getDirtyAssets().clear();
 
         // save current in .pro file
         projectStorage.saveProjectContext(projectContext);
@@ -260,7 +242,6 @@ public class ProjectManager implements Disposable {
         }
 
         editorCtx.setCurrent(context);
-        editorCtx.setCamera(context.getCurrentScene().getCameras().get(0));
 
         // currentProject.copyFrom(context);
         registry.setLastProject(new ProjectRef());
@@ -302,13 +283,14 @@ public class ProjectManager implements Disposable {
      * @return loaded scene
      * @throws FileNotFoundException if scene file not found
      */
-    public Scene loadScene(ProjectContext context, String sceneName) throws IOException {
+    public Scene loadScene(ProjectContext context, String sceneName) {
         var dto = sceneStorage.loadScene(context.path, sceneName);
 
         var scene = new Scene();
 
         //todo preload assets to cache
         SceneConverter.fillScene(scene, dto, editorCtx.getAssetLibrary());
+        loadSkybox(context, scene);
 
         var sceneGraph = scene.getSceneGraph();
         for (GameObject go : sceneGraph.getGameObjects()) {
@@ -337,16 +319,16 @@ public class ProjectManager implements Disposable {
      * @param sceneName      scene name
      */
     public void changeScene(ProjectContext projectContext, String sceneName) {
-        try {
-            Scene newScene = loadScene(projectContext, sceneName);
-            projectContext.getCurrentScene().dispose();
-            projectContext.setCurrentScene(newScene);
+//        try {
+        Scene newScene = loadScene(projectContext, sceneName);
+        projectContext.getCurrentScene().dispose();
+        projectContext.setCurrentScene(newScene);
 
-            Gdx.graphics.setTitle(constructWindowTitle());
-            eventBus.post(new SceneChangedEvent());
-        } catch (FileNotFoundException e) {
-            log.error("ERROR, e");
-        }
+        Gdx.graphics.setTitle(constructWindowTitle());
+        eventBus.post(new SceneChangedEvent());
+//        } catch (FileNotFoundException e) {
+//            log.error("ERROR, e");
+//        }
     }
 
     private void initGameObject(ProjectContext context, GameObject root) {

@@ -16,7 +16,6 @@
 
 package com.mbrlabs.mundus.commons.importer;
 
-import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.mbrlabs.mundus.commons.Scene;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.dto.GameObjectDto;
@@ -42,6 +41,7 @@ public class SceneConverter {
 
         dto.setId(scene.getId());
         dto.setName(scene.getName());
+        dto.setSkyboxName(scene.getEnvironment().getSkyboxName());
 
         // scene graph
         for (GameObject go : scene.getSceneGraph().getGameObjects()) {
@@ -51,15 +51,9 @@ public class SceneConverter {
         // getEnvironment() stuff
         dto.setFog(FogConverter.convert(scene.getEnvironment().getFog()));
         dto.setAmbientLight(BaseLightConverter.convert(scene.getEnvironment().getAmbientLight()));
-
+        
         var cm = scene.getCameras().get(0);
-        // camera
-        dto.setCamPosX(cm.position.x);
-        dto.setCamPosY(cm.position.y);
-        dto.setCamPosZ(cm.position.z);
-        dto.setCamDirX(cm.direction.x);
-        dto.setCamDirY(cm.direction.y);
-        dto.setCamDirZ(cm.direction.z);
+        dto.setCamera(CameraConverter.fromCamera(cm));
         return dto;
     }
 
@@ -81,12 +75,7 @@ public class SceneConverter {
             scene.getSceneGraph().addGameObject(GameObjectConverter.convert(descriptor, assets));
         }
 
-        var camera = new PerspectiveCamera();
-        // camera
-        camera.position.x = dto.getCamPosX();
-        camera.position.y = dto.getCamPosY();
-        camera.position.z = dto.getCamPosZ();
-        camera.direction.set(dto.getCamDirX(), dto.getCamDirY(), dto.getCamDirZ());
+        var camera = CameraConverter.fromDto(dto.getCamera());
         camera.update();
         scene.getCameras().add(camera);
     }

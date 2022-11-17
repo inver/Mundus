@@ -21,6 +21,8 @@ import com.mbrlabs.mundus.commons.assets.meta.Meta;
 import com.mbrlabs.mundus.commons.scene3d.components.AssetUsage;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.Map;
 
@@ -86,4 +88,20 @@ public abstract class Asset<M> implements Disposable, AssetUsage {
      */
     public abstract void applyDependencies();
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Asset<?> asset = (Asset<?>) o;
+
+        return new EqualsBuilder().append(meta, asset.meta).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).append(meta).toHashCode();
+    }
 }

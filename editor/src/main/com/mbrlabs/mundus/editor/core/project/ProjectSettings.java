@@ -18,8 +18,8 @@ package com.mbrlabs.mundus.editor.core.project;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.JsonWriter;
-import lombok.Getter;
-import lombok.Setter;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  * @author Marcus Brummer
@@ -27,20 +27,62 @@ import lombok.Setter;
  */
 public class ProjectSettings {
 
-    private ExportSettings export = new ExportSettings();
+    private final ExportSettings export = new ExportSettings();
 
     public ExportSettings getExport() {
         return export;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ProjectSettings that = (ProjectSettings) o;
+
+        return new EqualsBuilder().append(export, that.export).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).append(export).toHashCode();
+    }
+
     /**
      *
      */
-    public class ExportSettings {
+    public static class ExportSettings {
         public JsonWriter.OutputType jsonType = JsonWriter.OutputType.json;
         public boolean compressScenes = false;
         public boolean allAssets = true;
         public FileHandle outputFolder;
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+
+            if (o == null || getClass() != o.getClass()) return false;
+
+            ExportSettings that = (ExportSettings) o;
+
+            return new EqualsBuilder()
+                    .append(compressScenes, that.compressScenes)
+                    .append(allAssets, that.allAssets)
+                    .append(jsonType, that.jsonType)
+                    .append(outputFolder, that.outputFolder)
+                    .isEquals();
+        }
+
+        @Override
+        public int hashCode() {
+            return new HashCodeBuilder(17, 37)
+                    .append(jsonType)
+                    .append(compressScenes)
+                    .append(allAssets)
+                    .append(outputFolder)
+                    .toHashCode();
+        }
     }
 
 

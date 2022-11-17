@@ -22,6 +22,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mbrlabs.mundus.commons.Scene;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -97,4 +99,35 @@ public class ProjectContext implements Disposable {
 //    public Camera getCurrentCamera() {
 //        return currentScene.getCurrentCamera();
 //    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ProjectContext that = (ProjectContext) o;
+
+        return new EqualsBuilder()
+                .append(idProvider.get(), that.idProvider.get())
+                .append(settings, that.settings)
+                .append(path, that.path)
+                .append(name, that.name)
+                .append(currentScene, that.currentScene)
+                .append(activeSceneName, that.activeSceneName)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(idProvider.get())
+                .append(settings)
+                .append(path)
+                .append(name)
+                .append(currentScene)
+                .append(activeSceneName)
+                .toHashCode();
+    }
 }

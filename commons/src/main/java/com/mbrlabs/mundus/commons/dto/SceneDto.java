@@ -16,6 +16,9 @@
 
 package com.mbrlabs.mundus.commons.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,12 +34,16 @@ public class SceneDto {
     private FogDTO fog;
     private String skyboxName;
     private BaseLightDto ambientLight;
-    private float camPosX;
-    private float camPosY;
-    private float camPosZ;
-    private float camDirX = 0;
-    private float camDirY = 0;
-    private float camDirZ = 0;
+    //todo add support of several cameras
+    @Getter
+    @Setter
+    private CameraDto camera;
+//    private float camPosX;
+//    private float camPosY;
+//    private float camPosZ;
+//    private float camDirX = 0;
+//    private float camDirY = 0;
+//    private float camDirZ = 0;
 
     public SceneDto() {
         gameObjects = new ArrayList<>();
@@ -57,54 +64,54 @@ public class SceneDto {
     public void setName(String name) {
         this.name = name;
     }
-
-    public float getCamPosX() {
-        return camPosX;
-    }
-
-    public void setCamPosX(float camPosX) {
-        this.camPosX = camPosX;
-    }
-
-    public float getCamPosY() {
-        return camPosY;
-    }
-
-    public void setCamPosY(float camPosY) {
-        this.camPosY = camPosY;
-    }
-
-    public float getCamPosZ() {
-        return camPosZ;
-    }
-
-    public void setCamPosZ(float camPosZ) {
-        this.camPosZ = camPosZ;
-    }
-
-    public float getCamDirX() {
-        return camDirX;
-    }
-
-    public void setCamDirX(float camDirX) {
-        this.camDirX = camDirX;
-    }
-
-    public float getCamDirY() {
-        return camDirY;
-    }
-
-    public void setCamDirY(float camDirY) {
-        this.camDirY = camDirY;
-    }
-
-    public float getCamDirZ() {
-        return camDirZ;
-    }
-
-    public void setCamDirZ(float camDirZ) {
-        this.camDirZ = camDirZ;
-    }
+//
+//    public float getCamPosX() {
+//        return camPosX;
+//    }
+//
+//    public void setCamPosX(float camPosX) {
+//        this.camPosX = camPosX;
+//    }
+//
+//    public float getCamPosY() {
+//        return camPosY;
+//    }
+//
+//    public void setCamPosY(float camPosY) {
+//        this.camPosY = camPosY;
+//    }
+//
+//    public float getCamPosZ() {
+//        return camPosZ;
+//    }
+//
+//    public void setCamPosZ(float camPosZ) {
+//        this.camPosZ = camPosZ;
+//    }
+//
+//    public float getCamDirX() {
+//        return camDirX;
+//    }
+//
+//    public void setCamDirX(float camDirX) {
+//        this.camDirX = camDirX;
+//    }
+//
+//    public float getCamDirY() {
+//        return camDirY;
+//    }
+//
+//    public void setCamDirY(float camDirY) {
+//        this.camDirY = camDirY;
+//    }
+//
+//    public float getCamDirZ() {
+//        return camDirZ;
+//    }
+//
+//    public void setCamDirZ(float camDirZ) {
+//        this.camDirZ = camDirZ;
+//    }
 
     public FogDTO getFog() {
         return fog;

@@ -30,7 +30,6 @@ import com.mbrlabs.mundus.commons.scene3d.components.Component
 import com.mbrlabs.mundus.commons.terrain.Terrain
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
-import com.mbrlabs.mundus.editor.core.shader.ShaderStorage
 import com.mbrlabs.mundus.editor.events.*
 import com.mbrlabs.mundus.editor.history.CommandHistory
 import com.mbrlabs.mundus.editor.history.commands.DeleteCommand
@@ -55,8 +54,7 @@ class Outline(
     private val history: CommandHistory,
     private val eventBus: EventBus,
     private val appUi: AppUi,
-    outlinePresenter: OutlinePresenter,
-    private val shaderStorage: ShaderStorage
+    outlinePresenter: OutlinePresenter
 ) : VisTable(),
     ProjectChangedEvent.ProjectChangedListener,
     SceneChangedEvent.SceneChangedListener,
@@ -129,6 +127,8 @@ class Outline(
             val leaf = OutlineNode(it.name, null)
             if (it.type == AssetType.SHADER) {
                 rootNode.shaders.add(leaf)
+            } else if (it.type == AssetType.SKYBOX) {
+                rootNode.skybox.add(leaf)
             }
         }
 

@@ -111,7 +111,9 @@ class Compass(private var worldCam: Camera?) : Disposable {
 
     private fun update() {
         compassInstance.transform.getTranslation(tempV3)
-        compassInstance.transform.set(worldCam!!.view)
+        if (worldCam != null) {
+            compassInstance.transform.set(worldCam!!.view)
+        }
         compassInstance.transform.setTranslation(tempV3)
     }
 

@@ -17,6 +17,8 @@
 package com.mbrlabs.mundus.commons.env.lights;
 
 import com.badlogic.gdx.graphics.Color;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  * @author Marcus Brummer
@@ -37,5 +39,21 @@ public class BaseLight {
 
     public BaseLight copy() {
         return new BaseLight(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BaseLight baseLight = (BaseLight) o;
+
+        return new EqualsBuilder().append(intensity, baseLight.intensity).append(color, baseLight.color).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).append(color).append(intensity).toHashCode();
     }
 }

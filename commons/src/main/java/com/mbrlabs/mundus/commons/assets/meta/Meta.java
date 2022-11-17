@@ -22,6 +22,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mbrlabs.mundus.commons.assets.AssetType;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.UUID;
 
@@ -50,18 +52,31 @@ public class Meta<M> {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
+
         if (o == null || getClass() != o.getClass()) return false;
 
-        Meta meta = (Meta) o;
+        Meta<?> meta = (Meta<?>) o;
 
-        return uuid.equals(meta.uuid) && file.equals(meta.file);
+        return new EqualsBuilder()
+                .append(version, meta.version)
+                .append(lastModified, meta.lastModified)
+//                .append(uuid, meta.uuid)
+                .append(type, meta.type)
+                .append(additional, meta.additional)
+                .append(file, meta.file)
+                .isEquals();
     }
 
     @Override
     public int hashCode() {
-        int result = uuid.hashCode();
-        result = 31 * result + file.hashCode();
-        return result;
+        return new HashCodeBuilder(17, 37)
+                .append(version)
+                .append(lastModified)
+//                .append(uuid)
+                .append(type)
+                .append(additional)
+                .append(file)
+                .toHashCode();
     }
 
     @Override

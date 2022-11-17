@@ -37,11 +37,13 @@ import com.mbrlabs.mundus.editor.utils.Compass;
 import com.mbrlabs.mundus.editor.utils.GlUtils;
 import com.mbrlabs.mundus.editor.utils.UsefulMeshs;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class Editor implements ProjectChangedEvent.ProjectChangedListener, SceneChangedEvent.SceneChangedListener {
@@ -95,7 +97,7 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
             throw new GdxRuntimeException("Couldn't open a project");
         }
 
-        compass = new Compass(ctx.getCamera());
+        compass = new Compass(null);
         // change project; this will fire a ProjectChangedEvent
         projectManager.changeProject(context);
     }
@@ -159,23 +161,31 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
 
         appUi.getSceneWidget().setCam(ctx.getCamera());
         appUi.getSceneWidget().setRenderer(camera -> {
-            scene.getAssets().stream()
-                    .filter(a -> a.getType() == AssetType.SKYBOX && a.getName().equals(scene.getEnvironment().getSkyboxName()))
-                    .findFirst()
-                    .ifPresent(asset -> {
-                        batch.begin(camera);
-                        batch.render(((SkyboxAsset) asset).getBoxInstance(), scene.getEnvironment(),
-                                shaderStorage.get(ShaderConstants.SKYBOX));
-                        batch.end();
-                    });
+            try {
+                scene.getAssets().stream()
+                        .filter(a -> a.getType() == AssetType.SKYBOX && a.getName().equals(scene.getEnvironment().getSkyboxName()))
+                        .findFirst()
+                        .ifPresent(asset -> {
+                            try {
+                                batch.begin(camera);
+                                batch.render(((SkyboxAsset) asset).getBoxInstance(), scene.getEnvironment(),
+                                        shaderStorage.get(ShaderConstants.SKYBOX));
+                                batch.end();
+                            } catch (Exception e) {
+                                log.error("ERROR", e);
+                            }
+                        });
 
-            sg.update();
-            batch.begin(camera);
-            scene.render(batch, scene.getEnvironment(), shaderStorage, Gdx.graphics.getDeltaTime());
-            batch.end();
+                sg.update();
+                batch.begin(camera);
+                scene.render(batch, scene.getEnvironment(), shaderStorage, Gdx.graphics.getDeltaTime());
+                batch.end();
 
-            toolManager.render(batch, scene.getEnvironment(), shaderStorage, Gdx.graphics.getDeltaTime());
-            compass.render(batch);
+                toolManager.render(batch, scene.getEnvironment(), shaderStorage, Gdx.graphics.getDeltaTime());
+                compass.render(batch);
+            } catch (Exception e) {
+                log.error("ERROR", e);
+            }
         });
 
         compass.setWorldCam(ctx.getCamera());
@@ -204,6 +214,7 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
     @Override
     public void onProjectChanged(@NotNull ProjectChangedEvent event) {
         setupSceneWidget();
+        compass.setWorldCam(ctx.getCamera());
     }
 
     @Override

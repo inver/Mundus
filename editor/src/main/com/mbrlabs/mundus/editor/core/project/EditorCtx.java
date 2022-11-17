@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +18,6 @@ import java.util.Map;
 public class EditorCtx implements Disposable {
 
     private ProjectContext current;
-    private Camera camera;
     private Viewport viewport;
     private final Map<String, Asset<?>> assetLibrary = new HashMap<>();
 
@@ -40,11 +40,11 @@ public class EditorCtx implements Disposable {
     }
 
     public Camera getCamera() {
-        return camera;
-    }
-
-    public void setCamera(Camera camera) {
-        this.camera = camera;
+        if (current == null || current.getCurrentScene() == null
+                || CollectionUtils.isEmpty(current.getCurrentScene().getCameras())) {
+            return null;
+        }
+        return current.getCurrentScene().getCameras().get(0);
     }
 
     public Viewport getViewport() {

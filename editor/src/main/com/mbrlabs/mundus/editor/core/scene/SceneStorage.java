@@ -16,6 +16,7 @@
 
 package com.mbrlabs.mundus.editor.core.scene;
 
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
@@ -28,17 +29,17 @@ import com.mbrlabs.mundus.commons.env.Fog;
 import com.mbrlabs.mundus.commons.env.lights.BaseLight;
 import com.mbrlabs.mundus.commons.env.lights.DirectionalLight;
 import com.mbrlabs.mundus.commons.importer.SceneConverter;
-import com.mbrlabs.mundus.commons.skybox.Skybox;
+import com.mbrlabs.mundus.commons.utils.FileUtils;
 import com.mbrlabs.mundus.editor.core.assets.AssetsStorage;
+import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.nio.file.Paths;
 
 import static com.mbrlabs.mundus.editor.core.ProjectConstants.*;
@@ -50,6 +51,7 @@ public class SceneStorage {
 
     private final ObjectMapper mapper;
     protected final AssetsStorage assetsStorage;
+    protected final EditorAssetManager editorAssetManager;
 
     public Scene createDefault(String projectPath, int id) {
         var scene = new Scene();
@@ -60,9 +62,6 @@ public class SceneStorage {
 
         var defCamera = createDefaultCamera();
         scene.getCameras().add(defCamera);
-//        scene.setCurrentCamera(defCamera);
-
-//        scene.getEnvironment().add(createDefaultDirectionalLight());
         scene.getEnvironment().setAmbientLight(createDefaultAmbientLight());
 
         saveScene(projectPath, scene);
@@ -94,16 +93,11 @@ public class SceneStorage {
         return res;
     }
 
-    protected Skybox createDefaultSkybox() {
-        var texture = assetsStorage.loadAssetFile("textures/skybox/default/skybox_default.png");
-        return new Skybox(texture, texture, texture, texture, texture, texture);
-    }
-
     /**
      * Saves a scene.
      *
-     * @param context project context of the scene
-     * @param scene   scene to save
+     * @param projectPath project path
+     * @param scene       scene to save
      */
     public void saveScene(String projectPath, Scene scene) {
         String sceneDir = getScenePath(projectPath, scene.getName());
@@ -122,11 +116,12 @@ public class SceneStorage {
      * <p>
      * Does however not initialize ModelInstances, Terrains, ... -> ProjectManager
      *
-     * @param context   project context of the scene
-     * @param sceneName name of the scene to load
+     * @param projectPath project path
+     * @param sceneName   name of the scene to load
      * @return loaded scene
      */
-    public SceneDto loadScene(String projectPath, String sceneName) throws IOException {
+    @SneakyThrows
+    public SceneDto loadScene(String projectPath, String sceneName) {
         var sceneDir = getScenePath(projectPath, sceneName);
         return mapper.readValue(new FileInputStream(sceneDir), SceneDto.class);
     }
@@ -137,6 +132,17 @@ public class SceneStorage {
 
     @SneakyThrows
     public void copyAssetToProject(String projectPath, Asset<?> asset) {
-        FileUtils.copyDirectory(asset.getMeta().getFile().file(), Paths.get(projectPath).toFile());
+        if (asset.getMeta().getFile().type() == Files.FileType.Classpath) {
+            for (var path : FileUtils.getResourceFiles(asset.getMeta().getFile().path())) {
+                var file = new File(getClass().getClassLoader()
+                        .getResource(asset.getMeta().getFile().path() + "/" + path).toURI());
+                org.apache.commons.io.FileUtils.copyFile(file, Paths.get(
+                        projectPath + "/" + PROJECT_ASSETS_DIR + "/" + asset.getName() + "/" + path
+                ).toFile());
+            }
+        } else {
+            asset.getMeta().getFile()
+                    .copyTo(new FileHandle(Paths.get(projectPath + "/" + PROJECT_ASSETS_DIR).toFile()));
+        }
     }
 }

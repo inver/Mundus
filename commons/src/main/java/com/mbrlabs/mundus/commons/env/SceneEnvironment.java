@@ -18,6 +18,8 @@ package com.mbrlabs.mundus.commons.env;
 
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.mbrlabs.mundus.commons.env.lights.*;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  * @author Marcus Brummer
@@ -88,5 +90,21 @@ public class SceneEnvironment extends Environment {
 
     public String getSkyboxName() {
         return skyboxName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SceneEnvironment that = (SceneEnvironment) o;
+
+        return new EqualsBuilder().appendSuper(super.equals(o)).append(fog, that.fog).append(ambientLight, that.ambientLight).append(skyboxName, that.skyboxName).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).appendSuper(super.hashCode()).append(fog).append(ambientLight).append(skyboxName).toHashCode();
     }
 }

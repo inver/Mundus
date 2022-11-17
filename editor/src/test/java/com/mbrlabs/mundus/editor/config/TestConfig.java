@@ -7,9 +7,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mbrlabs.mundus.commons.assets.shader.ShaderAssetLoader;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAssetLoader;
-import com.mbrlabs.mundus.commons.skybox.Skybox;
 import com.mbrlabs.mundus.editor.core.assets.AssetWriter;
 import com.mbrlabs.mundus.editor.core.assets.AssetsStorage;
+import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.scene.SceneStorage;
 import com.mbrlabs.mundus.editor.core.shader.ShaderStorage;
@@ -96,6 +96,8 @@ public class TestConfig {
     private AssetWriter assetWriter;
     @Autowired
     private EditorCtx editorCtx;
+    @Autowired
+    private EditorAssetManager editorAssetManager;
 
     @Bean
     public ShaderAssetLoader shaderAssetLoader() {
@@ -114,13 +116,7 @@ public class TestConfig {
 
     @Bean
     public SceneStorage sceneStorage() {
-        return new SceneStorage(mapper(), assetsStorage()) {
-            @Override
-            protected Skybox createDefaultSkybox() {
-                var texture = assetsStorage.loadAssetFile("textures/skybox/default/skybox_default.png");
-                return new TestSkyBox();
-            }
-        };
+        return new SceneStorage(mapper(), assetsStorage(), editorAssetManager);
     }
 
     @Bean
