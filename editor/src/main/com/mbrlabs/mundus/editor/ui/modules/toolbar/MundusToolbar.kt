@@ -18,9 +18,7 @@ package com.mbrlabs.mundus.editor.ui.modules.toolbar
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
-import com.kotcrab.vis.ui.widget.MenuItem
-import com.kotcrab.vis.ui.widget.PopupMenu
-import com.kotcrab.vis.ui.widget.Tooltip
+import com.kotcrab.vis.ui.widget.*
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.tools.*
 import com.mbrlabs.mundus.editor.ui.AppUi
@@ -61,6 +59,9 @@ class MundusToolbar(
     private val importTexture = MenuItem("Import texture")
     private val createMaterial = MenuItem("Create material")
 
+    private val sceneSelector = VisSelectBox<String>();
+    private val cameraSelector = VisSelectBox<String>();
+
     init {
         importMenu.addItem(importMesh)
         importMenu.addItem(importTexture)
@@ -91,6 +92,9 @@ class MundusToolbar(
         scaleBtn.padRight(7f).padLeft(7f)
         Tooltip.Builder(toolManager.scaleTool.name).target(scaleBtn).build()
 
+        sceneSelector.setItems("Main");
+        cameraSelector.setItems("Main", "Pilot")
+
         addItem(saveBtn, true)
         addItem(importBtn, true)
         addItem(exportBtn, true)
@@ -100,6 +104,11 @@ class MundusToolbar(
         addItem(rotateBtn, true)
         addItem(scaleBtn, true)
         addSeperator(true)
+        addItem(VisLabel(" Scene: "), true)
+        addItem(sceneSelector, true)
+        addSeperator(true)
+        addItem(VisLabel(" Camera: "), true)
+        addItem(cameraSelector, true)
         // addItem(globalLocalSwitch, true);
 
         setActive(translateBtn)

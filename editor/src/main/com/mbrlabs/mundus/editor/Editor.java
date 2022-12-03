@@ -17,6 +17,7 @@ import com.mbrlabs.mundus.editor.core.shader.ShaderStorage;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent;
 import com.mbrlabs.mundus.editor.events.SceneChangedEvent;
+import com.mbrlabs.mundus.editor.input.DirectCameraController;
 import com.mbrlabs.mundus.editor.input.FreeCamController;
 import com.mbrlabs.mundus.editor.input.InputManager;
 import com.mbrlabs.mundus.editor.input.ShortcutController;
@@ -51,6 +52,8 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
 
     private final EditorCtx ctx;
     private final FreeCamController camController;
+
+    private final DirectCameraController directCameraController;
     private final ShortcutController shortcutController;
     private final InputManager inputManager;
     private final ProjectManager projectManager;
@@ -156,7 +159,8 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
             }
         });
         inputManager.addProcessor(toolManager);
-        inputManager.addProcessor(camController);
+        inputManager.addProcessor(directCameraController);
+//        inputManager.addProcessor(camController);
         toolManager.setDefaultTool();
     }
 
@@ -195,7 +199,8 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
         });
 
         compass.setWorldCam(ctx.getCamera());
-        camController.setCamera(ctx.getCamera());
+        directCameraController.setCurrent(ctx.getCamera());
+//        camController.setCamera(ctx.getCamera());
         appUi.getSceneWidget().setCam(ctx.getCamera());
         ctx.setViewport(appUi.getSceneWidget().getViewport());
     }
@@ -204,6 +209,8 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
         GlUtils.clearScreen(Color.WHITE);
         appUi.act();
         dockBar.update();
+//        todo
+//        directCameraController.update();
         camController.update();
         toolManager.act();
         appUi.draw();
