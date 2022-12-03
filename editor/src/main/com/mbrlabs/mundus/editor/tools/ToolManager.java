@@ -17,9 +17,11 @@ package com.mbrlabs.mundus.editor.tools;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.SnapshotArray;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.scene3d.components.Renderable;
@@ -88,7 +90,13 @@ public class ToolManager extends InputAdapter implements Disposable, Renderable 
 
         deactivateTool();
         activeTool = tool;
-        inputManager.addProcessor(activeTool);
+
+        var processors = inputManager.getProcessors();
+        var newProcessors = new SnapshotArray<InputProcessor>(processors.size + 1);
+        newProcessors.add(activeTool);
+        newProcessors.addAll(processors);
+        inputManager.setProcessors(newProcessors);
+//        inputManager.setProcessors(activeTool);
         activeTool.onActivated();
 
         if (shouldKeepSelection) {

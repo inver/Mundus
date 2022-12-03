@@ -35,7 +35,7 @@ import com.mbrlabs.mundus.editor.tools.picker.PickerIDAttribute
  * @author Marcus Brummer
  * @version 07-03-2016
  */
-abstract class ToolHandle(val id: Int) : Disposable, Renderable {
+abstract class ToolHandle(val id: Int, val state: TransformTool.TransformState) : Disposable, Renderable {
 
     val position: Vector3 = Vector3()
     val rotationEuler: Vector3 = Vector3()

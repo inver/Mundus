@@ -255,6 +255,7 @@ class Outline(
     inner class RightClickMenu : PopupMenu() {
 
         val addGroup = MenuItem("Add group")
+        val addCamera = MenuItem("Add camera")
         private val addTerrain: MenuItem = MenuItem("Add terrain")
         private val addLight: MenuItem = MenuItem("Add light")
         val addShader = MenuItem("Add Shader")
@@ -268,6 +269,7 @@ class Outline(
         var selectedGO: GameObject? = null
 
         init {
+
 
             // add terrainAsset
             addTerrain.addListener(object : ClickListener() {
@@ -367,6 +369,7 @@ class Outline(
             addLight.subMenu = lightsPopupMenu
 
             addItem(addGroup)
+            addItem(addCamera)
             addItem(addTerrain)
             addItem(addLight)
             addItem(addShader)

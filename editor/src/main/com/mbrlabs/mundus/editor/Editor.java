@@ -23,7 +23,7 @@ import com.mbrlabs.mundus.editor.input.InputManager;
 import com.mbrlabs.mundus.editor.input.ShortcutController;
 import com.mbrlabs.mundus.editor.tools.ToolManager;
 import com.mbrlabs.mundus.editor.ui.AppUi;
-import com.mbrlabs.mundus.editor.ui.components.WirePlane;
+import com.mbrlabs.mundus.editor.ui.components.CoordinateSystemComponent;
 import com.mbrlabs.mundus.editor.ui.modules.StatusBar;
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.ExitDialog;
 import com.mbrlabs.mundus.editor.ui.modules.dock.DockBar;
@@ -74,7 +74,7 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
     private DockBar dockBar;
     private Compass compass;
 
-    private WirePlane wirePlane;
+    private CoordinateSystemComponent wirePlane;
 
     public void create() {
         var homeDirFile = new File(appEnvironment.getHomeDir());
@@ -107,7 +107,7 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
         // change project; this will fire a ProjectChangedEvent
         projectManager.changeProject(context);
 
-        wirePlane = new WirePlane();
+        wirePlane = new CoordinateSystemComponent();
     }
 
 
@@ -189,6 +189,8 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
                 batch.begin(camera);
                 scene.render(batch, scene.getEnvironment(), shaderStorage, Gdx.graphics.getDeltaTime());
                 wirePlane.render(batch, scene.getEnvironment(), shaderStorage, Gdx.graphics.getDeltaTime());
+                //todo check current camera
+
                 batch.end();
 
                 toolManager.render(batch, scene.getEnvironment(), shaderStorage, Gdx.graphics.getDeltaTime());

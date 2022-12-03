@@ -5,9 +5,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CameraDto {
+public class CameraDto extends ComponentDto {
     private Vector3Dto position;
-    private Vector3Dto direction;
+    private Vector3Dto viewPointPosition;
+    // if directionGameObjectId >=0 -> this camera should be directed to game object with specified id
+    private int directionGameObjectId;
     private float near;
     private float far;
 }

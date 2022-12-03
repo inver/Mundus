@@ -25,18 +25,23 @@ import com.mbrlabs.mundus.commons.mapper.BaseLightConverter;
 import com.mbrlabs.mundus.commons.mapper.FogConverter;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.scene3d.SceneGraph;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Map;
 
 /**
  * The converter for scene.
  */
+@RequiredArgsConstructor
 public class SceneConverter {
+
+    private final GameObjectConverter gameObjectConverter;
+    private final CameraConverter cameraConverter;
 
     /**
      * Converts {@link Scene} to {@link SceneDto}.
      */
-    public static SceneDto convert(Scene scene) {
+    public SceneDto convert(Scene scene) {
         SceneDto dto = new SceneDto();
 
         dto.setId(scene.getId());
@@ -45,19 +50,19 @@ public class SceneConverter {
 
         // scene graph
         for (GameObject go : scene.getSceneGraph().getGameObjects()) {
-            dto.getGameObjects().add(GameObjectConverter.convert(go));
+            dto.getGameObjects().add(gameObjectConverter.convert(go));
         }
 
         // getEnvironment() stuff
         dto.setFog(FogConverter.convert(scene.getEnvironment().getFog()));
         dto.setAmbientLight(BaseLightConverter.convert(scene.getEnvironment().getAmbientLight()));
-        
+
         var cm = scene.getCameras().get(0);
-        dto.setCamera(CameraConverter.fromCamera(cm));
+        dto.setCamera(cameraConverter.fromCamera(cm));
         return dto;
     }
 
-    public static void fillScene(Scene scene, SceneDto dto, Map<String, Asset<?>> assets) {
+    public void fillScene(Scene scene, SceneDto dto, Map<String, Asset<?>> assets) {
         scene.setId(dto.getId());
         scene.setName(dto.getName());
 
@@ -72,10 +77,10 @@ public class SceneConverter {
         // scene graph
         scene.setSceneGraph(new SceneGraph());
         for (GameObjectDto descriptor : dto.getGameObjects()) {
-            scene.getSceneGraph().addGameObject(GameObjectConverter.convert(descriptor, assets));
+            scene.getSceneGraph().addGameObject(gameObjectConverter.convert(descriptor, assets));
         }
 
-        var camera = CameraConverter.fromDto(dto.getCamera());
+        var camera = cameraConverter.fromDto(dto.getCamera());
         camera.update();
         scene.getCameras().add(camera);
     }

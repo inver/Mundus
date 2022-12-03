@@ -5,11 +5,17 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mbrlabs.mundus.commons.Scene;
 import com.mbrlabs.mundus.commons.assets.shader.ShaderAssetLoader;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAssetLoader;
+import com.mbrlabs.mundus.commons.importer.CameraConverter;
+import com.mbrlabs.mundus.commons.importer.GameObjectConverter;
+import com.mbrlabs.mundus.commons.importer.ModelComponentConverter;
+import com.mbrlabs.mundus.commons.importer.SceneConverter;
 import com.mbrlabs.mundus.editor.core.assets.AssetWriter;
 import com.mbrlabs.mundus.editor.core.assets.AssetsStorage;
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager;
+import com.mbrlabs.mundus.editor.core.project.EditorCameraConverter;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.scene.SceneStorage;
 import com.mbrlabs.mundus.editor.core.shader.ShaderStorage;
@@ -115,8 +121,29 @@ public class TestConfig {
     }
 
     @Bean
+    public CameraConverter cameraConverter() {
+        return new EditorCameraConverter();
+    }
+
+    @Bean
+    public SceneConverter sceneConverter() {
+        return new SceneConverter(gameObjectConverter(), cameraConverter());
+    }
+
+    @Bean
+    public GameObjectConverter gameObjectConverter() {
+        return new GameObjectConverter(modelComponentConverter(), cameraConverter());
+    }
+
+    @Bean
+    public ModelComponentConverter modelComponentConverter() {
+        return new ModelComponentConverter();
+    }
+
+
+    @Bean
     public SceneStorage sceneStorage() {
-        return new SceneStorage(mapper(), assetsStorage(), editorAssetManager);
+        return new SceneStorage(mapper(), assetsStorage(), editorAssetManager, sceneConverter());
     }
 
     @Bean

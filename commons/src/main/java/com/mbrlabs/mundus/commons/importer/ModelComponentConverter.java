@@ -16,7 +16,6 @@
 
 package com.mbrlabs.mundus.commons.importer;
 
-import com.badlogic.gdx.graphics.g3d.Shader;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset;
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset;
@@ -33,7 +32,7 @@ import java.util.Map;
 @Slf4j
 public class ModelComponentConverter {
 
-    public static ModelComponent convert(ModelComponentDto dto, GameObject go, Map<String, Asset<?>> assets) {
+    public ModelComponent convert(ModelComponentDto dto, GameObject go, Map<String, Asset<?>> assets) {
         var model = (ModelAsset) assets.get(dto.getModelID());
 
         if (model == null) {
@@ -53,7 +52,7 @@ public class ModelComponentConverter {
         return component;
     }
 
-    public static ModelComponentDto convert(ModelComponent modelComponent) {
+    public ModelComponentDto convert(ModelComponent modelComponent) {
         var dto = new ModelComponentDto();
         dto.setModelID(modelComponent.getModelAsset().getID());
 

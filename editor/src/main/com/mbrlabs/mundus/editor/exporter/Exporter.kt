@@ -17,21 +17,13 @@
 package com.mbrlabs.mundus.editor.exporter
 
 import com.badlogic.gdx.files.FileHandle
-import com.badlogic.gdx.utils.Json
-import com.badlogic.gdx.utils.JsonWriter
 import com.kotcrab.vis.ui.util.async.AsyncTaskListener
 import com.mbrlabs.mundus.commons.assets.Asset
-import com.mbrlabs.mundus.commons.dto.GameObjectDto
-import com.mbrlabs.mundus.commons.dto.ModelComponentDto
-import com.mbrlabs.mundus.commons.dto.SceneDto
-import com.mbrlabs.mundus.commons.dto.TerrainComponentDto
-import com.mbrlabs.mundus.commons.importer.JsonScene
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.project.ProjectContext
 import com.mbrlabs.mundus.editor.core.scene.SceneStorage
 import org.apache.commons.io.FilenameUtils
 import java.io.File
-import java.io.Writer
 
 /**
  * @author Marcus Brummer
@@ -117,88 +109,6 @@ class Exporter(
     private fun exportAsset(asset: Asset<Any>, folder: FileHandle) {
 //        asset.file.copyTo(folder)
 //        asset.meta.file.copyTo(folder)
-    }
-
-    private fun exportScene(scene: SceneDto, file: FileHandle, jsonType: JsonWriter.OutputType) {
-        val writer = file.writer(false);
-        exportScene(scene, writer, jsonType);
-    }
-
-    fun exportScene(scene: SceneDto, writer: Writer, jsonType: JsonWriter.OutputType) {
-        val json = Json()
-        json.setOutputType(jsonType)
-        json.setWriter(writer)
-
-        json.writeObjectStart()
-
-        // START basics
-        json.writeValue(JsonScene.ID, scene.id)
-        json.writeValue(JsonScene.NAME, scene.name)
-        // END basics
-
-        // START game objects
-        json.writeArrayStart(JsonScene.GAME_OBJECTS)
-        for (go in scene.gameObjects) {
-            convertGameObject(go, json)
-        }
-        json.writeArrayEnd()
-        // END game objects
-
-        json.writeObjectEnd()
-
-        json.writer.flush()
-    }
-
-    private fun convertGameObject(go: GameObjectDto, json: Json) {
-        // convert game object
-        json.writeObjectStart()
-        json.writeValue(JsonScene.GO_ID, go.id)
-        json.writeValue(JsonScene.GO_NAME, go.name)
-        json.writeValue(JsonScene.GO_ACTIVE, go.isActive)
-        json.writeValue(JsonScene.GO_TRANSFORM, go.transform)
-
-        // START tags
-        json.writeArrayStart(JsonScene.GO_TAGS)
-        if (go.tags != null) {
-            for (tag in go.tags) {
-                json.writeValue(tag)
-            }
-        }
-        json.writeArrayEnd()
-        // END tags
-
-        // components
-        if (go.modelComponent != null) convertModelComponent(go.modelComponent, json)
-        if (go.terrainComponent != null) convertTerrainComponent(go.terrainComponent, json)
-
-        // children
-        for (child in go.children) {
-            json.writeArrayStart(JsonScene.GO_CHILDREN)
-            convertGameObject(child, json)
-            json.writeArrayEnd()
-        }
-
-        json.writeObjectEnd()
-    }
-
-    private fun convertModelComponent(comp: ModelComponentDto, json: Json) {
-        json.writeObjectStart(JsonScene.GO_MODEL_COMPONENT)
-        json.writeValue(JsonScene.MODEL_COMPONENT_MODEL_ID, comp.modelID)
-
-        // materials
-        json.writeObjectStart(JsonScene.MODEL_COMPONENT_MATERIALS)
-        for ((key, value) in comp.materials) {
-            json.writeValue(key, value)
-        }
-        json.writeObjectEnd()
-
-        json.writeObjectEnd()
-    }
-
-    private fun convertTerrainComponent(comp: TerrainComponentDto, json: Json) {
-        json.writeObjectStart(JsonScene.GO_TERRAIN_COMPONENT)
-        json.writeValue(JsonScene.TERRAIN_COMPONENT_TERRAIN_ID, comp.terrainID)
-        json.writeObjectEnd()
     }
 
 

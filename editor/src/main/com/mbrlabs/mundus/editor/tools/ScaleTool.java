@@ -99,10 +99,10 @@ public class ScaleTool extends TransformTool {
                 new Material(ColorAttribute.createDiffuse(COLOR_XYZ)),
                 VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
 
-        xHandle = new ScaleHandle(X_HANDLE_ID, xPlaneHandleModel);
-        yHandle = new ScaleHandle(Y_HANDLE_ID, yPlaneHandleModel);
-        zHandle = new ScaleHandle(Z_HANDLE_ID, zPlaneHandleModel);
-        xyzHandle = new ScaleHandle(XYZ_HANDLE_ID, xyzPlaneHandleModel);
+        xHandle = new ScaleHandle(X_HANDLE_ID, TransformState.TRANSFORM_X, xPlaneHandleModel);
+        yHandle = new ScaleHandle(Y_HANDLE_ID, TransformState.TRANSFORM_Y, yPlaneHandleModel);
+        zHandle = new ScaleHandle(Z_HANDLE_ID, TransformState.TRANSFORM_Z, zPlaneHandleModel);
+        xyzHandle = new ScaleHandle(XYZ_HANDLE_ID, TransformState.TRANSFORM_XYZ, xyzPlaneHandleModel);
 
         handles = new ScaleHandle[]{xHandle, yHandle, zHandle, xyzHandle};
     }
@@ -246,7 +246,7 @@ public class ScaleTool extends TransformTool {
         }
 
         if (button == Input.Buttons.LEFT && getCtx().getSelected() != null) {
-            ScaleHandle handle = (ScaleHandle) handlePicker.pick(handles, projectContext.getCurrentScene(), screenX, screenY);
+            ScaleHandle handle = (ScaleHandle) handlePicker.pick(handles, screenX, screenY);
             if (handle == null) {
                 state = TransformState.IDLE;
                 return false;
@@ -259,26 +259,26 @@ public class ScaleTool extends TransformTool {
             tempScaleDst.y = getCurrentDst() / tempScale.y;
             tempScaleDst.z = getCurrentDst() / tempScale.z;
 
-            switch (handle.getId()) {
-                case X_HANDLE_ID:
-                    state = TransformState.TRANSFORM_X;
-                    xHandle.changeColor(COLOR_SELECTED);
-                    break;
-                case Y_HANDLE_ID:
-                    state = TransformState.TRANSFORM_Y;
-                    yHandle.changeColor(COLOR_SELECTED);
-                    break;
-                case Z_HANDLE_ID:
-                    state = TransformState.TRANSFORM_Z;
-                    zHandle.changeColor(COLOR_SELECTED);
-                    break;
-                case XYZ_HANDLE_ID:
-                    state = TransformState.TRANSFORM_XYZ;
-                    xyzHandle.changeColor(COLOR_SELECTED);
-                    break;
-                default:
-                    break;
-            }
+//            switch (handle.getId()) {
+//                case X_HANDLE_ID:
+//                    state = TransformState.TRANSFORM_X;
+//                    xHandle.changeColor(COLOR_SELECTED);
+//                    break;
+//                case Y_HANDLE_ID:
+//                    state = TransformState.TRANSFORM_Y;
+//                    yHandle.changeColor(COLOR_SELECTED);
+//                    break;
+//                case Z_HANDLE_ID:
+//                    state = TransformState.TRANSFORM_Z;
+//                    zHandle.changeColor(COLOR_SELECTED);
+//                    break;
+//                case XYZ_HANDLE_ID:
+//                    state = TransformState.TRANSFORM_XYZ;
+//                    xyzHandle.changeColor(COLOR_SELECTED);
+//                    break;
+//                default:
+//                    break;
+//            }
         }
 
         // scale command before
@@ -393,8 +393,8 @@ public class ScaleTool extends TransformTool {
         private Model model;
         private ModelInstance modelInstance;
 
-        public ScaleHandle(int id, Model model) {
-            super(id);
+        public ScaleHandle(int id, TransformState state, Model model) {
+            super(id, state);
             this.model = model;
             this.modelInstance = new ModelInstance(model);
             modelInstance.materials.first().set(getIdAttribute());

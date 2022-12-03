@@ -42,7 +42,7 @@ public class ExporterTest {
 
         SceneDto scene = new SceneDto();
         scene.setName("Scene 1");
-        exporter.exportScene(scene, writer, JsonWriter.OutputType.json);
+//        exporter.exportScene(scene, writer, JsonWriter.OutputType.json);
 
         String result = baos.toString();
         assertEquals("{\"id\":0,\"name\":\"Scene 1\",\"gos\":[]}", result);
@@ -58,7 +58,7 @@ public class ExporterTest {
         scene.setName("Scene 1");
         scene.getGameObjects().add(terrain);
 
-        exporter.exportScene(scene, writer, JsonWriter.OutputType.json);
+//        exporter.exportScene(scene, writer, JsonWriter.OutputType.json);
 
         String result = baos.toString();
         assertEquals("{\"id\":0,\"name\":\"Scene 1\",\"gos\":[{\"i\":0,\"n\":\"Terrain 1\",\"a\":false,\"t\":[0,0,0,0,0,0,0,0,0,0],\"g\":[\"grass\"],\"ct\":{\"i\":null}}]}", result);

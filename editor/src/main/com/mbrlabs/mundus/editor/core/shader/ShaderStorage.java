@@ -14,6 +14,7 @@ import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent;
 import com.mbrlabs.mundus.editor.events.SettingsChangedEvent;
 import com.mbrlabs.mundus.editor.shader.MaterialPreviewShader;
+import com.mbrlabs.mundus.editor.shader.WireframeShader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -113,6 +114,10 @@ public class ShaderStorage implements ShaderHolder {
             case ShaderConstants.SKYBOX: {
                 var asset = (ShaderAsset) ctx.getAssetLibrary().get(ProjectConstants.SHADER_SKYBOX_PATH);
                 return new SkyboxShader(asset.getVertexShader(), asset.getFragmentShader());
+            }
+            case ShaderConstants.WIREFRAME: {
+                var asset = (ShaderAsset) ctx.getAssetLibrary().get(ProjectConstants.SHADER_WIREFRAME_PATH);
+                return new WireframeShader(asset.getVertexShader(), asset.getFragmentShader());
             }
         }
 

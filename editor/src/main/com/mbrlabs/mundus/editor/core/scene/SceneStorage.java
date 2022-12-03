@@ -52,6 +52,7 @@ public class SceneStorage {
     private final ObjectMapper mapper;
     protected final AssetsStorage assetsStorage;
     protected final EditorAssetManager editorAssetManager;
+    private final SceneConverter sceneConverter;
 
     public Scene createDefault(String projectPath, int id) {
         var scene = new Scene();
@@ -103,7 +104,7 @@ public class SceneStorage {
         String sceneDir = getScenePath(projectPath, scene.getName());
 
         try {
-            SceneDto dto = SceneConverter.convert(scene);
+            SceneDto dto = sceneConverter.convert(scene);
             FileHandle saveFile = Gdx.files.absolute(sceneDir);
             saveFile.writeString(mapper.writeValueAsString(dto), false);
         } catch (Exception e) {

@@ -25,7 +25,9 @@ import com.mbrlabs.mundus.commons.scene3d.GameObject;
 public interface Component extends Renderable {
 
     enum Type {
-        MODEL, TERRAIN, LIGHT, PARTICLE_SYSTEM, CAMERA, SKYBOX
+        MODEL, TERRAIN, LIGHT, PARTICLE_SYSTEM, CAMERA, SKYBOX,
+        // e.x. for useful control of camera
+        HANDLE
     }
 
     GameObject getGameObject();

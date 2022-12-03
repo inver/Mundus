@@ -33,7 +33,7 @@ public class GameObjectDto {
 
     private List<String> tags;
     private List<GameObjectDto> children;
-
+    private List<ComponentDto> components = new ArrayList<>();
     private ModelComponentDto modelComponent;
     private TerrainComponentDto terrainComponent;
 
@@ -102,4 +102,11 @@ public class GameObjectDto {
         this.terrainComponent = terrainComponent;
     }
 
+    public List<ComponentDto> getComponents() {
+        return components;
+    }
+
+    public void setComponents(List<ComponentDto> components) {
+        this.components = components;
+    }
 }

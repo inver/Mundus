@@ -27,9 +27,6 @@ public class DirectCameraController extends InputAdapter {
     public boolean scrolled(float amountX, float amountY) {
         if (current != null) {
             tmpVector.set(current.direction).nor().scl(-amountY * zoomAmount).add(current.position);
-            if (tmpVector.x < 0 || tmpVector.y < 0 || tmpVector.z < 0) {
-                return false;
-            }
             current.position.set(tmpVector);
             return true;
         }

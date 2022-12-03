@@ -93,10 +93,10 @@ public class TranslateTool extends TransformTool {
         Model xzPlaneHandleModel = modelBuilder.createSphere(1, 1, 1, 20, 20,
                 new Material(ColorAttribute.createDiffuse(COLOR_XZ)), VertexAttributes.Usage.Position);
 
-        xHandle = new TranslateHandle(X_HANDLE_ID, xHandleModel);
-        yHandle = new TranslateHandle(Y_HANDLE_ID, yHandleModel);
-        zHandle = new TranslateHandle(Z_HANDLE_ID, zHandleModel);
-        xzPlaneHandle = new TranslateHandle(XZ_HANDLE_ID, xzPlaneHandleModel);
+        xHandle = new TranslateHandle(COLOR_X.toIntBits(), TransformState.TRANSFORM_X, xHandleModel);
+        yHandle = new TranslateHandle(COLOR_Y.toIntBits(), TransformState.TRANSFORM_Y, yHandleModel);
+        zHandle = new TranslateHandle(COLOR_Z.toIntBits(), TransformState.TRANSFORM_Z, zHandleModel);
+        xzPlaneHandle = new TranslateHandle(COLOR_XZ.toIntBits(), TransformState.TRANSFORM_XZ, xzPlaneHandleModel);
         handles = new TranslateHandle[]{xHandle, yHandle, zHandle, xzPlaneHandle};
 
         gameObjectModifiedEvent = new GameObjectModifiedEvent(null);
@@ -182,7 +182,7 @@ public class TranslateTool extends TransformTool {
                 modified = true;
             }
 
-            // TODO translation in global sapce
+            // TODO translation in global space
             // if(globalSpace) {
             // System.out.println("Before: " + vec);
             // System.out.println("After: " + vec);
@@ -243,42 +243,31 @@ public class TranslateTool extends TransformTool {
     }
 
     @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        return state != TransformState.IDLE;
+    }
+
+    @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         super.touchDown(screenX, screenY, pointer, button);
 
-        if (button == Input.Buttons.LEFT && getCtx().getSelected() != null) {
-            TranslateHandle handle = (TranslateHandle) handlePicker.pick(handles,
-                    getCtx().getCurrent().getCurrentScene(), screenX, screenY);
-            if (handle == null) {
-                state = TransformState.IDLE;
-                return false;
-            }
-
-            if (handle.getId() == XZ_HANDLE_ID) {
-                state = TransformState.TRANSFORM_XZ;
-                initTranslate = true;
-                xzPlaneHandle.changeColor(COLOR_SELECTED);
-            } else if (handle.getId() == X_HANDLE_ID) {
-                state = TransformState.TRANSFORM_X;
-                initTranslate = true;
-                xHandle.changeColor(COLOR_SELECTED);
-            } else if (handle.getId() == Y_HANDLE_ID) {
-                state = TransformState.TRANSFORM_Y;
-                initTranslate = true;
-                yHandle.changeColor(COLOR_SELECTED);
-            } else if (handle.getId() == Z_HANDLE_ID) {
-                state = TransformState.TRANSFORM_Z;
-                initTranslate = true;
-                zHandle.changeColor(COLOR_SELECTED);
-            }
+        if (button != Input.Buttons.LEFT || getCtx().getSelected() == null) {
+            return false;
         }
 
-        if (state != TransformState.IDLE) {
-            command = new TranslateCommand(getCtx().getSelected());
-            command.setBefore(getCtx().getSelected().getLocalPosition(temp0));
+        var handle = (TranslateHandle) handlePicker.pick(handles, screenX, screenY);
+        if (handle == null) {
+            state = TransformState.IDLE;
+            return false;
         }
 
-        return false;
+        state = handle.getState();
+        initTranslate = true;
+        handle.changeColor(COLOR_SELECTED);
+
+        command = new TranslateCommand(getCtx().getSelected());
+        command.setBefore(getCtx().getSelected().getLocalPosition(temp0));
+        return true;
     }
 
     @Override
@@ -315,8 +304,8 @@ public class TranslateTool extends TransformTool {
         private Model model;
         private ModelInstance modelInstance;
 
-        public TranslateHandle(int id, Model model) {
-            super(id);
+        public TranslateHandle(int id, TransformState state, Model model) {
+            super(id, state);
             this.model = model;
             this.modelInstance = new ModelInstance(model);
             modelInstance.materials.first().set(getIdAttribute());
@@ -334,7 +323,7 @@ public class TranslateTool extends TransformTool {
 
         @Override
         public void renderPick(ModelBatch modelBatch, ShaderHolder shaders) {
-            getBatch().render(modelInstance, shaders.get(getShaderKey()));
+            modelBatch.render(modelInstance, shaders.get(getShaderKey()));
         }
 
         @Override

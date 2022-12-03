@@ -11,7 +11,12 @@ import com.mbrlabs.mundus.commons.assets.shader.ShaderAssetLoader;
 import com.mbrlabs.mundus.commons.assets.skybox.SkyboxAssetLoader;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAssetLoader;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAssetLoader;
+import com.mbrlabs.mundus.commons.importer.CameraConverter;
+import com.mbrlabs.mundus.commons.importer.GameObjectConverter;
+import com.mbrlabs.mundus.commons.importer.ModelComponentConverter;
+import com.mbrlabs.mundus.commons.importer.SceneConverter;
 import com.mbrlabs.mundus.commons.loader.ModelImporter;
+import com.mbrlabs.mundus.editor.core.project.EditorCameraConverter;
 import com.mbrlabs.mundus.editor.core.project.ProjectStorage;
 import com.mbrlabs.mundus.editor.core.registry.Registry;
 import org.springframework.context.annotation.Bean;
@@ -88,4 +93,25 @@ public class RootConfig {
     public ShaderAssetLoader shaderAssetLoader() {
         return new ShaderAssetLoader();
     }
+
+    @Bean
+    public CameraConverter cameraConverter() {
+        return new EditorCameraConverter();
+    }
+
+    @Bean
+    public SceneConverter sceneConverter() {
+        return new SceneConverter(gameObjectConverter(), cameraConverter());
+    }
+
+    @Bean
+    public GameObjectConverter gameObjectConverter() {
+        return new GameObjectConverter(modelComponentConverter(), cameraConverter());
+    }
+
+    @Bean
+    public ModelComponentConverter modelComponentConverter() {
+        return new ModelComponentConverter();
+    }
+
 }

@@ -194,7 +194,7 @@ public class GameObject extends SimpleNode<GameObject> implements Iterable<GameO
      * @param component component to add
      * @throws InvalidComponentException
      */
-    public void addComponent(Component component) throws InvalidComponentException {
+    public void addComponent(Component component) {
         isComponentAddable(component);
         components.add(component);
     }
@@ -203,7 +203,7 @@ public class GameObject extends SimpleNode<GameObject> implements Iterable<GameO
      * @param component
      * @throws InvalidComponentException
      */
-    public void isComponentAddable(Component component) throws InvalidComponentException {
+    public void isComponentAddable(Component component) {
         // check for component of the same type
         for (Component c : components) {
             if (c.getType() == component.getType()) {

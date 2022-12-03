@@ -19,23 +19,15 @@ package com.mbrlabs.mundus.editor.core.project;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Disposable;
 import com.mbrlabs.mundus.commons.Scene;
-import com.mbrlabs.mundus.commons.assets.material.MaterialAssetLoader;
-import com.mbrlabs.mundus.commons.assets.meta.MetaService;
-import com.mbrlabs.mundus.commons.assets.model.ModelAssetLoader;
-import com.mbrlabs.mundus.commons.assets.pixmap.PixmapTextureAssetLoader;
-import com.mbrlabs.mundus.commons.assets.terrain.TerrainAssetLoader;
-import com.mbrlabs.mundus.commons.assets.texture.TextureAssetLoader;
 import com.mbrlabs.mundus.commons.importer.SceneConverter;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.scene3d.components.Component;
 import com.mbrlabs.mundus.editor.Main;
 import com.mbrlabs.mundus.editor.core.ProjectConstants;
-import com.mbrlabs.mundus.editor.core.assets.AssetsStorage;
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager;
 import com.mbrlabs.mundus.editor.core.registry.ProjectRef;
 import com.mbrlabs.mundus.editor.core.registry.Registry;
 import com.mbrlabs.mundus.editor.core.scene.SceneStorage;
-import com.mbrlabs.mundus.editor.core.shader.ShaderStorage;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.LogEvent;
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent;
@@ -68,17 +60,10 @@ public class ProjectManager implements Disposable {
     private final Registry registry;
     private final ProjectStorage projectStorage;
     private final EditorAssetManager assetManager;
-    private final MetaService metaService;
-    private final TextureAssetLoader textureService;
-    private final TerrainAssetLoader terrainService;
-    private final MaterialAssetLoader materialService;
-    private final PixmapTextureAssetLoader pixmapTextureService;
-    private final ModelAssetLoader modelService;
+    private final SceneConverter sceneConverter;
 
     private final EventBus eventBus;
     private final SceneStorage sceneStorage;
-    private final ShaderStorage shaderStorage;
-    private final AssetsStorage assetsStorage;
 
     /**
      * Saves the active project
@@ -289,7 +274,7 @@ public class ProjectManager implements Disposable {
         var scene = new Scene();
 
         //todo preload assets to cache
-        SceneConverter.fillScene(scene, dto, editorCtx.getAssetLibrary());
+        sceneConverter.fillScene(scene, dto, editorCtx.getAssetLibrary());
         loadSkybox(context, scene);
 
         var sceneGraph = scene.getSceneGraph();

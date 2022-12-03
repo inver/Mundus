@@ -18,9 +18,10 @@ package com.mbrlabs.mundus.editor.tools.picker;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.mbrlabs.mundus.commons.Scene;
+import com.badlogic.gdx.graphics.glutils.HdpiUtils;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.shader.ShaderStorage;
 import com.mbrlabs.mundus.editor.tools.ToolHandle;
@@ -40,17 +41,19 @@ public class ToolHandlePicker extends BasePicker {
     private final ModelBatch batch;
     private final ShaderStorage shaderStorage;
 
-    public ToolHandle pick(ToolHandle[] handles, Scene scene, int screenX, int screenY) {
-        begin(ctx.getViewport());
-        renderPickableScene(handles, batch, ctx.getCamera());
-        end();
-        Pixmap pm = getFrameBufferPixmap(ctx.getViewport());
+    public ToolHandle pick(ToolHandle[] handles, int screenX, int screenY) {
+        //todo may be needed to revert render of image, but it needs to thinks
+        var x = HdpiUtils.toBackBufferX(screenX);
+        var y = Gdx.graphics.getBackBufferHeight() - HdpiUtils.toBackBufferY(screenY);
 
-        int x = screenX - ctx.getViewport().getScreenX();
-        int y = screenY - (Gdx.graphics.getHeight() - (ctx.getViewport().getScreenY() + ctx.getViewport().getScreenHeight()));
+        var pixmap = Pixmap.createFromFrameBuffer(x, y, 1, 1);
+        pixmap.getPixels().put(3, (byte) 255);
 
-        int id = PickerColorEncoder.decode(pm.getPixel(x, y));
-        log.trace("ToolHandlePicker | Picking handle with id {}", id);
+        log.debug("Coordinates of pixel is {}:{}", x, y);
+
+        int id = new Color(pixmap.getPixel(0, 0)).toIntBits();
+        pixmap.dispose();
+        log.debug("Picking handle with id {}", id);
         for (ToolHandle handle : handles) {
             if (handle.getId() == id) {
                 return handle;

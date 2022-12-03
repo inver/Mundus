@@ -19,26 +19,34 @@ package com.mbrlabs.mundus.commons.importer;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.mbrlabs.mundus.commons.assets.Asset;
+import com.mbrlabs.mundus.commons.dto.CameraDto;
 import com.mbrlabs.mundus.commons.dto.GameObjectDto;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
+import com.mbrlabs.mundus.commons.scene3d.components.CameraComponent;
 import com.mbrlabs.mundus.commons.scene3d.components.Component;
 import com.mbrlabs.mundus.commons.scene3d.components.ModelComponent;
 import com.mbrlabs.mundus.commons.scene3d.components.TerrainComponent;
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.Map;
 
 /**
  * The converter for game object.
  */
+@RequiredArgsConstructor
 public class GameObjectConverter {
 
-    private static final Vector3 tempVec = new Vector3();
-    private static final Quaternion tempQuat = new Quaternion();
+    private static final Vector3 TEMP_VEC = new Vector3();
+    private static final Quaternion TEMP_QUAT = new Quaternion();
+
+    private final ModelComponentConverter modelComponentConverter;
+    private final CameraConverter cameraConverter;
 
     /**
      * Converts {@link GameObjectDto} to {@link GameObject}.
      */
-    public static GameObject convert(GameObjectDto dto, Map<String, Asset<?>> assets) {
+    public GameObject convert(GameObjectDto dto, Map<String, Asset<?>> assets) {
         final GameObject go = new GameObject(dto.getName(), dto.getId());
         go.setActive(dto.isActive());
 
@@ -55,9 +63,16 @@ public class GameObjectConverter {
             }
         }
 
+        if (CollectionUtils.isNotEmpty(dto.getComponents())) {
+            for (var component : dto.getComponents()) {
+                if (component instanceof CameraDto) {
+                    cameraConverter.addComponents(go, (CameraDto) component);
+                }
+            }
+        }
         // convert components
         if (dto.getModelComponent() != null) {
-            go.getComponents().add(ModelComponentConverter.convert(dto.getModelComponent(), go, assets));
+            go.getComponents().add(modelComponentConverter.convert(dto.getModelComponent(), go, assets));
         } else if (dto.getTerrainComponent() != null) {
             go.getComponents().add(TerrainComponentConverter.convert(dto.getTerrainComponent(), go, assets));
         }
@@ -75,7 +90,7 @@ public class GameObjectConverter {
     /**
      * Converts {@link GameObject} to {@link GameObjectDto}.
      */
-    public static GameObjectDto convert(GameObject go) {
+    public GameObjectDto convert(GameObject go) {
 
         GameObjectDto descriptor = new GameObjectDto();
         descriptor.setName(go.name);
@@ -83,31 +98,33 @@ public class GameObjectConverter {
         descriptor.setActive(go.isActive());
 
         // translation
-        go.getLocalPosition(tempVec);
+        go.getLocalPosition(TEMP_VEC);
         final float[] transform = descriptor.getTransform();
-        transform[0] = tempVec.x;
-        transform[1] = tempVec.y;
-        transform[2] = tempVec.z;
+        transform[0] = TEMP_VEC.x;
+        transform[1] = TEMP_VEC.y;
+        transform[2] = TEMP_VEC.z;
 
         // rotation
-        go.getLocalRotation(tempQuat);
-        transform[3] = tempQuat.x;
-        transform[4] = tempQuat.y;
-        transform[5] = tempQuat.z;
-        transform[6] = tempQuat.w;
+        go.getLocalRotation(TEMP_QUAT);
+        transform[3] = TEMP_QUAT.x;
+        transform[4] = TEMP_QUAT.y;
+        transform[5] = TEMP_QUAT.z;
+        transform[6] = TEMP_QUAT.w;
 
         // scaling
-        go.getLocalScale(tempVec);
-        transform[7] = tempVec.x;
-        transform[8] = tempVec.y;
-        transform[9] = tempVec.z;
+        go.getLocalScale(TEMP_VEC);
+        transform[7] = TEMP_VEC.x;
+        transform[8] = TEMP_VEC.y;
+        transform[9] = TEMP_VEC.z;
 
         // convert components
         for (Component c : go.getComponents()) {
             if (c.getType() == Component.Type.MODEL) {
-                descriptor.setModelComponent(ModelComponentConverter.convert((ModelComponent) c));
+                descriptor.setModelComponent(modelComponentConverter.convert((ModelComponent) c));
             } else if (c.getType() == Component.Type.TERRAIN) {
                 descriptor.setTerrainComponent(TerrainComponentConverter.convert((TerrainComponent) c));
+            } else if (c.getType() == Component.Type.CAMERA) {
+                descriptor.getComponents().add(cameraConverter.fromComponent((CameraComponent) c));
             }
         }
 

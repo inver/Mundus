@@ -74,9 +74,9 @@ public class RotateTool extends TransformTool {
                       ShapeRenderer shapeRenderer, ModelBatch batch, CommandHistory history, EventBus eventBus) {
         super(ctx, shaderKey, goPicker, handlePicker, batch, history, eventBus, NAME);
         this.shapeRenderer = shapeRenderer;
-        xHandle = new RotateHandle(X_HANDLE_ID, COLOR_X);
-        yHandle = new RotateHandle(Y_HANDLE_ID, COLOR_Y);
-        zHandle = new RotateHandle(Z_HANDLE_ID, COLOR_Z);
+        xHandle = new RotateHandle(X_HANDLE_ID, TransformState.TRANSFORM_X, COLOR_X);
+        yHandle = new RotateHandle(Y_HANDLE_ID, TransformState.TRANSFORM_Y, COLOR_Y);
+        zHandle = new RotateHandle(Z_HANDLE_ID, TransformState.TRANSFORM_Z, COLOR_Z);
         handles = new RotateHandle[]{xHandle, yHandle, zHandle};
     }
 
@@ -188,32 +188,31 @@ public class RotateTool extends TransformTool {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         super.touchDown(screenX, screenY, pointer, button);
 
-        ProjectContext projectContext = getCtx().getCurrent();
         if (button == Input.Buttons.LEFT && getCtx().getSelected() != null) {
             lastRot = getCurrentAngle();
 
             currentRotateCommand = new RotateCommand(getCtx().getSelected());
             currentRotateCommand.setBefore(getCtx().getSelected().getLocalRotation(tempQuat));
 
-            RotateHandle handle = (RotateHandle) handlePicker.pick(handles, projectContext.getCurrentScene(), screenX, screenY);
+            RotateHandle handle = (RotateHandle) handlePicker.pick(handles, screenX, screenY);
             if (handle == null) {
                 state = TransformState.IDLE;
                 return false;
             }
 
-            switch (handle.getId()) {
-                case X_HANDLE_ID:
-                    state = TransformState.TRANSFORM_X;
-                    break;
-                case Y_HANDLE_ID:
-                    state = TransformState.TRANSFORM_Y;
-                    break;
-                case Z_HANDLE_ID:
-                    state = TransformState.TRANSFORM_Z;
-                    break;
-                default:
-                    break;
-            }
+//            switch (handle.getId()) {
+//                case X_HANDLE_ID:
+//                    state = TransformState.TRANSFORM_X;
+//                    break;
+//                case Y_HANDLE_ID:
+//                    state = TransformState.TRANSFORM_Y;
+//                    break;
+//                case Z_HANDLE_ID:
+//                    state = TransformState.TRANSFORM_Z;
+//                    break;
+//                default:
+//                    break;
+//            }
         }
 
         return false;
@@ -308,28 +307,28 @@ public class RotateTool extends TransformTool {
         private Model model;
         private ModelInstance modelInstance;
 
-        public RotateHandle(int id, Color color) {
-            super(id);
+        public RotateHandle(int id, TransformState state, Color color) {
+            super(id, state);
             model = UsefulMeshs.torus(new Material(ColorAttribute.createDiffuse(color)), 20, 1f, 50, 50);
             modelInstance = new ModelInstance(model);
             modelInstance.materials.first().set(getIdAttribute());
-            switch (id) {
-                case X_HANDLE_ID:
-                    this.getRotationEuler().y = 90;
-                    this.getScale().x = 0.9f;
-                    this.getScale().y = 0.9f;
-                    this.getScale().z = 0.9f;
-                    break;
-                case Y_HANDLE_ID:
-                    this.getRotationEuler().x = 90;
-                    break;
-                case Z_HANDLE_ID:
-                    this.getRotationEuler().z = 90;
-                    this.getScale().x = 1.1f;
-                    this.getScale().y = 1.1f;
-                    this.getScale().z = 1.1f;
-                    break;
-            }
+//            switch (id) {
+//                case X_HANDLE_ID:
+//                    this.getRotationEuler().y = 90;
+//                    this.getScale().x = 0.9f;
+//                    this.getScale().y = 0.9f;
+//                    this.getScale().z = 0.9f;
+//                    break;
+//                case Y_HANDLE_ID:
+//                    this.getRotationEuler().x = 90;
+//                    break;
+//                case Z_HANDLE_ID:
+//                    this.getRotationEuler().z = 90;
+//                    this.getScale().x = 1.1f;
+//                    this.getScale().y = 1.1f;
+//                    this.getScale().z = 1.1f;
+//                    break;
+//            }
             // mi.transform.translate(0, 100, 0);
         }
 
