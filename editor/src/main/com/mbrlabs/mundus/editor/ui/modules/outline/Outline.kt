@@ -128,7 +128,9 @@ class Outline(
             if (it.type == AssetType.SHADER) {
                 rootNode.shaders.add(leaf)
             } else if (it.type == AssetType.SKYBOX) {
-                rootNode.skybox.add(leaf)
+                val go = GameObject()
+//                go.components.add()
+                rootNode.skybox.value = GameObject()
             }
         }
 

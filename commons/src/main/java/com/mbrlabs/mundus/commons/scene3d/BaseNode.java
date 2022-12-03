@@ -86,4 +86,7 @@ public abstract class BaseNode<T extends BaseNode<T>> implements Node<T> {
         }
     }
 
+    public enum Type {
+        SKYBOX
+    }
 }

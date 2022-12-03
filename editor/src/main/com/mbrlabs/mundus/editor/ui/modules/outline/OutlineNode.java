@@ -63,6 +63,7 @@ public class OutlineNode extends Tree.Node<OutlineNode, GameObject, VisTable> {
             add(shaders);
             add(lights);
             add(skybox);
+            skybox.setSelectable(true);
         }
 
         public OutlineNode getHierarchy() {

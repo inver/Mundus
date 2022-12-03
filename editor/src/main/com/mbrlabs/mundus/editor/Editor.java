@@ -22,6 +22,7 @@ import com.mbrlabs.mundus.editor.input.InputManager;
 import com.mbrlabs.mundus.editor.input.ShortcutController;
 import com.mbrlabs.mundus.editor.tools.ToolManager;
 import com.mbrlabs.mundus.editor.ui.AppUi;
+import com.mbrlabs.mundus.editor.ui.components.WirePlane;
 import com.mbrlabs.mundus.editor.ui.modules.StatusBar;
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.ExitDialog;
 import com.mbrlabs.mundus.editor.ui.modules.dock.DockBar;
@@ -70,6 +71,8 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
     private DockBar dockBar;
     private Compass compass;
 
+    private WirePlane wirePlane;
+
     public void create() {
         var homeDirFile = new File(appEnvironment.getHomeDir());
         if (!homeDirFile.exists()) {
@@ -100,6 +103,8 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
         compass = new Compass(null);
         // change project; this will fire a ProjectChangedEvent
         projectManager.changeProject(context);
+
+        wirePlane = new WirePlane();
     }
 
 
@@ -179,6 +184,7 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
                 sg.update();
                 batch.begin(camera);
                 scene.render(batch, scene.getEnvironment(), shaderStorage, Gdx.graphics.getDeltaTime());
+                wirePlane.render(batch, scene.getEnvironment(), shaderStorage, Gdx.graphics.getDeltaTime());
                 batch.end();
 
                 toolManager.render(batch, scene.getEnvironment(), shaderStorage, Gdx.graphics.getDeltaTime());

@@ -5,10 +5,13 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
+import com.mbrlabs.mundus.commons.scene3d.components.Renderable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,6 +25,8 @@ public class EditorCtx implements Disposable {
     private final Map<String, Asset<?>> assetLibrary = new HashMap<>();
 
     private GameObject selected = null;
+
+    private final List<Renderable> editorComponents = new ArrayList<>();
 
     public GameObject getSelected() {
         return selected;

@@ -42,6 +42,14 @@ public class GameObject extends SimpleNode<GameObject> implements Iterable<GameO
     private final List<String> tags = new ArrayList<>();
     private final List<Component> components = new ArrayList<>();
 
+    public GameObject() {
+        this(-1);
+    }
+
+    public GameObject(int id) {
+        this(DEFAULT_NAME, id);
+    }
+
     /**
      * @param name game object name; can be null
      * @param id   game object id
