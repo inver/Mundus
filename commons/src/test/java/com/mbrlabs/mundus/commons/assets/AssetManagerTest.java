@@ -4,6 +4,7 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Files;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3NativesLoader;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset;
 import com.mbrlabs.mundus.commons.assets.material.MaterialAssetLoader;
@@ -68,6 +69,8 @@ public class AssetManagerTest {
         Assert.assertNotNull(asset);
         Assert.assertEquals(Files.FileType.Classpath, asset.meta.getFile().type());
         Assert.assertNotNull(asset.getTexture());
+        Assert.assertEquals(Texture.TextureFilter.MipMapLinearLinear, asset.getTexture().getMagFilter());
+        Assert.assertEquals(Texture.TextureFilter.MipMapLinearLinear, asset.getTexture().getMinFilter());
         Assert.assertTrue(asset.isTileable());
         Assert.assertTrue(asset.isGenerateMipMaps());
         Assert.assertEquals(1, asset.meta.getVersion());
