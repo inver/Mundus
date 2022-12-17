@@ -22,7 +22,7 @@ public class CameraService {
 
         id = ctx.getCurrent().obtainID();
         var handleGO = new GameObject("Handle " + id, id);
-        handleGO.translate(0, 0, -10.2f);
+        handleGO.translate(0, 0, 10.2f);
         handleGO.addComponent(new EditorHandleComponent(handleGO));
         handleGO.addComponent(new ActionComponent(handleGO, new CameraHandleLineAction()));
         root.addChild(handleGO);

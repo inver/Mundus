@@ -21,7 +21,7 @@ public class CameraHandleLineAction extends BaseCameraHandleAction {
 
         EditorHandleComponent component = (EditorHandleComponent) handle.getComponents().get(0);
 
-        component.getHandleLineInstance().transform.set(tmp1, rotation.mul(-1));
-//        component.getHandleLineInstance().transform.scl(tmp2.len());
+        component.getHandleLineInstance().transform.set(tmp1, rotation);
+        component.getHandleLineInstance().transform.scale(tmp2.len(), tmp2.len(), tmp2.len());
     }
 }

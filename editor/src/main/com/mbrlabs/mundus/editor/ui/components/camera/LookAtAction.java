@@ -21,7 +21,7 @@ public class LookAtAction extends BaseCameraHandleAction {
         }
         Double pitch = 90 - Math.toDegrees(Math.acos(tmp2.y));
 
-        var quat = new Quaternion().setEulerAngles(yaw.floatValue(), pitch.floatValue(), 0);
+        var quat = new Quaternion().setEulerAngles(yaw.floatValue(), pitch.floatValue(), 0).nor();
         getCamera(object).setLocalRotation(quat.x, quat.y, quat.z, quat.w);
     }
 }

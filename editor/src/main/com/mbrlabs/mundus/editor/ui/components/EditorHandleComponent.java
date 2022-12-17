@@ -38,11 +38,10 @@ public class EditorHandleComponent extends AbstractComponent {
         instance = new ModelInstance(modelBuilder.end());
 
         modelBuilder.begin();
-//        modelBuilder.node();
         partBuilder = modelBuilder.part("directionLine", GL20.GL_LINES, 3, new Material());
         partBuilder.setColor(Color.GRAY);
         //todo rework for dotted line
-        partBuilder.line(0, 0, 0, 0, 0, 10);
+        partBuilder.line(0, 0, 0, 0, 0, -1);
 
         handleLineInstance = new ModelInstance(modelBuilder.end());
     }
