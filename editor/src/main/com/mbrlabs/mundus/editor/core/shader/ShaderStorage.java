@@ -140,4 +140,8 @@ public class ShaderStorage implements ShaderHolder {
             watchFuture = executorService.submit(new FileWatcher(ctx.getCurrent().path, shaders::remove));
         }
     }
+
+    public void dispose() {
+        executorService.shutdownNow();
+    }
 }

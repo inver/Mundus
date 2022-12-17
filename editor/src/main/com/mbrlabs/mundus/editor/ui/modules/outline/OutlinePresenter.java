@@ -2,7 +2,6 @@ package com.mbrlabs.mundus.editor.ui.modules.outline;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -18,7 +17,7 @@ import com.mbrlabs.mundus.editor.events.GameObjectSelectedEvent;
 import com.mbrlabs.mundus.editor.events.SceneGraphChangedEvent;
 import com.mbrlabs.mundus.editor.tools.ToolManager;
 import com.mbrlabs.mundus.editor.ui.AppUi;
-import com.mbrlabs.mundus.editor.ui.components.EditorCameraComponent;
+import com.mbrlabs.mundus.editor.ui.components.camera.CameraService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -35,6 +34,7 @@ public class OutlinePresenter {
     private final AppUi appUi;
     private final ToolManager toolManager;
     private final AssetsStorage assetsStorage;
+    private final CameraService cameraService;
 
     public void init(@NotNull Outline outline) {
         eventBus.register(outline);
@@ -124,12 +124,7 @@ public class OutlinePresenter {
         addCamera.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                var id = ctx.getCurrent().obtainID();
-                //todo check selected game object
-                var go = new GameObject("Camera " + id, id);
-                go.addComponent(new EditorCameraComponent(go, new PerspectiveCamera()));
-                ctx.getCurrent().getCurrentScene().getSceneGraph().addGameObject(go);
-
+                var go = cameraService.createCamera();
                 //todo strange action, may be rebuild tree?
                 outline.addGoToTree(null, go);
                 eventBus.post(new SceneGraphChangedEvent());

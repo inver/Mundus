@@ -38,8 +38,8 @@ import org.springframework.stereotype.Component
 class SkyboxDialog(
     private val ctx: EditorCtx,
     eventBus: EventBus,
-    private val appUi: AppUi,
-    private val fileChooser: FileChooser
+    appUi: AppUi,
+    fileChooser: FileChooser
 ) : BaseDialog("Skybox"),
     ProjectChangedEvent.ProjectChangedListener,
     SceneChangedEvent.SceneChangedListener {
@@ -94,7 +94,7 @@ class SkyboxDialog(
         // create btn
         createBtn.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                val scene = ctx.current.currentScene;
+//                val scene = ctx.current.currentScene;
 //                val oldSkybox = scene.skyboxName
 //                oldSkybox?.dispose()
 

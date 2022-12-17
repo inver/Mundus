@@ -1,6 +1,6 @@
 <img alt="" src="logo.svg" height="80px" />
 
-# Mundus [![](https://www.travis-ci.com/Dgzt/Mundus.svg?branch=master)](https://www.travis-ci.com/github/Dgzt/Mundus)
+# Mundus ![example workflow](https://github.com/inver/Mundus/actions/workflows/gradle.yml/badge.svg)
 Mundus is a platform independent 3D world editor, built with Java, Kotlin and LibGDX + VisUI.
 The plan is, that the world you create with Mundus can be exported
 into a unified format (such as JSON + assets). The exported data can then be imported into any Game Engine,

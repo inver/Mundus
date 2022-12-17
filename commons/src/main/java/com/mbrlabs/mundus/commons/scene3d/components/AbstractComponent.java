@@ -16,6 +16,8 @@
 
 package com.mbrlabs.mundus.commons.scene3d.components;
 
+import com.badlogic.gdx.math.Vector3;
+import com.mbrlabs.mundus.commons.dto.Vector3Dto;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 
 /**
@@ -24,8 +26,9 @@ import com.mbrlabs.mundus.commons.scene3d.GameObject;
  */
 public abstract class AbstractComponent implements Component {
 
-    public GameObject gameObject;
+    protected GameObject gameObject;
     protected Type type;
+    protected Vector3 pivotPoint;
 
     public AbstractComponent(GameObject go) {
         this.gameObject = go;

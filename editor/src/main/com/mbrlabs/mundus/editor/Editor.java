@@ -223,7 +223,7 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
     }
 
     public void dispose() {
-
+        shaderStorage.dispose();
     }
 
     @Override

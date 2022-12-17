@@ -33,11 +33,14 @@ public class CoordinateSystemComponent implements Renderable {
         partBuilder = modelBuilder.part("mainLines", GL20.GL_TRIANGLES,
                 (VertexAttributes.Usage.Position | VertexAttributes.Usage.ColorUnpacked), new Material());
         partBuilder.setColor(Color.RED);
-        ArrowShapeBuilder.build(partBuilder, -START_CONST - 1, 0f, 0f, START_CONST + 2, 0f, 0f, ARROW_CAP_SIZE, ARROW_THICKNESS, ARROW_DIVISIONS);
+        ArrowShapeBuilder.build(partBuilder, -START_CONST - 1, 0f, 0f, START_CONST + 2, 0f, 0f,
+                ARROW_CAP_SIZE, ARROW_THICKNESS, ARROW_DIVISIONS);
         partBuilder.setColor(Color.GREEN);
-        ArrowShapeBuilder.build(partBuilder, 0f, -START_CONST - 1, 0f, 0f, START_CONST + 2, 0f, ARROW_CAP_SIZE, ARROW_THICKNESS, ARROW_DIVISIONS);
+        ArrowShapeBuilder.build(partBuilder, 0f, -START_CONST - 1, 0f, 0f, START_CONST + 2, 0f,
+                ARROW_CAP_SIZE, ARROW_THICKNESS, ARROW_DIVISIONS);
         partBuilder.setColor(Color.BLUE);
-        ArrowShapeBuilder.build(partBuilder, 0f, 0f, -START_CONST - 1, 0f, 0f, START_CONST + 2, ARROW_CAP_SIZE, ARROW_THICKNESS, ARROW_DIVISIONS);
+        ArrowShapeBuilder.build(partBuilder, 0f, 0f, -START_CONST - 1, 0f, 0f, START_CONST + 2,
+                ARROW_CAP_SIZE, ARROW_THICKNESS, ARROW_DIVISIONS);
 
         instance = new ModelInstance(modelBuilder.end());
     }

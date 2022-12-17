@@ -27,7 +27,7 @@ public interface Component extends Renderable {
     enum Type {
         MODEL, TERRAIN, LIGHT, PARTICLE_SYSTEM, CAMERA, SKYBOX,
         // e.x. for useful control of camera
-        HANDLE
+        HANDLE, ACTION
     }
 
     GameObject getGameObject();
