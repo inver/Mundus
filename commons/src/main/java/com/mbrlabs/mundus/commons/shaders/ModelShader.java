@@ -157,7 +157,8 @@ public class ModelShader extends BaseShader {
         if (dirLights != null && dirLights.size > 0) {
             final DirectionalLight light = dirLights.first();
             set(UNIFORM_DIRECTIONAL_LIGHT_COLOR, light.getColor());
-            set(UNIFORM_DIRECTIONAL_LIGHT_DIR, light.getDirection());
+            //todo
+//            set(UNIFORM_DIRECTIONAL_LIGHT_DIR, light.getDirection());
             set(UNIFORM_DIRECTIONAL_LIGHT_INTENSITY, light.getIntensity());
         }
 
