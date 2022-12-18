@@ -17,6 +17,7 @@
 package com.mbrlabs.mundus.commons.env.lights;
 
 import com.badlogic.gdx.graphics.Color;
+import lombok.Getter;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -24,21 +25,22 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  * @author Marcus Brummer
  * @version 14-02-2016
  */
-public class BaseLight {
+@Getter
+public class AmbientLight {
 
-    public final Color color = new Color(1, 1, 1, 1);
-    public float intensity = 1f;
+    protected final Color color = new Color(1, 1, 1, 1);
+    protected float intensity = 1f;
 
-    public BaseLight() {
+    public AmbientLight() {
     }
 
-    public BaseLight(final BaseLight copyFrom) {
+    public AmbientLight(final AmbientLight copyFrom) {
         intensity = copyFrom.intensity;
         color.set(copyFrom.color);
     }
 
-    public BaseLight copy() {
-        return new BaseLight(this);
+    public AmbientLight copy() {
+        return new AmbientLight(this);
     }
 
     @Override
@@ -47,13 +49,21 @@ public class BaseLight {
 
         if (o == null || getClass() != o.getClass()) return false;
 
-        BaseLight baseLight = (BaseLight) o;
+        AmbientLight AmbientLight = (AmbientLight) o;
 
-        return new EqualsBuilder().append(intensity, baseLight.intensity).append(color, baseLight.color).isEquals();
+        return new EqualsBuilder().append(intensity, AmbientLight.intensity).append(color, AmbientLight.color).isEquals();
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37).append(color).append(intensity).toHashCode();
+    }
+
+    public float getIntensity() {
+        return intensity;
+    }
+
+    public void setIntensity(float intensity) {
+        this.intensity = intensity;
     }
 }

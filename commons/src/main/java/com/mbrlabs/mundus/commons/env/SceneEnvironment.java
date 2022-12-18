@@ -27,11 +27,11 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  */
 public class SceneEnvironment extends Environment {
     private Fog fog;
-    private BaseLight ambientLight;
+    private AmbientLight ambientLight;
     private String skyboxName;
 
     //todo refactor this methods to operate with BaseLight
-    public SceneEnvironment add(SunLight light) {
+    public SceneEnvironment add(SpotLight light) {
         var sunLights = (SunLightsAttribute) get(SunLightsAttribute.Type);
         if (sunLights == null) {
             sunLights = new SunLightsAttribute();
@@ -52,7 +52,7 @@ public class SceneEnvironment extends Environment {
         return this;
     }
 
-    public SceneEnvironment remove(SunLight light) {
+    public SceneEnvironment remove(SpotLight light) {
         SunLightsAttribute sunLights = ((SunLightsAttribute) get(SunLightsAttribute.Type));
         if (sunLights != null) {
             sunLights.lights.removeValue(light, true);
@@ -68,11 +68,11 @@ public class SceneEnvironment extends Environment {
         return this;
     }
 
-    public BaseLight getAmbientLight() {
+    public AmbientLight getAmbientLight() {
         return ambientLight;
     }
 
-    public void setAmbientLight(BaseLight ambientLight) {
+    public void setAmbientLight(AmbientLight ambientLight) {
         this.ambientLight = ambientLight;
     }
 

@@ -22,15 +22,15 @@ import com.badlogic.gdx.math.Vector3;
  * @author Marcus Brummer
  * @version 14-02-2016
  */
-public class DirectionalLight extends BaseLight {
+public class DirectionalLight extends AmbientLight {
 
-    public final Vector3 direction = new Vector3();
+    private final Vector3 direction = new Vector3();
 
     public DirectionalLight() {
     }
 
     public DirectionalLight(final DirectionalLight copyFrom) {
-        intensity = copyFrom.intensity;
+        intensity = copyFrom.getIntensity();
         color.set(copyFrom.color);
         direction.set(copyFrom.direction);
     }
@@ -38,5 +38,9 @@ public class DirectionalLight extends BaseLight {
     @Override
     public DirectionalLight copy() {
         return new DirectionalLight(this);
+    }
+
+    public Vector3 getDirection() {
+        return direction;
     }
 }

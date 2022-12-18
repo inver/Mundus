@@ -18,7 +18,7 @@ import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
-import com.mbrlabs.mundus.commons.env.lights.SunLight;
+import com.mbrlabs.mundus.commons.env.lights.SpotLight;
 import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
 import com.mbrlabs.mundus.editor.core.shader.ShaderStorage;
 import com.mbrlabs.mundus.editor.ui.widgets.RenderWidget;
@@ -88,8 +88,8 @@ public class PreviewGenerator {
         var modelBatch = new ModelBatch(new DefaultShaderProvider(config));
 
 
-        var sunLight = new SunLight();
-        sunLight.position.set(new Vector3(-10, -10, -10));
+        var sunLight = new SpotLight();
+        sunLight.getPosition().set(new Vector3(-10, -10, -10));
 
         var environment = new SceneEnvironment();
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 1f, 1f, 1f, 1f));

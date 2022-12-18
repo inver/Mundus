@@ -27,7 +27,6 @@ import java.util.List;
  * @version 12-08-2021
  */
 public class SceneDto {
-
     private long id;
     private String name;
     private List<GameObjectDto> gameObjects;
@@ -38,12 +37,6 @@ public class SceneDto {
     @Getter
     @Setter
     private CameraDto camera;
-//    private float camPosX;
-//    private float camPosY;
-//    private float camPosZ;
-//    private float camDirX = 0;
-//    private float camDirY = 0;
-//    private float camDirZ = 0;
 
     public SceneDto() {
         gameObjects = new ArrayList<>();

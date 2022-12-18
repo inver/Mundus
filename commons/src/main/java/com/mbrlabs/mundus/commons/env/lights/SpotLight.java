@@ -17,26 +17,26 @@
 package com.mbrlabs.mundus.commons.env.lights;
 
 import com.badlogic.gdx.math.Vector3;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * @author Marcus Brummer
  * @version 04-01-2016
  */
-public class SunLight extends BaseLight {
+@NoArgsConstructor
+@Getter
+public class SpotLight extends AmbientLight {
+    private final Vector3 position = new Vector3();
 
-    public final Vector3 position = new Vector3();
-
-    public SunLight() {
-    }
-
-    public SunLight(final SunLight copyFrom) {
+    public SpotLight(final SpotLight copyFrom) {
         intensity = copyFrom.intensity;
         color.set(copyFrom.color);
         position.set(copyFrom.position);
     }
 
     @Override
-    public SunLight copy() {
-        return new SunLight(this);
+    public SpotLight copy() {
+        return new SpotLight(this);
     }
 }

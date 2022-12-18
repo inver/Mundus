@@ -22,6 +22,7 @@ import com.mbrlabs.mundus.editor.core.shader.ShaderStorage;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.ui.AppUi;
 import com.mbrlabs.mundus.editor.ui.PreviewGenerator;
+import com.mbrlabs.mundus.editor.ui.components.camera.CameraService;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -50,6 +51,9 @@ import static org.mockito.Mockito.when;
         UiConfig.class,
 })
 public class TestConfig {
+
+    @Autowired
+    private CameraService cameraService;
 
     @Bean
     public AppEnvironment appEnvironment() {
@@ -122,7 +126,7 @@ public class TestConfig {
 
     @Bean
     public CameraConverter cameraConverter() {
-        return new EditorCameraConverter();
+        return new EditorCameraConverter(cameraService);
     }
 
     @Bean

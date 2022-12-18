@@ -16,6 +16,9 @@
 
 package com.mbrlabs.mundus.commons.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,13 +26,17 @@ import java.util.List;
  * @author Tibor Zsuro
  * @version 21-08-2021
  */
+@Getter
+@Setter
 public class GameObjectDto {
 
     private int id;
     private String name;
     private boolean active;
 
-    private float[] transform = new float[10];
+    private Vector3Dto transform;
+    private Vector4Dto rotation;
+    private Vector3Dto localeScale;
 
     private List<String> tags;
     private List<GameObjectDto> children;
@@ -64,10 +71,6 @@ public class GameObjectDto {
 
     public void setActive(boolean active) {
         this.active = active;
-    }
-
-    public float[] getTransform() {
-        return transform;
     }
 
     public List<String> getTags() {

@@ -63,12 +63,12 @@ public abstract class AppBaseShader extends DefaultBaseShader {
     protected void setLights(SceneEnvironment env) {
         // ambient
         if (env.getAmbientLight() != null) {
-            set(UNIFORM_AMBIENT_LIGHT_COLOR, env.getAmbientLight().color);
-            set(UNIFORM_AMBIENT_LIGHT_INTENSITY, env.getAmbientLight().intensity);
+            set(UNIFORM_AMBIENT_LIGHT_COLOR, env.getAmbientLight().getColor());
+            set(UNIFORM_AMBIENT_LIGHT_INTENSITY, env.getAmbientLight().getIntensity());
         }
 
         var sunLightAttr = env.get(SunLightsAttribute.class, SunLightsAttribute.Type);
-        set(UNIFORM_SUN_LIGHT_POSITION, sunLightAttr.lights.get(0).position);
+        set(UNIFORM_SUN_LIGHT_POSITION, sunLightAttr.lights.get(0).getPosition());
 //        set(UNIFORM_OBJECT_COLOR, new Color(1f, 1, 1, 1));
 //        set(UNIFORM_AMBIENT_LIGHT_COLOR, env.getAmbientLight().color);
 //        set(UNIFORM_AMBIENT_LIGHT_INTENSITY, env.getAmbientLight().intensity);

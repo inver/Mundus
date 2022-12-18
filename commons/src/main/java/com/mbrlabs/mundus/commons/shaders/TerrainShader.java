@@ -132,8 +132,8 @@ public class TerrainShader extends BaseShader {
 
     protected void setLights(SceneEnvironment env) {
         // ambient
-        set(UNIFORM_AMBIENT_LIGHT_COLOR, env.getAmbientLight().color);
-        set(UNIFORM_AMBIENT_LIGHT_INTENSITY, env.getAmbientLight().intensity);
+        set(UNIFORM_AMBIENT_LIGHT_COLOR, env.getAmbientLight().getColor());
+        set(UNIFORM_AMBIENT_LIGHT_INTENSITY, env.getAmbientLight().getIntensity());
 
         // TODO light array for each light type
 

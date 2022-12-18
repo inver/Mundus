@@ -32,7 +32,7 @@ public class CameraConverter {
     }
 
     public CameraDto fromComponent(CameraComponent c) {
-        var res = fromCamera(c.getInstance());
+        var res = fromCamera(c.getCamera());
         if (c.getGoId() >= 0) {
             res.setViewPointPosition(null);
             res.setDirectionGameObjectId(c.getGoId());

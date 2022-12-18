@@ -17,8 +17,10 @@ import com.mbrlabs.mundus.commons.importer.ModelComponentConverter;
 import com.mbrlabs.mundus.commons.importer.SceneConverter;
 import com.mbrlabs.mundus.commons.loader.ModelImporter;
 import com.mbrlabs.mundus.editor.core.project.EditorCameraConverter;
+import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.project.ProjectStorage;
 import com.mbrlabs.mundus.editor.core.registry.Registry;
+import com.mbrlabs.mundus.editor.ui.components.camera.CameraService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -95,8 +97,18 @@ public class RootConfig {
     }
 
     @Bean
+    public EditorCtx editorCtx() {
+        return new EditorCtx();
+    }
+
+    @Bean
+    public CameraService cameraService() {
+        return new CameraService(editorCtx());
+    }
+
+    @Bean
     public CameraConverter cameraConverter() {
-        return new EditorCameraConverter();
+        return new EditorCameraConverter(cameraService());
     }
 
     @Bean
@@ -113,5 +125,6 @@ public class RootConfig {
     public ModelComponentConverter modelComponentConverter() {
         return new ModelComponentConverter();
     }
+
 
 }

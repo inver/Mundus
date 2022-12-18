@@ -8,7 +8,6 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.scene3d.components.Renderable;
-import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -19,7 +18,6 @@ import java.util.Map;
 /**
  * Used as singleton current state of editor
  */
-@Component
 public class EditorCtx implements Disposable {
 
     private ProjectContext current;

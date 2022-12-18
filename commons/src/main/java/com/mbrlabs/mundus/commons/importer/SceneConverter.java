@@ -20,7 +20,7 @@ import com.mbrlabs.mundus.commons.Scene;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.dto.GameObjectDto;
 import com.mbrlabs.mundus.commons.dto.SceneDto;
-import com.mbrlabs.mundus.commons.env.lights.BaseLight;
+import com.mbrlabs.mundus.commons.env.lights.AmbientLight;
 import com.mbrlabs.mundus.commons.mapper.BaseLightConverter;
 import com.mbrlabs.mundus.commons.mapper.FogConverter;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
@@ -69,7 +69,7 @@ public class SceneConverter {
         // getEnvironment() stuff
         scene.getEnvironment().setFog(FogConverter.convert(dto.getFog()));
         scene.getEnvironment().setSkyboxName(dto.getSkyboxName());
-        BaseLight ambientLight = BaseLightConverter.convert(dto.getAmbientLight());
+        AmbientLight ambientLight = BaseLightConverter.convert(dto.getAmbientLight());
         if (ambientLight != null) {
             scene.getEnvironment().setAmbientLight(ambientLight);
         }

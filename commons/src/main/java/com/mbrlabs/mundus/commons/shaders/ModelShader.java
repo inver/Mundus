@@ -145,8 +145,8 @@ public class ModelShader extends BaseShader {
 
     private void setLights(SceneEnvironment env) {
         // ambient
-        set(UNIFORM_AMBIENT_LIGHT_COLOR, env.getAmbientLight().color);
-        set(UNIFORM_AMBIENT_LIGHT_INTENSITY, env.getAmbientLight().intensity);
+        set(UNIFORM_AMBIENT_LIGHT_COLOR, env.getAmbientLight().getColor());
+        set(UNIFORM_AMBIENT_LIGHT_INTENSITY, env.getAmbientLight().getIntensity());
 
         // TODO light array for each light type
 
@@ -156,9 +156,9 @@ public class ModelShader extends BaseShader {
         final Array<DirectionalLight> dirLights = dirLightAttribs == null ? null : dirLightAttribs.lights;
         if (dirLights != null && dirLights.size > 0) {
             final DirectionalLight light = dirLights.first();
-            set(UNIFORM_DIRECTIONAL_LIGHT_COLOR, light.color);
-            set(UNIFORM_DIRECTIONAL_LIGHT_DIR, light.direction);
-            set(UNIFORM_DIRECTIONAL_LIGHT_INTENSITY, light.intensity);
+            set(UNIFORM_DIRECTIONAL_LIGHT_COLOR, light.getColor());
+            set(UNIFORM_DIRECTIONAL_LIGHT_DIR, light.getDirection());
+            set(UNIFORM_DIRECTIONAL_LIGHT_INTENSITY, light.getIntensity());
         }
 
         // TODO point lights, spot lights

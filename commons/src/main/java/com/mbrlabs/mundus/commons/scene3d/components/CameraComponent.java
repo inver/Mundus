@@ -10,12 +10,12 @@ import lombok.Getter;
 @Getter
 public class CameraComponent extends AbstractComponent {
 
-    protected final Camera instance;
+    protected final Camera camera;
     protected int goId = -1;
 
     public CameraComponent(GameObject go, Camera camera) {
         super(go);
-        instance = camera;
+        this.camera = camera;
     }
 
     @Override

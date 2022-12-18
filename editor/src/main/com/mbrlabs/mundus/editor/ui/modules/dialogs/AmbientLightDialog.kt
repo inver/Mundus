@@ -24,7 +24,6 @@ import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTextField
 import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
-import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.events.EventBus
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent
 import com.mbrlabs.mundus.editor.events.SceneChangedEvent
@@ -40,8 +39,7 @@ import org.springframework.stereotype.Component
 @Component
 class AmbientLightDialog(
     eventBus: EventBus,
-    private val projectManager: ProjectManager,
-    private val colorPickerPresenter: ColorPickerPresenter,
+    colorPickerPresenter: ColorPickerPresenter,
     private val ctx: EditorCtx
 ) : BaseDialog("Ambient Light"),
     ProjectChangedEvent.ProjectChangedListener,

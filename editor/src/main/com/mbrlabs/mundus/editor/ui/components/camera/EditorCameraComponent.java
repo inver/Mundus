@@ -1,4 +1,4 @@
-package com.mbrlabs.mundus.editor.ui.components;
+package com.mbrlabs.mundus.editor.ui.components.camera;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
@@ -57,11 +57,8 @@ public class EditorCameraComponent extends CameraComponent {
         }
 
         instance.transform.set(gameObject.getTransform());
+        camera.transform(gameObject.getTransform());
         batch.render(instance);
-        if (cameraType == CameraType.DIRECTED) {
-//            handleLineInstance.transform.set(gameObject.getTransform());
-//            batch.render(handleLineInstance);
-        }
     }
 
     @Override

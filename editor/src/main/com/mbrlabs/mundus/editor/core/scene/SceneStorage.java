@@ -26,7 +26,7 @@ import com.mbrlabs.mundus.commons.Scene;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.dto.SceneDto;
 import com.mbrlabs.mundus.commons.env.Fog;
-import com.mbrlabs.mundus.commons.env.lights.BaseLight;
+import com.mbrlabs.mundus.commons.env.lights.AmbientLight;
 import com.mbrlabs.mundus.commons.env.lights.DirectionalLight;
 import com.mbrlabs.mundus.commons.importer.SceneConverter;
 import com.mbrlabs.mundus.commons.utils.FileUtils;
@@ -81,16 +81,16 @@ public class SceneStorage {
 
     private DirectionalLight createDefaultDirectionalLight() {
         var dirLight = new DirectionalLight();
-        dirLight.color.set(1, 1, 1, 1);
-        dirLight.intensity = 1f;
-        dirLight.direction.set(0, -1f, 0);
-        dirLight.direction.nor();
+        dirLight.getColor().set(1, 1, 1, 1);
+        dirLight.setIntensity(1f);
+        dirLight.getDirection().set(0, -1f, 0);
+        dirLight.getDirection().nor();
         return dirLight;
     }
 
-    private BaseLight createDefaultAmbientLight() {
-        var res = new BaseLight();
-        res.intensity = 0.3f;
+    private AmbientLight createDefaultAmbientLight() {
+        var res = new AmbientLight();
+        res.setIntensity( 0.3f);
         return res;
     }
 

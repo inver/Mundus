@@ -21,6 +21,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.dto.CameraDto;
 import com.mbrlabs.mundus.commons.dto.GameObjectDto;
+import com.mbrlabs.mundus.commons.dto.Vector3Dto;
+import com.mbrlabs.mundus.commons.dto.Vector4Dto;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.scene3d.components.CameraComponent;
 import com.mbrlabs.mundus.commons.scene3d.components.Component;
@@ -51,10 +53,9 @@ public class GameObjectConverter {
         go.setActive(dto.isActive());
 
         // transformation
-        final float[] transform = dto.getTransform();
-        go.translate(transform[0], transform[1], transform[2]);
-        go.rotate(transform[3], transform[4], transform[5], transform[6]);
-        go.scale(transform[7], transform[8], transform[9]);
+        go.translate(dto.getTransform().toVector());
+        go.rotate(dto.getRotation().toQuaternion());
+        go.scale(dto.getLocaleScale().toVector());
 
         // convert tags
         if (dto.getTags() != null || !dto.getTags().isEmpty()) {
@@ -92,56 +93,45 @@ public class GameObjectConverter {
      */
     public GameObjectDto convert(GameObject go) {
 
-        GameObjectDto descriptor = new GameObjectDto();
-        descriptor.setName(go.name);
-        descriptor.setId(go.getId());
-        descriptor.setActive(go.isActive());
+        var dto = new GameObjectDto();
+        dto.setName(go.name);
+        dto.setId(go.getId());
+        dto.setActive(go.isActive());
 
-        // translation
         go.getLocalPosition(TEMP_VEC);
-        final float[] transform = descriptor.getTransform();
-        transform[0] = TEMP_VEC.x;
-        transform[1] = TEMP_VEC.y;
-        transform[2] = TEMP_VEC.z;
+        dto.setTransform(new Vector3Dto(TEMP_VEC));
 
-        // rotation
         go.getLocalRotation(TEMP_QUAT);
-        transform[3] = TEMP_QUAT.x;
-        transform[4] = TEMP_QUAT.y;
-        transform[5] = TEMP_QUAT.z;
-        transform[6] = TEMP_QUAT.w;
+        dto.setRotation(new Vector4Dto(TEMP_QUAT));
 
-        // scaling
         go.getLocalScale(TEMP_VEC);
-        transform[7] = TEMP_VEC.x;
-        transform[8] = TEMP_VEC.y;
-        transform[9] = TEMP_VEC.z;
+        dto.setLocaleScale(new Vector3Dto(TEMP_VEC));
 
         // convert components
         for (Component c : go.getComponents()) {
             if (c.getType() == Component.Type.MODEL) {
-                descriptor.setModelComponent(modelComponentConverter.convert((ModelComponent) c));
+                dto.setModelComponent(modelComponentConverter.convert((ModelComponent) c));
             } else if (c.getType() == Component.Type.TERRAIN) {
-                descriptor.setTerrainComponent(TerrainComponentConverter.convert((TerrainComponent) c));
+                dto.setTerrainComponent(TerrainComponentConverter.convert((TerrainComponent) c));
             } else if (c.getType() == Component.Type.CAMERA) {
-                descriptor.getComponents().add(cameraConverter.fromComponent((CameraComponent) c));
+                dto.getComponents().add(cameraConverter.fromComponent((CameraComponent) c));
             }
         }
 
         // convert tags
         if (go.getTags() != null && !go.getTags().isEmpty()) {
             for (String tag : go.getTags()) {
-                descriptor.getTags().add(tag);
+                dto.getTags().add(tag);
             }
         }
 
         // recursively convert children
         if (go.getChildren() != null) {
             for (GameObject c : go.getChildren()) {
-                descriptor.getChildren().add(convert(c));
+                dto.getChildren().add(convert(c));
             }
         }
 
-        return descriptor;
+        return dto;
     }
 }
