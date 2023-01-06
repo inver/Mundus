@@ -25,12 +25,12 @@ import java.util.Map;
  */
 public class TerrainTexture {
 
-    private Map<SplatTexture.Channel, SplatTexture> textures;
-    private SplatMap splatmap;
+    private final Map<SplatTexture.Channel, SplatTexture> textures;
+    private SplatMap splatMap;
     private Terrain terrain;
 
     public TerrainTexture() {
-        textures = new HashMap<SplatTexture.Channel, SplatTexture>(5, 1);
+        textures = new HashMap<>(5, 1);
     }
 
     public SplatTexture getTexture(SplatTexture.Channel channel) {
@@ -38,10 +38,10 @@ public class TerrainTexture {
     }
 
     public void removeTexture(SplatTexture.Channel channel) {
-        if (splatmap != null) {
+        if (splatMap != null) {
             textures.remove(channel);
-            splatmap.clearChannel(channel);
-            splatmap.updateTexture();
+            splatMap.clearChannel(channel);
+            splatMap.updateTexture();
         }
     }
 
@@ -81,12 +81,12 @@ public class TerrainTexture {
         return textures;
     }
 
-    public SplatMap getSplatmap() {
-        return splatmap;
+    public SplatMap getSplatMap() {
+        return splatMap;
     }
 
-    public void setSplatmap(SplatMap splatmap) {
-        this.splatmap = splatmap;
+    public void setSplatMap(SplatMap splatMap) {
+        this.splatMap = splatMap;
     }
 
     public Terrain getTerrain() {

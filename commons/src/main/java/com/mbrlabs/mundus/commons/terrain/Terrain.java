@@ -19,11 +19,7 @@ package com.mbrlabs.mundus.commons.terrain;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.Renderable;
-import com.badlogic.gdx.graphics.g3d.RenderableProvider;
+import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
@@ -79,8 +75,10 @@ public class Terrain implements RenderableProvider, Disposable {
 
     private Terrain(int vertexResolution) {
         this.transform = new Matrix4();
-        this.attribs = MeshBuilder.createAttributes(VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal
-                | VertexAttributes.Usage.TextureCoordinates);
+        this.attribs = MeshBuilder.createAttributes(
+                VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal
+                        | VertexAttributes.Usage.TextureCoordinates
+        );
         this.posPos = attribs.getOffset(VertexAttributes.Usage.Position, -1);
         this.norPos = attribs.getOffset(VertexAttributes.Usage.Normal, -1);
         this.uvPos = attribs.getOffset(VertexAttributes.Usage.TextureCoordinates, -1);
@@ -117,9 +115,10 @@ public class Terrain implements RenderableProvider, Disposable {
         buildVertices();
         mesh.setVertices(vertices);
 
-        MeshPart meshPart = new MeshPart(null, mesh, 0, numIndices, GL20.GL_TRIANGLES);
+        var meshPart = new MeshPart(null, mesh, 0, numIndices, GL20.GL_TRIANGLES);
         meshPart.update();
-        ModelBuilder mb = new ModelBuilder();
+
+        var mb = new ModelBuilder();
         mb.begin();
         mb.part(meshPart, material);
         model = mb.end();
@@ -268,13 +267,11 @@ public class Terrain implements RenderableProvider, Disposable {
      * position in terrain coordinates and returns normal at that point. If
      * point doesn't belong to terrain -- it returns default
      * <code>Vector.Y<code> normal.
-     * 
-     * @param worldX
-     *            the x coord in world
-     * @param worldZ
-     *            the z coord in world
+     *
+     * @param worldX the x coord in world
+     * @param worldZ the z coord in world
      * @return normal at that point. If point doesn't belong to terrain -- it
-     *         returns default <code>Vector.Y<code> normal.
+     * returns default <code>Vector.Y<code> normal.
      */
     public Vector3 getNormalAtWordCoordinate(float worldX, float worldZ) {
         transform.getTranslation(c00);
@@ -294,11 +291,9 @@ public class Terrain implements RenderableProvider, Disposable {
 
     /**
      * Get Normal at x,y point of terrain
-     * 
-     * @param x
-     *            the x coord on terrain
-     * @param y
-     *            the y coord on terrain( actual z)
+     *
+     * @param x the x coord on terrain
+     * @param y the y coord on terrain( actual z)
      * @return the normal at the point of terrain
      */
     public Vector3 getNormalAt(int x, int y) {

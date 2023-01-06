@@ -41,8 +41,8 @@ public class GameObjectDto {
     private List<String> tags;
     private List<GameObjectDto> children;
     private List<ComponentDto> components = new ArrayList<>();
-    private ModelComponentDto modelComponent;
-    private TerrainComponentDto terrainComponent;
+//    private ModelComponentDto modelComponent;
+//    private TerrainComponentDto terrainComponent;
 
     public GameObjectDto() {
         children = new ArrayList<>();
@@ -89,21 +89,21 @@ public class GameObjectDto {
         this.children = children;
     }
 
-    public ModelComponentDto getModelComponent() {
-        return modelComponent;
-    }
-
-    public void setModelComponent(ModelComponentDto modelComponent) {
-        this.modelComponent = modelComponent;
-    }
-
-    public TerrainComponentDto getTerrainComponent() {
-        return terrainComponent;
-    }
-
-    public void setTerrainComponent(TerrainComponentDto terrainComponent) {
-        this.terrainComponent = terrainComponent;
-    }
+//    public ModelComponentDto getModelComponent() {
+//        return modelComponent;
+//    }
+//
+//    public void setModelComponent(ModelComponentDto modelComponent) {
+//        this.modelComponent = modelComponent;
+//    }
+//
+//    public TerrainComponentDto getTerrainComponent() {
+//        return terrainComponent;
+//    }
+//
+//    public void setTerrainComponent(TerrainComponentDto terrainComponent) {
+//        this.terrainComponent = terrainComponent;
+//    }
 
     public List<ComponentDto> getComponents() {
         return components;

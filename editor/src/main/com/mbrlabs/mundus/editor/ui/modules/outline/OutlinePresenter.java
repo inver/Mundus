@@ -10,11 +10,17 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.widget.MenuItem;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
+import com.mbrlabs.mundus.commons.terrain.Terrain;
 import com.mbrlabs.mundus.editor.core.assets.AssetsStorage;
+import com.mbrlabs.mundus.editor.core.assets.TerrainService;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
+import com.mbrlabs.mundus.editor.core.project.ProjectManager;
+import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
+import com.mbrlabs.mundus.editor.events.AssetImportEvent;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.GameObjectSelectedEvent;
 import com.mbrlabs.mundus.editor.events.SceneGraphChangedEvent;
+import com.mbrlabs.mundus.editor.scene3d.components.PickableTerrainComponent;
 import com.mbrlabs.mundus.editor.tools.ToolManager;
 import com.mbrlabs.mundus.editor.ui.AppUi;
 import com.mbrlabs.mundus.editor.ui.components.camera.CameraService;
@@ -35,6 +41,8 @@ public class OutlinePresenter {
     private final ToolManager toolManager;
     private final AssetsStorage assetsStorage;
     private final CameraService cameraService;
+    private final TerrainService terrainService;
+    private final ProjectManager projectManager;
 
     public void init(@NotNull Outline outline) {
         eventBus.register(outline);
@@ -118,7 +126,66 @@ public class OutlinePresenter {
         initAddShaderButton(outline, outline.getRightClickMenu().getAddShader());
         initAddGroupButton(outline, outline.getRightClickMenu().getAddGroup());
         initAddCameraButton(outline, outline.getRightClickMenu().getAddCamera());
+        initAddTerrainButton(outline, outline.getRightClickMenu().getAddTerrain());
     }
+
+    private void initAddTerrainButton(Outline outline, MenuItem addTerrain) {
+        addTerrain.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                try {
+                    log.debug("Add terrain game object in root node.");
+
+                    var id = ctx.getCurrent().obtainID();
+                    var asset = terrainService.createTerrainAsset("Terrain " + id,
+                            Terrain.DEFAULT_VERTEX_RESOLUTION, Terrain.DEFAULT_SIZE);
+
+                    var terrainGO = new GameObject();
+                    terrainGO.name = "Terrain " + id;
+                    asset.getTerrain().setTransform(terrainGO.getTransform());
+
+                    var terrainComponent = new PickableTerrainComponent(terrainGO, ShaderConstants.PICKER);
+                    terrainComponent.setTerrain(asset);
+
+                    terrainGO.getComponents().add(terrainComponent);
+                    terrainComponent.encodeRayPickColorId();
+
+                    ctx.getCurrent().getCurrentScene().getSceneGraph().addGameObject(terrainGO);
+                    outline.addGoToTree(null, terrainGO);
+
+//                    ctx.getCurrentScene().terrains.add(asset)
+                    projectManager.saveProject(ctx.getCurrent());
+
+                    eventBus.post(new AssetImportEvent(asset));
+                    eventBus.post(new SceneGraphChangedEvent());
+                } catch (Exception e) {
+                    log.error("ERROR", e);
+                }
+            }
+        });
+    }
+
+//    fun createTerrainGO(
+//            shader:BaseShader,
+//            goID:Int,
+//            goName:String,
+//            terrain:TerrainAsset,
+//            pickShader:BaseShader
+//    ):
+//
+//    GameObject {
+//        val terrainGO = GameObject(null as String, goID)
+//        terrainGO.name = goName
+//
+//        terrain.terrain.setTransform(terrainGO.transform)
+//        val terrainComponent = PickableTerrainComponent(terrainGO, pickShader)
+//        terrainComponent.terrain = terrain
+//        terrainGO.components.add(terrainComponent)
+//        terrainComponent.shader = shader
+//        terrainComponent.encodeRayPickColorId()
+//
+//        return terrainGO
+//    }
 
     private void initAddCameraButton(Outline outline, MenuItem addCamera) {
         addCamera.addListener(new ClickListener() {

@@ -117,12 +117,16 @@ public class AssetsStorage {
         }
     }
 
+    public FileHandle getAssetsFolder() {
+        return new FileHandle(ctx.getCurrent().path).child("assets");
+    }
+
     @SneakyThrows
     public ShaderAsset createShader() {
         var id = ctx.getCurrent().obtainID();
         var assetName = "Shader_" + id;
 
-        var path = new FileHandle(ctx.getCurrent().path).child("assets").child(assetName);
+        var path = getAssetsFolder().child(assetName);
         FileUtils.forceMkdir(path.file());
 
         var commonMeta = new Meta<ShaderMeta>();

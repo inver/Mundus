@@ -31,10 +31,7 @@ import java.util.Map;
 @Slf4j
 public class TerrainComponentConverter {
 
-    private final static String TAG = TerrainComponentConverter.class.getSimpleName();
-
-    public static TerrainComponent convert(TerrainComponentDto dto, GameObject go,
-                                           Map<String, Asset<?>> assets) {
+    public TerrainComponent convert(TerrainComponentDto dto, GameObject go, Map<String, Asset<?>> assets) {
         // find terrainAsset
         TerrainAsset terrain = (TerrainAsset) assets.get(dto.getTerrainID());
 
@@ -50,7 +47,7 @@ public class TerrainComponentConverter {
         return terrainComponent;
     }
 
-    public static TerrainComponentDto convert(TerrainComponent terrainComponent) {
+    public TerrainComponentDto convert(TerrainComponent terrainComponent) {
         TerrainComponentDto descriptor = new TerrainComponentDto();
         descriptor.setTerrainID(terrainComponent.getTerrain().getID());
 

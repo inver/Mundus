@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component
  * @version 07-06-2016
  */
 @Component
-class Toaster(private val appUi: AppUi) {
+class Toaster(appUi: AppUi) {
 
     /** Toast type determines background color of toast.  */
     enum class ToastType {

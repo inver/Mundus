@@ -166,9 +166,9 @@ public class TerrainShader extends BaseShader {
         }
 
         // splat textures
-        if (terrainTexture.getSplatmap() != null) {
+        if (terrainTexture.getSplatMap() != null) {
             set(UNIFORM_TEXTURE_HAS_SPLATMAP, 1);
-            set(UNIFORM_TEXTURE_SPLAT, terrainTexture.getSplatmap().getTexture());
+            set(UNIFORM_TEXTURE_SPLAT, terrainTexture.getSplatMap().getTexture());
             st = terrainTexture.getTexture(SplatTexture.Channel.R);
             if (st != null) set(UNIFORM_TEXTURE_R, st.texture.getTexture());
             st = terrainTexture.getTexture(SplatTexture.Channel.G);

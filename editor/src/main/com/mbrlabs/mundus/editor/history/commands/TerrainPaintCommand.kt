@@ -40,7 +40,7 @@ class TerrainPaintCommand(private var terrain: Terrain?) : DisposableCommand {
     }
 
     override fun execute() {
-        val sm = terrain!!.terrainTexture.splatmap
+        val sm = terrain!!.terrainTexture.splatMap
         if (sm != null) {
             sm.pixmap.drawPixmap(after!!, 0, 0)
             sm.updateTexture()
@@ -48,7 +48,7 @@ class TerrainPaintCommand(private var terrain: Terrain?) : DisposableCommand {
     }
 
     override fun undo() {
-        val sm = terrain!!.terrainTexture.splatmap
+        val sm = terrain!!.terrainTexture.splatMap
         if (sm != null) {
             sm.pixmap.drawPixmap(before!!, 0, 0)
             sm.updateTexture()

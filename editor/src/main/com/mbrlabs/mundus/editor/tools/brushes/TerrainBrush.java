@@ -165,7 +165,7 @@ public abstract class TerrainBrush extends Tool {
 
     private void paint() {
         Terrain terrain = terrainAsset.getTerrain();
-        SplatMap sm = terrain.getTerrainTexture().getSplatmap();
+        SplatMap sm = terrain.getTerrainTexture().getSplatMap();
         if (sm == null) return;
 
         Vector3 terrainPos = terrain.getPosition(tVec1);
@@ -366,7 +366,7 @@ public abstract class TerrainBrush extends Tool {
             getHistory().add(heightCommand);
         }
         if (splatmapModified && paintCommand != null) {
-            final SplatMap sm = terrainAsset.getTerrain().getTerrainTexture().getSplatmap();
+            final SplatMap sm = terrainAsset.getTerrain().getTerrainTexture().getSplatMap();
             paintCommand.setAfter(sm.getPixmap());
             getHistory().add(paintCommand);
         }
@@ -411,7 +411,7 @@ public abstract class TerrainBrush extends Tool {
             heightCommand = new TerrainHeightCommand(terrainAsset.getTerrain());
             heightCommand.setHeightDataBefore(terrainAsset.getTerrain().heightData);
         } else if (mode == BrushMode.PAINT) {
-            final SplatMap sm = terrainAsset.getTerrain().getTerrainTexture().getSplatmap();
+            final SplatMap sm = terrainAsset.getTerrain().getTerrainTexture().getSplatMap();
             if (sm != null) {
                 paintCommand = new TerrainPaintCommand(terrainAsset.getTerrain());
                 paintCommand.setBefore(sm.getPixmap());

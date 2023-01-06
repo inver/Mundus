@@ -95,7 +95,8 @@ public class ProjectManager implements Disposable {
         var scene = sceneStorage.createDefault(ctx.path, ctx.obtainID());
         scene.getEnvironment().setSkyboxName(DEFAULT_SKYBOX_NAME);
         sceneStorage.copyAssetToProject(ctx.path,
-                editorCtx.getAssetLibrary().get(ProjectConstants.DEFAULT_SKYBOX_PATH));
+                editorCtx.getAssetLibrary().get(ProjectConstants.DEFAULT_SKYBOX_PATH)
+        );
         loadSkybox(ctx, scene);
 
         ctx.setCurrentScene(scene);

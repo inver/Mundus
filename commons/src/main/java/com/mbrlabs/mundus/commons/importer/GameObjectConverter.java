@@ -44,6 +44,7 @@ public class GameObjectConverter {
 
     private final ModelComponentConverter modelComponentConverter;
     private final CameraConverter cameraConverter;
+    private final TerrainComponentConverter terrainComponentConverter;
 
     /**
      * Converts {@link GameObjectDto} to {@link GameObject}.
@@ -72,11 +73,11 @@ public class GameObjectConverter {
             }
         }
         // convert components
-        if (dto.getModelComponent() != null) {
-            go.getComponents().add(modelComponentConverter.convert(dto.getModelComponent(), go, assets));
-        } else if (dto.getTerrainComponent() != null) {
-            go.getComponents().add(TerrainComponentConverter.convert(dto.getTerrainComponent(), go, assets));
-        }
+//        if (dto.getModelComponent() != null) {
+//            go.getComponents().add(modelComponentConverter.convert(dto.getModelComponent(), go, assets));
+//        } else if (dto.getTerrainComponent() != null) {
+//            go.getComponents().add(terrainComponentConverter.convert(dto.getTerrainComponent(), go, assets));
+//        }
 
         // recursively convert children
         if (dto.getChildren() != null) {
@@ -110,9 +111,9 @@ public class GameObjectConverter {
         // convert components
         for (Component c : go.getComponents()) {
             if (c.getType() == Component.Type.MODEL) {
-                dto.setModelComponent(modelComponentConverter.convert((ModelComponent) c));
+//                dto.setModelComponent(modelComponentConverter.convert((ModelComponent) c));
             } else if (c.getType() == Component.Type.TERRAIN) {
-                dto.setTerrainComponent(TerrainComponentConverter.convert((TerrainComponent) c));
+//                dto.setTerrainComponent(terrainComponentConverter.convert((TerrainComponent) c));
             } else if (c.getType() == Component.Type.CAMERA) {
                 dto.getComponents().add(cameraConverter.fromComponent((CameraComponent) c));
             }

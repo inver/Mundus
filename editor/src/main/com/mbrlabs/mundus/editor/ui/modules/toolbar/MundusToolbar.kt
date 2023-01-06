@@ -18,8 +18,13 @@ package com.mbrlabs.mundus.editor.ui.modules.toolbar
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import com.badlogic.gdx.utils.Array
 import com.kotcrab.vis.ui.widget.*
+import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
+import com.mbrlabs.mundus.editor.events.EventBus
+import com.mbrlabs.mundus.editor.events.SceneGraphChangedEvent
+import com.mbrlabs.mundus.editor.events.SceneGraphChangedEvent.SceneGraphChangedListener
 import com.mbrlabs.mundus.editor.tools.*
 import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.ExportDialog
@@ -37,13 +42,15 @@ import org.springframework.stereotype.Component
  */
 @Component
 class MundusToolbar(
+    private val ctx: EditorCtx,
+    private val eventBus: EventBus,
     toolbarPresenter: ToolbarPresenter,
     private val toolManager: ToolManager,
     private val projectManager: ProjectManager,
     private val toaster: Toaster,
     private val exportDialog: ExportDialog,
     private val appUi: AppUi
-) : Toolbar() {
+) : Toolbar(), SceneGraphChangedEvent.SceneGraphChangedListener {
     private val saveBtn = FaTextButton(Fa.SAVE)
     private val importBtn = FaTextButton(Fa.DOWNLOAD)
     private val exportBtn = FaTextButton(Fa.GIFT)
@@ -63,6 +70,8 @@ class MundusToolbar(
     private val cameraSelector = VisSelectBox<String>();
 
     init {
+        eventBus.register(this)
+
         importMenu.addItem(importMesh)
         importMenu.addItem(importTexture)
         importMenu.addItem(createMaterial)
@@ -94,6 +103,7 @@ class MundusToolbar(
 
         sceneSelector.setItems("Main");
         cameraSelector.setItems("Main", "Pilot")
+//        cameraSelector.addListener(object )
 
         addItem(saveBtn, true)
         addItem(importBtn, true)
@@ -201,4 +211,17 @@ class MundusToolbar(
         }
     }
 
+    override fun onSceneGraphChanged(event: SceneGraphChangedEvent) {
+        val cameras = ArrayList<com.mbrlabs.mundus.commons.scene3d.components.Component>()
+        ctx.current.currentScene.sceneGraph.gameObjects.forEach {
+            it.findComponentsByType(cameras, com.mbrlabs.mundus.commons.scene3d.components.Component.Type.CAMERA, true)
+        }
+
+        val arr = Array<String>()
+        arr.add("Main")
+        cameras.forEach() {
+            arr.add(it.gameObject.parent.name)
+        }
+        cameraSelector.items = arr
+    }
 }

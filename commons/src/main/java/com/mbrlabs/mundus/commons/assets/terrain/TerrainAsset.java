@@ -16,7 +16,6 @@
 package com.mbrlabs.mundus.commons.assets.terrain;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.FloatArray;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.assets.meta.Meta;
 import com.mbrlabs.mundus.commons.assets.pixmap.PixmapTextureAsset;
@@ -25,6 +24,7 @@ import com.mbrlabs.mundus.commons.terrain.SplatMap;
 import com.mbrlabs.mundus.commons.terrain.SplatTexture;
 import com.mbrlabs.mundus.commons.terrain.Terrain;
 import com.mbrlabs.mundus.commons.terrain.TerrainTexture;
+import lombok.Setter;
 
 import java.util.Map;
 
@@ -37,13 +37,14 @@ public class TerrainAsset extends Asset<TerrainMeta> {
     private float[] data;
 
     // dependencies
-    private PixmapTextureAsset splatmap;
+    private PixmapTextureAsset splatMap;
     private TextureAsset splatBase;
     private TextureAsset splatR;
     private TextureAsset splatG;
     private TextureAsset splatB;
     private TextureAsset splatA;
 
+    @Setter
     private Terrain terrain;
 
     public TerrainAsset(Meta<TerrainMeta> meta) {
@@ -54,16 +55,16 @@ public class TerrainAsset extends Asset<TerrainMeta> {
         return data;
     }
 
-    public PixmapTextureAsset getSplatmap() {
-        return splatmap;
+    public PixmapTextureAsset getSplatMap() {
+        return splatMap;
     }
 
-    public void setSplatmap(PixmapTextureAsset splatmap) {
-        this.splatmap = splatmap;
-        if (splatmap == null) {
-            meta.getAdditional().setSplatmap(null);
+    public void setSplatMap(PixmapTextureAsset splatMap) {
+        this.splatMap = splatMap;
+        if (splatMap == null) {
+            meta.getAdditional().setSplatMap(null);
         } else {
-            meta.getAdditional().setSplatmap(splatmap.getID());
+            meta.getAdditional().setSplatMap(splatMap.getID());
         }
     }
 
@@ -140,36 +141,15 @@ public class TerrainAsset extends Asset<TerrainMeta> {
 
     @Override
     public void load() {
-        // load height data from terra file
-        final FloatArray floatArray = new FloatArray();
-
-//        DataInputStream is;
-//        try {
-//            is = new DataInputStream(file.read());
-//            while (is.available() > 0) {
-//                floatArray.add(is.readFloat());
-//            }
-//            is.close();
-//        } catch (EOFException e) {
-//            // e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return;
-//        }
-//        data = floatArray.toArray();
-//
-//        terrain = new Terrain(meta.getAdditional().getSize(), data);
-//        terrain.init();
-//        terrain.updateUvScale(new Vector2(meta.getAdditional().getUv(), meta.getAdditional().getUv()));
-//        terrain.update();
+        throw new RuntimeException("Unable to load asset");
     }
 
     @Override
     public void resolveDependencies(Map<String, Asset> assets) {
         // splatmap
-        String id = meta.getAdditional().getSplatmap();
+        String id = meta.getAdditional().getSplatMap();
         if (id != null && assets.containsKey(id)) {
-            setSplatmap((PixmapTextureAsset) assets.get(id));
+            setSplatMap((PixmapTextureAsset) assets.get(id));
         }
 
         // splat channel base
@@ -207,10 +187,10 @@ public class TerrainAsset extends Asset<TerrainMeta> {
     public void applyDependencies() {
         TerrainTexture terrainTexture = terrain.getTerrainTexture();
 
-        if (splatmap == null) {
-            terrainTexture.setSplatmap(null);
+        if (splatMap == null) {
+            terrainTexture.setSplatMap(null);
         } else {
-            terrainTexture.setSplatmap(new SplatMap(splatmap));
+            terrainTexture.setSplatMap(new SplatMap(splatMap));
         }
         if (splatBase == null) {
             terrainTexture.removeTexture(SplatTexture.Channel.BASE);
@@ -254,7 +234,7 @@ public class TerrainAsset extends Asset<TerrainMeta> {
 
     @Override
     public boolean usesAsset(Asset assetToCheck) {
-        if (assetToCheck == splatmap)
+        if (assetToCheck == splatMap)
             return true;
 
         // does the splatmap use the asset

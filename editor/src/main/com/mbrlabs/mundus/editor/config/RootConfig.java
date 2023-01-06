@@ -2,6 +2,7 @@ package com.mbrlabs.mundus.editor.config;
 
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mbrlabs.mundus.commons.assets.material.MaterialAssetLoader;
 import com.mbrlabs.mundus.commons.assets.meta.MetaService;
@@ -11,10 +12,7 @@ import com.mbrlabs.mundus.commons.assets.shader.ShaderAssetLoader;
 import com.mbrlabs.mundus.commons.assets.skybox.SkyboxAssetLoader;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAssetLoader;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAssetLoader;
-import com.mbrlabs.mundus.commons.importer.CameraConverter;
-import com.mbrlabs.mundus.commons.importer.GameObjectConverter;
-import com.mbrlabs.mundus.commons.importer.ModelComponentConverter;
-import com.mbrlabs.mundus.commons.importer.SceneConverter;
+import com.mbrlabs.mundus.commons.importer.*;
 import com.mbrlabs.mundus.commons.loader.ModelImporter;
 import com.mbrlabs.mundus.editor.core.project.EditorCameraConverter;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
@@ -33,7 +31,9 @@ public class RootConfig {
 
     @Bean
     public ObjectMapper mapper() {
-        return new ObjectMapper();
+        var res = new ObjectMapper();
+        res.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        return res;
     }
 
     @Bean
@@ -67,7 +67,7 @@ public class RootConfig {
     }
 
     @Bean
-    public TerrainAssetLoader terrainService() {
+    public TerrainAssetLoader terrainAssetLoader() {
         return new TerrainAssetLoader();
     }
 
@@ -117,8 +117,13 @@ public class RootConfig {
     }
 
     @Bean
+    public TerrainComponentConverter terrainComponentConverter() {
+        return new TerrainComponentConverter();
+    }
+
+    @Bean
     public GameObjectConverter gameObjectConverter() {
-        return new GameObjectConverter(modelComponentConverter(), cameraConverter());
+        return new GameObjectConverter(modelComponentConverter(), cameraConverter(), terrainComponentConverter());
     }
 
     @Bean

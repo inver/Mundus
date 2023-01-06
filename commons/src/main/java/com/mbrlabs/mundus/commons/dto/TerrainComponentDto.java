@@ -25,8 +25,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class TerrainComponentDto {
-
+public class TerrainComponentDto extends ComponentDto {
     private String terrainID;
     private String shaderKey;
 }

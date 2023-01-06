@@ -256,7 +256,7 @@ class Outline(
 
         val addGroup = MenuItem("Add group")
         val addCamera = MenuItem("Add camera")
-        private val addTerrain: MenuItem = MenuItem("Add terrain")
+        val addTerrain: MenuItem = MenuItem("Add terrain")
         private val addLight: MenuItem = MenuItem("Add light")
         val addShader = MenuItem("Add Shader")
         private val duplicate: MenuItem = MenuItem("Duplicate")
@@ -271,45 +271,6 @@ class Outline(
         init {
 
 
-            // add terrainAsset
-            addTerrain.addListener(object : ClickListener() {
-                override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                    try {
-                        log.trace("Add terrain game object in root node.")
-                        val context = ctx.current
-                        val sceneGraph = context.getCurrentScene().sceneGraph
-                        val goID = context.obtainID()
-                        val name = "Terrain $goID"
-                        // create asset
-                        val asset = assetManager.createTerrainAsset(
-                            name,
-                            Terrain.DEFAULT_VERTEX_RESOLUTION, Terrain.DEFAULT_SIZE
-                        )
-                        asset.load()
-                        asset.applyDependencies()
-
-//                        val terrainGO = createTerrainGO(
-//                            shaderStorage.get(ShaderConstants.TERRAIN),
-//                            goID, name, asset,
-//                            shaderStorage.get(ShaderConstants.PICKER)
-//                        )
-//                        // update sceneGraph
-//                        sceneGraph.addGameObject(terrainGO)
-//                        // update outline
-//                        addGoToTree(null, terrainGO)
-
-                        TODO()
-//                        context.getCurrentScene().terrains.add(asset)
-//                        projectManager.saveProject(context)
-//
-//                        eventBus.post(AssetImportEvent(asset))
-//                        eventBus.post(SceneGraphChangedEvent())
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-
-                }
-            })
 
             rename.addListener(object : ClickListener() {
                 override fun clicked(event: InputEvent?, x: Float, y: Float) {

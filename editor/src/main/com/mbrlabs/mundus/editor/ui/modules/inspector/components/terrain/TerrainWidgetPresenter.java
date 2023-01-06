@@ -161,10 +161,10 @@ public class TerrainWidgetPresenter {
         }
 
         // create splatmap
-        if (terrainAsset.getSplatmap() == null) {
+        if (terrainAsset.getSplatMap() == null) {
             try {
                 var splatmap = assetManager.createPixmapTextureAsset(512);
-                terrainAsset.setSplatmap(splatmap);
+                terrainAsset.setSplatMap(splatmap);
                 terrainAsset.applyDependencies();
                 metaService.save(terrainAsset.getMeta());
                 eventBus.post(new AssetImportEvent(splatmap));

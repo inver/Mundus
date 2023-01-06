@@ -146,12 +146,16 @@ public class GameObject extends SimpleNode<GameObject> implements Iterable<GameO
         if (includeChildren) {
             for (GameObject go : this) {
                 for (Component c : go.components) {
-                    if (c.getType() == type) out.add(c);
+                    if (c.getType() == type) {
+                        out.add(c);
+                    }
                 }
             }
         } else {
             for (Component c : components) {
-                if (c.getType() == type) out.add(c);
+                if (c.getType() == type) {
+                    out.add(c);
+                }
             }
         }
     }
