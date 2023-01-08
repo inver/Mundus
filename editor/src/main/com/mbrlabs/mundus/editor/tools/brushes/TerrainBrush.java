@@ -24,14 +24,10 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.collision.Ray;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
-import com.mbrlabs.mundus.commons.terrain.SplatMap;
 import com.mbrlabs.mundus.commons.terrain.SplatTexture;
-import com.mbrlabs.mundus.commons.terrain.Terrain;
-import com.mbrlabs.mundus.commons.utils.MathUtils;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.history.commands.TerrainHeightCommand;
@@ -164,92 +160,92 @@ public abstract class TerrainBrush extends Tool {
     }
 
     private void paint() {
-        Terrain terrain = terrainAsset.getTerrain();
-        SplatMap sm = terrain.getTerrainTexture().getSplatMap();
-        if (sm == null) return;
-
-        Vector3 terrainPos = terrain.getPosition(tVec1);
-        final float splatX = ((brushPos.x - terrainPos.x) / (float) terrain.terrainWidth) * sm.getWidth();
-        final float splatY = ((brushPos.z - terrainPos.z) / (float) terrain.terrainDepth) * sm.getHeight();
-        final float splatRad = (radius / terrain.terrainWidth) * sm.getWidth();
-        final Pixmap pixmap = sm.getPixmap();
-
-        for (int smX = 0; smX < pixmap.getWidth(); smX++) {
-            for (int smY = 0; smY < pixmap.getHeight(); smY++) {
-                final float dst = MathUtils.dst(splatX, splatY, smX, smY);
-                if (dst <= splatRad) {
-                    final float opacity = getValueOfBrushPixmap(splatX, splatY, smX, smY, splatRad) * 0.5f * strength;
-                    int newPixelColor = sm.additiveBlend(pixmap.getPixel(smX, smY), paintChannel, opacity);
-                    pixmap.drawPixel(smX, smY, newPixelColor);
-                }
-            }
-        }
-
-        sm.updateTexture();
-        splatmapModified = true;
         //todo
+//        Terrain terrain = terrainAsset.getTerrain();
+//        SplatMap sm = terrain.getTerrainTexture().getSplatMap();
+//        if (sm == null) return;
+//
+//        Vector3 terrainPos = terrain.getPosition(tVec1);
+//        final float splatX = ((brushPos.x - terrainPos.x) / (float) terrain.terrainWidth) * sm.getWidth();
+//        final float splatY = ((brushPos.z - terrainPos.z) / (float) terrain.terrainDepth) * sm.getHeight();
+//        final float splatRad = (radius / terrain.terrainWidth) * sm.getWidth();
+//        final Pixmap pixmap = sm.getPixmap();
+//
+//        for (int smX = 0; smX < pixmap.getWidth(); smX++) {
+//            for (int smY = 0; smY < pixmap.getHeight(); smY++) {
+//                final float dst = MathUtils.dst(splatX, splatY, smX, smY);
+//                if (dst <= splatRad) {
+//                    final float opacity = getValueOfBrushPixmap(splatX, splatY, smX, smY, splatRad) * 0.5f * strength;
+//                    int newPixelColor = sm.additiveBlend(pixmap.getPixel(smX, smY), paintChannel, opacity);
+//                    pixmap.drawPixel(smX, smY, newPixelColor);
+//                }
+//            }
+//        }
+//
+//        sm.updateTexture();
+//        splatmapModified = true;
 //        assetManager.dirty(terrainAsset);
     }
 
     private void flatten() {
-        Terrain terrain = terrainAsset.getTerrain();
-        final Vector3 terPos = terrain.getPosition(tVec1);
-        for (int x = 0; x < terrain.vertexResolution; x++) {
-            for (int z = 0; z < terrain.vertexResolution; z++) {
-                final Vector3 vertexPos = terrain.getVertexPosition(tVec0, x, z);
-                vertexPos.x += terPos.x;
-                vertexPos.z += terPos.z;
-                float distance = vertexPos.dst(brushPos);
-
-                if (distance <= radius) {
-                    final int index = z * terrain.vertexResolution + x;
-                    final float diff = Math.abs(terrain.heightData[index] - heightSample);
-                    if (diff <= 1f) {
-                        terrain.heightData[index] = heightSample;
-                    } else if (diff > 1f) {
-                        final float elevation = getValueOfBrushPixmap(brushPos.x, brushPos.z, vertexPos.x, vertexPos.z,
-                                radius);
-                        // current height is lower than sample
-                        if (heightSample > terrain.heightData[index]) {
-                            terrain.heightData[index] += elevation * strength;
-                        } else {
-                            float newHeight = terrain.heightData[index] - elevation * strength;
-                            if (diff > Math.abs(newHeight) || terrain.heightData[index] > heightSample) {
-                                terrain.heightData[index] = newHeight;
-                            }
-
-                        }
-                    }
-                }
-            }
-        }
-
-        terrain.update();
-        terrainHeightModified = true;
+//        Terrain terrain = terrainAsset.getTerrain();
+//        final Vector3 terPos = terrain.getPosition(tVec1);
+//        for (int x = 0; x < terrain.vertexResolution; x++) {
+//            for (int z = 0; z < terrain.vertexResolution; z++) {
+//                final Vector3 vertexPos = terrain.getVertexPosition(tVec0, x, z);
+//                vertexPos.x += terPos.x;
+//                vertexPos.z += terPos.z;
+//                float distance = vertexPos.dst(brushPos);
+//
+//                if (distance <= radius) {
+//                    final int index = z * terrain.vertexResolution + x;
+//                    final float diff = Math.abs(terrain.heightData[index] - heightSample);
+//                    if (diff <= 1f) {
+//                        terrain.heightData[index] = heightSample;
+//                    } else if (diff > 1f) {
+//                        final float elevation = getValueOfBrushPixmap(brushPos.x, brushPos.z, vertexPos.x, vertexPos.z,
+//                                radius);
+//                        // current height is lower than sample
+//                        if (heightSample > terrain.heightData[index]) {
+//                            terrain.heightData[index] += elevation * strength;
+//                        } else {
+//                            float newHeight = terrain.heightData[index] - elevation * strength;
+//                            if (diff > Math.abs(newHeight) || terrain.heightData[index] > heightSample) {
+//                                terrain.heightData[index] = newHeight;
+//                            }
+//
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//
+//        terrain.update();
+//        terrainHeightModified = true;
         //todo
 //        assetManager.dirty(terrainAsset);
     }
 
     private void raiseLower(BrushAction action) {
-        Terrain terrain = terrainAsset.getTerrain();
-        final Vector3 terPos = terrain.getPosition(tVec1);
-        float dir = (action == BrushAction.PRIMARY) ? 1 : -1;
-        for (int x = 0; x < terrain.vertexResolution; x++) {
-            for (int z = 0; z < terrain.vertexResolution; z++) {
-                final Vector3 vertexPos = terrain.getVertexPosition(tVec0, x, z);
-                vertexPos.x += terPos.x;
-                vertexPos.z += terPos.z;
-                float distance = vertexPos.dst(brushPos);
-
-                if (distance <= radius) {
-                    float elevation = getValueOfBrushPixmap(brushPos.x, brushPos.z, vertexPos.x, vertexPos.z, radius);
-                    terrain.heightData[z * terrain.vertexResolution + x] += dir * elevation * strength;
-                }
-            }
-        }
-
-        terrain.update();
-        terrainHeightModified = true;
+//        Terrain terrain = terrainAsset.getTerrain();
+//        final Vector3 terPos = terrain.getPosition(tVec1);
+//        float dir = (action == BrushAction.PRIMARY) ? 1 : -1;
+//        for (int x = 0; x < terrain.vertexResolution; x++) {
+//            for (int z = 0; z < terrain.vertexResolution; z++) {
+//                final Vector3 vertexPos = terrain.getVertexPosition(tVec0, x, z);
+//                vertexPos.x += terPos.x;
+//                vertexPos.z += terPos.z;
+//                float distance = vertexPos.dst(brushPos);
+//
+//                if (distance <= radius) {
+//                    float elevation = getValueOfBrushPixmap(brushPos.x, brushPos.z, vertexPos.x, vertexPos.z, radius);
+//                    terrain.heightData[z * terrain.vertexResolution + x] += dir * elevation * strength;
+//                }
+//            }
+//        }
+//
+//        terrain.update();
+//        terrainHeightModified = true;
         //todo
 //        assetManager.dirty(terrainAsset);
     }
@@ -361,21 +357,22 @@ public abstract class TerrainBrush extends Tool {
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        if (terrainHeightModified && heightCommand != null) {
-            heightCommand.setHeightDataAfter(terrainAsset.getTerrain().heightData);
-            getHistory().add(heightCommand);
-        }
-        if (splatmapModified && paintCommand != null) {
-            final SplatMap sm = terrainAsset.getTerrain().getTerrainTexture().getSplatMap();
-            paintCommand.setAfter(sm.getPixmap());
-            getHistory().add(paintCommand);
-        }
-        splatmapModified = false;
-        terrainHeightModified = false;
-        heightCommand = null;
-        paintCommand = null;
-
-        action = null;
+        //todo
+//        if (terrainHeightModified && heightCommand != null) {
+//            heightCommand.setHeightDataAfter(terrainAsset.getTerrain().heightData);
+//            getHistory().add(heightCommand);
+//        }
+//        if (splatmapModified && paintCommand != null) {
+//            final SplatMap sm = terrainAsset.getTerrain().getTerrainTexture().getSplatMap();
+//            paintCommand.setAfter(sm.getPixmap());
+//            getHistory().add(paintCommand);
+//        }
+//        splatmapModified = false;
+//        terrainHeightModified = false;
+//        heightCommand = null;
+//        paintCommand = null;
+//
+//        action = null;
 
         return false;
     }
@@ -396,39 +393,41 @@ public abstract class TerrainBrush extends Tool {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 
-        // get action
-        final boolean primary = Gdx.input.isButtonPressed(BrushAction.PRIMARY.code);
-        final boolean secondary = Gdx.input.isKeyPressed(BrushAction.SECONDARY.code);
-        if (primary && secondary) {
-            action = BrushAction.SECONDARY;
-        } else if (primary) {
-            action = BrushAction.PRIMARY;
-        } else {
-            action = null;
-        }
-
-        if (mode == BrushMode.FLATTEN || mode == BrushMode.RAISE_LOWER || mode == BrushMode.SMOOTH) {
-            heightCommand = new TerrainHeightCommand(terrainAsset.getTerrain());
-            heightCommand.setHeightDataBefore(terrainAsset.getTerrain().heightData);
-        } else if (mode == BrushMode.PAINT) {
-            final SplatMap sm = terrainAsset.getTerrain().getTerrainTexture().getSplatMap();
-            if (sm != null) {
-                paintCommand = new TerrainPaintCommand(terrainAsset.getTerrain());
-                paintCommand.setBefore(sm.getPixmap());
-            }
-        }
+        //todo
+//        // get action
+//        final boolean primary = Gdx.input.isButtonPressed(BrushAction.PRIMARY.code);
+//        final boolean secondary = Gdx.input.isKeyPressed(BrushAction.SECONDARY.code);
+//        if (primary && secondary) {
+//            action = BrushAction.SECONDARY;
+//        } else if (primary) {
+//            action = BrushAction.PRIMARY;
+//        } else {
+//            action = null;
+//        }
+//
+//        if (mode == BrushMode.FLATTEN || mode == BrushMode.RAISE_LOWER || mode == BrushMode.SMOOTH) {
+//            heightCommand = new TerrainHeightCommand(terrainAsset.getTerrain());
+//            heightCommand.setHeightDataBefore(terrainAsset.getTerrain().heightData);
+//        } else if (mode == BrushMode.PAINT) {
+//            final SplatMap sm = terrainAsset.getTerrain().getTerrainTexture().getSplatMap();
+//            if (sm != null) {
+//                paintCommand = new TerrainPaintCommand(terrainAsset.getTerrain());
+//                paintCommand.setBefore(sm.getPixmap());
+//            }
+//        }
 
         return false;
     }
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
-        if (terrainAsset != null) {
-            Ray ray = getCtx().getViewport().getPickRay(screenX, screenY);
-            terrainAsset.getTerrain().getRayIntersection(brushPos, ray);
-        }
-
-        mouseMoved = true;
+        //todo
+//        if (terrainAsset != null) {
+//            Ray ray = getCtx().getViewport().getPickRay(screenX, screenY);
+//            terrainAsset.getTerrain().getRayIntersection(brushPos, ray);
+//        }
+//
+//        mouseMoved = true;
 
         //todo
 //        ((EditorTerrainShader) getShader()).setPickerPosition(brushPos.x, brushPos.y, brushPos.z);

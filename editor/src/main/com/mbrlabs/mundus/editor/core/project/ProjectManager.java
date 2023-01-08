@@ -19,6 +19,7 @@ package com.mbrlabs.mundus.editor.core.project;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Disposable;
 import com.mbrlabs.mundus.commons.Scene;
+import com.mbrlabs.mundus.commons.core.ecs.EcsService;
 import com.mbrlabs.mundus.commons.importer.SceneConverter;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.scene3d.components.Component;
@@ -61,9 +62,9 @@ public class ProjectManager implements Disposable {
     private final ProjectStorage projectStorage;
     private final EditorAssetManager assetManager;
     private final SceneConverter sceneConverter;
-
     private final EventBus eventBus;
     private final SceneStorage sceneStorage;
+    private final EcsService ecsService;
 
     /**
      * Saves the active project
@@ -161,6 +162,7 @@ public class ProjectManager implements Disposable {
             // project doesn't exist, but ref is exist - create default project
             return createProject(ref.getName(), ref.getPath());
         }
+        editorCtx.setCurrent(context);
 
         context.setCurrentScene(loadScene(context, context.getActiveSceneName()));
 
@@ -272,7 +274,7 @@ public class ProjectManager implements Disposable {
     public Scene loadScene(ProjectContext context, String sceneName) {
         var dto = sceneStorage.loadScene(context.path, sceneName);
 
-        var scene = new Scene();
+        var scene = new Scene(ecsService.createWorld());
 
         //todo preload assets to cache
         sceneConverter.fillScene(scene, dto, editorCtx.getAssetLibrary());

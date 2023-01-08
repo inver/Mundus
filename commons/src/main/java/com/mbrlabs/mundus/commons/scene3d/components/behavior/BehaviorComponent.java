@@ -1,30 +1,24 @@
-package com.mbrlabs.mundus.commons.scene3d.components.action;
+package com.mbrlabs.mundus.commons.scene3d.components.behavior;
 
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.scene3d.components.AbstractComponent;
-import com.mbrlabs.mundus.commons.scene3d.components.Component;
 import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 
-public class ActionComponent extends AbstractComponent {
+public class BehaviorComponent extends AbstractComponent {
 
-    private final Action action;
+    private final Behavior behavior;
 
-    public ActionComponent(GameObject go, Action action) {
+    public BehaviorComponent(GameObject go, Behavior behavior) {
         super(go);
         type = Type.ACTION;
-        this.action = action;
+        this.behavior = behavior;
     }
 
     @Override
     public void update(float delta) {
-        action.doAction(gameObject);
-    }
-
-    @Override
-    public Component clone(GameObject go) {
-        return null;
+        behavior.doAction(gameObject);
     }
 
     @Override

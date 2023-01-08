@@ -9,23 +9,22 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.widget.MenuItem;
+import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
-import com.mbrlabs.mundus.commons.terrain.Terrain;
 import com.mbrlabs.mundus.editor.core.assets.AssetsStorage;
-import com.mbrlabs.mundus.editor.core.assets.TerrainService;
+import com.mbrlabs.mundus.editor.core.assets.EditorTerrainService;
+import com.mbrlabs.mundus.editor.core.light.LightService;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.project.ProjectManager;
-import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
-import com.mbrlabs.mundus.editor.events.AssetImportEvent;
+import com.mbrlabs.mundus.editor.events.EntitySelectedEvent;
 import com.mbrlabs.mundus.editor.events.EventBus;
-import com.mbrlabs.mundus.editor.events.GameObjectSelectedEvent;
 import com.mbrlabs.mundus.editor.events.SceneGraphChangedEvent;
-import com.mbrlabs.mundus.editor.scene3d.components.PickableTerrainComponent;
 import com.mbrlabs.mundus.editor.tools.ToolManager;
 import com.mbrlabs.mundus.editor.ui.AppUi;
 import com.mbrlabs.mundus.editor.ui.components.camera.CameraService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
@@ -41,8 +40,9 @@ public class OutlinePresenter {
     private final ToolManager toolManager;
     private final AssetsStorage assetsStorage;
     private final CameraService cameraService;
-    private final TerrainService terrainService;
+    private final EditorTerrainService terrainService;
     private final ProjectManager projectManager;
+    private final LightService lightService;
 
     public void init(@NotNull Outline outline) {
         eventBus.register(outline);
@@ -67,13 +67,14 @@ public class OutlinePresenter {
                 if (clickedNode == null) {
                     return;
                 }
-                var go = clickedNode.getValue();
-                if (go == null) {
+                var entityId = clickedNode.getValue();
+                if (entityId < 0) {
                     return;
                 }
 
                 var pos = new Vector3();
-                go.getTransform().getTranslation(pos);
+                ctx.getCurrent().getCurrentScene().getWorld().getEntity(entityId).getComponent(PositionComponent.class)
+                        .getTransform().getTranslation(pos);
 
                 var cam = ctx.getCamera();
                 // just lerp in the direction of the object if certain distance away
@@ -101,11 +102,11 @@ public class OutlinePresenter {
                 }
 
                 var node = outline.getTree().getNodeAt(y);
-                GameObject go = null;
+                int id = -1;
                 if (node != null) {
-                    go = node.getValue();
+                    id = node.getValue();
                 }
-                outline.getRightClickMenu().show(go, Gdx.input.getX(), (Gdx.graphics.getHeight() - Gdx.input.getY()));
+                outline.getRightClickMenu().show(id, Gdx.input.getX(), (Gdx.graphics.getHeight() - Gdx.input.getY()));
             }
         });
 
@@ -113,20 +114,23 @@ public class OutlinePresenter {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 var selection = outline.getTree().getSelection();
-                if (selection != null && selection.size() > 0) {
-                    var go = selection.first().getValue();
-                    ctx.setSelected(go);
-                    toolManager.translateTool.gameObjectSelected(go);
-
-                    eventBus.post(new GameObjectSelectedEvent(go));
+                if (selection == null || selection.size() == 0) {
+                    return;
                 }
+
+                var entityId = selection.first().getValue();
+                ctx.setSelectedEntityId(entityId);
+//                toolManager.translateTool.gameObjectSelected(go);
+
+                eventBus.post(new EntitySelectedEvent(entityId));
             }
         });
 
-        initAddShaderButton(outline, outline.getRightClickMenu().getAddShader());
+        initAddShaderButton(outline.getRightClickMenu().getAddShader());
         initAddGroupButton(outline, outline.getRightClickMenu().getAddGroup());
-        initAddCameraButton(outline, outline.getRightClickMenu().getAddCamera());
+        initAddCameraButton(outline.getRightClickMenu().getAddCamera());
         initAddTerrainButton(outline, outline.getRightClickMenu().getAddTerrain());
+        initAddDirectionLightButton(outline.getRightClickMenu().getAddDirectionalLight());
     }
 
     private void initAddTerrainButton(Outline outline, MenuItem addTerrain) {
@@ -136,27 +140,12 @@ public class OutlinePresenter {
                 try {
                     log.debug("Add terrain game object in root node.");
 
-                    var id = ctx.getCurrent().obtainID();
-                    var asset = terrainService.createTerrainAsset("Terrain " + id,
-                            Terrain.DEFAULT_VERTEX_RESOLUTION, Terrain.DEFAULT_SIZE);
+                    var node = terrainService.createTerrainEntity();
+                    ctx.getCurrent().getCurrentScene().getRootNode().addChild(node);
 
-                    var terrainGO = new GameObject();
-                    terrainGO.name = "Terrain " + id;
-                    asset.getTerrain().setTransform(terrainGO.getTransform());
-
-                    var terrainComponent = new PickableTerrainComponent(terrainGO, ShaderConstants.PICKER);
-                    terrainComponent.setTerrain(asset);
-
-                    terrainGO.getComponents().add(terrainComponent);
-                    terrainComponent.encodeRayPickColorId();
-
-                    ctx.getCurrent().getCurrentScene().getSceneGraph().addGameObject(terrainGO);
-                    outline.addGoToTree(null, terrainGO);
-
-//                    ctx.getCurrentScene().terrains.add(asset)
                     projectManager.saveProject(ctx.getCurrent());
-
-                    eventBus.post(new AssetImportEvent(asset));
+                    //todo is needed import event here?
+//                    eventBus.post(new AssetImportEvent(asset));
                     eventBus.post(new SceneGraphChangedEvent());
                 } catch (Exception e) {
                     log.error("ERROR", e);
@@ -187,28 +176,31 @@ public class OutlinePresenter {
 //        return terrainGO
 //    }
 
-    private void initAddCameraButton(Outline outline, MenuItem addCamera) {
+    private void initAddCameraButton(MenuItem addCamera) {
         addCamera.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                var go = cameraService.createCamera();
-                //todo strange action, may be rebuild tree?
-                outline.addGoToTree(null, go);
+                var cameraNode = cameraService.createEcsCamera();
+                ctx.getCurrent().getCurrentScene().getRootNode().addChild(cameraNode);
                 eventBus.post(new SceneGraphChangedEvent());
             }
         });
     }
 
-    private void initAddShaderButton(Outline outline, MenuItem menuItem) {
-        menuItem.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                var asset = assetsStorage.createShader();
-                ctx.getCurrent().getCurrentScene().getAssets().add(asset);
+    private void initAddShaderButton(MenuItem menuItem) {
+        menuItem.addListener(new ClickButtonListener(() -> {
+            var asset = assetsStorage.createShader();
+            ctx.getCurrent().getCurrentScene().getAssets().add(asset);
+            eventBus.post(new SceneGraphChangedEvent());
+        }));
+    }
 
-                outline.buildTree(ctx.getCurrent().getCurrentScene());
-            }
-        });
+    private void initAddDirectionLightButton(MenuItem menuItem) {
+        menuItem.addListener(new ClickButtonListener(() -> {
+            var node = lightService.createDirectionLight();
+            ctx.getCurrent().getCurrentScene().getRootNode().addChild(node);
+            eventBus.post(new SceneGraphChangedEvent());
+        }));
     }
 
     private void initAddGroupButton(Outline outline, MenuItem menuItem) {
@@ -226,12 +218,13 @@ public class OutlinePresenter {
                     // update outline
                     outline.addGoToTree(null, go);
                 } else {
-                    log.trace("Add empty game object [{}] child in node [{}].", go, selectedGO);
-                    // update sceneGraph
-                    selectedGO.addChild(go);
-                    // update outline
-                    var n = outline.getTree().findNode(selectedGO);
-                    outline.addGoToTree(n, go);
+                    throw new NotImplementedException();
+//                    log.trace("Add empty game object [{}] child in node [{}].", go, selectedGO);
+//                    // update sceneGraph
+//                    selectedGO.addChild(go);
+//                    // update outline
+//                    var n = outline.getTree().findNode(selectedGO);
+//                    outline.addGoToTree(n, go);
                 }
                 eventBus.post(new SceneGraphChangedEvent());
             }

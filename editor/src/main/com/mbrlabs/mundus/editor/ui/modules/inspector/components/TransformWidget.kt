@@ -25,9 +25,6 @@ import com.kotcrab.vis.ui.widget.VisLabel
 import com.mbrlabs.mundus.commons.scene3d.GameObject
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.history.CommandHistory
-import com.mbrlabs.mundus.editor.history.commands.RotateCommand
-import com.mbrlabs.mundus.editor.history.commands.ScaleCommand
-import com.mbrlabs.mundus.editor.history.commands.TranslateCommand
 import com.mbrlabs.mundus.editor.ui.modules.inspector.BaseInspectorWidget
 import com.mbrlabs.mundus.editor.ui.widgets.FloatFieldWithLabel
 import com.mbrlabs.mundus.editor.utils.formatFloat
@@ -89,114 +86,114 @@ class TransformWidget(
         // position
         posX.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                val go = ctx.selected ?: return
-                val command = TranslateCommand(go)
-                val pos = go.getLocalPosition(tempV3)
-                command.setBefore(pos)
-                go.setLocalPosition(posX.float, pos.y, pos.z)
-                command.setAfter(go.getLocalPosition(tempV3))
-                history.add(command)
+                val go = ctx.selectedEntityId ?: return
+//                val command = TranslateCommand(go)
+//                val pos = go.getLocalPosition(tempV3)
+//                command.setBefore(pos)
+//                go.setLocalPosition(posX.float, pos.y, pos.z)
+//                command.setAfter(go.getLocalPosition(tempV3))
+//                history.add(command)
             }
         })
         posY.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                val go = ctx.selected ?: return
-                val command = TranslateCommand(go)
-                val pos = go.getLocalPosition(tempV3)
-                command.setBefore(pos)
-                go.setLocalPosition(pos.x, posY.float, pos.z)
-                command.setAfter(go.getLocalPosition(tempV3))
-                history.add(command)
+                val go = ctx.selectedEntityId ?: return
+//                val command = TranslateCommand(go)
+//                val pos = go.getLocalPosition(tempV3)
+//                command.setBefore(pos)
+//                go.setLocalPosition(pos.x, posY.float, pos.z)
+//                command.setAfter(go.getLocalPosition(tempV3))
+//                history.add(command)
             }
         })
         posZ.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                val go = ctx.selected ?: return
-                val command = TranslateCommand(go)
-                val pos = go.getLocalPosition(tempV3)
-                command.setBefore(pos)
-                go.setLocalPosition(pos.x, pos.y, posZ.float)
-                command.setAfter(go.getLocalPosition(tempV3))
-                history.add(command)
+                val go = ctx.selectedEntityId ?: return
+//                val command = TranslateCommand(go)
+//                val pos = go.getLocalPosition(tempV3)
+//                command.setBefore(pos)
+//                go.setLocalPosition(pos.x, pos.y, posZ.float)
+//                command.setAfter(go.getLocalPosition(tempV3))
+//                history.add(command)
             }
         })
 
         // rotation
         rotX.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                val go = ctx.selected ?: return
-                val rot = go.getLocalRotation(tempQuat)
-                val rotateCommand = RotateCommand(go)
-                rotateCommand.setBefore(rot)
-                rot.setEulerAngles(rot.yaw, rotX.float, rot.roll)
-                go.setLocalRotation(rot.x, rot.y, rot.z, rot.w)
-                rotateCommand.setAfter(go.getLocalRotation(tempQuat))
-                history.add(rotateCommand)
+                val go = ctx.selectedEntityId ?: return
+//                val rot = go.getLocalRotation(tempQuat)
+//                val rotateCommand = RotateCommand(go)
+//                rotateCommand.setBefore(rot)
+//                rot.setEulerAngles(rot.yaw, rotX.float, rot.roll)
+//                go.setLocalRotation(rot.x, rot.y, rot.z, rot.w)
+//                rotateCommand.setAfter(go.getLocalRotation(tempQuat))
+//                history.add(rotateCommand)
             }
         })
         rotY.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                val go = ctx.selected ?: return
-                val rot = go.getLocalRotation(tempQuat)
-                val rotateCommand = RotateCommand(go)
-                rotateCommand.setBefore(rot)
-                rot.setEulerAngles(rotY.float, rot.pitch, rot.roll)
-                go.setLocalRotation(rot.x, rot.y, rot.z, rot.w)
-                rotateCommand.setAfter(go.getLocalRotation(tempQuat))
-                history.add(rotateCommand)
+                val go = ctx.selectedEntityId ?: return
+//                val rot = go.getLocalRotation(tempQuat)
+//                val rotateCommand = RotateCommand(go)
+//                rotateCommand.setBefore(rot)
+//                rot.setEulerAngles(rotY.float, rot.pitch, rot.roll)
+//                go.setLocalRotation(rot.x, rot.y, rot.z, rot.w)
+//                rotateCommand.setAfter(go.getLocalRotation(tempQuat))
+//                history.add(rotateCommand)
             }
         })
         rotZ.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                val go = ctx.selected ?: return
-                val rot = go.getLocalRotation(tempQuat)
-                val rotateCommand = RotateCommand(go)
-                rotateCommand.setBefore(rot)
-                rot.setEulerAngles(rot.yaw, rot.pitch, rotZ.float)
-                go.setLocalRotation(rot.x, rot.y, rot.z, rot.w)
-                rotateCommand.setAfter(go.getLocalRotation(tempQuat))
-                history.add(rotateCommand)
+                val go = ctx.selectedEntityId ?: return
+//                val rot = go.getLocalRotation(tempQuat)
+//                val rotateCommand = RotateCommand(go)
+//                rotateCommand.setBefore(rot)
+//                rot.setEulerAngles(rot.yaw, rot.pitch, rotZ.float)
+//                go.setLocalRotation(rot.x, rot.y, rot.z, rot.w)
+//                rotateCommand.setAfter(go.getLocalRotation(tempQuat))
+//                history.add(rotateCommand)
             }
         })
 
         // scale
         scaleX.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                val go = ctx.selected
-                if (go != null && scaleX.float > 0f) {
-                    val command = ScaleCommand(go)
-                    val scl = go.getLocalScale(tempV3)
-                    command.setBefore(scl)
-                    go.setLocalScale(scaleX.float, scl.y, scl.z)
-                    command.setAfter(go.getLocalScale(tempV3))
-                    history.add(command)
-                }
+                val go = ctx.selectedEntityId
+//                if (go != null && scaleX.float > 0f) {
+//                    val command = ScaleCommand(go)
+//                    val scl = go.getLocalScale(tempV3)
+//                    command.setBefore(scl)
+//                    go.setLocalScale(scaleX.float, scl.y, scl.z)
+//                    command.setAfter(go.getLocalScale(tempV3))
+//                    history.add(command)
+//                }
             }
         })
         scaleY.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                val go = ctx.selected
-                if (go != null && scaleY.float > 0f) {
-                    val command = ScaleCommand(go)
-                    val scl = go.getLocalScale(tempV3)
-                    command.setBefore(scl)
-                    go.setLocalScale(scl.x, scaleY.float, scl.z)
-                    command.setAfter(go.getLocalScale(tempV3))
-                    history.add(command)
-                }
+                val go = ctx.selectedEntityId
+//                if (go != null && scaleY.float > 0f) {
+//                    val command = ScaleCommand(go)
+//                    val scl = go.getLocalScale(tempV3)
+//                    command.setBefore(scl)
+//                    go.setLocalScale(scl.x, scaleY.float, scl.z)
+//                    command.setAfter(go.getLocalScale(tempV3))
+//                    history.add(command)
+//                }
             }
         })
         scaleZ.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                val go = ctx.selected
-                if (go != null && scaleZ.float > 0f) {
-                    val command = ScaleCommand(go)
-                    val scl = go.getLocalScale(tempV3)
-                    command.setBefore(scl)
-                    go.setLocalScale(scl.x, scl.y, scaleZ.float)
-                    command.setAfter(go.getLocalScale(tempV3))
-                    history.add(command)
-                }
+                val go = ctx.selectedEntityId
+//                if (go != null && scaleZ.float > 0f) {
+//                    val command = ScaleCommand(go)
+//                    val scl = go.getLocalScale(tempV3)
+//                    command.setBefore(scl)
+//                    go.setLocalScale(scl.x, scl.y, scaleZ.float)
+//                    command.setAfter(go.getLocalScale(tempV3))
+//                    history.add(command)
+//                }
             }
         })
 

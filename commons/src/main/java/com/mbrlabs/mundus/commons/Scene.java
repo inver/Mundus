@@ -16,15 +16,19 @@
 
 package com.mbrlabs.mundus.commons;
 
+import com.artemis.World;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.utils.Disposable;
 import com.mbrlabs.mundus.commons.assets.Asset;
+import com.mbrlabs.mundus.commons.core.ecs.behavior.RenderComponentSystem;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
+import com.mbrlabs.mundus.commons.scene3d.HierarchyNode;
 import com.mbrlabs.mundus.commons.scene3d.SceneGraph;
 import com.mbrlabs.mundus.commons.scene3d.components.Renderable;
 import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -36,6 +40,7 @@ import java.util.List;
  * @author Marcus Brummer
  * @version 22-12-2015
  */
+@RequiredArgsConstructor
 public class Scene implements Disposable, Renderable {
 
     private long id;
@@ -45,28 +50,25 @@ public class Scene implements Disposable, Renderable {
     private SceneGraph sceneGraph = new SceneGraph();
 
     @Getter
+    private final World world;
+    @Getter
     @Setter
     private SceneEnvironment environment = new SceneEnvironment();
     @Getter
     private final List<Asset<?>> assets = new ArrayList<>();
     @Getter
     private final List<Camera> cameras = new ArrayList<>();
-//    @Getter
-//    private final List<BaseLight> lights = new ArrayList<>();
-//    @Getter
-//    private final List<MaterialAsset> materials = new ArrayList<>();
-//    @Getter
-//    private final List<TextureAsset> textures = new ArrayList<>();
-//
-//    @Deprecated // TODO not here
-//    public Array<TerrainAsset> terrains;
 
-    //    public PerspectiveCamera cam;
-//    public ModelBatch batch;
-
+    @Setter
+    @Getter
+    private HierarchyNode rootNode = new HierarchyNode(-1, "Root");
 
     @Override
     public void render(ModelBatch batch, SceneEnvironment environment, ShaderHolder shaders, float delta) {
+        world.setDelta(delta);
+        world.getSystem(RenderComponentSystem.class).setRenderData(batch, environment, shaders);
+        world.process();
+
         sceneGraph.render(batch, environment, shaders, delta);
     }
 

@@ -35,6 +35,14 @@ public class OutlineNode extends Tree.Node<OutlineNode, GameObject, VisTable> {
         }
     }
 
+    //todo rework this
+    public OutlineNode(int entityId, String name) {
+        super(new VisTable());
+        setValue(new GameObject(entityId));
+        getActor().add(label).expand().fill();
+        label.setText(name);
+    }
+
     public VisLabel getLabel() {
         return label;
     }

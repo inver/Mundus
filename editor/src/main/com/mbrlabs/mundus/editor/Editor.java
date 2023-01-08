@@ -179,9 +179,10 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
                                 batch.begin(camera);
                                 batch.render(((SkyboxAsset) asset).getBoxInstance(), scene.getEnvironment(),
                                         shaderStorage.get(ShaderConstants.SKYBOX));
-                                batch.end();
                             } catch (Exception e) {
                                 log.error("ERROR", e);
+                            } finally {
+                                batch.end();
                             }
                         });
 

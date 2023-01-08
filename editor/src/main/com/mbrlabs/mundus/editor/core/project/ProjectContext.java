@@ -16,18 +16,16 @@
 
 package com.mbrlabs.mundus.editor.core.project;
 
+import com.artemis.World;
 import com.badlogic.gdx.utils.Disposable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mbrlabs.mundus.commons.Scene;
-import com.mbrlabs.mundus.commons.scene3d.components.Renderable;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -60,7 +58,7 @@ public class ProjectContext implements Disposable {
 
     public ProjectContext(@JsonProperty("idProvider") int startId) {
         settings = new ProjectSettings();
-        currentScene = new Scene();
+//        currentScene = new Scene(world);
         idProvider = new AtomicInteger(startId);
     }
 

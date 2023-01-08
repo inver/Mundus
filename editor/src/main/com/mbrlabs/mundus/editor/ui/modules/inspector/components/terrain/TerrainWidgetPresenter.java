@@ -148,64 +148,64 @@ public class TerrainWidgetPresenter {
     private void addTexture(TerrainComponentWidget parent, TextureGrid<SplatTexture> textureGrid,
                             TextureAsset textureAsset) {
         var terrainAsset = parent.getComponent().getTerrain();
-        var terrainTexture = terrainAsset.getTerrain().getTerrainTexture();
-
-        assetManager.dirty(terrainAsset);
-
-        // channel base
-        if (terrainAsset.getSplatBase() == null) {
-            terrainAsset.setSplatBase(textureAsset);
-            terrainAsset.applyDependencies();
-            textureGrid.addTexture(terrainTexture.getTexture(SplatTexture.Channel.BASE));
-            return;
-        }
-
-        // create splatmap
-        if (terrainAsset.getSplatMap() == null) {
-            try {
-                var splatmap = assetManager.createPixmapTextureAsset(512);
-                terrainAsset.setSplatMap(splatmap);
-                terrainAsset.applyDependencies();
-                metaService.save(terrainAsset.getMeta());
-                eventBus.post(new AssetImportEvent(splatmap));
-            } catch (Exception e) {
-                log.error("ERROR", e);
-                return;
-            }
-
-        }
-
-        // channel r
-        if (terrainAsset.getSplatR() == null) {
-            terrainAsset.setSplatR(textureAsset);
-            terrainAsset.applyDependencies();
-            textureGrid.addTexture(terrainTexture.getTexture(SplatTexture.Channel.R));
-            return;
-        }
-
-        // channel g
-        if (terrainAsset.getSplatG() == null) {
-            terrainAsset.setSplatG(textureAsset);
-            terrainAsset.applyDependencies();
-            textureGrid.addTexture(terrainTexture.getTexture(SplatTexture.Channel.G));
-            return;
-        }
-
-        // channel b
-        if (terrainAsset.getSplatB() == null) {
-            terrainAsset.setSplatB(textureAsset);
-            terrainAsset.applyDependencies();
-            textureGrid.addTexture(terrainTexture.getTexture(SplatTexture.Channel.B));
-            return;
-        }
-
-        // channel a
-        if (terrainAsset.getSplatA() == null) {
-            terrainAsset.setSplatA(textureAsset);
-            terrainAsset.applyDependencies();
-            textureGrid.addTexture(terrainTexture.getTexture(SplatTexture.Channel.A));
-            return;
-        }
+//        var terrainTexture = terrainAsset.getTerrain().getTerrainTexture();
+//
+//        assetManager.dirty(terrainAsset);
+//
+//        // channel base
+//        if (terrainAsset.getSplatBase() == null) {
+//            terrainAsset.setSplatBase(textureAsset);
+//            terrainAsset.applyDependencies();
+//            textureGrid.addTexture(terrainTexture.getTexture(SplatTexture.Channel.BASE));
+//            return;
+//        }
+//
+//        // create splatmap
+//        if (terrainAsset.getSplatMap() == null) {
+//            try {
+//                var splatmap = assetManager.createPixmapTextureAsset(512);
+//                terrainAsset.setSplatMap(splatmap);
+//                terrainAsset.applyDependencies();
+//                metaService.save(terrainAsset.getMeta());
+//                eventBus.post(new AssetImportEvent(splatmap));
+//            } catch (Exception e) {
+//                log.error("ERROR", e);
+//                return;
+//            }
+//
+//        }
+//
+//        // channel r
+//        if (terrainAsset.getSplatR() == null) {
+//            terrainAsset.setSplatR(textureAsset);
+//            terrainAsset.applyDependencies();
+//            textureGrid.addTexture(terrainTexture.getTexture(SplatTexture.Channel.R));
+//            return;
+//        }
+//
+//        // channel g
+//        if (terrainAsset.getSplatG() == null) {
+//            terrainAsset.setSplatG(textureAsset);
+//            terrainAsset.applyDependencies();
+//            textureGrid.addTexture(terrainTexture.getTexture(SplatTexture.Channel.G));
+//            return;
+//        }
+//
+//        // channel b
+//        if (terrainAsset.getSplatB() == null) {
+//            terrainAsset.setSplatB(textureAsset);
+//            terrainAsset.applyDependencies();
+//            textureGrid.addTexture(terrainTexture.getTexture(SplatTexture.Channel.B));
+//            return;
+//        }
+//
+//        // channel a
+//        if (terrainAsset.getSplatA() == null) {
+//            terrainAsset.setSplatA(textureAsset);
+//            terrainAsset.applyDependencies();
+//            textureGrid.addTexture(terrainTexture.getTexture(SplatTexture.Channel.A));
+//            return;
+//        }
 
         Dialogs.showErrorDialog(appUi, "Not more than 5 textures per terrainAsset please :)");
     }

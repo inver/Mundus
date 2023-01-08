@@ -6,9 +6,17 @@ import com.mbrlabs.mundus.commons.assets.meta.MetaService;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAssetLoader;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainMeta;
+import com.mbrlabs.mundus.commons.core.ecs.base.RenderComponent;
+import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
+import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObjectDelegate;
+import com.mbrlabs.mundus.commons.scene3d.HierarchyNode;
+import com.mbrlabs.mundus.commons.terrain.Terrain;
+import com.mbrlabs.mundus.commons.terrain.TerrainService;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
+import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Component;
 
@@ -16,20 +24,24 @@ import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
 import java.io.FileOutputStream;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
-public class TerrainService {
+public class EditorTerrainService extends TerrainService {
 
-    private final EditorCtx editorCtx;
+    private final EditorCtx ctx;
     private final TerrainAssetLoader terrainAssetLoader;
     private final AssetsStorage assetsStorage;
     private final MetaService metaService;
 
     @SneakyThrows
-    public TerrainAsset createTerrainAsset(String name, int vertexResolution, int size) {
-        var terraFilename = name + ".terrain";
+    public TerrainAsset createAndSaveTerrainAsset(int vertexResolution, int size) {
+        var meta = new Meta<TerrainMeta>();
 
-        var terraFile = assetsStorage.getAssetsFolder().child(name).child(terraFilename).file();
+        var folderName = "terrain_" + meta.getUuid();
+        var terraFilename = "terrain.data";
+
+        var terraFile = assetsStorage.getAssetsFolder().child(folderName).child(terraFilename).file();
         FileUtils.touch(terraFile);
 
         var terrainMeta = new TerrainMeta();
@@ -37,10 +49,9 @@ public class TerrainService {
         terrainMeta.setUv(60f);
         terrainMeta.setTerrainFile(terraFilename);
 
-        var meta = new Meta<TerrainMeta>();
         meta.setType(AssetType.TERRAIN);
         meta.setAdditional(terrainMeta);
-        meta.setFile(assetsStorage.getAssetsFolder().child(name));
+        meta.setFile(assetsStorage.getAssetsFolder().child(folderName));
         metaService.save(meta);
 
 //
@@ -68,4 +79,23 @@ public class TerrainService {
 //        addAsset(asset);
         return asset;
     }
+
+    public HierarchyNode createTerrainEntity() {
+        var world = ctx.getCurrentWorld();
+
+        var id = world.create();
+        var name = "Terrain " + id;
+
+        var asset = createAndSaveTerrainAsset(Terrain.DEFAULT_VERTEX_RESOLUTION, Terrain.DEFAULT_SIZE);
+
+        var terrain = createFromAsset(asset);
+
+        world.edit(id)
+                .add(new PositionComponent())
+                .add(RenderComponent.of(new RenderableObjectDelegate(terrain, ShaderConstants.TERRAIN)));
+
+        return new HierarchyNode(id, name);
+    }
+
+
 }

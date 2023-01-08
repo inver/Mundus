@@ -20,25 +20,17 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.Align
-import com.kotcrab.vis.ui.util.dialog.Dialogs
-import com.kotcrab.vis.ui.util.dialog.InputDialogAdapter
 import com.kotcrab.vis.ui.widget.*
 import com.mbrlabs.mundus.commons.Scene
-import com.mbrlabs.mundus.commons.assets.AssetType
 import com.mbrlabs.mundus.commons.scene3d.GameObject
-import com.mbrlabs.mundus.commons.scene3d.components.Component
-import com.mbrlabs.mundus.commons.terrain.Terrain
-import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
+import com.mbrlabs.mundus.commons.scene3d.HierarchyNode
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.events.*
 import com.mbrlabs.mundus.editor.history.CommandHistory
-import com.mbrlabs.mundus.editor.history.commands.DeleteCommand
 import com.mbrlabs.mundus.editor.ui.AppUi
-import com.mbrlabs.mundus.editor.ui.modules.outline.OutlineNode.RootNode
 import com.mbrlabs.mundus.editor.utils.TextureUtils
-import com.mbrlabs.mundus.editor.utils.createDirectionalLightGO
 import mu.KotlinLogging
-import java.util.function.Consumer
+import org.springframework.util.CollectionUtils
 
 /**
  * Outline shows overview about all game objects in the scene
@@ -50,7 +42,6 @@ import java.util.function.Consumer
 @org.springframework.stereotype.Component
 class Outline(
     private val ctx: EditorCtx,
-    private val assetManager: EditorAssetManager,
     private val history: CommandHistory,
     private val eventBus: EventBus,
     private val appUi: AppUi,
@@ -59,12 +50,12 @@ class Outline(
     ProjectChangedEvent.ProjectChangedListener,
     SceneChangedEvent.SceneChangedListener,
     SceneGraphChangedEvent.SceneGraphChangedListener,
-    GameObjectSelectedEvent.GameObjectSelectedListener {
+    EntitySelectedEvent.EntitySelectedListener {
 
     private val log = KotlinLogging.logger {}
 
     private val content: VisTable
-    val tree = VisTree<OutlineNode, GameObject>()
+    val tree = VisTree<IdNode, Int>()
     val scrollPane: ScrollPane
     private val dragAndDrop: OutlineDragAndDrop
     val rightClickMenu = RightClickMenu()
@@ -98,18 +89,18 @@ class Outline(
     override fun onProjectChanged(event: ProjectChangedEvent) {
         // update to new sceneGraph
         log.trace("Project changed. Building scene graph.")
-        buildTree(ctx.current.getCurrentScene())
+        buildTree(ctx.current.currentScene)
     }
 
     override fun onSceneChanged(event: SceneChangedEvent) {
         // update to new sceneGraph
         log.trace("Scene changed. Building scene graph.")
-        buildTree(ctx.current.getCurrentScene())
+        buildTree(ctx.current.currentScene)
     }
 
     override fun onSceneGraphChanged(event: SceneGraphChangedEvent) {
         log.trace("SceneGraph changed. Building scene graph.")
-        buildTree(ctx.current.getCurrentScene())
+        buildTree(ctx.current.currentScene)
     }
 
     /**
@@ -120,48 +111,45 @@ class Outline(
      */
     fun buildTree(scene: Scene) {
         tree.clearChildren()
-        val rootNode = RootNode()
+        val rootNode = IdNode.RootNode()
         tree.add(rootNode)
 
         ctx.current.currentScene.assets.forEach {
-            val leaf = OutlineNode(it.name, null)
-            if (it.type == AssetType.SHADER) {
-                rootNode.shaders.add(leaf)
-            } else if (it.type == AssetType.SKYBOX) {
-                val go = GameObject()
-//                go.components.add()
-                rootNode.skybox.value = GameObject()
-            }
+            //todo
+//            val leaf = IdNode(it.name, null)
+//            if (it.type == AssetType.SHADER) {
+//                rootNode.shaders.add(leaf)
+//            } else if (it.type == AssetType.SKYBOX) {
+//                val go = GameObject()
+////                go.components.add()
+//                rootNode.skybox.value = GameObject()
+//            }
         }
 
-//        for (mat in scene.materials) {
-//            todo add materials from models
-//            rootNode.materials.add(OutlineNode(mat.name))
-//        }
-        for (go in scene.sceneGraph.gameObjects) {
-//            extractParamFromGameObject(go, { it.components.forEach() })
-        }
-
-//        for (texture in scene.getTextures()) {
-//            todo add textures from models
-//            rootNode.getTextures().add(OutlineNode(texture.name))
+//        for (go in scene.sceneGraph.gameObjects) {
+//            addGoToTree(rootNode.hierarchy, go)
 //        }
 
-        for (go in scene.sceneGraph.gameObjects) {
-            addGoToTree(rootNode.hierarchy, go)
+        for (node in scene.rootNode.children) {
+            addNodeToTree(rootNode.hierarchy, node)
         }
     }
 
-    private fun extractParamFromGameObject(gameObject: GameObject?, appender: Consumer<GameObject>) {
-        if (gameObject == null) {
+    private fun addNodeToTree(treeParentNode: IdNode?, node: HierarchyNode) {
+        val leaf = IdNode(node.id, node.name)
+        if (treeParentNode == null) {
+            tree.add(leaf)
+        } else {
+            treeParentNode.add(leaf)
+        }
+        // Always expand after adding new node
+        leaf.expandTo()
+        if (CollectionUtils.isEmpty(node.children)) {
             return
         }
 
-        appender.accept(gameObject)
-        if (gameObject.children != null) {
-            for (goChild in gameObject.children) {
-                extractParamFromGameObject(goChild, appender)
-            }
+        node.children.forEach {
+            addNodeToTree(leaf, it)
         }
     }
 
@@ -175,7 +163,7 @@ class Outline(
     fun addGoToTree(treeParentNode: OutlineNode?, gameObject: GameObject) {
         val leaf = OutlineNode(gameObject, null)
         if (treeParentNode == null) {
-            tree.add(leaf)
+//            tree.add(leaf)
         } else {
             treeParentNode.add(leaf)
         }
@@ -188,25 +176,16 @@ class Outline(
         }
     }
 
-    private fun createOutlineGameObject(parent: OutlineNode, go: GameObject): OutlineNode {
-        val res = OutlineNode(go, null)
-
-        go.components.forEach {
-
-        }
-
-        return res
-    }
-
     /**
      * Removing game object from tree and outline
 
      * @param go
      */
     private fun removeGo(go: GameObject) {
-        val deleteCommand = DeleteCommand(go, tree.findNode(go))
-        history.add(deleteCommand)
-        deleteCommand.execute() // run delete
+        TODO()
+//        val deleteCommand = DeleteCommand(go, tree.findNode(go))
+//        history.add(deleteCommand)
+//        deleteCommand.execute() // run delete
     }
 
     /**
@@ -221,36 +200,51 @@ class Outline(
     private fun duplicateGO(go: GameObject, parent: GameObject) {
         log.trace("Duplicate [{}] with parent [{}]", go, parent)
         val goCopy = GameObject(go, ctx.current.obtainID())
-
-        // add copy to tree
-        val n = tree.findNode(parent)
-        addGoToTree(n, goCopy)
-
-        // add copy to scene graph
-        parent.addChild(goCopy)
-
-        // recursively clone child objects
-        if (go.children != null) {
-            for (child in go.children) {
-                duplicateGO(child, goCopy)
-            }
-        }
+        TODO()
+//        // add copy to tree
+//        val n = tree.findNode(parent)
+//        addGoToTree(n, goCopy)
+//
+//        // add copy to scene graph
+//        parent.addChild(goCopy)
+//
+//        // recursively clone child objects
+//        if (go.children != null) {
+//            for (child in go.children) {
+//                duplicateGO(child, goCopy)
+//            }
+//        }
     }
 
-    override fun onGameObjectSelected(event: GameObjectSelectedEvent) {
+    override fun onEntitySelected(event: EntitySelectedEvent) {
         tree.selection.clear()
 
-        if (event.gameObject == null) {
+        if (event.entityId < 0) {
             return
         }
 
-        val node = tree.findNode(event.gameObject)
+        val node = tree.findNode(event.entityId)
         log.trace("Select game object [{}].", node?.value)
         if (node != null) {
             tree.selection.add(node)
             node.expandTo()
         }
     }
+
+//    override fun onGameObjectSelected(event: EntitySelectedEvent) {
+//        tree.selection.clear()
+//
+//        if (event.gameObject == null) {
+//            return
+//        }
+//
+//        val node = tree.findNode(event.gameObject)
+//        log.trace("Select game object [{}].", node?.value)
+//        if (node != null) {
+//            tree.selection.add(node)
+//            node.expandTo()
+//        }
+//    }
 
     inner class RightClickMenu : PopupMenu() {
 
@@ -264,12 +258,11 @@ class Outline(
         private val delete: MenuItem = MenuItem("Delete")
 
         private val lightsPopupMenu: PopupMenu = PopupMenu()
-        private val addDirectionalLight: MenuItem = MenuItem("Directional Light")
+        val addDirectionalLight: MenuItem = MenuItem("Directional Light")
 
-        var selectedGO: GameObject? = null
+        var selectedGO: Int? = null
 
         init {
-
 
 
             rename.addListener(object : ClickListener() {
@@ -284,8 +277,9 @@ class Outline(
             duplicate.addListener(object : ClickListener() {
                 override fun clicked(event: InputEvent?, x: Float, y: Float) {
                     if (selectedGO != null && !duplicate.isDisabled) {
-                        duplicateGO(selectedGO!!, selectedGO!!.parent)
-                        eventBus.post(SceneGraphChangedEvent())
+                        TODO()
+//                        duplicateGO(selectedGO!!, selectedGO!!.parent)
+//                        eventBus.post(SceneGraphChangedEvent())
                     }
                 }
             })
@@ -294,35 +288,10 @@ class Outline(
             delete.addListener(object : ClickListener() {
                 override fun clicked(event: InputEvent?, x: Float, y: Float) {
                     if (selectedGO != null) {
-                        removeGo(selectedGO!!)
-                        eventBus.post(SceneGraphChangedEvent())
+                        TODO()
+//                        removeGo(selectedGO!!)
+//                        eventBus.post(SceneGraphChangedEvent())
                     }
-                }
-            })
-
-            addDirectionalLight.addListener(object : ClickListener() {
-                override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                    val sceneGraph = ctx.current.getCurrentScene().sceneGraph
-                    val id = ctx.current.obtainID()
-                    val name = "Directional light " + id
-                    val go = createDirectionalLightGO(id, name)
-
-                    // update outline
-                    if (selectedGO == null) {
-                        // update sceneGraph
-                        log.debug("Add directional light game object [{}] in root node.", go)
-                        sceneGraph.addGameObject(go)
-                        // update outline
-                        addGoToTree(null, go)
-                    } else {
-                        log.debug("Add directional light game object [{}] child in node [{}].", go, selectedGO)
-                        // update sceneGraph
-                        selectedGO!!.addChild(go)
-                        // update outline
-                        val n = tree.findNode(selectedGO!!)
-                        addGoToTree(n, go)
-                    }
-                    eventBus.post(SceneGraphChangedEvent())
                 }
             })
 
@@ -347,7 +316,7 @@ class Outline(
          * @param x
          * @param y
          */
-        fun show(go: GameObject?, x: Float, y: Float) {
+        fun show(go: Int?, x: Float, y: Float) {
             selectedGO = go
             showMenu(appUi, x, y)
 
@@ -362,31 +331,33 @@ class Outline(
                 delete.isDisabled = true
             }
 
+            //todo
             // terrainAsset can not be duplicated
-            duplicate.isDisabled =
-                selectedGO == null || selectedGO!!.findComponentByType(Component.Type.TERRAIN) != null
+//            duplicate.isDisabled =
+//                selectedGO == null || ctx.current.currentScene.world.getEntity(selectedGO).getComponent()selectedGO!!.findComponentByType(Component.Type.TERRAIN) != null
         }
 
         fun showRenameDialog() {
-            val node = tree.findNode(selectedGO!!)
-
-            val renameDialog = Dialogs.showInputDialog(appUi, "Rename", "",
-                object : InputDialogAdapter() {
-                    override fun finished(input: String?) {
-                        log.trace("Rename game object [{}] to [{}].", selectedGO, input)
-                        // update sceneGraph
-                        selectedGO!!.name = input
-                        // update Outline
-                        //goNode.name.setText(input + " [" + selectedGO.id + "]");
-                        node.label.setText(input)
-
-                        eventBus.post(SceneGraphChangedEvent())
-                    }
-                })
-            // set position of dialog to menuItem position
-            val nodePosX = node.actor.x
-            val nodePosY = node.actor.y
-            renameDialog.setPosition(nodePosX, nodePosY)
+            TODO()
+//            val node = tree.findNode(selectedGO!!)
+//
+//            val renameDialog = Dialogs.showInputDialog(appUi, "Rename", "",
+//                object : InputDialogAdapter() {
+//                    override fun finished(input: String?) {
+//                        log.trace("Rename game object [{}] to [{}].", selectedGO, input)
+//                        // update sceneGraph
+//                        selectedGO!!.name = input
+//                        // update Outline
+//                        //goNode.name.setText(input + " [" + selectedGO.id + "]");
+//                        node.label.setText(input)
+//
+//                        eventBus.post(SceneGraphChangedEvent())
+//                    }
+//                })
+//            // set position of dialog to menuItem position
+//            val nodePosX = node.actor.x
+//            val nodePosY = node.actor.y
+//            renameDialog.setPosition(nodePosX, nodePosY)
         }
     }
 

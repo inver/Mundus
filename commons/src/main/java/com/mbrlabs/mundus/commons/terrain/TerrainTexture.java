@@ -27,7 +27,6 @@ public class TerrainTexture {
 
     private final Map<SplatTexture.Channel, SplatTexture> textures;
     private SplatMap splatMap;
-    private Terrain terrain;
 
     public TerrainTexture() {
         textures = new HashMap<>(5, 1);
@@ -88,13 +87,4 @@ public class TerrainTexture {
     public void setSplatMap(SplatMap splatMap) {
         this.splatMap = splatMap;
     }
-
-    public Terrain getTerrain() {
-        return terrain;
-    }
-
-    public void setTerrain(Terrain terrain) {
-        this.terrain = terrain;
-    }
-
 }

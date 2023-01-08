@@ -27,7 +27,6 @@ import com.kotcrab.vis.ui.widget.VisTable
 import com.mbrlabs.mundus.editor.config.UiWidgetsHolder
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
-import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.events.AssetSelectedEvent
 import com.mbrlabs.mundus.editor.events.EventBus
 import com.mbrlabs.mundus.editor.events.GameObjectModifiedEvent
@@ -55,7 +54,6 @@ class Inspector(
     private val uiWidgetsHolder: UiWidgetsHolder,
     private val assetPickerDialog: AssetPickerDialog,
     private val toolManager: ToolManager,
-    private val projectManager: ProjectManager,
     private val terrainWidgetPresenter: TerrainWidgetPresenter,
     private val history: CommandHistory,
     private val previewGenerator: PreviewGenerator,
@@ -66,9 +64,6 @@ class Inspector(
     AssetSelectedEvent.AssetSelectedListener {
 
     companion object {
-        private val TAG = Inspector::class.java.simpleName
-
-
         @JvmStatic
         private val log = getLogger(Inspector::class.java)
     }

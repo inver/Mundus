@@ -42,9 +42,7 @@ public class GameObjectConverter {
     private static final Vector3 TEMP_VEC = new Vector3();
     private static final Quaternion TEMP_QUAT = new Quaternion();
 
-    private final ModelComponentConverter modelComponentConverter;
     private final CameraConverter cameraConverter;
-    private final TerrainComponentConverter terrainComponentConverter;
 
     /**
      * Converts {@link GameObjectDto} to {@link GameObject}.

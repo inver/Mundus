@@ -55,7 +55,9 @@ public class TerrainComponent extends AbstractComponent implements AssetUsage {
 
     @Override
     public void render(ModelBatch batch, SceneEnvironment environment, ShaderHolder shaders, float delta) {
-        batch.render(terrain.getTerrain(), environment, shaders.get(shaderKey));
+
+        //todo
+//        batch.render(terrain.getTerrain(), environment, shaders.get(shaderKey));
     }
 
     @Override

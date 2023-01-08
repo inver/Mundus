@@ -23,17 +23,15 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
-import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.scene3d.components.Renderable;
 import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
-import com.mbrlabs.mundus.editor.core.shader.ShaderStorage;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.input.InputManager;
 import com.mbrlabs.mundus.editor.tools.brushes.*;
-import com.mbrlabs.mundus.editor.tools.picker.GameObjectPicker;
+import com.mbrlabs.mundus.editor.tools.picker.EntityPicker;
 import com.mbrlabs.mundus.editor.tools.picker.ToolHandlePicker;
 import com.mbrlabs.mundus.editor.ui.AppUi;
 import org.springframework.stereotype.Component;
@@ -51,7 +49,6 @@ public class ToolManager extends InputAdapter implements Disposable, Renderable 
     private static final int KEY_DEACTIVATE = Input.Keys.ESCAPE;
 
     private final EditorCtx ctx;
-    private final ShaderStorage shaderStorage;
     private Tool activeTool;
 
     public List<TerrainBrush> terrainBrushes;
@@ -63,13 +60,12 @@ public class ToolManager extends InputAdapter implements Disposable, Renderable 
 
     private final InputManager inputManager;
 
-    public ToolManager(EditorCtx ctx, ShaderStorage shaderStorage, AppUi appUi, EventBus eventBus, InputManager inputManager,
-                       GameObjectPicker goPicker,
+    public ToolManager(EditorCtx ctx, AppUi appUi, EventBus eventBus, InputManager inputManager,
+                       EntityPicker picker,
                        ToolHandlePicker toolHandlePicker, ModelBatch modelBatch, ShapeRenderer shapeRenderer,
                        CommandHistory history) {
         this.ctx = ctx;
         this.inputManager = inputManager;
-        this.shaderStorage = shaderStorage;
 
         terrainBrushes = new ArrayList<>();
         terrainBrushes.add(new SmoothCircleBrush(ctx, ShaderConstants.TERRAIN, modelBatch, history));
@@ -78,15 +74,15 @@ public class ToolManager extends InputAdapter implements Disposable, Renderable 
         terrainBrushes.add(new ConfettiBrush(ctx, ShaderConstants.TERRAIN, modelBatch, history));
 
         modelPlacementTool = new ModelPlacementTool(ctx, ShaderConstants.MODEL, modelBatch, history, appUi, eventBus);
-        selectionTool = new SelectionTool(ctx, ShaderConstants.WIREFRAME, goPicker, modelBatch, history, eventBus);
-        translateTool = new TranslateTool(ctx, ShaderConstants.WIREFRAME, goPicker, toolHandlePicker, modelBatch, history, eventBus);
-        rotateTool = new RotateTool(ctx, ShaderConstants.WIREFRAME, goPicker, toolHandlePicker, shapeRenderer, modelBatch, history, eventBus);
-        scaleTool = new ScaleTool(ctx, ShaderConstants.WIREFRAME, goPicker, toolHandlePicker, shapeRenderer, modelBatch, history, appUi, eventBus);
+        selectionTool = new SelectionTool(ctx, ShaderConstants.WIREFRAME, picker, modelBatch, history, eventBus);
+        translateTool = new TranslateTool(ctx, ShaderConstants.WIREFRAME, picker, toolHandlePicker, modelBatch, history, eventBus);
+        rotateTool = new RotateTool(ctx, ShaderConstants.WIREFRAME, picker, toolHandlePicker, shapeRenderer, modelBatch, history, eventBus);
+        scaleTool = new ScaleTool(ctx, ShaderConstants.WIREFRAME, picker, toolHandlePicker, shapeRenderer, modelBatch, history, appUi, eventBus);
     }
 
     public void activateTool(Tool tool) {
         boolean shouldKeepSelection = activeTool != null && activeTool instanceof SelectionTool && tool instanceof SelectionTool;
-        GameObject selected = getSelectedObject();
+        int selected = getSelectedEntity();
 
         deactivateTool();
         activeTool = tool;
@@ -161,16 +157,16 @@ public class ToolManager extends InputAdapter implements Disposable, Renderable 
         scaleTool.dispose();
     }
 
-    private GameObject getSelectedObject() {
+    private int getSelectedEntity() {
         if (activeTool == null) {
-            return null;
+            return -1;
         }
         var scene = ctx.getCurrent().getCurrentScene();
 
         if (scene == null) {
-            return null;
+            return -1;
         }
-        return ctx.getSelected();
+        return ctx.getSelectedEntityId();
     }
 
 }

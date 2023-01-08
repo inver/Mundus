@@ -19,7 +19,10 @@ package com.mbrlabs.mundus.commons.terrain;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.g3d.*;
+import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
@@ -31,13 +34,17 @@ import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool;
+import com.mbrlabs.mundus.commons.assets.AssetType;
+import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset;
+import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObject;
 import com.mbrlabs.mundus.commons.utils.MathUtils;
+import lombok.Getter;
 
 /**
  * @author Marcus Brummer
  * @version 30-11-2015
  */
-public class Terrain implements RenderableProvider, Disposable {
+public class Terrain implements RenderableObject, Disposable {
 
     public static final int DEFAULT_SIZE = 1600;
     public static final int DEFAULT_VERTEX_RESOLUTION = 180;
@@ -56,7 +63,7 @@ public class Terrain implements RenderableProvider, Disposable {
     public int vertexResolution;
 
     // used for building the mesh
-    private VertexAttributes attribs;
+    private VertexAttributes attributes;
     private Vector2 uvScale = new Vector2(DEFAULT_UV_SCALE, DEFAULT_UV_SCALE);
     private float vertices[];
     private int stride;
@@ -64,37 +71,39 @@ public class Terrain implements RenderableProvider, Disposable {
     private int norPos;
     private int uvPos;
 
+    @Getter
+    private final String assetName;
+
     // Textures
     private TerrainTexture terrainTexture;
-    private final Material material;
-
+    private transient final Material material;
     // Mesh
-    private Model model;
-    public ModelInstance modelInstance;
-    private Mesh mesh;
+    private transient Model model;
+    public transient ModelInstance modelInstance;
+    private transient Mesh mesh;
 
-    private Terrain(int vertexResolution) {
+    private Terrain(TerrainAsset asset, int vertexResolution) {
+        this.assetName = asset.getName();
         this.transform = new Matrix4();
-        this.attribs = MeshBuilder.createAttributes(
+        this.attributes = MeshBuilder.createAttributes(
                 VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal
                         | VertexAttributes.Usage.TextureCoordinates
         );
-        this.posPos = attribs.getOffset(VertexAttributes.Usage.Position, -1);
-        this.norPos = attribs.getOffset(VertexAttributes.Usage.Normal, -1);
-        this.uvPos = attribs.getOffset(VertexAttributes.Usage.TextureCoordinates, -1);
-        this.stride = attribs.vertexSize / 4;
+        this.posPos = attributes.getOffset(VertexAttributes.Usage.Position, -1);
+        this.norPos = attributes.getOffset(VertexAttributes.Usage.Normal, -1);
+        this.uvPos = attributes.getOffset(VertexAttributes.Usage.TextureCoordinates, -1);
+        this.stride = attributes.vertexSize / 4;
 
         this.vertexResolution = vertexResolution;
         this.heightData = new float[vertexResolution * vertexResolution];
 
         this.terrainTexture = new TerrainTexture();
-        this.terrainTexture.setTerrain(this);
         material = new Material();
         material.set(new TerrainTextureAttribute(TerrainTextureAttribute.ATTRIBUTE_SPLAT0, terrainTexture));
     }
 
-    public Terrain(int size, float[] heightData) {
-        this((int) Math.sqrt(heightData.length));
+    public Terrain(TerrainAsset asset, int size, float[] heightData) {
+        this(asset, (int) Math.sqrt(heightData.length));
         this.terrainWidth = size;
         this.terrainDepth = size;
         this.heightData = heightData;
@@ -106,10 +115,10 @@ public class Terrain implements RenderableProvider, Disposable {
     }
 
     public void init() {
-        final int numVertices = this.vertexResolution * vertexResolution;
-        final int numIndices = (this.vertexResolution - 1) * (vertexResolution - 1) * 6;
+        final int numVertices = vertexResolution * vertexResolution;
+        final int numIndices = (vertexResolution - 1) * (vertexResolution - 1) * 6;
 
-        mesh = new Mesh(true, numVertices, numIndices, attribs);
+        mesh = new Mesh(true, numVertices, numIndices, attributes);
         this.vertices = new float[numVertices * stride];
         mesh.setIndices(buildIndices());
         buildVertices();
@@ -337,7 +346,6 @@ public class Terrain implements RenderableProvider, Disposable {
     public void setTerrainTexture(TerrainTexture terrainTexture) {
         if (terrainTexture == null) return;
 
-        terrainTexture.setTerrain(this);
         this.terrainTexture = terrainTexture;
 
         material.set(new TerrainTextureAttribute(TerrainTextureAttribute.ATTRIBUTE_SPLAT0, this.terrainTexture));
@@ -358,4 +366,8 @@ public class Terrain implements RenderableProvider, Disposable {
 
     }
 
+    @Override
+    public AssetType getType() {
+        return AssetType.TERRAIN;
+    }
 }

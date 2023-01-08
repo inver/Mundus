@@ -20,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.NotImplementedException;
 
-import java.io.FileFilter;
 import java.util.List;
 
 @Slf4j
@@ -30,7 +29,7 @@ public class AssetManager {
     protected final ObjectMapper mapper;
     protected final MetaService metaService;
     protected final TextureAssetLoader textureService;
-    protected final TerrainAssetLoader terrainService;
+    protected final TerrainAssetLoader terrainAssetLoader;
     protected final MaterialAssetLoader materialService;
     protected final PixmapTextureAssetLoader pixmapTextureService;
     protected final ModelAssetLoader modelService;
@@ -50,11 +49,16 @@ public class AssetManager {
                 return shaderService.load(metaService.loadShaderMeta(assetFolderPath));
             case SKYBOX:
                 return skyboxAssetLoader.load(metaService.loadSkyboxMeta(assetFolderPath));
+            case TERRAIN:
+                return terrainAssetLoader.load(metaService.loadTerrainMeta(assetFolderPath));
         }
 
         throw new AssetTypeNotSupportException("Asset with type '" + meta.getType() + "' not supported");
     }
 
+    public Asset<?> loadCurrentProjectAsset(String assetName) {
+        throw new NotImplementedException("errm, needed path of project/game/etc");
+    }
 
     public void addAsset(Asset asset) {
         if (asset == null) {
@@ -95,7 +99,7 @@ public class AssetManager {
                 asset = pixmapTextureService.load(meta);
                 break;
             case TERRAIN:
-                asset = terrainService.load(meta);
+                asset = terrainAssetLoader.load(meta);
                 break;
             case MODEL:
                 asset = modelService.load(meta);

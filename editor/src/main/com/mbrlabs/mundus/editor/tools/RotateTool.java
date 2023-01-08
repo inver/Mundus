@@ -16,7 +16,6 @@
 package com.mbrlabs.mundus.editor.tools;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
@@ -29,15 +28,12 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
-import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
-import com.mbrlabs.mundus.commons.utils.MathUtils;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
-import com.mbrlabs.mundus.editor.core.project.ProjectContext;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.history.commands.RotateCommand;
-import com.mbrlabs.mundus.editor.tools.picker.GameObjectPicker;
+import com.mbrlabs.mundus.editor.tools.picker.EntityPicker;
 import com.mbrlabs.mundus.editor.tools.picker.ToolHandlePicker;
 import com.mbrlabs.mundus.editor.utils.Fa;
 import com.mbrlabs.mundus.editor.utils.UsefulMeshs;
@@ -70,9 +66,9 @@ public class RotateTool extends TransformTool {
     private RotateCommand currentRotateCommand;
     private float lastRot = 0;
 
-    public RotateTool(EditorCtx ctx, String shaderKey, GameObjectPicker goPicker, ToolHandlePicker handlePicker,
+    public RotateTool(EditorCtx ctx, String shaderKey, EntityPicker picker, ToolHandlePicker handlePicker,
                       ShapeRenderer shapeRenderer, ModelBatch batch, CommandHistory history, EventBus eventBus) {
-        super(ctx, shaderKey, goPicker, handlePicker, batch, history, eventBus, NAME);
+        super(ctx, shaderKey, picker, handlePicker, batch, history, eventBus, NAME);
         this.shapeRenderer = shapeRenderer;
         xHandle = new RotateHandle(X_HANDLE_ID, TransformState.TRANSFORM_X, COLOR_X);
         yHandle = new RotateHandle(Y_HANDLE_ID, TransformState.TRANSFORM_Y, COLOR_Y);
@@ -85,34 +81,34 @@ public class RotateTool extends TransformTool {
         super.render(batch, environment, shaders, delta);
         GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
 
-        if (getCtx().getSelected() == null) {
-            return;
-        }
-
-        if (state == TransformState.IDLE) {
-            batch.begin(getCtx().getCamera());
-            xHandle.render(batch, environment, shaders, delta);
-            yHandle.render(batch, environment, shaders, delta);
-            zHandle.render(batch, environment, shaders, delta);
-            batch.end();
-            return;
-        }
-
-        var vp = getCtx().getViewport();
-        getCtx().getSelected().getTransform().getTranslation(temp0);
-        var pivot = getCtx().getCamera().project(temp0);
-
-        shapeRenderMat.setToOrtho2D(vp.getScreenX(), vp.getScreenY(), vp.getScreenWidth(), vp.getScreenHeight());
-        switch (state) {
-            case TRANSFORM_X:
-                renderTool(pivot, COLOR_X);
-                return;
-            case TRANSFORM_Y:
-                renderTool(pivot, COLOR_Y);
-                return;
-            case TRANSFORM_Z:
-                renderTool(pivot, COLOR_Z);
-        }
+//        if (getCtx().getSelectedEntityId() == null) {
+//            return;
+//        }
+//
+//        if (state == TransformState.IDLE) {
+//            batch.begin(getCtx().getCamera());
+//            xHandle.render(batch, environment, shaders, delta);
+//            yHandle.render(batch, environment, shaders, delta);
+//            zHandle.render(batch, environment, shaders, delta);
+//            batch.end();
+//            return;
+//        }
+//
+//        var vp = getCtx().getViewport();
+//        getCtx().getSelectedEntityId().getTransform().getTranslation(temp0);
+//        var pivot = getCtx().getCamera().project(temp0);
+//
+//        shapeRenderMat.setToOrtho2D(vp.getScreenX(), vp.getScreenY(), vp.getScreenWidth(), vp.getScreenHeight());
+//        switch (state) {
+//            case TRANSFORM_X:
+//                renderTool(pivot, COLOR_X);
+//                return;
+//            case TRANSFORM_Y:
+//                renderTool(pivot, COLOR_Y);
+//                return;
+//            case TRANSFORM_Z:
+//                renderTool(pivot, COLOR_Z);
+//        }
     }
 
     private void renderTool(Vector3 pivot, Color color) {
@@ -129,57 +125,56 @@ public class RotateTool extends TransformTool {
     public void act() {
         super.act();
 
-        ProjectContext projectContext = getCtx().getCurrent();
-        if (getCtx().getSelected() != null) {
-            translateHandles();
-            if (state == TransformState.IDLE) {
-                return;
-            }
-
-            float angle = getCurrentAngle();
-            float rot = angle - lastRot;
-
-            boolean modified = false;
-            if (null != state) {
-                switch (state) {
-                    case TRANSFORM_X:
-                        tempQuat.setEulerAngles(0, -rot, 0);
-                        getCtx().getSelected().rotate(tempQuat);
-                        modified = true;
-                        break;
-                    case TRANSFORM_Y:
-                        tempQuat.setEulerAngles(-rot, 0, 0);
-                        getCtx().getSelected().rotate(tempQuat);
-                        modified = true;
-                        break;
-                    case TRANSFORM_Z:
-                        tempQuat.setEulerAngles(0, 0, -rot);
-                        getCtx().getSelected().rotate(tempQuat);
-                        modified = true;
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            if (modified) {
-                gameObjectModifiedEvent.setGameObject(getCtx().getSelected());
-                eventBus.post(gameObjectModifiedEvent);
-            }
-
-            lastRot = angle;
-
-        }
+//        if (getCtx().getSelectedEntityId() != null) {
+//            translateHandles();
+//            if (state == TransformState.IDLE) {
+//                return;
+//            }
+//
+//            float angle = getCurrentAngle();
+//            float rot = angle - lastRot;
+//
+//            boolean modified = false;
+//            if (null != state) {
+//                switch (state) {
+//                    case TRANSFORM_X:
+//                        tempQuat.setEulerAngles(0, -rot, 0);
+//                        getCtx().getSelectedEntityId().rotate(tempQuat);
+//                        modified = true;
+//                        break;
+//                    case TRANSFORM_Y:
+//                        tempQuat.setEulerAngles(-rot, 0, 0);
+//                        getCtx().getSelectedEntityId().rotate(tempQuat);
+//                        modified = true;
+//                        break;
+//                    case TRANSFORM_Z:
+//                        tempQuat.setEulerAngles(0, 0, -rot);
+//                        getCtx().getSelectedEntityId().rotate(tempQuat);
+//                        modified = true;
+//                        break;
+//                    default:
+//                        break;
+//                }
+//            }
+//
+//            if (modified) {
+//                entityModifiedEvent.setGameObject(getCtx().getSelectedEntityId());
+//                eventBus.post(entityModifiedEvent);
+//            }
+//
+//            lastRot = angle;
+//
+//        }
     }
 
     private float getCurrentAngle() {
-        if (getCtx().getSelected() != null) {
-            getCtx().getSelected().getPosition(temp0);
-            Vector3 pivot = getCtx().getCamera().project(temp0);
-            Vector3 mouse = temp1.set(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), 0);
-
-            return MathUtils.angle(pivot.x, pivot.y, mouse.x, mouse.y);
-        }
+//        if (getCtx().getSelectedEntityId() != null) {
+//            getCtx().getSelectedEntityId().getPosition(temp0);
+//            Vector3 pivot = getCtx().getCamera().project(temp0);
+//            Vector3 mouse = temp1.set(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), 0);
+//
+//            return MathUtils.angle(pivot.x, pivot.y, mouse.x, mouse.y);
+//        }
 
         return 0;
     }
@@ -188,17 +183,17 @@ public class RotateTool extends TransformTool {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         super.touchDown(screenX, screenY, pointer, button);
 
-        if (button == Input.Buttons.LEFT && getCtx().getSelected() != null) {
-            lastRot = getCurrentAngle();
-
-            currentRotateCommand = new RotateCommand(getCtx().getSelected());
-            currentRotateCommand.setBefore(getCtx().getSelected().getLocalRotation(tempQuat));
-
-            RotateHandle handle = (RotateHandle) handlePicker.pick(handles, screenX, screenY);
-            if (handle == null) {
-                state = TransformState.IDLE;
-                return false;
-            }
+//        if (button == Input.Buttons.LEFT && getCtx().getSelectedEntityId() != null) {
+//            lastRot = getCurrentAngle();
+//
+//            currentRotateCommand = new RotateCommand(getCtx().getSelectedEntityId());
+//            currentRotateCommand.setBefore(getCtx().getSelectedEntityId().getLocalRotation(tempQuat));
+//
+//            RotateHandle handle = (RotateHandle) handlePicker.pick(handles, screenX, screenY);
+//            if (handle == null) {
+//                state = TransformState.IDLE;
+//                return false;
+//            }
 
 //            switch (handle.getId()) {
 //                case X_HANDLE_ID:
@@ -213,7 +208,7 @@ public class RotateTool extends TransformTool {
 //                default:
 //                    break;
 //            }
-        }
+//        }
 
         return false;
     }
@@ -222,17 +217,16 @@ public class RotateTool extends TransformTool {
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         state = TransformState.IDLE;
         if (currentRotateCommand != null) {
-            ProjectContext projectContext = getCtx().getCurrent();
-            currentRotateCommand.setAfter(getCtx().getSelected().getLocalRotation(tempQuat));
-            getHistory().add(currentRotateCommand);
-            currentRotateCommand = null;
+//            currentRotateCommand.setAfter(getCtx().getSelectedEntityId().getLocalRotation(tempQuat));
+//            getHistory().add(currentRotateCommand);
+//            currentRotateCommand = null;
         }
         return false;
     }
 
     @Override
-    public void gameObjectSelected(GameObject selection) {
-        super.gameObjectSelected(selection);
+    public void gameObjectSelected(int entityId) {
+        super.gameObjectSelected(entityId);
         scaleHandles();
         rotateHandles();
         translateHandles();
@@ -250,35 +244,35 @@ public class RotateTool extends TransformTool {
 
     @Override
     protected void translateHandles() {
-        if (getCtx().getSelected() == null) {
-            return;
-        }
-
-        final Vector3 pos = getCtx().getSelected().getTransform().getTranslation(temp0);
-        xHandle.getPosition().set(pos);
-        xHandle.applyTransform();
-        yHandle.getPosition().set(pos);
-        yHandle.applyTransform();
-        zHandle.getPosition().set(pos);
-        zHandle.applyTransform();
+//        if (getCtx().getSelectedEntityId() == null) {
+//            return;
+//        }
+//
+//        final Vector3 pos = getCtx().getSelectedEntityId().getTransform().getTranslation(temp0);
+//        xHandle.getPosition().set(pos);
+//        xHandle.applyTransform();
+//        yHandle.getPosition().set(pos);
+//        yHandle.applyTransform();
+//        zHandle.getPosition().set(pos);
+//        zHandle.applyTransform();
     }
 
     @Override
     protected void scaleHandles() {
-        if (getCtx().getSelected() == null) {
-            return;
-        }
-
-        var pos = getCtx().getSelected().getPosition(temp0);
-        var scaleFactor = getCtx().getCamera().position.dst(pos) * 0.005f;
-        xHandle.getScale().set(scaleFactor, scaleFactor, scaleFactor);
-        xHandle.applyTransform();
-
-        yHandle.getScale().set(scaleFactor, scaleFactor, scaleFactor);
-        yHandle.applyTransform();
-
-        zHandle.getScale().set(scaleFactor, scaleFactor, scaleFactor);
-        zHandle.applyTransform();
+//        if (getCtx().getSelectedEntityId() == null) {
+//            return;
+//        }
+//
+//        var pos = getCtx().getSelectedEntityId().getPosition(temp0);
+//        var scaleFactor = getCtx().getCamera().position.dst(pos) * 0.005f;
+//        xHandle.getScale().set(scaleFactor, scaleFactor, scaleFactor);
+//        xHandle.applyTransform();
+//
+//        yHandle.getScale().set(scaleFactor, scaleFactor, scaleFactor);
+//        yHandle.applyTransform();
+//
+//        zHandle.getScale().set(scaleFactor, scaleFactor, scaleFactor);
+//        zHandle.applyTransform();
     }
 
     @Override

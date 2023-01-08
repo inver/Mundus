@@ -51,23 +51,23 @@ private var tempVI = VertexInfo()
 
 fun getRayIntersection(terrains: Array<TerrainAsset>, ray: Ray, out: Vector3): Vector3? {
     for (terrain in terrains) {
-        val terr = terrain.terrain
-        terr.getRayIntersection(out, ray)
-        if (terr.isOnTerrain(out.x, out.z)) {
-            return out
-        }
+//        val terr = terrain.terrain
+//        terr.getRayIntersection(out, ray)
+//        if (terr.isOnTerrain(out.x, out.z)) {
+//            return out
+//        }
     }
     return null
 }
 
 fun getRayIntersectionAndUp(terrains: Array<TerrainAsset>, ray: Ray): VertexInfo? {
     for (terrain in terrains) {
-        val terr = terrain.terrain
-        terr.getRayIntersection(tempVI.position, ray)
-        if (terr.isOnTerrain(tempVI.position.x, tempVI.position.z)) {
-            tempVI.normal.set(terr.getNormalAtWordCoordinate(tempVI.position.x, tempVI.position.z))
-            return tempVI
-        }
+//        val terr = terrain.terrain
+//        terr.getRayIntersection(tempVI.position, ray)
+//        if (terr.isOnTerrain(tempVI.position.x, tempVI.position.z)) {
+//            tempVI.normal.set(terr.getNormalAtWordCoordinate(tempVI.position.x, tempVI.position.z))
+//            return tempVI
+//        }
     }
     return null
 }

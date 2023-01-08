@@ -182,8 +182,9 @@ public class TerrainShader extends BaseShader {
         }
 
         // set terrain world size
-        terrainSize.x = terrainTexture.getTerrain().terrainWidth;
-        terrainSize.y = terrainTexture.getTerrain().terrainDepth;
+        //todo
+//        terrainSize.x = terrainTexture.getTerrain().terrainWidth;
+//        terrainSize.y = terrainTexture.getTerrain().terrainDepth;
         set(UNIFORM_TERRAIN_SIZE, terrainSize);
     }
 

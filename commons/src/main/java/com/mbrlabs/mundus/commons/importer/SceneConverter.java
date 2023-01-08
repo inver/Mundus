@@ -16,6 +16,10 @@
 
 package com.mbrlabs.mundus.commons.importer;
 
+import com.artemis.Aspect;
+import com.artemis.io.SaveFileFormat;
+import com.artemis.managers.WorldSerializationManager;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mbrlabs.mundus.commons.Scene;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.dto.GameObjectDto;
@@ -26,7 +30,10 @@ import com.mbrlabs.mundus.commons.mapper.FogConverter;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.scene3d.SceneGraph;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.Map;
 
 /**
@@ -35,18 +42,28 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class SceneConverter {
 
+    private final ObjectMapper mapper;
     private final GameObjectConverter gameObjectConverter;
     private final CameraConverter cameraConverter;
 
     /**
      * Converts {@link Scene} to {@link SceneDto}.
      */
+    @SneakyThrows
     public SceneDto convert(Scene scene) {
         SceneDto dto = new SceneDto();
 
         dto.setId(scene.getId());
         dto.setName(scene.getName());
         dto.setSkyboxName(scene.getEnvironment().getSkyboxName());
+
+        dto.setRootNode(scene.getRootNode());
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        scene.getWorld().getSystem(WorldSerializationManager.class).save(baos, new SaveFileFormat(
+                scene.getWorld().getAspectSubscriptionManager().get(Aspect.all()).getEntities()
+        ));
+        var obj = mapper.readValue(baos.toString(), Object.class);
+        dto.setEcs(obj);
 
         // scene graph
         for (GameObject go : scene.getSceneGraph().getGameObjects()) {
@@ -62,10 +79,20 @@ public class SceneConverter {
         return dto;
     }
 
+    @SneakyThrows
     public void fillScene(Scene scene, SceneDto dto, Map<String, Asset<?>> assets) {
         scene.setId(dto.getId());
         scene.setName(dto.getName());
 
+        if (dto.getEcs() != null) {
+            var str = mapper.writeValueAsBytes(dto.getEcs());
+            scene.getWorld().getSystem(WorldSerializationManager.class)
+                    .load(new ByteArrayInputStream(str), SaveFileFormat.class);
+        }
+
+        if (dto.getRootNode() != null) {
+            scene.setRootNode(dto.getRootNode());
+        }
         // getEnvironment() stuff
         scene.getEnvironment().setFog(FogConverter.convert(dto.getFog()));
         scene.getEnvironment().setSkyboxName(dto.getSkyboxName());

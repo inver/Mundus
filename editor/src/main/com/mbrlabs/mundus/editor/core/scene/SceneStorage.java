@@ -32,6 +32,7 @@ import com.mbrlabs.mundus.commons.importer.SceneConverter;
 import com.mbrlabs.mundus.commons.utils.FileUtils;
 import com.mbrlabs.mundus.editor.core.assets.AssetsStorage;
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager;
+import com.mbrlabs.mundus.editor.core.ecs.EditorEcsService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -53,9 +54,10 @@ public class SceneStorage {
     protected final AssetsStorage assetsStorage;
     protected final EditorAssetManager editorAssetManager;
     private final SceneConverter sceneConverter;
+    private final EditorEcsService ecsService;
 
     public Scene createDefault(String projectPath, int id) {
-        var scene = new Scene();
+        var scene = new Scene(ecsService.createWorld());
         scene.setName(DEFAULT_SCENE_NAME);
         scene.getEnvironment().setSkyboxName(DEFAULT_SKYBOX_NAME);
         scene.getEnvironment().setFog(new Fog());

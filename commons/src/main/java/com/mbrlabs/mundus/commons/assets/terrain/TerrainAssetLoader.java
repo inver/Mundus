@@ -28,11 +28,6 @@ public class TerrainAssetLoader implements AssetLoader<TerrainAsset, TerrainMeta
             return null;
         }
 
-        var terrain = new Terrain(meta.getAdditional().getSize(), floatArray.toArray());
-        terrain.init();
-        terrain.updateUvScale(new Vector2(meta.getAdditional().getUv(), meta.getAdditional().getUv()));
-        terrain.update();
-        asset.setTerrain(terrain);
         return asset;
     }
 

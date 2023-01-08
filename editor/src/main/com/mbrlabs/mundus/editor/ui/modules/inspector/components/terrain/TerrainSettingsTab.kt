@@ -38,8 +38,8 @@ class TerrainSettingsTab(val parentWidget: TerrainComponentWidget) :
         table.add(VisLabel("Settings")).row()
 
         table.add(VisLabel("UV scale")).left().row()
-        uvSlider.value = parentWidget.component.terrain.terrain.uvScale.x
-        table.add(uvSlider).expandX().fillX().row()
+//        uvSlider.value = parentWidget.component.terrain.terrain.uvScale.x
+//        table.add(uvSlider).expandX().fillX().row()
     }
 
     override fun getTabTitle(): String {

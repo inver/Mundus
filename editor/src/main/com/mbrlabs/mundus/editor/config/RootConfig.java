@@ -12,27 +12,39 @@ import com.mbrlabs.mundus.commons.assets.shader.ShaderAssetLoader;
 import com.mbrlabs.mundus.commons.assets.skybox.SkyboxAssetLoader;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAssetLoader;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAssetLoader;
-import com.mbrlabs.mundus.commons.importer.*;
+import com.mbrlabs.mundus.commons.importer.CameraConverter;
+import com.mbrlabs.mundus.commons.importer.GameObjectConverter;
+import com.mbrlabs.mundus.commons.importer.ModelComponentConverter;
+import com.mbrlabs.mundus.commons.importer.SceneConverter;
 import com.mbrlabs.mundus.commons.loader.ModelImporter;
+import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager;
+import com.mbrlabs.mundus.editor.core.assets.EditorTerrainService;
+import com.mbrlabs.mundus.editor.core.ecs.EditorEcsService;
 import com.mbrlabs.mundus.editor.core.project.EditorCameraConverter;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.project.ProjectStorage;
 import com.mbrlabs.mundus.editor.core.registry.Registry;
 import com.mbrlabs.mundus.editor.ui.components.camera.CameraService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+
+import static com.fasterxml.jackson.core.JsonParser.Feature.ALLOW_NON_NUMERIC_NUMBERS;
 
 @Configuration
 @ComponentScan({
         "com.mbrlabs.mundus.editor"
 })
 public class RootConfig {
+    @Autowired
+    private EditorEcsService ecsService;
 
     @Bean
     public ObjectMapper mapper() {
         var res = new ObjectMapper();
         res.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        res.configure(ALLOW_NON_NUMERIC_NUMBERS, true);
         return res;
     }
 
@@ -101,9 +113,10 @@ public class RootConfig {
         return new EditorCtx();
     }
 
+
     @Bean
     public CameraService cameraService() {
-        return new CameraService(editorCtx());
+        return new CameraService(editorCtx(), ecsService);
     }
 
     @Bean
@@ -113,17 +126,13 @@ public class RootConfig {
 
     @Bean
     public SceneConverter sceneConverter() {
-        return new SceneConverter(gameObjectConverter(), cameraConverter());
+        return new SceneConverter(mapper(), gameObjectConverter(), cameraConverter());
     }
 
-    @Bean
-    public TerrainComponentConverter terrainComponentConverter() {
-        return new TerrainComponentConverter();
-    }
 
     @Bean
     public GameObjectConverter gameObjectConverter() {
-        return new GameObjectConverter(modelComponentConverter(), cameraConverter(), terrainComponentConverter());
+        return new GameObjectConverter(cameraConverter());
     }
 
     @Bean

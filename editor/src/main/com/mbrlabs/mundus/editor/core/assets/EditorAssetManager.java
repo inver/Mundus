@@ -82,6 +82,11 @@ public class EditorAssetManager extends AssetManager {
 //        }
     }
 
+    @Override
+    public Asset<?> loadCurrentProjectAsset(String assetName) {
+        return loadProjectAsset(ctx.getCurrent().path, assetName);
+    }
+
     public Asset<?> loadProjectAsset(String projectPath, String assetName) {
         try {
             var assetFolder = new FileHandle(projectPath + "/" + ProjectConstants.PROJECT_ASSETS_DIR + assetName);

@@ -18,10 +18,10 @@ package com.mbrlabs.mundus.editor.tools;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
+import com.mbrlabs.mundus.editor.events.EntityModifiedEvent;
 import com.mbrlabs.mundus.editor.events.EventBus;
-import com.mbrlabs.mundus.editor.events.GameObjectModifiedEvent;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
-import com.mbrlabs.mundus.editor.tools.picker.GameObjectPicker;
+import com.mbrlabs.mundus.editor.tools.picker.EntityPicker;
 import com.mbrlabs.mundus.editor.tools.picker.ToolHandlePicker;
 
 /**
@@ -48,14 +48,14 @@ public abstract class TransformTool extends SelectionTool {
     protected static final int XYZ_HANDLE_ID = 4;
 
     protected ToolHandlePicker handlePicker;
-    protected GameObjectModifiedEvent gameObjectModifiedEvent;
+    protected EntityModifiedEvent entityModifiedEvent;
 
-    public TransformTool(EditorCtx ctx, String shaderKey, GameObjectPicker goPicker, ToolHandlePicker handlePicker,
+    public TransformTool(EditorCtx ctx, String shaderKey, EntityPicker picker, ToolHandlePicker handlePicker,
                          ModelBatch batch, CommandHistory history, EventBus eventBus, String name) {
-        super(ctx, shaderKey, goPicker, batch, history, eventBus, name);
+        super(ctx, shaderKey, picker, batch, history, eventBus, name);
         this.handlePicker = handlePicker;
 
-        gameObjectModifiedEvent = new GameObjectModifiedEvent(null);
+        entityModifiedEvent = new EntityModifiedEvent(-1);
     }
 
     protected abstract void scaleHandles();

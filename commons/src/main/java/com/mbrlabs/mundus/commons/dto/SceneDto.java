@@ -16,6 +16,7 @@
 
 package com.mbrlabs.mundus.commons.dto;
 
+import com.mbrlabs.mundus.commons.scene3d.HierarchyNode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -37,6 +38,14 @@ public class SceneDto {
     @Getter
     @Setter
     private CameraDto camera;
+
+    @Getter
+    @Setter
+    private Object ecs;
+
+    @Getter
+    @Setter
+    private HierarchyNode rootNode;
 
     public SceneDto() {
         gameObjects = new ArrayList<>();

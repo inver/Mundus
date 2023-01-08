@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 
-public class LookAtAction extends BaseCameraHandleAction {
+public class LookAtBehavior extends BaseCameraHandleBehavior {
 
     private final Vector3 tmp1 = new Vector3();
     private final Vector3 tmp2 = new Vector3();
@@ -15,13 +15,13 @@ public class LookAtAction extends BaseCameraHandleAction {
         getHandle(object).getPosition(tmp2);
         tmp2.sub(tmp1).nor();
 
-        Double yaw = Math.toDegrees(Math.atan(tmp2.x / tmp2.z));
+        double yaw = Math.toDegrees(Math.atan(tmp2.x / tmp2.z));
         if (tmp2.z > 0) {
             yaw += 180;
         }
-        Double pitch = 90 - Math.toDegrees(Math.acos(tmp2.y));
+        double pitch = 90 - Math.toDegrees(Math.acos(tmp2.y));
 
-        var quat = new Quaternion().setEulerAngles(yaw.floatValue(), pitch.floatValue(), 0).nor();
+        var quat = new Quaternion().setEulerAngles((float) yaw, (float) pitch, 0).nor();
         getCamera(object).setLocalRotation(quat.x, quat.y, quat.z, quat.w);
     }
 }

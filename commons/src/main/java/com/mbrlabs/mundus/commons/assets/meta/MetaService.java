@@ -98,6 +98,12 @@ public class MetaService {
         }, metaHandle);
     }
 
+    public Meta<TerrainMeta> loadTerrainMeta(FileHandle assetFolderPath) {
+        var metaHandle = assetFolderPath.child(META_FILE_NAME);
+        return loadMeta(new TypeReference<>() {
+        }, metaHandle);
+    }
+
     @SuppressWarnings("unchecked")
     private <T> Meta<T> loadMeta(TypeReference<Meta<T>> tr, FileHandle handle) {
         if (handle.type() == Files.FileType.Classpath) {

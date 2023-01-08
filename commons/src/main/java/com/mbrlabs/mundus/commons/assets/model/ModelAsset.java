@@ -17,10 +17,15 @@ package com.mbrlabs.mundus.commons.assets.model;
 
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.Renderable;
+import com.badlogic.gdx.graphics.g3d.RenderableProvider;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pool;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset;
 import com.mbrlabs.mundus.commons.assets.meta.Meta;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +36,7 @@ import java.util.Map;
  * @version 01-10-2016
  */
 @Slf4j
-public class ModelAsset extends Asset<ModelMeta> {
+public class ModelAsset extends Asset<ModelMeta> implements RenderableProvider {
 
     private Model model;
     private final Map<String, MaterialAsset> defaultMaterials = new HashMap<>();
@@ -119,5 +124,10 @@ public class ModelAsset extends Asset<ModelMeta> {
             }
         }
         return false;
+    }
+
+    @Override
+    public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
+        throw new NotImplementedException();
     }
 }

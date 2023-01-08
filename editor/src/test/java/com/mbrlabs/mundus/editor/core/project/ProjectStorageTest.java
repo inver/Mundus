@@ -1,6 +1,7 @@
 package com.mbrlabs.mundus.editor.core.project;
 
 
+import com.artemis.World;
 import com.mbrlabs.mundus.commons.Scene;
 import com.mbrlabs.mundus.editor.config.BaseCtxTest;
 import com.mbrlabs.mundus.editor.core.registry.ProjectRef;
@@ -21,11 +22,13 @@ public class ProjectStorageTest extends BaseCtxTest {
 
     @Test
     public void testSaveProject() {
+
         var project = new ProjectContext(111);
         project.path = PROJECT_PATH;
         project.name = "alala";
 
-        var scene = new Scene();
+        var testWorld = new World();
+        var scene = new Scene(testWorld);
         scene.setName("ololo");
         project.setCurrentScene(scene);
 

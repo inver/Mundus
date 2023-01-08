@@ -68,6 +68,7 @@ project(":commons") {
         implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
         implementation "com.github.mgsx-dev.gdx-gltf:gltf:$gltfVersion"
         implementation "net.onedaybeard.artemis:artemis-odb:2.3.0"
+        implementation 'net.onedaybeard.artemis:artemis-odb-serializer-json:2.3.0'
 
         implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
         implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'

@@ -17,6 +17,7 @@
 package com.mbrlabs.mundus.commons.scene3d.components;
 
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
+import org.apache.commons.lang3.NotImplementedException;
 
 /**
  * @author Marcus Brummer
@@ -40,5 +41,7 @@ public interface Component extends Renderable {
 
     void remove();
 
-    Component clone(GameObject go);
+    default Component clone(GameObject go) {
+        throw new NotImplementedException();
+    }
 }

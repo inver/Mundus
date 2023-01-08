@@ -1,9 +1,9 @@
 package com.mbrlabs.mundus.editor.ui.components.camera;
 
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
-import com.mbrlabs.mundus.commons.scene3d.components.action.Action;
+import com.mbrlabs.mundus.commons.scene3d.components.behavior.Behavior;
 
-public abstract class BaseCameraHandleAction implements Action {
+public abstract class BaseCameraHandleBehavior implements Behavior {
 
     protected GameObject getCamera(GameObject go) {
         if (go.getChildren() == null) {

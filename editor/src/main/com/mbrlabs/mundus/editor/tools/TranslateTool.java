@@ -30,15 +30,15 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
-import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
+import com.mbrlabs.mundus.editor.events.EntityModifiedEvent;
 import com.mbrlabs.mundus.editor.events.EventBus;
-import com.mbrlabs.mundus.editor.events.GameObjectModifiedEvent;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.history.commands.TranslateCommand;
-import com.mbrlabs.mundus.editor.tools.picker.GameObjectPicker;
+import com.mbrlabs.mundus.editor.tools.picker.EntityPicker;
 import com.mbrlabs.mundus.editor.tools.picker.ToolHandlePicker;
 import com.mbrlabs.mundus.editor.utils.Fa;
 import org.lwjgl.opengl.GL11;
@@ -71,10 +71,10 @@ public class TranslateTool extends TransformTool {
 
     private TranslateCommand command;
 
-    public TranslateTool(EditorCtx ctx, String shaderKey, GameObjectPicker goPicker, ToolHandlePicker handlePicker,
+    public TranslateTool(EditorCtx ctx, String shaderKey, EntityPicker picker, ToolHandlePicker handlePicker,
                          ModelBatch batch, CommandHistory history, EventBus eventBus) {
 
-        super(ctx, shaderKey, goPicker, handlePicker, batch, history, eventBus, NAME);
+        super(ctx, shaderKey, picker, handlePicker, batch, history, eventBus, NAME);
 
         ModelBuilder modelBuilder = new ModelBuilder();
 
@@ -99,7 +99,7 @@ public class TranslateTool extends TransformTool {
         xzPlaneHandle = new TranslateHandle(COLOR_XZ.toIntBits(), TransformState.TRANSFORM_XZ, xzPlaneHandleModel);
         handles = new TranslateHandle[]{xHandle, yHandle, zHandle, xzPlaneHandle};
 
-        gameObjectModifiedEvent = new GameObjectModifiedEvent(null);
+        entityModifiedEvent = new EntityModifiedEvent(-1);
     }
 
     @Override
@@ -113,8 +113,8 @@ public class TranslateTool extends TransformTool {
     }
 
     @Override
-    public void gameObjectSelected(GameObject go) {
-        super.gameObjectSelected(go);
+    public void gameObjectSelected(int entityId) {
+        super.gameObjectSelected(entityId);
         scaleHandles();
         translateHandles();
     }
@@ -134,78 +134,82 @@ public class TranslateTool extends TransformTool {
     @Override
     public void render(ModelBatch batch, SceneEnvironment environment, ShaderHolder shaders, float delta) {
         super.render(batch, environment, shaders, delta);
-        if (getCtx().getSelected() != null) {
-            getBatch().begin(getCtx().getCamera());
-            GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
-            xHandle.render(batch, environment, shaders, delta);
-            yHandle.render(batch, environment, shaders, delta);
-            zHandle.render(batch, environment, shaders, delta);
-            xzPlaneHandle.render(batch, environment, shaders, delta);
-
-            getBatch().end();
+        if (getCtx().getSelectedEntityId() < 0) {
+            return;
         }
+        getBatch().begin(getCtx().getCamera());
+        GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
+        xHandle.render(batch, environment, shaders, delta);
+        yHandle.render(batch, environment, shaders, delta);
+        zHandle.render(batch, environment, shaders, delta);
+        xzPlaneHandle.render(batch, environment, shaders, delta);
+
+        getBatch().end();
     }
 
     @Override
     public void act() {
         super.act();
 
-        if (getCtx().getSelected() != null) {
-            translateHandles();
-            if (state == TransformState.IDLE) return;
+        if (getCtx().getSelectedEntityId() < 0) {
+            return;
+        }
+        translateHandles();
+        if (state == TransformState.IDLE) return;
 
-            Ray ray = getCtx().getViewport().getPickRay(Gdx.input.getX(), Gdx.input.getY());
-            Vector3 rayEnd = getCtx().getSelected().getLocalPosition(temp0);
-            float dst = getCtx().getCamera().position.dst(rayEnd);
-            rayEnd = ray.getEndPoint(rayEnd, dst);
+        Ray ray = getCtx().getViewport().getPickRay(Gdx.input.getX(), Gdx.input.getY());
 
-            if (initTranslate) {
-                initTranslate = false;
-                lastPos.set(rayEnd);
-            }
+        var positionComponent = getCtx().getSelectedEntity().getComponent(PositionComponent.class);
+        Vector3 rayEnd = positionComponent.getLocalPosition(temp0);
+        float dst = getCtx().getCamera().position.dst(rayEnd);
+        rayEnd = ray.getEndPoint(rayEnd, dst);
 
-            GameObject go = getCtx().getSelected();
-
-            boolean modified = false;
-            Vector3 vec = new Vector3();
-            if (state == TransformState.TRANSFORM_XZ) {
-                vec.set(rayEnd.x - lastPos.x, 0, rayEnd.z - lastPos.z);
-                modified = true;
-            } else if (state == TransformState.TRANSFORM_X) {
-                vec.set(rayEnd.x - lastPos.x, 0, 0);
-                modified = true;
-            } else if (state == TransformState.TRANSFORM_Y) {
-                vec.set(0, rayEnd.y - lastPos.y, 0);
-                modified = true;
-            } else if (state == TransformState.TRANSFORM_Z) {
-                vec.set(0, 0, rayEnd.z - lastPos.z);
-                modified = true;
-            }
-
-            // TODO translation in global space
-            // if(globalSpace) {
-            // System.out.println("Before: " + vec);
-            // System.out.println("After: " + vec);
-            // }
-
-            go.translate(vec);
-
-            if (modified) {
-                gameObjectModifiedEvent.setGameObject(getCtx().getSelected());
-                eventBus.post(gameObjectModifiedEvent);
-            }
-
+        if (initTranslate) {
+            initTranslate = false;
             lastPos.set(rayEnd);
         }
+
+//        GameObject go = getCtx().getSelectedEntityId();
+
+        boolean modified = false;
+        Vector3 vec = new Vector3();
+        if (state == TransformState.TRANSFORM_XZ) {
+            vec.set(rayEnd.x - lastPos.x, 0, rayEnd.z - lastPos.z);
+            modified = true;
+        } else if (state == TransformState.TRANSFORM_X) {
+            vec.set(rayEnd.x - lastPos.x, 0, 0);
+            modified = true;
+        } else if (state == TransformState.TRANSFORM_Y) {
+            vec.set(0, rayEnd.y - lastPos.y, 0);
+            modified = true;
+        } else if (state == TransformState.TRANSFORM_Z) {
+            vec.set(0, 0, rayEnd.z - lastPos.z);
+            modified = true;
+        }
+
+        // TODO translation in global space
+        // if(globalSpace) {
+        // System.out.println("Before: " + vec);
+        // System.out.println("After: " + vec);
+        // }
+
+        positionComponent.translate(vec);
+
+        if (modified) {
+            entityModifiedEvent.setEntityId(getCtx().getSelectedEntityId());
+            eventBus.post(entityModifiedEvent);
+        }
+
+        lastPos.set(rayEnd);
     }
 
     @Override
     protected void scaleHandles() {
-        if (getCtx().getSelected() == null) {
+        if (getCtx().getSelectedEntityId() < 0) {
             return;
         }
 
-        Vector3 pos = getCtx().getSelected().getPosition(temp0);
+        Vector3 pos = getCtx().getSelectedEntity().getComponent(PositionComponent.class).getPosition(temp0);
         float scaleFactor = getCtx().getCamera().position.dst(pos) * 0.25f;
         xHandle.getScale().set(scaleFactor * 0.7f, scaleFactor / 2, scaleFactor / 2);
         xHandle.applyTransform();
@@ -222,11 +226,12 @@ public class TranslateTool extends TransformTool {
 
     @Override
     protected void translateHandles() {
-        if (getCtx().getSelected() == null) {
+        if (getCtx().getSelectedEntityId() < 0) {
             return;
         }
 
-        final Vector3 pos = getCtx().getSelected().getTransform().getTranslation(temp0);
+
+        final Vector3 pos = getCtx().getSelectedEntity().getComponent(PositionComponent.class).getTransform().getTranslation(temp0);
         xHandle.getPosition().set(pos);
         xHandle.applyTransform();
         yHandle.getPosition().set(pos);
@@ -251,7 +256,7 @@ public class TranslateTool extends TransformTool {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         super.touchDown(screenX, screenY, pointer, button);
 
-        if (button != Input.Buttons.LEFT || getCtx().getSelected() == null) {
+        if (button != Input.Buttons.LEFT || getCtx().getSelectedEntityId() < 0) {
             return false;
         }
 
@@ -265,8 +270,8 @@ public class TranslateTool extends TransformTool {
         initTranslate = true;
         handle.changeColor(COLOR_SELECTED);
 
-        command = new TranslateCommand(getCtx().getSelected());
-        command.setBefore(getCtx().getSelected().getLocalPosition(temp0));
+//        command = new TranslateCommand(getCtx().getSelectedEntityId());
+//        command.setBefore(getCtx().getSelectedEntityId().getLocalPosition(temp0));
         return true;
     }
 
@@ -279,8 +284,8 @@ public class TranslateTool extends TransformTool {
             zHandle.changeColor(COLOR_Z);
             xzPlaneHandle.changeColor(COLOR_XZ);
 
-            command.setAfter(getCtx().getSelected().getLocalPosition(temp0));
-            getHistory().add(command);
+//            command.setAfter(getCtx().getSelectedEntityId().getLocalPosition(temp0));
+//            getHistory().add(command);
             command = null;
             state = TransformState.IDLE;
         }

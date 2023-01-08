@@ -37,34 +37,34 @@ class HeightmapTab(private val terrainAsset: TerrainAsset) : Tab(false, false) {
     override fun getContentTable(): Table = root
 
     //todo move to presenter
-    fun loadHeightMap(heightMap: FileHandle): Command {
-        val terrain = terrainAsset.terrain
-        val command = TerrainHeightCommand(terrain)
-        command.setHeightDataBefore(terrain.heightData)
-
-        val originalMap = Pixmap(heightMap)
-
-        // scale pixmap if it doesn't fit the terrainAsset
-        if (originalMap.width != terrain.vertexResolution || originalMap.height != terrain.vertexResolution) {
-            val scaledPixmap = Pixmap(
-                terrain.vertexResolution, terrain.vertexResolution,
-                originalMap.format
-            )
-            scaledPixmap.drawPixmap(
-                originalMap, 0, 0, originalMap.width, originalMap.height, 0, 0,
-                scaledPixmap.width, scaledPixmap.height
-            )
-
-            originalMap.dispose()
-            Terraformer.heightMap(terrain).maxHeight(terrain.terrainWidth * 0.17f).map(scaledPixmap).terraform()
-            scaledPixmap.dispose()
-        } else {
-            Terraformer.heightMap(terrain).maxHeight(terrain.terrainWidth * 0.17f).map(originalMap).terraform()
-            originalMap.dispose()
-        }
-
-        command.setHeightDataAfter(terrain.heightData)
-        return command
-
+    fun loadHeightMap(heightMap: FileHandle): Command? {
+//        val terrain = terrainAsset.terrain
+//        val command = TerrainHeightCommand(terrain)
+//        command.setHeightDataBefore(terrain.heightData)
+//
+//        val originalMap = Pixmap(heightMap)
+//
+//        // scale pixmap if it doesn't fit the terrainAsset
+//        if (originalMap.width != terrain.vertexResolution || originalMap.height != terrain.vertexResolution) {
+//            val scaledPixmap = Pixmap(
+//                terrain.vertexResolution, terrain.vertexResolution,
+//                originalMap.format
+//            )
+//            scaledPixmap.drawPixmap(
+//                originalMap, 0, 0, originalMap.width, originalMap.height, 0, 0,
+//                scaledPixmap.width, scaledPixmap.height
+//            )
+//
+//            originalMap.dispose()
+//            Terraformer.heightMap(terrain).maxHeight(terrain.terrainWidth * 0.17f).map(scaledPixmap).terraform()
+//            scaledPixmap.dispose()
+//        } else {
+//            Terraformer.heightMap(terrain).maxHeight(terrain.terrainWidth * 0.17f).map(originalMap).terraform()
+//            originalMap.dispose()
+//        }
+//
+//        command.setHeightDataAfter(terrain.heightData)
+//        return command
+        return null
     }
 }

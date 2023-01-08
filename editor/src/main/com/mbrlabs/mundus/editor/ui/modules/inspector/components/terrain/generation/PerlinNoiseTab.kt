@@ -34,14 +34,14 @@ class PerlinNoiseTab(private val terrainAsset: TerrainAsset) : Tab(false, false)
     override fun getContentTable(): Table = root
 
     //todo move to presenter
-    fun generatePerlinNoise(seed: Int, min: Float, max: Float): Command {
-        val terrain = terrainAsset.terrain
-        val command = TerrainHeightCommand(terrain)
-        command.setHeightDataBefore(terrain.heightData)
-
-        Terraformer.perlin(terrain).minHeight(min).maxHeight(max).seed(seed.toLong()).terraform()
-
-        command.setHeightDataAfter(terrain.heightData)
-        return command
+    fun generatePerlinNoise(seed: Int, min: Float, max: Float): Command? {
+//        val terrain = terrainAsset.terrain
+//        val command = TerrainHeightCommand(terrain)
+//        command.setHeightDataBefore(terrain.heightData)
+//
+//        Terraformer.perlin(terrain).minHeight(min).maxHeight(max).seed(seed.toLong()).terraform()
+//
+//        command.setHeightDataAfter(terrain.heightData)
+        return null
     }
 }

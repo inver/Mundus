@@ -1,4 +1,4 @@
-package com.mbrlabs.mundus.editor.ui.components;
+package com.mbrlabs.mundus.editor.ui.components.handle;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -11,11 +11,10 @@ import com.badlogic.gdx.graphics.g3d.utils.shapebuilders.SphereShapeBuilder;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.scene3d.components.AbstractComponent;
-import com.mbrlabs.mundus.commons.scene3d.components.Component;
 import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 import lombok.Getter;
 
-public class EditorHandleComponent extends AbstractComponent {
+public class DirectionHandleComponent extends AbstractComponent {
 
     private static final long ATTRIBUTES =
             VertexAttributes.Usage.Position | VertexAttributes.Usage.ColorUnpacked | VertexAttributes.Usage.Normal;
@@ -26,7 +25,7 @@ public class EditorHandleComponent extends AbstractComponent {
     @Getter
     private final ModelInstance handleLineInstance;
 
-    public EditorHandleComponent(GameObject go) {
+    public DirectionHandleComponent(GameObject go) {
         super(go);
 
         var modelBuilder = new ModelBuilder();
@@ -38,7 +37,7 @@ public class EditorHandleComponent extends AbstractComponent {
         instance = new ModelInstance(modelBuilder.end());
 
         modelBuilder.begin();
-        partBuilder = modelBuilder.part("directionLine", GL20.GL_LINES, 3, new Material());
+        partBuilder = modelBuilder.part("directionLine", GL20.GL_LINES, ATTRIBUTES, DEFAULT_MATERIAL);
         partBuilder.setColor(Color.GRAY);
         //todo rework for dotted line
         partBuilder.line(0, 0, 0, 0, 0, -1);
@@ -56,10 +55,4 @@ public class EditorHandleComponent extends AbstractComponent {
             batch.render(handleLineInstance);
         }
     }
-
-    @Override
-    public Component clone(GameObject go) {
-        return null;
-    }
-
 }
