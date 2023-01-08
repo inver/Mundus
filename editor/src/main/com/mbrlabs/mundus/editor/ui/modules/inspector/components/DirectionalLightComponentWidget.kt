@@ -107,18 +107,18 @@ class DirectionalLightComponentWidget(
         })
     }
 
-    override fun setValues(go: GameObject) {
-        val c = go.findComponentByType(Component.Type.LIGHT)
-        if (c != null) {
-            component = c as DirectionalLightComponent
-            val light = component.directionalLight
-
-            dirX.text = formatFloat(light.direction.x, 2)
-            dirY.text = formatFloat(light.direction.y, 2)
-            dirZ.text = formatFloat(light.direction.z, 2)
-
-            colorField.selectedColor = light.color
-            intensityField.text = light.intensity.toString()
-        }
+    override fun setValues(entityId: Int) {
+//        val c = go.findComponentByType(Component.Type.LIGHT)
+//        if (c != null) {
+//            component = c as DirectionalLightComponent
+//            val light = component.directionalLight
+//
+//            dirX.text = formatFloat(light.direction.x, 2)
+//            dirY.text = formatFloat(light.direction.y, 2)
+//            dirZ.text = formatFloat(light.direction.z, 2)
+//
+//            colorField.selectedColor = light.color
+//            intensityField.text = light.intensity.toString()
+//        }
     }
 }

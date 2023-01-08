@@ -5,7 +5,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.project.ProjectManager;
@@ -34,7 +33,7 @@ public class DockBarPresenter {
     public void initAssetDock(@NotNull AssetsDock assetsDock) {
         eventBus.register((ProjectChangedEvent.ProjectChangedListener) event -> reloadAssets(assetsDock));
         eventBus.register((AssetImportEvent.AssetImportListener) event -> reloadAssets(assetsDock));
-        eventBus.register((GameObjectSelectedEvent.GameObjectSelectedListener) event -> assetsDock.setSelected(null));
+        eventBus.register((EntitySelectedEvent.EntitySelectedListener) event -> assetsDock.setSelected(null));
 
         assetsDock.getAddAssetToScene().addListener(createAddAssetToSceneListener(assetsDock));
         assetsDock.getRenameAsset().addListener(createDeleteAssetListener(assetsDock));

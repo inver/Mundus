@@ -62,7 +62,7 @@ class MaterialAssetInspectorWidget(
         // can't be deleted
     }
 
-    override fun setValues(go: GameObject) {
+    override fun setValues(entityId: Int) {
         // nope
     }
 

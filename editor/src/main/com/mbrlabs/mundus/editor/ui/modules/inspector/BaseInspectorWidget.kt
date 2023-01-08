@@ -23,7 +23,6 @@ import com.kotcrab.vis.ui.widget.Separator
 import com.kotcrab.vis.ui.widget.Separator.SeparatorStyle
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
-import com.mbrlabs.mundus.commons.scene3d.GameObject
 import com.mbrlabs.mundus.editor.ui.widgets.CollapseWidget
 import com.mbrlabs.mundus.editor.ui.widgets.FaTextButton
 import com.mbrlabs.mundus.editor.utils.Fa
@@ -130,6 +129,6 @@ abstract class BaseInspectorWidget(
 
     abstract fun onDelete()
 
-    abstract fun setValues(go: GameObject)
+    abstract fun setValues(entityId: Int)
 
 }

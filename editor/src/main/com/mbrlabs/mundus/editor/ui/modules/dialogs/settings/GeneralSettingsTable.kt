@@ -32,7 +32,7 @@ class GeneralSettingsTable : BaseSettingsTable() {
     val fbxBinary = FileChooserField(500)
     val keyboardLayouts = VisSelectBox<KeyboardLayout>()
     val autoReloadFromDisk = VisCheckBox("Auto reload from disk");
-
+    val displayCoordinateSystem = VisCheckBox("Display coordinate system")
     init {
         top().left()
         padRight(UiConstants.PAD_SIDE).padLeft(UiConstants.PAD_SIDE)
@@ -47,6 +47,7 @@ class GeneralSettingsTable : BaseSettingsTable() {
         add(VisLabel("Keyboard Layout")).growX().row()
         add(keyboardLayouts).growX().row()
 
-        add(autoReloadFromDisk).row();
+        add(autoReloadFromDisk).growX().row();
+        add(displayCoordinateSystem).growX().row();
     }
 }

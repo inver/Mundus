@@ -22,7 +22,6 @@ import com.kotcrab.vis.ui.widget.VisCheckBox
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextField
-import com.mbrlabs.mundus.commons.scene3d.GameObject
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
 
 /**
@@ -68,9 +67,9 @@ class IdentifierWidget(private val ctx: EditorCtx) : VisTable() {
 
     }
 
-    fun setValues(go: GameObject) {
-        active.isChecked = go.isActive
-        name.text = go.name
+    fun setValues(isActive: Boolean, name: String) {
+        active.isChecked = isActive
+        this.name.text = name
     }
 
 }

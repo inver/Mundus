@@ -6,6 +6,7 @@ import com.mbrlabs.mundus.commons.assets.shader.ShaderAsset;
 import com.mbrlabs.mundus.commons.shaders.DefaultBaseShader;
 import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 import com.mbrlabs.mundus.commons.shaders.SkyboxShader;
+import com.mbrlabs.mundus.commons.shaders.TerrainShader;
 import com.mbrlabs.mundus.editor.core.ProjectConstants;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.registry.ProjectRef;
@@ -118,6 +119,11 @@ public class ShaderStorage implements ShaderHolder {
             case ShaderConstants.WIREFRAME: {
                 var asset = (ShaderAsset) ctx.getAssetLibrary().get(ProjectConstants.SHADER_WIREFRAME_PATH);
                 return new WireframeShader(asset.getVertexShader(), asset.getFragmentShader());
+            }
+            case ShaderConstants.TERRAIN: {
+                var asset = (ShaderAsset) ctx.getAssetLibrary().get(ProjectConstants.SHADER_TERRAIN_PATH);
+                return new TerrainShader(asset.getVertexShader(), asset.getFragmentShader());
+
             }
         }
 

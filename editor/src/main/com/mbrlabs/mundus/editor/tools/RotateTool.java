@@ -225,8 +225,8 @@ public class RotateTool extends TransformTool {
     }
 
     @Override
-    public void gameObjectSelected(int entityId) {
-        super.gameObjectSelected(entityId);
+    public void entitySelected(int entityId) {
+        super.entitySelected(entityId);
         scaleHandles();
         rotateHandles();
         translateHandles();

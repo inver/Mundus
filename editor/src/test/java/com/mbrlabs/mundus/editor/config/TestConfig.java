@@ -5,9 +5,9 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mbrlabs.mundus.commons.Scene;
 import com.mbrlabs.mundus.commons.assets.shader.ShaderAssetLoader;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAssetLoader;
+import com.mbrlabs.mundus.commons.core.ecs.EcsService;
 import com.mbrlabs.mundus.commons.importer.CameraConverter;
 import com.mbrlabs.mundus.commons.importer.GameObjectConverter;
 import com.mbrlabs.mundus.commons.importer.ModelComponentConverter;
@@ -15,7 +15,8 @@ import com.mbrlabs.mundus.commons.importer.SceneConverter;
 import com.mbrlabs.mundus.editor.core.assets.AssetWriter;
 import com.mbrlabs.mundus.editor.core.assets.AssetsStorage;
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager;
-import com.mbrlabs.mundus.editor.core.project.EditorCameraConverter;
+import com.mbrlabs.mundus.editor.core.assets.EditorTerrainService;
+import com.mbrlabs.mundus.editor.core.ecs.EditorEcsService;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.scene.SceneStorage;
 import com.mbrlabs.mundus.editor.core.shader.ShaderStorage;
@@ -76,31 +77,6 @@ public class TestConfig {
     public TextureAssetLoader textureService() {
         return new TextureAssetLoader();
     }
-//
-//    @Bean
-//    public ModelService modelService() {
-//        return new ModelService();
-//    }
-//
-//    @Bean
-//    public TerrainService terrainService() {
-//        return new TerrainService();
-//    }
-//
-//    @Bean
-//    public MaterialService materialService(MetaService metaService) {
-//        return new MaterialService(metaService);
-//    }
-//
-//    @Bean
-//    public PixmapTextureService pixmapTextureService() {
-//        return new PixmapTextureService();
-//    }
-//
-//    @Bean
-//    public ModelImporter modelImporter() {
-//        return new ModelImporter();
-//    }
 
     @Autowired
     private AssetWriter assetWriter;
@@ -108,6 +84,8 @@ public class TestConfig {
     private EditorCtx editorCtx;
     @Autowired
     private EditorAssetManager editorAssetManager;
+    @Autowired
+    private EditorTerrainService terrainService;
 
     @Bean
     public ShaderAssetLoader shaderAssetLoader() {
@@ -126,28 +104,27 @@ public class TestConfig {
 
     @Bean
     public CameraConverter cameraConverter() {
-        return new EditorCameraConverter(cameraService);
+        return new CameraConverter();
     }
 
     @Bean
     public SceneConverter sceneConverter() {
-        return new SceneConverter(gameObjectConverter(), cameraConverter());
+        return new SceneConverter(mapper(), gameObjectConverter(), cameraConverter());
     }
 
     @Bean
     public GameObjectConverter gameObjectConverter() {
-        return new GameObjectConverter(modelComponentConverter(), cameraConverter());
+        return new GameObjectConverter();
     }
 
     @Bean
-    public ModelComponentConverter modelComponentConverter() {
-        return new ModelComponentConverter();
+    public EditorEcsService ecsService() {
+        return new EditorEcsService(editorAssetManager, terrainService);
     }
-
 
     @Bean
     public SceneStorage sceneStorage() {
-        return new SceneStorage(mapper(), assetsStorage(), editorAssetManager, sceneConverter());
+        return new SceneStorage(mapper(), assetsStorage(), editorAssetManager, sceneConverter(), ecsService());
     }
 
     @Bean

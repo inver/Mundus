@@ -96,7 +96,7 @@ public class ToolManager extends InputAdapter implements Disposable, Renderable 
         activeTool.onActivated();
 
         if (shouldKeepSelection) {
-            ((SelectionTool) activeTool).gameObjectSelected(selected);
+            ((SelectionTool) activeTool).entitySelected(selected);
         }
     }
 

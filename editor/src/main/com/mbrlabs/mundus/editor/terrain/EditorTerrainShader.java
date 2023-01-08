@@ -37,6 +37,7 @@ public class EditorTerrainShader extends TerrainShader {
     private float pickerRadius = 0;
 
     public EditorTerrainShader() {
+        super("", "");
         String vertexShader = "\n#define PICKER\n" + Gdx.files.classpath(VERTEX_SHADER).readString();
         String fragmentShader = "\n#define PICKER\n" + Gdx.files.classpath(FRAGMENT_SHADER).readString();
 
@@ -66,7 +67,7 @@ public class EditorTerrainShader extends TerrainShader {
         }
 
         // mouse picking
-        if(pickerActive) {
+        if (pickerActive) {
             set(UNIFORM_MOUSE_ACTIVE, 1);
             set(UNIFORM_PICKER_POS, pickerPosition);
             set(UNIFORM_PICKER_RADIUS, pickerRadius);

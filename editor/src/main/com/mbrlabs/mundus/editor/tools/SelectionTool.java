@@ -49,7 +49,7 @@ public class SelectionTool extends Tool {
         this(ctx, shaderKey, picker, batch, history, eventBus, NAME);
     }
 
-    public void gameObjectSelected(int entityId) {
+    public void entitySelected(int entityId) {
         getCtx().setSelectedEntityId(entityId);
     }
 
@@ -97,7 +97,7 @@ public class SelectionTool extends Tool {
         if (button == Input.Buttons.RIGHT) {
             int entityId = picker.pick(getCtx().getCurrent().getCurrentScene(), screenX, screenY);
             if (entityId >= 0 && entityId != getCtx().getSelectedEntityId()) {
-                gameObjectSelected(entityId);
+                entitySelected(entityId);
                 eventBus.post(new EntitySelectedEvent(entityId));
             }
         }

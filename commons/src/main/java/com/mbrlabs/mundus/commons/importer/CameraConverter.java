@@ -4,14 +4,8 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.mbrlabs.mundus.commons.dto.CameraDto;
 import com.mbrlabs.mundus.commons.dto.Vector3Dto;
-import com.mbrlabs.mundus.commons.scene3d.GameObject;
-import com.mbrlabs.mundus.commons.scene3d.components.CameraComponent;
 
 public class CameraConverter {
-
-    protected CameraComponent toComponent(GameObject go, CameraDto dto) {
-        return new CameraComponent(go, fromDto(dto));
-    }
 
     public PerspectiveCamera fromDto(CameraDto dto) {
         var res = new PerspectiveCamera();
@@ -31,16 +25,4 @@ public class CameraConverter {
         return res;
     }
 
-    public CameraDto fromComponent(CameraComponent c) {
-        var res = fromCamera(c.getCamera());
-        if (c.getGoId() >= 0) {
-            res.setViewPointPosition(null);
-            res.setDirectionGameObjectId(c.getGoId());
-        }
-        return res;
-    }
-
-    public void addComponents(GameObject go, CameraDto dto) {
-        go.addComponent(new CameraComponent(go, fromDto(dto)));
-    }
 }

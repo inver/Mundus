@@ -20,22 +20,19 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
-import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
 import com.mbrlabs.mundus.commons.env.Fog;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.terrain.SplatTexture;
 import com.mbrlabs.mundus.commons.terrain.TerrainTexture;
 import com.mbrlabs.mundus.commons.terrain.TerrainTextureAttribute;
-import com.mbrlabs.mundus.commons.utils.ShaderUtils;
 
 /**
  * @author Marcus Brummer
  * @version 22-11-2015
  */
-public class TerrainShader extends BaseShader {
+public class TerrainShader extends DefaultBaseShader {
 
     protected static final String VERTEX_SHADER = "bundled/shaders/terrain.vert.glsl";
     protected static final String FRAGMENT_SHADER = "bundled/shaders/terrain.frag.glsl";
@@ -68,18 +65,10 @@ public class TerrainShader extends BaseShader {
     protected final int UNIFORM_FOG_GRADIENT = register(new Uniform("u_fogGradient"));
     protected final int UNIFORM_FOG_COLOR = register(new Uniform("u_fogColor"));
 
-
     private Vector2 terrainSize = new Vector2();
 
-    protected ShaderProgram program;
-
-    public TerrainShader() {
-        program = ShaderUtils.compile(VERTEX_SHADER, FRAGMENT_SHADER);
-    }
-
-    @Override
-    public void init() {
-        super.init(program, null);
+    public TerrainShader(String vertexShader, String fragmentShader) {
+        super(vertexShader, fragmentShader);
     }
 
     @Override

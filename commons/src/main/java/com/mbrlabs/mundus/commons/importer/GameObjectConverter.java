@@ -19,17 +19,11 @@ package com.mbrlabs.mundus.commons.importer;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.mbrlabs.mundus.commons.assets.Asset;
-import com.mbrlabs.mundus.commons.dto.CameraDto;
 import com.mbrlabs.mundus.commons.dto.GameObjectDto;
 import com.mbrlabs.mundus.commons.dto.Vector3Dto;
 import com.mbrlabs.mundus.commons.dto.Vector4Dto;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
-import com.mbrlabs.mundus.commons.scene3d.components.CameraComponent;
-import com.mbrlabs.mundus.commons.scene3d.components.Component;
-import com.mbrlabs.mundus.commons.scene3d.components.ModelComponent;
-import com.mbrlabs.mundus.commons.scene3d.components.TerrainComponent;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.Map;
 
@@ -41,8 +35,6 @@ public class GameObjectConverter {
 
     private static final Vector3 TEMP_VEC = new Vector3();
     private static final Quaternion TEMP_QUAT = new Quaternion();
-
-    private final CameraConverter cameraConverter;
 
     /**
      * Converts {@link GameObjectDto} to {@link GameObject}.
@@ -62,20 +54,6 @@ public class GameObjectConverter {
                 go.addTag(tag);
             }
         }
-
-        if (CollectionUtils.isNotEmpty(dto.getComponents())) {
-            for (var component : dto.getComponents()) {
-                if (component instanceof CameraDto) {
-                    cameraConverter.addComponents(go, (CameraDto) component);
-                }
-            }
-        }
-        // convert components
-//        if (dto.getModelComponent() != null) {
-//            go.getComponents().add(modelComponentConverter.convert(dto.getModelComponent(), go, assets));
-//        } else if (dto.getTerrainComponent() != null) {
-//            go.getComponents().add(terrainComponentConverter.convert(dto.getTerrainComponent(), go, assets));
-//        }
 
         // recursively convert children
         if (dto.getChildren() != null) {
@@ -105,17 +83,6 @@ public class GameObjectConverter {
 
         go.getLocalScale(TEMP_VEC);
         dto.setLocaleScale(new Vector3Dto(TEMP_VEC));
-
-        // convert components
-        for (Component c : go.getComponents()) {
-            if (c.getType() == Component.Type.MODEL) {
-//                dto.setModelComponent(modelComponentConverter.convert((ModelComponent) c));
-            } else if (c.getType() == Component.Type.TERRAIN) {
-//                dto.setTerrainComponent(terrainComponentConverter.convert((TerrainComponent) c));
-            } else if (c.getType() == Component.Type.CAMERA) {
-                dto.getComponents().add(cameraConverter.fromComponent((CameraComponent) c));
-            }
-        }
 
         // convert tags
         if (go.getTags() != null && !go.getTags().isEmpty()) {

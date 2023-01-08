@@ -108,8 +108,9 @@ class LogBar : Tab(false, false), LogEvent.LogEventListener {
      * removes old entries.
      */
     private fun addLogMessage(event: LogEvent) {
-        if (!isActiveTab)
+        if (!isActiveTab) {
             newEntries = true
+        }
 
         val timeStamp = dateFormat.format(Date())
 

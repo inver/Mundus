@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.widget.MenuItem;
 import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
+import com.mbrlabs.mundus.commons.scene3d.HierarchyNode;
 import com.mbrlabs.mundus.editor.core.assets.AssetsStorage;
 import com.mbrlabs.mundus.editor.core.assets.EditorTerrainService;
 import com.mbrlabs.mundus.editor.core.light.LightService;
@@ -73,7 +74,7 @@ public class OutlinePresenter {
                 }
 
                 var pos = new Vector3();
-                ctx.getCurrent().getCurrentScene().getWorld().getEntity(entityId).getComponent(PositionComponent.class)
+                ctx.getCurrentWorld().getEntity(entityId).getComponent(PositionComponent.class)
                         .getTransform().getTranslation(pos);
 
                 var cam = ctx.getCamera();
@@ -120,7 +121,7 @@ public class OutlinePresenter {
 
                 var entityId = selection.first().getValue();
                 ctx.setSelectedEntityId(entityId);
-//                toolManager.translateTool.gameObjectSelected(go);
+                toolManager.translateTool.entitySelected(entityId);
 
                 eventBus.post(new EntitySelectedEvent(entityId));
             }
@@ -207,11 +208,12 @@ public class OutlinePresenter {
         menuItem.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                var node = new HierarchyNode(-1, "Group");
                 // the new game object
                 var go = new GameObject(GameObject.DEFAULT_NAME, ctx.getCurrent().obtainID());
                 // update outline
                 var selectedGO = outline.getRightClickMenu().getSelectedGO();
-                if (selectedGO == null) {
+                if (selectedGO == -1) {
                     // update sceneGraph
                     log.trace("Add empty game object [{}] in root node.", go);
                     ctx.getCurrent().getCurrentScene().getSceneGraph().addGameObject(go);

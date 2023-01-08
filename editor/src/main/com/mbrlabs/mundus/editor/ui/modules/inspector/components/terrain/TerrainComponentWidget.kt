@@ -86,11 +86,11 @@ class TerrainComponentWidget(
         terrainWidgetPresenter.initBrushGrid(raiseLowerTab.grid)
     }
 
-    override fun setValues(go: GameObject) {
-        val c = go.findComponentByType(Component.Type.TERRAIN)
-        if (c != null) {
-            this.component = c as TerrainComponent
-        }
+    override fun setValues(entityId: Int) {
+//        val c = go.findComponentByType(Component.Type.TERRAIN)
+//        if (c != null) {
+//            this.component = c as TerrainComponent
+//        }
     }
 
     override fun switchedTab(tab: Tab) {

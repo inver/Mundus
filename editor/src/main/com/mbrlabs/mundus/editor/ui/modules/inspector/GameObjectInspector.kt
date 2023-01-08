@@ -20,7 +20,6 @@ import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Array
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
-import com.mbrlabs.mundus.commons.scene3d.GameObject
 import com.mbrlabs.mundus.commons.scene3d.components.Component
 import com.mbrlabs.mundus.commons.scene3d.components.ModelComponent
 import com.mbrlabs.mundus.commons.scene3d.components.TerrainComponent
@@ -53,12 +52,12 @@ class GameObjectInspector(
 ) : VisTable() {
 
     private val identifierWidget = IdentifierWidget(ctx)
-    private val transformWidget = TransformWidget(uiWidgetsHolder.separatorStyle, ctx, history)
+    private val transformWidget = TransformWidget(uiWidgetsHolder.separatorStyle, ctx)
     private val componentWidgets: Array<ComponentWidget<*>> = Array()
     private val addComponentBtn = VisTextButton("Add Component")
     private val componentTable = VisTable()
 
-    private var gameObject: GameObject? = null
+    private var entityId = -1
 
     init {
         align(Align.top)
@@ -71,8 +70,8 @@ class GameObjectInspector(
         add(addComponentBtn).expandX().fill().top().center().pad(10f).row()
     }
 
-    fun setGameObject(gameObject: GameObject?) {
-        this.gameObject = gameObject
+    fun setEntity(entityId: Int) {
+        this.entityId = entityId
 
         // build ui
         buildComponentWidgets()
@@ -86,53 +85,55 @@ class GameObjectInspector(
     }
 
     fun updateGameObject() {
-        if (gameObject != null) {
-            identifierWidget.setValues(gameObject!!)
-            transformWidget.setValues(gameObject!!)
-
-            for (cw in componentWidgets) {
-                cw.setValues(gameObject!!)
-            }
+        if (entityId < 0) {
+            return
         }
+
+        identifierWidget.setValues(ctx.currentWorld.getEntity(entityId).isActive, "TODO add name here")
+        transformWidget.setValues(entityId)
+
+//        for (cw in componentWidgets) {
+//            cw.setValues(gameObject!!)
+//        }
     }
 
     private fun buildComponentWidgets() {
-        if (gameObject != null) {
-            componentWidgets.clear()
-            for (component in gameObject!!.components) {
-                // model component widget!!
-                if (component.type == Component.Type.MODEL) {
-                    componentWidgets.add(
-                        ModelComponentWidget(
-                            uiWidgetsHolder.separatorStyle,
-                            component as ModelComponent,
-                            ctx,
-                            appUi,
-                            assetPickerDialog,
-                            assetManager,
-                            previewGenerator
-                        )
-                    )
-                    // terrainAsset component widget
-                } else if (component.type == Component.Type.TERRAIN) {
-                    componentWidgets.add(
-                        TerrainComponentWidget(
-                            uiWidgetsHolder.separatorStyle,
-                            component as TerrainComponent,
-                            terrainWidgetPresenter
-                        )
-                    )
-                } else if (component.type == Component.Type.LIGHT) {
-                    componentWidgets.add(
-                        DirectionalLightComponentWidget(
-                            uiWidgetsHolder.separatorStyle,
-                            component as DirectionalLightComponent,
-                            colorPickerPresenter
-                        )
-                    )
-                }
-            }
-        }
+//        if (gameObject != null) {
+//            componentWidgets.clear()
+//            for (component in gameObject!!.components) {
+//                // model component widget!!
+//                if (component.type == Component.Type.MODEL) {
+//                    componentWidgets.add(
+//                        ModelComponentWidget(
+//                            uiWidgetsHolder.separatorStyle,
+//                            component as ModelComponent,
+//                            ctx,
+//                            appUi,
+//                            assetPickerDialog,
+//                            assetManager,
+//                            previewGenerator
+//                        )
+//                    )
+//                    // terrainAsset component widget
+//                } else if (component.type == Component.Type.TERRAIN) {
+//                    componentWidgets.add(
+//                        TerrainComponentWidget(
+//                            uiWidgetsHolder.separatorStyle,
+//                            component as TerrainComponent,
+//                            terrainWidgetPresenter
+//                        )
+//                    )
+//                } else if (component.type == Component.Type.LIGHT) {
+//                    componentWidgets.add(
+//                        DirectionalLightComponentWidget(
+//                            uiWidgetsHolder.separatorStyle,
+//                            component as DirectionalLightComponent,
+//                            colorPickerPresenter
+//                        )
+//                    )
+//                }
+//            }
+//        }
     }
 
 }

@@ -12,12 +12,7 @@ import java.util.HashMap;
 
 public class GameObjectConverterTest {
 
-    private final ModelComponentConverter modelComponentConverter = new ModelComponentConverter();
-    private final CameraConverter cameraConverter = new CameraConverter();
-    private final TerrainComponentConverter terrainComponentConverter = new TerrainComponentConverter();
-    private final GameObjectConverter gameObjectConverter = new GameObjectConverter(
-            modelComponentConverter, cameraConverter, terrainComponentConverter
-    );
+    private final GameObjectConverter gameObjectConverter = new GameObjectConverter();
 
     private final ObjectMapper mapper = new ObjectMapper();
 

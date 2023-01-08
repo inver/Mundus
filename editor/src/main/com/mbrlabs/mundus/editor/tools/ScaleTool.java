@@ -15,7 +15,6 @@
  */
 package com.mbrlabs.mundus.editor.tools;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Material;
@@ -304,8 +303,8 @@ public class ScaleTool extends TransformTool {
     }
 
     @Override
-    public void gameObjectSelected(int entityId) {
-        super.gameObjectSelected(entityId);
+    public void entitySelected(int entityId) {
+        super.entitySelected(entityId);
         // configure handles
         scaleHandles();
         rotateHandles();

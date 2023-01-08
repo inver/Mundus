@@ -17,10 +17,7 @@ import com.mbrlabs.mundus.commons.importer.GameObjectConverter;
 import com.mbrlabs.mundus.commons.importer.ModelComponentConverter;
 import com.mbrlabs.mundus.commons.importer.SceneConverter;
 import com.mbrlabs.mundus.commons.loader.ModelImporter;
-import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager;
-import com.mbrlabs.mundus.editor.core.assets.EditorTerrainService;
 import com.mbrlabs.mundus.editor.core.ecs.EditorEcsService;
-import com.mbrlabs.mundus.editor.core.project.EditorCameraConverter;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.project.ProjectStorage;
 import com.mbrlabs.mundus.editor.core.registry.Registry;
@@ -121,7 +118,7 @@ public class RootConfig {
 
     @Bean
     public CameraConverter cameraConverter() {
-        return new EditorCameraConverter(cameraService());
+        return new CameraConverter();
     }
 
     @Bean
@@ -132,12 +129,7 @@ public class RootConfig {
 
     @Bean
     public GameObjectConverter gameObjectConverter() {
-        return new GameObjectConverter(cameraConverter());
-    }
-
-    @Bean
-    public ModelComponentConverter modelComponentConverter() {
-        return new ModelComponentConverter();
+        return new GameObjectConverter();
     }
 
 

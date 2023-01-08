@@ -90,7 +90,7 @@ class TextureAssetInspectorWidget(separatorStyle: SeparatorStyle?) :
         // nope
     }
 
-    override fun setValues(go: GameObject) {
+    override fun setValues(entityId: Int) {
         // nope
     }
 

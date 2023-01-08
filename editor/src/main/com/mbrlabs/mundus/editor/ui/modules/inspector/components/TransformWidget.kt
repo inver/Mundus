@@ -22,9 +22,9 @@ import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.kotcrab.vis.ui.widget.Separator.SeparatorStyle
 import com.kotcrab.vis.ui.widget.VisLabel
-import com.mbrlabs.mundus.commons.scene3d.GameObject
+import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
-import com.mbrlabs.mundus.editor.history.CommandHistory
+import com.mbrlabs.mundus.editor.history.commands.TranslateCommand
 import com.mbrlabs.mundus.editor.ui.modules.inspector.BaseInspectorWidget
 import com.mbrlabs.mundus.editor.ui.widgets.FloatFieldWithLabel
 import com.mbrlabs.mundus.editor.utils.formatFloat
@@ -35,8 +35,7 @@ import com.mbrlabs.mundus.editor.utils.formatFloat
  */
 class TransformWidget(
     separator: SeparatorStyle?,
-    private val ctx: EditorCtx,
-    private val history: CommandHistory
+    private val ctx: EditorCtx
 ) : BaseInspectorWidget(separator, "Transformation") {
 
     companion object {
@@ -57,6 +56,8 @@ class TransformWidget(
     private val scaleY = FloatFieldWithLabel("y", FIELD_SIZE)
     private val scaleZ = FloatFieldWithLabel("z", FIELD_SIZE)
 
+    private val lookAt = FloatFieldWithLabel("Look at entity chooser here", FIELD_SIZE)
+
     init {
         isDeletable = false
         setupUI()
@@ -67,18 +68,21 @@ class TransformWidget(
         val pad = 4
         collapsibleContent.add(VisLabel("Position: ")).padRight(5f).padBottom(pad.toFloat()).left()
         collapsibleContent.add(posX).padBottom(pad.toFloat()).padRight(pad.toFloat())
-        collapsibleContent.add<FloatFieldWithLabel>(posY).padBottom(pad.toFloat()).padRight(pad.toFloat())
-        collapsibleContent.add<FloatFieldWithLabel>(posZ).padBottom(pad.toFloat()).row()
+        collapsibleContent.add(posY).padBottom(pad.toFloat()).padRight(pad.toFloat())
+        collapsibleContent.add(posZ).padBottom(pad.toFloat()).row()
 
         collapsibleContent.add(VisLabel("Rotation: ")).padRight(5f).padBottom(pad.toFloat()).left()
-        collapsibleContent.add<FloatFieldWithLabel>(rotX).padBottom(pad.toFloat()).padRight(pad.toFloat())
-        collapsibleContent.add<FloatFieldWithLabel>(rotY).padBottom(pad.toFloat()).padRight(pad.toFloat())
-        collapsibleContent.add<FloatFieldWithLabel>(rotZ).padBottom(pad.toFloat()).row()
+        collapsibleContent.add(rotX).padBottom(pad.toFloat()).padRight(pad.toFloat())
+        collapsibleContent.add(rotY).padBottom(pad.toFloat()).padRight(pad.toFloat())
+        collapsibleContent.add(rotZ).padBottom(pad.toFloat()).row()
 
         collapsibleContent.add(VisLabel("Scale: ")).padRight(5f).padBottom(pad.toFloat()).left()
-        collapsibleContent.add<FloatFieldWithLabel>(scaleX).padBottom(pad.toFloat()).padRight(pad.toFloat())
-        collapsibleContent.add<FloatFieldWithLabel>(scaleY).padBottom(pad.toFloat()).padRight(pad.toFloat())
-        collapsibleContent.add<FloatFieldWithLabel>(scaleZ).padBottom(pad.toFloat()).row()
+        collapsibleContent.add(scaleX).padBottom(pad.toFloat()).padRight(pad.toFloat())
+        collapsibleContent.add(scaleY).padBottom(pad.toFloat()).padRight(pad.toFloat())
+        collapsibleContent.add(scaleZ).padBottom(pad.toFloat()).row()
+
+        collapsibleContent.add(VisLabel("Look at: ")).padRight(5f).padBottom(pad.toFloat()).left()
+        collapsibleContent.add(lookAt).padBottom(pad.toFloat()).padRight(pad.toFloat()).row
     }
 
     private fun setupListeners() {
@@ -86,18 +90,32 @@ class TransformWidget(
         // position
         posX.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                val go = ctx.selectedEntityId ?: return
+                if (ctx.selectedEntityId < 0) {
+                    return
+                }
+                val position = ctx.currentWorld.getEntity(ctx.selectedEntityId)
+                    .getComponent(PositionComponent::class.java)
+
+                val pos = position.getLocalPosition(tempV3)
+                position.localPosition.set(posX.float, pos.y, pos.z)
+//                val go = ctx.selectedEntityId ?: return
 //                val command = TranslateCommand(go)
-//                val pos = go.getLocalPosition(tempV3)
 //                command.setBefore(pos)
-//                go.setLocalPosition(posX.float, pos.y, pos.z)
 //                command.setAfter(go.getLocalPosition(tempV3))
 //                history.add(command)
             }
         })
         posY.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                val go = ctx.selectedEntityId ?: return
+                if (ctx.selectedEntityId < 0) {
+                    return
+                }
+                val position = ctx.currentWorld.getEntity(ctx.selectedEntityId)
+                    .getComponent(PositionComponent::class.java)
+
+                val pos = position.getLocalPosition(tempV3)
+                position.localPosition.set(pos.x, posY.float, pos.z)
+//                val go = ctx.selectedEntityId ?: return
 //                val command = TranslateCommand(go)
 //                val pos = go.getLocalPosition(tempV3)
 //                command.setBefore(pos)
@@ -108,7 +126,15 @@ class TransformWidget(
         })
         posZ.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                val go = ctx.selectedEntityId ?: return
+                if (ctx.selectedEntityId < 0) {
+                    return
+                }
+                val position = ctx.currentWorld.getEntity(ctx.selectedEntityId)
+                    .getComponent(PositionComponent::class.java)
+
+                val pos = position.getLocalPosition(tempV3)
+                position.localPosition.set(pos.x, pos.y, posZ.float)
+//                val go = ctx.selectedEntityId ?: return
 //                val command = TranslateCommand(go)
 //                val pos = go.getLocalPosition(tempV3)
 //                command.setBefore(pos)
@@ -199,18 +225,20 @@ class TransformWidget(
 
     }
 
-    override fun setValues(go: GameObject) {
-        val pos = go.getLocalPosition(tempV3)
+    override fun setValues(entityId: Int) {
+        val position = ctx.currentWorld.getEntity(entityId).getComponent(PositionComponent::class.java)
+
+        val pos = position.localPosition
         posX.text = formatFloat(pos.x, 2)
         posY.text = formatFloat(pos.y, 2)
         posZ.text = formatFloat(pos.z, 2)
 
-        val rot = go.getLocalRotation(tempQuat)
+        val rot = position.localRotation
         rotX.text = formatFloat(rot.pitch, 2)
         rotY.text = formatFloat(rot.yaw, 2)
         rotZ.text = formatFloat(rot.roll, 2)
 
-        val scl = go.getLocalScale(tempV3)
+        val scl = position.localScale
         scaleX.text = formatFloat(scl.x, 2)
         scaleY.text = formatFloat(scl.y, 2)
         scaleZ.text = formatFloat(scl.z, 2)

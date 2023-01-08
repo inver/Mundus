@@ -20,8 +20,6 @@ import com.kotcrab.vis.ui.widget.Separator.SeparatorStyle
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset
-import com.mbrlabs.mundus.commons.scene3d.GameObject
-import com.mbrlabs.mundus.commons.scene3d.components.Component
 import com.mbrlabs.mundus.commons.scene3d.components.ModelComponent
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
@@ -98,11 +96,11 @@ class ModelComponentWidget(
         }
     }
 
-    override fun setValues(go: GameObject) {
-        val c = go.findComponentByType(Component.Type.MODEL)
-        if (c != null) {
-            component = c as ModelComponent
-        }
+    override fun setValues(entityId: Int) {
+//        val c = go.findComponentByType(Component.Type.MODEL)
+//        if (c != null) {
+//            component = c as ModelComponent
+//        }
     }
 
 }

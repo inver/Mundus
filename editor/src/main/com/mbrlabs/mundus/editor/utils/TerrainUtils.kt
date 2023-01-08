@@ -18,14 +18,11 @@
 
 package com.mbrlabs.mundus.editor.utils
 
-import com.badlogic.gdx.graphics.g3d.shaders.BaseShader
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder.VertexInfo
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.math.collision.Ray
 import com.badlogic.gdx.utils.Array
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset
-import com.mbrlabs.mundus.commons.scene3d.GameObject
-import com.mbrlabs.mundus.editor.scene3d.components.PickableTerrainComponent
 
 private var tempVI = VertexInfo()
 

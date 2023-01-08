@@ -114,22 +114,6 @@ class Outline(
         val rootNode = IdNode.RootNode()
         tree.add(rootNode)
 
-        ctx.current.currentScene.assets.forEach {
-            //todo
-//            val leaf = IdNode(it.name, null)
-//            if (it.type == AssetType.SHADER) {
-//                rootNode.shaders.add(leaf)
-//            } else if (it.type == AssetType.SKYBOX) {
-//                val go = GameObject()
-////                go.components.add()
-//                rootNode.skybox.value = GameObject()
-//            }
-        }
-
-//        for (go in scene.sceneGraph.gameObjects) {
-//            addGoToTree(rootNode.hierarchy, go)
-//        }
-
         for (node in scene.rootNode.children) {
             addNodeToTree(rootNode.hierarchy, node)
         }
@@ -260,14 +244,12 @@ class Outline(
         private val lightsPopupMenu: PopupMenu = PopupMenu()
         val addDirectionalLight: MenuItem = MenuItem("Directional Light")
 
-        var selectedGO: Int? = null
+        var selectedGO = -1
 
         init {
-
-
             rename.addListener(object : ClickListener() {
                 override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                    if (selectedGO != null) {
+                    if (selectedGO > 0) {
                         showRenameDialog()
                     }
                 }
@@ -276,7 +258,7 @@ class Outline(
             // duplicate node
             duplicate.addListener(object : ClickListener() {
                 override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                    if (selectedGO != null && !duplicate.isDisabled) {
+                    if (selectedGO > 0 && !duplicate.isDisabled) {
                         TODO()
 //                        duplicateGO(selectedGO!!, selectedGO!!.parent)
 //                        eventBus.post(SceneGraphChangedEvent())
@@ -316,12 +298,12 @@ class Outline(
          * @param x
          * @param y
          */
-        fun show(go: Int?, x: Float, y: Float) {
+        fun show(go: Int, x: Float, y: Float) {
             selectedGO = go
             showMenu(appUi, x, y)
 
             // check if game object is selected
-            if (selectedGO != null) {
+            if (selectedGO > 0) {
                 // Activate menu options for selected game objects
                 rename.isDisabled = false
                 delete.isDisabled = false
