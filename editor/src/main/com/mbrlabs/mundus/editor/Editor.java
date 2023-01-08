@@ -52,7 +52,6 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
 
     private final EditorCtx ctx;
     private final FreeCamController camController;
-
     private final DirectCameraController directCameraController;
     private final ShortcutController shortcutController;
     private final InputManager inputManager;
@@ -166,7 +165,6 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
 
     private void setupSceneWidget() {
         var scene = ctx.getCurrent().getCurrentScene();
-        var sg = scene.getSceneGraph();
 
         appUi.getSceneWidget().setCam(ctx.getCamera());
         appUi.getSceneWidget().setRenderer(camera -> {
@@ -186,7 +184,6 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
                             }
                         });
 
-                sg.update();
                 batch.begin(camera);
                 scene.render(batch, scene.getEnvironment(), shaderStorage, Gdx.graphics.getDeltaTime());
                 wirePlane.render(batch, scene.getEnvironment(), shaderStorage, Gdx.graphics.getDeltaTime());

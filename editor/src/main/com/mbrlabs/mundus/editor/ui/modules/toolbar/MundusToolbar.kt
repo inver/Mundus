@@ -213,9 +213,9 @@ class MundusToolbar(
 
     override fun onSceneGraphChanged(event: SceneGraphChangedEvent) {
         val cameras = ArrayList<com.mbrlabs.mundus.commons.scene3d.components.Component>()
-        ctx.current.currentScene.sceneGraph.gameObjects.forEach {
-            it.findComponentsByType(cameras, com.mbrlabs.mundus.commons.scene3d.components.Component.Type.CAMERA, true)
-        }
+//        ctx.current.currentScene.sceneGraph.gameObjects.forEach {
+//            it.findComponentsByType(cameras, com.mbrlabs.mundus.commons.scene3d.components.Component.Type.CAMERA, true)
+//        }
 
         val arr = Array<String>()
         arr.add("Main")

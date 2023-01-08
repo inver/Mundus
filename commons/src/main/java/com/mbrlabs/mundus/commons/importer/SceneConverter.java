@@ -22,13 +22,10 @@ import com.artemis.managers.WorldSerializationManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mbrlabs.mundus.commons.Scene;
 import com.mbrlabs.mundus.commons.assets.Asset;
-import com.mbrlabs.mundus.commons.dto.GameObjectDto;
 import com.mbrlabs.mundus.commons.dto.SceneDto;
 import com.mbrlabs.mundus.commons.env.lights.AmbientLight;
 import com.mbrlabs.mundus.commons.mapper.BaseLightConverter;
 import com.mbrlabs.mundus.commons.mapper.FogConverter;
-import com.mbrlabs.mundus.commons.scene3d.GameObject;
-import com.mbrlabs.mundus.commons.scene3d.SceneGraph;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
@@ -43,7 +40,6 @@ import java.util.Map;
 public class SceneConverter {
 
     private final ObjectMapper mapper;
-    private final GameObjectConverter gameObjectConverter;
     private final CameraConverter cameraConverter;
 
     /**
@@ -58,17 +54,13 @@ public class SceneConverter {
         dto.setSkyboxName(scene.getEnvironment().getSkyboxName());
 
         dto.setRootNode(scene.getRootNode());
+
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         scene.getWorld().getSystem(WorldSerializationManager.class).save(baos, new SaveFileFormat(
                 scene.getWorld().getAspectSubscriptionManager().get(Aspect.all()).getEntities()
         ));
         var obj = mapper.readValue(baos.toString(), Object.class);
         dto.setEcs(obj);
-
-        // scene graph
-        for (GameObject go : scene.getSceneGraph().getGameObjects()) {
-            dto.getGameObjects().add(gameObjectConverter.convert(go));
-        }
 
         // getEnvironment() stuff
         dto.setFog(FogConverter.convert(scene.getEnvironment().getFog()));
@@ -99,12 +91,6 @@ public class SceneConverter {
         AmbientLight ambientLight = BaseLightConverter.convert(dto.getAmbientLight());
         if (ambientLight != null) {
             scene.getEnvironment().setAmbientLight(ambientLight);
-        }
-
-        // scene graph
-        scene.setSceneGraph(new SceneGraph());
-        for (GameObjectDto descriptor : dto.getGameObjects()) {
-            scene.getSceneGraph().addGameObject(gameObjectConverter.convert(descriptor, assets));
         }
 
         var camera = cameraConverter.fromDto(dto.getCamera());

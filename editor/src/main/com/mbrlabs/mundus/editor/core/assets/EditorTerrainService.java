@@ -6,6 +6,7 @@ import com.mbrlabs.mundus.commons.assets.meta.MetaService;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAssetLoader;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainMeta;
+import com.mbrlabs.mundus.commons.assets.texture.TextureAssetLoader;
 import com.mbrlabs.mundus.commons.core.ecs.base.RenderComponent;
 import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
 import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObjectDelegate;
@@ -31,6 +32,7 @@ public class EditorTerrainService extends TerrainService {
 
     private final EditorCtx ctx;
     private final TerrainAssetLoader terrainAssetLoader;
+    private final TextureAssetLoader textureAssetLoader;
     private final AssetsStorage assetsStorage;
     private final MetaService metaService;
 
@@ -67,16 +69,15 @@ public class EditorTerrainService extends TerrainService {
 
         var asset = terrainAssetLoader.load(meta);
 
-        //todo
-        // set base texture
-//        var chessboard = findAssetByID(STANDARD_ASSET_TEXTURE_CHESSBOARD)
+//        var chessboardAsset =textureAssetLoader.load(metaService.loadTerrainMeta())
+//                // set default base texture
+//                var chessboard = findAssetByID(STANDARD_ASSET_TEXTURE_CHESSBOARD)
 //        if (chessboard != null) {
-//            asset.splatBase = chessboard as TextureAsset
+//            asset.setSplatBase(); =chessboard as TextureAsset
 //            asset.applyDependencies()
 //            metaSaver.save(asset.meta)
 //        }
 
-//        addAsset(asset);
         return asset;
     }
 

@@ -24,7 +24,6 @@ import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.core.ecs.behavior.RenderComponentSystem;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.HierarchyNode;
-import com.mbrlabs.mundus.commons.scene3d.SceneGraph;
 import com.mbrlabs.mundus.commons.scene3d.components.Renderable;
 import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 import lombok.Getter;
@@ -42,12 +41,8 @@ import java.util.List;
  */
 @RequiredArgsConstructor
 public class Scene implements Disposable, Renderable {
-
     private long id;
     private String name;
-
-    @Setter
-    private SceneGraph sceneGraph = new SceneGraph();
 
     @Getter
     private final World world;
@@ -68,8 +63,6 @@ public class Scene implements Disposable, Renderable {
         world.setDelta(delta);
         world.getSystem(RenderComponentSystem.class).setRenderData(batch, environment, shaders);
         world.process();
-
-        sceneGraph.render(batch, environment, shaders, delta);
     }
 
     public String getName() {
@@ -86,10 +79,6 @@ public class Scene implements Disposable, Renderable {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public SceneGraph getSceneGraph() {
-        return sceneGraph;
     }
 
     @Override
@@ -109,7 +98,6 @@ public class Scene implements Disposable, Renderable {
                 .append(environment, scene.environment)
                 .append(assets, scene.assets)
                 .append(cameras, scene.cameras)
-                .append(sceneGraph, scene.sceneGraph)
                 .isEquals();
     }
 
@@ -118,7 +106,6 @@ public class Scene implements Disposable, Renderable {
         return new HashCodeBuilder(17, 37)
                 .append(id)
                 .append(name)
-                .append(sceneGraph)
                 .append(environment)
                 .append(assets)
                 .append(cameras)

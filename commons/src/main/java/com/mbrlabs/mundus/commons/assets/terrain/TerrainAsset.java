@@ -64,7 +64,6 @@ public class TerrainAsset extends Asset<TerrainMeta> {
             meta.getAdditional().setSplatBase(null);
         } else {
             meta.getAdditional().setSplatBase(splatBase.getID());
-
         }
     }
 

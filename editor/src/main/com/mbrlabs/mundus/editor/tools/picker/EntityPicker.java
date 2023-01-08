@@ -41,9 +41,9 @@ public class EntityPicker extends BasePicker {
 
     private void renderPickableScene(Scene scene) {
         batch.begin(ctx.getCamera());
-        for (GameObject go : scene.getSceneGraph().getGameObjects()) {
-            renderPickableGameObject(scene, go);
-        }
+//        for (GameObject go : scene.getSceneGraph().getGameObjects()) {
+//            renderPickableGameObject(scene, go);
+//        }
         batch.end();
     }
 

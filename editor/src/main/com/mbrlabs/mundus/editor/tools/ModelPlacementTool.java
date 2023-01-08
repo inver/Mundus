@@ -107,7 +107,7 @@ public class ModelPlacementTool extends Tool {
         if (modelInstance != null && button == Input.Buttons.LEFT) {
             int id = getCtx().getCurrent().obtainID();
             GameObject modelGo = new GameObject(model.getName(), id);
-            getCtx().getCurrent().getCurrentScene().getSceneGraph().addGameObject(modelGo);
+//            getCtx().getCurrent().getCurrentScene().getSceneGraph().addGameObject(modelGo);
 
             modelInstance.transform.getTranslation(tempV3);
             modelGo.translate(tempV3);

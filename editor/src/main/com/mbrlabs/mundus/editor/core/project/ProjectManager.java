@@ -280,22 +280,6 @@ public class ProjectManager implements Disposable {
         sceneConverter.fillScene(scene, dto, editorCtx.getAssetLibrary());
         loadSkybox(context, scene);
 
-        var sceneGraph = scene.getSceneGraph();
-        for (GameObject go : sceneGraph.getGameObjects()) {
-            initGameObject(context, go);
-        }
-
-        // create TerrainGroup for active scene
-        List<Component> terrainComponents = new ArrayList<>();
-        for (GameObject go : sceneGraph.getGameObjects()) {
-            go.findComponentsByType(terrainComponents, Component.Type.TERRAIN, true);
-        }
-//        for (Component c : terrainComponents) {
-//            if (c instanceof TerrainComponent) {
-//                scene.terrains.add(((TerrainComponent) c).getTerrain());
-//            }
-//        }
-
         return scene;
     }
 
@@ -316,50 +300,6 @@ public class ProjectManager implements Disposable {
         eventBus.post(new SceneChangedEvent());
 //        } catch (FileNotFoundException e) {
 //            log.error("ERROR, e");
-//        }
-    }
-
-    private void initGameObject(ProjectContext context, GameObject root) {
-        initComponents(context, root);
-        if (root.getChildren() != null) {
-            for (GameObject c : root.getChildren()) {
-                initGameObject(context, c);
-            }
-        }
-    }
-
-    private void initComponents(ProjectContext context, GameObject go) {
-//        List<Asset> models = assetManager.getAssetsByType(AssetType.MODEL);
-//        var iterator = go.getComponents().iterator();
-//        while (iterator.hasNext()) {
-//            var c = iterator.next();
-//            if (c == null) {
-//                // To prevent crashing, log a warning statement and remove the corrupted component
-//                iterator.remove();
-//                log.warn("A component for {} was null on load, this may be caused by deleting an asset that is still in " +
-//                        "a scene.", go);
-//                go.name = go.name + " [COMPONENT ERROR]";
-//                continue;
-//            }
-//            // Model component
-//            if (c.getType() == Component.Type.MODEL) {
-//                ModelComponent modelComponent = (ModelComponent) c;
-//                var modelOpt = models.stream()
-//                        .filter(m -> m.getID().equals(modelComponent.getModelAsset().getID()))
-//                        .findFirst();
-//                if (modelOpt.isPresent()) {
-//                    modelComponent.setModel((ModelAsset) modelOpt.get(), false);
-//                } else {
-//                    log.error("ERROR", "model for modelInstance not found: {}", modelComponent.getModelAsset().getID());
-//                }
-//            } else if (c.getType() == Component.Type.TERRAIN) {
-//                ((TerrainComponent) c).getTerrain().getTerrain().setTransform(go.getTransform());
-//            }
-//
-//            // encode id for picking
-//            if (c instanceof PickableComponent) {
-//                ((PickableComponent) c).encodeRayPickColorId();
-//            }
 //        }
     }
 

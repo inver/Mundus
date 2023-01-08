@@ -71,7 +71,8 @@ class ImportModelDialog(
     private val assetManager: EditorAssetManager,
     private val eventBus: EventBus,
     private val fileChooserFieldPresenter: FileChooserFieldPresenter,
-    private val registry: Registry
+    private val registry: Registry,
+    private val importPresenter: ImportPresenter
 ) : BaseDialog("Import Mesh"), Disposable {
 
     companion object {

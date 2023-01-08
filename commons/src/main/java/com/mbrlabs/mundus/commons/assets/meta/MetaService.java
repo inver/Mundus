@@ -18,14 +18,9 @@ package com.mbrlabs.mundus.commons.assets.meta;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.JsonValue;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mbrlabs.mundus.commons.assets.AssetType;
 import com.mbrlabs.mundus.commons.assets.exceptions.AssetNotFoundException;
-import com.mbrlabs.mundus.commons.assets.exceptions.MetaFileParseException;
 import com.mbrlabs.mundus.commons.assets.material.MaterialMeta;
 import com.mbrlabs.mundus.commons.assets.model.ModelMeta;
 import com.mbrlabs.mundus.commons.assets.shader.ShaderMeta;
@@ -122,123 +117,4 @@ public class MetaService {
             log.error("ERROR", e);
         }
     }
-
-
-    private final JsonReader reader = new JsonReader();
-
-
-    public Meta load(FileHandle file) throws MetaFileParseException {
-        Meta meta = new Meta();
-        meta.setFile(file);
-
-        JsonValue json = reader.parse(file);
-        parseBasics(meta, json);
-
-        if (meta.getType() == AssetType.TERRAIN) {
-            parseTerrain(meta, json.get(Meta.JSON_TERRAIN));
-        } else if (meta.getType() == AssetType.MODEL) {
-            parseModel(meta, json.get(Meta.JSON_MODEL));
-        }
-
-        return meta;
-    }
-
-    private void parseBasics(Meta meta, JsonValue jsonRoot) {
-        meta.setVersion(jsonRoot.getInt(Meta.JSON_VERSION));
-        meta.setLastModified(jsonRoot.getLong(Meta.JSON_LAST_MOD));
-        meta.setUuid(jsonRoot.getString(Meta.JSON_UUID));
-        meta.setType(AssetType.valueOf(jsonRoot.getString(Meta.JSON_TYPE)));
-    }
-
-    private void parseTerrain(Meta<TerrainMeta> meta, JsonValue jsonTerrain) {
-        if (jsonTerrain == null) return;
-
-        var terrain = new TerrainMeta();
-//        terrain.setSize(jsonTerrain.getInt(MetaTerrain.JSON_SIZE));
-//        terrain.setUv(jsonTerrain.getFloat(MetaTerrain.JSON_UV_SCALE, Terrain.DEFAULT_UV_SCALE));
-//        terrain.setSplatmap(jsonTerrain.getString(MetaTerrain.JSON_SPLATMAP, null));
-//        terrain.setSplatBase(jsonTerrain.getString(MetaTerrain.JSON_SPLAT_BASE, null));
-//        terrain.setSplatR(jsonTerrain.getString(MetaTerrain.JSON_SPLAT_R, null));
-//        terrain.setSplatG(jsonTerrain.getString(MetaTerrain.JSON_SPLAT_G, null));
-//        terrain.setSplatB(jsonTerrain.getString(MetaTerrain.JSON_SPLAT_B, null));
-//        terrain.setSplatA(jsonTerrain.getString(MetaTerrain.JSON_SPLAT_A, null));
-
-        meta.setAdditional(terrain);
-    }
-
-    private void parseModel(Meta<ModelMeta> meta, JsonValue jsonModel) {
-        if (jsonModel == null) return;
-
-        final ModelMeta model = new ModelMeta();
-//        final JsonValue materials = jsonModel.get(MetaModel.JSON_DEFAULT_MATERIALS);
-//
-//        for (final JsonValue mat : materials) {
-//            System.out.println(mat.name);
-//            final String g3dbID = mat.name;
-//            final String assetUUID = materials.getString(g3dbID);
-//            model.getMaterials().put(g3dbID, assetUUID);
-//        }
-
-        meta.setAdditional(model);
-    }
-
-//    @SneakyThrows
-//    public void save(Meta meta) {
-//        var json = new Json(JsonWriter.OutputType.json);
-//
-//        json.setWriter(meta.getFile().writer(false));
-//
-//        json.writeObjectStart();
-//        addBasics(meta, json);
-//        if (meta.getType() == AssetType.TERRAIN) {
-//            addTerrain(meta, json);
-//        } else if (meta.getType() == AssetType.MODEL) {
-//            addModel(meta, json);
-//        }
-//        json.writeObjectEnd();
-//
-//        // Close stream, otherwise file becomes locked
-//        json.getWriter().close();
-//    }
-
-    private void addBasics(Meta meta, Json json) {
-        json.writeValue(Meta.JSON_VERSION, meta.getVersion());
-        json.writeValue(Meta.JSON_LAST_MOD, meta.getLastModified());
-        json.writeValue(Meta.JSON_TYPE, meta.getType());
-        json.writeValue(Meta.JSON_UUID, meta.getUuid());
-    }
-
-    private void addModel(Meta meta, Json json) {
-//        val model = meta.model ?:return
-//                json.writeObjectStart(Meta.JSON_MODEL)
-//
-//        // default materials
-//
-//        if (model.defaultMaterials != null) {
-//            json.writeObjectStart(MetaModel.JSON_DEFAULT_MATERIALS)
-//            for (mat in model.defaultMaterials) {
-//                json.writeValue(mat.key, mat.value)
-//            }
-//            json.writeObjectEnd()
-//        }
-//
-//        json.writeObjectEnd()
-    }
-
-    private void addTerrain(Meta meta, Json json) {
-//        val terrain = meta.terrain ?:return
-//
-//                json.writeObjectStart(Meta.JSON_TERRAIN)
-//        json.writeValue(MetaTerrain.JSON_SIZE, terrain.size)
-//        json.writeValue(MetaTerrain.JSON_UV_SCALE, terrain.uv)
-//        if (terrain.splatmap != null) json.writeValue(MetaTerrain.JSON_SPLATMAP, terrain.splatmap)
-//        if (terrain.splatBase != null) json.writeValue(MetaTerrain.JSON_SPLAT_BASE, terrain.splatBase)
-//        if (terrain.splatR != null) json.writeValue(MetaTerrain.JSON_SPLAT_R, terrain.splatR)
-//        if (terrain.splatG != null) json.writeValue(MetaTerrain.JSON_SPLAT_G, terrain.splatG)
-//        if (terrain.splatB != null) json.writeValue(MetaTerrain.JSON_SPLAT_B, terrain.splatB)
-//        if (terrain.splatA != null) json.writeValue(MetaTerrain.JSON_SPLAT_A, terrain.splatA)
-//        json.writeObjectEnd()
-    }
-
-
 }

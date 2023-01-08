@@ -176,13 +176,13 @@ class MaterialWidget(
 
     // TODO find better solution than iterating through all components
     private fun applyMaterialToModelComponents() {
-        val sceneGraph = ctx.current.currentScene.sceneGraph
-        for (go in sceneGraph.gameObjects) {
-            val mc = go.findComponentByType(Component.Type.MODEL)
-            if (mc != null && mc is ModelComponent) {
-                mc.applyMaterials()
-            }
-        }
+//        val sceneGraph = ctx.current.currentScene.sceneGraph
+//        for (go in sceneGraph.gameObjects) {
+//            val mc = go.findComponentByType(Component.Type.MODEL)
+//            if (mc != null && mc is ModelComponent) {
+//                mc.applyMaterials()
+//            }
+//        }
     }
 
     // TODO find better solution than iterating through all assets

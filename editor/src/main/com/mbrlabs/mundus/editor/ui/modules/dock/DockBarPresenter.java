@@ -94,7 +94,7 @@ public class DockBarPresenter {
 
                 try {
                     var context = ctx.getCurrent();
-                    var sceneGraph = context.getCurrentScene().getSceneGraph();
+//                    var sceneGraph = context.getCurrentScene().getSceneGraph();
                     var goID = context.obtainID();
                     var name = asset.getType() + "_" + goID;
 
@@ -114,7 +114,7 @@ public class DockBarPresenter {
 //                            Shaders.terrainShader, goID, name, asset
 //                        )
                     // update sceneGraph
-                    sceneGraph.addGameObject(go);
+//                    sceneGraph.addGameObject(go);
 
                     // update outline
                     //todo

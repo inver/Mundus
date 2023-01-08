@@ -216,7 +216,7 @@ public class OutlinePresenter {
                 if (selectedGO == -1) {
                     // update sceneGraph
                     log.trace("Add empty game object [{}] in root node.", go);
-                    ctx.getCurrent().getCurrentScene().getSceneGraph().addGameObject(go);
+//                    ctx.getCurrent().getCurrentScene().getSceneGraph().addGameObject(go);
                     // update outline
                     outline.addGoToTree(null, go);
                 } else {
@@ -238,7 +238,7 @@ public class OutlinePresenter {
         return new OutlineDragAndDrop.DropListener() {
             @Override
             public void movedToRoot(GameObject obj) {
-                ctx.getCurrent().getCurrentScene().getSceneGraph().addGameObject(obj);
+//                ctx.getCurrent().getCurrentScene().getSceneGraph().addGameObject(obj);
             }
 
             @Override

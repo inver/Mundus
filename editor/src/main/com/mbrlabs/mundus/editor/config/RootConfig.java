@@ -13,8 +13,6 @@ import com.mbrlabs.mundus.commons.assets.skybox.SkyboxAssetLoader;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAssetLoader;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAssetLoader;
 import com.mbrlabs.mundus.commons.importer.CameraConverter;
-import com.mbrlabs.mundus.commons.importer.GameObjectConverter;
-import com.mbrlabs.mundus.commons.importer.ModelComponentConverter;
 import com.mbrlabs.mundus.commons.importer.SceneConverter;
 import com.mbrlabs.mundus.commons.loader.ModelImporter;
 import com.mbrlabs.mundus.editor.core.ecs.EditorEcsService;
@@ -123,14 +121,6 @@ public class RootConfig {
 
     @Bean
     public SceneConverter sceneConverter() {
-        return new SceneConverter(mapper(), gameObjectConverter(), cameraConverter());
+        return new SceneConverter(mapper(), cameraConverter());
     }
-
-
-    @Bean
-    public GameObjectConverter gameObjectConverter() {
-        return new GameObjectConverter();
-    }
-
-
 }

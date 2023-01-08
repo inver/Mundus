@@ -30,7 +30,6 @@ import java.util.List;
 public class SceneDto {
     private long id;
     private String name;
-    private List<GameObjectDto> gameObjects;
     private FogDTO fog;
     private String skyboxName;
     private BaseLightDto ambientLight;
@@ -46,10 +45,6 @@ public class SceneDto {
     @Getter
     @Setter
     private HierarchyNode rootNode;
-
-    public SceneDto() {
-        gameObjects = new ArrayList<>();
-    }
 
     public long getId() {
         return id;
@@ -139,11 +134,4 @@ public class SceneDto {
         this.ambientLight = ambientLight;
     }
 
-    public List<GameObjectDto> getGameObjects() {
-        return gameObjects;
-    }
-
-    public void setGameObjects(List<GameObjectDto> gameObjects) {
-        this.gameObjects = gameObjects;
-    }
 }
