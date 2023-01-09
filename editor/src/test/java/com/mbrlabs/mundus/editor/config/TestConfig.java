@@ -7,10 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mbrlabs.mundus.commons.assets.shader.ShaderAssetLoader;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAssetLoader;
-import com.mbrlabs.mundus.commons.core.ecs.EcsService;
 import com.mbrlabs.mundus.commons.importer.CameraConverter;
-import com.mbrlabs.mundus.commons.importer.GameObjectConverter;
-import com.mbrlabs.mundus.commons.importer.ModelComponentConverter;
 import com.mbrlabs.mundus.commons.importer.SceneConverter;
 import com.mbrlabs.mundus.editor.core.assets.AssetWriter;
 import com.mbrlabs.mundus.editor.core.assets.AssetsStorage;
@@ -109,12 +106,7 @@ public class TestConfig {
 
     @Bean
     public SceneConverter sceneConverter() {
-        return new SceneConverter(mapper(), gameObjectConverter(), cameraConverter());
-    }
-
-    @Bean
-    public GameObjectConverter gameObjectConverter() {
-        return new GameObjectConverter();
+        return new SceneConverter(mapper(), cameraConverter());
     }
 
     @Bean
