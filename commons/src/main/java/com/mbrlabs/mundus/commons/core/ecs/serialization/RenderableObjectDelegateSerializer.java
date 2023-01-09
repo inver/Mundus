@@ -30,7 +30,7 @@ public class RenderableObjectDelegateSerializer implements JsonSerializer<Render
     public RenderableObjectDelegate read(Json json, JsonValue jsonData, Class type) {
         var dto = json.readValue(RenderableObject.Dto.class, jsonData.get("asset"));
         var res = new RenderableObjectDelegate();
-        res.setShaderName(String.valueOf(jsonData.get("shaderName")));
+        res.setShaderName(jsonData.getString("shaderName"));
         switch (dto.getType()) {
             case TERRAIN:
                 var asset = assetManager.loadCurrentProjectAsset(dto.getAssetName());

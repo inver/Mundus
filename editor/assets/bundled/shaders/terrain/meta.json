@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "lastModified": 1663444124794,
+  "type": "SHADER",
+  "additional": {
+    "vertex": "terrain.vert.glsl",
+    "fragment": "terrain.frag.glsl"
+  }
+}

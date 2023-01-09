@@ -38,6 +38,8 @@ import com.mbrlabs.mundus.commons.assets.AssetType;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset;
 import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObject;
 import com.mbrlabs.mundus.commons.utils.MathUtils;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 
 /**
@@ -358,6 +360,7 @@ public class Terrain implements RenderableObject, Disposable {
 
     @Override
     public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
+        modelInstance.userData = new TerrainUserData(terrainWidth, terrainDepth);
         modelInstance.getRenderables(renderables, pool);
     }
 
@@ -369,5 +372,12 @@ public class Terrain implements RenderableObject, Disposable {
     @Override
     public AssetType getType() {
         return AssetType.TERRAIN;
+    }
+
+    @Data
+    @AllArgsConstructor
+    public static class TerrainUserData {
+        private int terrainWidth;
+        private int terrainDepth;
     }
 }

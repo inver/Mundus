@@ -20,11 +20,15 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
+import com.badlogic.gdx.graphics.g3d.attributes.DirectionalLightsAttribute;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.mbrlabs.mundus.commons.env.Fog;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.terrain.SplatTexture;
+import com.mbrlabs.mundus.commons.terrain.Terrain;
 import com.mbrlabs.mundus.commons.terrain.TerrainTexture;
 import com.mbrlabs.mundus.commons.terrain.TerrainTextureAttribute;
 
@@ -127,15 +131,17 @@ public class TerrainShader extends DefaultBaseShader {
         // TODO light array for each light type
 
         // directional lights
-//        final DirectionalLightsAttribute dirLightAttribs = env.get(DirectionalLightsAttribute.class,
-//                DirectionalLightsAttribute.Type);
-//        final Array<DirectionalLight> dirLights = dirLightAttribs == null ? null : dirLightAttribs.lights;
-//        if (dirLights != null && dirLights.size > 0) {
-//            final DirectionalLight light = dirLights.first();
-//            set(UNIFORM_DIRECTIONAL_LIGHT_COLOR, light.color);
-//            set(UNIFORM_DIRECTIONAL_LIGHT_DIR, light.direction);
+        final DirectionalLightsAttribute dirLightAttribs = env.get(DirectionalLightsAttribute.class,
+                DirectionalLightsAttribute.Type);
+        final Array<DirectionalLight> dirLights = dirLightAttribs == null ? null : dirLightAttribs.lights;
+        if (dirLights != null && dirLights.size > 0) {
+            final DirectionalLight light = dirLights.first();
+            set(UNIFORM_DIRECTIONAL_LIGHT_COLOR, light.color);
+            set(UNIFORM_DIRECTIONAL_LIGHT_DIR, light.direction);
+            //todo
 //            set(UNIFORM_DIRECTIONAL_LIGHT_INTENSITY, light.intensity);
-//        }
+            set(UNIFORM_DIRECTIONAL_LIGHT_INTENSITY, 0.3f);
+        }
 
         // TODO point lights, spot lights
     }
@@ -170,10 +176,11 @@ public class TerrainShader extends DefaultBaseShader {
             set(UNIFORM_TEXTURE_HAS_SPLATMAP, 0);
         }
 
+        Terrain.TerrainUserData userData = (Terrain.TerrainUserData) renderable.userData;
         // set terrain world size
-        //todo
-//        terrainSize.x = terrainTexture.getTerrain().terrainWidth;
-//        terrainSize.y = terrainTexture.getTerrain().terrainDepth;
+        //todo migrate to Vector2
+        terrainSize.x = userData.getTerrainWidth();
+        terrainSize.y = userData.getTerrainDepth();
         set(UNIFORM_TERRAIN_SIZE, terrainSize);
     }
 
