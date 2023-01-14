@@ -21,6 +21,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.DirectionalLightsAttribute;
+import com.badlogic.gdx.graphics.g3d.environment.BaseLight;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.math.Vector2;
@@ -91,8 +92,8 @@ public class TerrainShader extends DefaultBaseShader {
         context.begin();
         context.setCullFace(GL20.GL_BACK);
 
-        this.context.setDepthTest(GL20.GL_LEQUAL, 0f, 1f);
-        this.context.setDepthMask(true);
+        context.setDepthTest(GL20.GL_LEQUAL, 0f, 1f);
+        context.setDepthMask(true);
 
         program.bind();
 
@@ -104,7 +105,7 @@ public class TerrainShader extends DefaultBaseShader {
     public void render(Renderable renderable) {
         final SceneEnvironment env = (SceneEnvironment) renderable.environment;
 
-        setLights(env);
+        setLights(env, (Terrain.TerrainUserData) renderable.userData);
         setTerrainSplatTextures(renderable);
         set(UNIFORM_TRANS_MATRIX, renderable.worldTransform);
 
@@ -123,10 +124,14 @@ public class TerrainShader extends DefaultBaseShader {
         renderable.meshPart.render(program);
     }
 
-    protected void setLights(SceneEnvironment env) {
+    protected void setLights(SceneEnvironment env, Terrain.TerrainUserData userData) {
         // ambient
         set(UNIFORM_AMBIENT_LIGHT_COLOR, env.getAmbientLight().getColor());
         set(UNIFORM_AMBIENT_LIGHT_INTENSITY, env.getAmbientLight().getIntensity());
+
+        for (var light : userData.getLights()) {
+
+        }
 
         // TODO light array for each light type
 

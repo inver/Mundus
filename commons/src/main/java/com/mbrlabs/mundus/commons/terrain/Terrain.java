@@ -23,6 +23,7 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.Renderable;
+import com.badlogic.gdx.graphics.g3d.environment.BaseLight;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
@@ -41,6 +42,9 @@ import com.mbrlabs.mundus.commons.utils.MathUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Marcus Brummer
@@ -379,5 +383,7 @@ public class Terrain implements RenderableObject, Disposable {
     public static class TerrainUserData {
         private int terrainWidth;
         private int terrainDepth;
+
+        private final List<BaseLight> lights = new ArrayList<>();
     }
 }

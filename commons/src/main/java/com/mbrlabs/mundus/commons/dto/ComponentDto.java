@@ -8,7 +8,6 @@ import lombok.Setter;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = CameraDto.class, name = "CAMERA"),
-        @JsonSubTypes.Type(value = TerrainComponentDto.class, name = "TERRAIN"),
 })
 @Getter
 @Setter

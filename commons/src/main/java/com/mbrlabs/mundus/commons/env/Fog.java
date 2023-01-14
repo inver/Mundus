@@ -29,7 +29,6 @@ public class Fog {
     public float gradient = 1.5f;
     public Color color = new Color(Color.WHITE);
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

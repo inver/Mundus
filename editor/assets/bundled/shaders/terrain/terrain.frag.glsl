@@ -20,11 +20,11 @@ precision mediump float;
 
 #define PI 3.1415926535897932384626433832795
 
-const vec4 COLOR_TURQUOISE = vec4(0,0.714,0.586, 1.0);
-const vec4 COLOR_WHITE = vec4(1,1,1, 1.0);
-const vec4 COLOR_DARK = vec4(0.05,0.05,0.05, 1.0);
-const vec4 COLOR_BRIGHT = vec4(0.8,0.8,0.8, 1.0);
-const vec4 COLOR_BRUSH = vec4(0.4,0.4,0.4, 0.4);
+const vec4 COLOR_TURQUOISE = vec4(0, 0.714, 0.586, 1.0);
+const vec4 COLOR_WHITE = vec4(1, 1, 1, 1.0);
+const vec4 COLOR_DARK = vec4(0.05, 0.05, 0.05, 1.0);
+const vec4 COLOR_BRIGHT = vec4(0.8, 0.8, 0.8, 1.0);
+const vec4 COLOR_BRUSH = vec4(0.4, 0.4, 0.4, 0.4);
 
 // splat textures
 uniform sampler2D u_texture_base;
@@ -57,13 +57,13 @@ varying vec2 splatPosition;
 
 // lights
 struct DirectionalLight {
-	vec4 color;
-	vec3 direction;
-	float intensity;
+    vec4 color;
+    vec3 direction;
+    float intensity;
 };
 struct AmbientLight {
-	vec4 color;
-	float intensity;
+    vec4 color;
+    float intensity;
 };
 uniform AmbientLight u_ambientLight;
 uniform DirectionalLight u_directionalLight;
@@ -71,10 +71,10 @@ uniform DirectionalLight u_directionalLight;
 void main(void) {
 
     // blend textures
-    if(u_texture_has_diffuse == 1) {
+    if (u_texture_has_diffuse == 1) {
         gl_FragColor = texture2D(u_texture_base, v_texCoord0);
     }
-    if(u_texture_has_splatmap == 1) {
+    if (u_texture_has_splatmap == 1) {
         vec4 splat = texture2D(u_texture_splat, splatPosition);
         gl_FragColor = mix(gl_FragColor, texture2D(u_texture_r, v_texCoord0), splat.r);
         gl_FragColor = mix(gl_FragColor, texture2D(u_texture_g, v_texCoord0), splat.g);
@@ -86,7 +86,7 @@ void main(void) {
     //                          Lighting
     // =================================================================
     vec4 diffuse_light = u_directionalLight.color
-        * (dot(-u_directionalLight.direction, v_normal) * u_directionalLight.intensity);
+    * (dot(- u_directionalLight.direction, v_normal) * u_directionalLight.intensity);
 
     // ambient light
     diffuse_light += u_ambientLight.color * u_ambientLight.intensity;
@@ -100,9 +100,9 @@ void main(void) {
     gl_FragColor = mix(gl_FragColor, u_fogColor, v_fog);
 
     #ifdef PICKER
-    if(u_pickerActive == 1) {
+    if (u_pickerActive == 1) {
         float dist = distance(u_pickerPos, v_pos);
-        if(dist <= u_pickerRadius) {
+        if (dist <= u_pickerRadius) {
             float gradient = (u_pickerRadius - dist + 0.01) / u_pickerRadius;
             gradient = 1.0 - clamp(cos(gradient * PI), 0.0, 1.0);
             gl_FragColor += COLOR_BRUSH * gradient;

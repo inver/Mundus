@@ -51,7 +51,7 @@ public class EditorTerrainShader extends TerrainShader {
     public void render(Renderable renderable) {
         final SceneEnvironment env = (SceneEnvironment) renderable.environment;
 
-        setLights(env);
+//        setLights(env);
         setTerrainSplatTextures(renderable);
         set(UNIFORM_TRANS_MATRIX, renderable.worldTransform);
 
