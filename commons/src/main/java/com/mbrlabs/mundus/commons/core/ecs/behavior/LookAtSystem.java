@@ -35,6 +35,9 @@ public class LookAtSystem extends IteratingSystem {
         if (tmp2.z > 0) {
             yaw += 180;
         }
+        if (Double.isNaN(yaw)) {
+            yaw = 90;
+        }
         double pitch = 90 - Math.toDegrees(Math.acos(tmp2.y));
 
         quat.setEulerAngles((float) yaw, (float) pitch, 0).nor();
