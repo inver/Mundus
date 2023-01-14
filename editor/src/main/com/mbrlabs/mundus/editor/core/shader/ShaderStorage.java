@@ -123,7 +123,6 @@ public class ShaderStorage implements ShaderHolder {
             case ShaderConstants.TERRAIN: {
                 var asset = (ShaderAsset) ctx.getAssetLibrary().get(ProjectConstants.SHADER_TERRAIN_PATH);
                 return new TerrainShader(asset.getVertexShader(), asset.getFragmentShader());
-
             }
         }
 

@@ -31,7 +31,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.io.File;
 import java.util.*;
 
 import static com.mbrlabs.mundus.editor.core.ProjectConstants.BUNDLED_FOLDER;
@@ -115,16 +114,9 @@ public class EditorAssetManager extends AssetManager {
     private List<String> getClasspathMetas(String root) {
         try {
             var res = new ArrayList<String>();
-            for (var folder : FileUtils.getResourceFiles(root)) {
-                var dir = root + "/" + folder;
-                var file = new File(getClass().getClassLoader().getResource(dir).toURI());
-                if (file.isDirectory()) {
-                    var path = dir + "/" + AssetConstants.META_FILE_NAME;
-                    if (getClass().getClassLoader().getResource(path) != null) {
-                        res.add(path);
-                    } else {
-                        res.addAll(getClasspathMetas(dir));
-                    }
+            for (var meta : FileUtils.getResourceFiles(getClass(), root, AssetConstants.META_FILE_NAME)) {
+                if (getClass().getClassLoader().getResource(meta) != null) {
+                    res.add(meta);
                 }
             }
             return res;
@@ -133,37 +125,6 @@ public class EditorAssetManager extends AssetManager {
         }
 
         return Collections.emptyList();
-    }
-
-    @SneakyThrows
-    private void loadByType(Map<String, Asset<?>> assets, String path) {
-        for (var fileName : FileUtils.getResourceFiles(path)) {
-            var file = new FileHandle(new File(getClass().getClassLoader().getResource(path + "/" + fileName).toURI()));
-
-            var assetFile = new FileHandle(getAssetPath(file));
-            var metaFile = new FileHandle(getMetaPath(file));
-            try {
-                Meta meta;
-//                if (!metaFile.exists()) {
-//                    meta = createNewMetaFile(file, type);
-//                    file.copyTo(assetFile);
-//                } else {
-//                    meta = metaService.load(metaFile);
-//                }
-
-                Asset asset = null;
-//                if (type == AssetType.TEXTURE) {
-//                    asset = textureService.load(meta, assetFile);
-//                } else if (type == AssetType.MODEL) {
-//                    asset = modelService.load(meta, assetFile);
-//                }
-                if (asset != null) {
-                    assets.put(file.path(), asset);
-                }
-            } catch (Exception e) {
-                log.error("ERROR", e);
-            }
-        }
     }
 
     private Meta createMetaFileFromAsset(FileHandle file, AssetType type) {

@@ -5,10 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -46,20 +43,15 @@ public final class FileUtils {
         }
     }
 
-    public static List<String> getResourceFiles(String path) {
-        var filenames = new ArrayList<String>();
-
-        try (var in = FileUtils.class.getClassLoader().getResourceAsStream(path);
-             var br = new BufferedReader(new InputStreamReader(in))) {
-            String resource;
-
-            while ((resource = br.readLine()) != null) {
-                filenames.add(resource);
-            }
-        } catch (Exception e) {
-            log.error("ERROR", e);
+    public static List<String> getResourceFiles(Class rootClass, String path, String suffix) {
+        var codeSource = rootClass.getProtectionDomain().getCodeSource();
+        var location = codeSource.getLocation();
+        if (location.getPath().endsWith(".jar")) {
+            var scanner = new JarResourceScanner();
+            return scanner.getResourceFiles(location, path, suffix);
         }
 
-        return filenames;
+        var scanner = new ClassPathResourceScanner();
+        return scanner.getResourceFiles(path, suffix);
     }
 }

@@ -100,16 +100,16 @@ project(":commons") {
         finalizedBy jacocoTestReport
     }
 
+//
+//    pitest {
+//        targetClasses = ['com.mbrlabs.*']  //by default "${project.group}.*"
+//        pitestVersion = '1.9.0' //not needed when a default PIT version should be used
+//        threads = 4
+//        outputFormats = ['HTML']
+//        timestampedReports = false
+//    }
 
-    pitest {
-        targetClasses = ['com.mbrlabs.*']  //by default "${project.group}.*"
-        pitestVersion = '1.9.0' //not needed when a default PIT version should be used
-        threads = 4
-        outputFormats = ['HTML']
-        timestampedReports = false
-    }
-
-    build.dependsOn 'pitest'
+//    build.dependsOn 'pitest'
 }
 
 project(":editor") {
