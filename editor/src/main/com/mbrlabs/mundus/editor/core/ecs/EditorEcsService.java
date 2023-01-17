@@ -8,6 +8,7 @@ import com.mbrlabs.mundus.commons.core.ecs.EcsService;
 import com.mbrlabs.mundus.commons.core.ecs.base.RenderComponent;
 import com.mbrlabs.mundus.commons.core.ecs.component.Point2PointPositionComponent;
 import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
+import com.mbrlabs.mundus.commons.model.ModelService;
 import com.mbrlabs.mundus.commons.scene3d.HierarchyNode;
 import com.mbrlabs.mundus.commons.terrain.TerrainService;
 import com.mbrlabs.mundus.editor.ui.components.handle.DirectionHandleRenderDelegate;
@@ -18,10 +19,9 @@ public class EditorEcsService extends EcsService {
 
     private static final String HANDLE_NAME = "'Direction' handle";
 
-    public EditorEcsService(AssetManager assetManager, TerrainService terrainService) {
-        super(assetManager, terrainService);
+    public EditorEcsService(AssetManager assetManager, TerrainService terrainService, ModelService modelService) {
+        super(assetManager, terrainService, modelService);
     }
-
 
     public HierarchyNode createEntityWithDirection(World world, Vector3 rootPosition, Vector3 handlePosition,
                                                    String nodeName, Component... rootComponents) {

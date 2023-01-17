@@ -17,14 +17,14 @@
 package com.mbrlabs.mundus.editor.history.commands
 
 import com.badlogic.gdx.graphics.Pixmap
-import com.mbrlabs.mundus.commons.terrain.Terrain
+import com.mbrlabs.mundus.commons.terrain.TerrainObject
 import com.mbrlabs.mundus.editor.history.DisposableCommand
 
 /**
  * @author Marcus Brummer
  * @version 07-02-2016
  */
-class TerrainPaintCommand(private var terrain: Terrain?) : DisposableCommand {
+class TerrainPaintCommand(private var terrain: TerrainObject?) : DisposableCommand {
 
     private var after: Pixmap? = null
     private var before: Pixmap? = null

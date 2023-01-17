@@ -22,7 +22,7 @@ import com.mbrlabs.mundus.commons.assets.OldAssetManager
 import com.mbrlabs.mundus.commons.assets.exceptions.AssetAlreadyExistsException
 import com.mbrlabs.mundus.commons.assets.meta.Meta
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset
-import com.mbrlabs.mundus.commons.core.ModelFiles
+import com.mbrlabs.mundus.commons.model.ModelFiles
 import org.apache.commons.io.FilenameUtils
 import org.slf4j.LoggerFactory
 import java.io.*
@@ -136,7 +136,7 @@ class OldEditorAssetManager(assetsRoot: FileHandle) : OldAssetManager(assetsRoot
         val meta = createNewMetaFile(FileHandle(metaPath), AssetType.MODEL)
 
         // copy model file
-        model.copyTo(FileHandle(rootFolder.path()))
+//        model.copyTo(FileHandle(rootFolder.path()))
 
         // load & return asset
         val assetFile = FileHandle(FilenameUtils.concat(rootFolder.path(), modelFilename))

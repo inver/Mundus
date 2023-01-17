@@ -10,7 +10,7 @@ import java.io.FileInputStream;
 
 @Slf4j
 public class TerrainService {
-    public Terrain createFromAsset(TerrainAsset asset) {
+    public TerrainObject createFromAsset(TerrainAsset asset) {
         final FloatArray floatArray = new FloatArray();
         var meta = asset.getMeta();
 
@@ -25,7 +25,7 @@ public class TerrainService {
             return null;
         }
 
-        var terrain = new Terrain(asset, asset.getMeta().getAdditional().getSize(), floatArray.toArray());
+        var terrain = new TerrainObject(asset, asset.getMeta().getAdditional().getSize(), floatArray.toArray());
         terrain.init();
         terrain.updateUvScale(new Vector2(meta.getAdditional().getUv(), meta.getAdditional().getUv()));
         terrain.update();

@@ -16,14 +16,14 @@
 
 package com.mbrlabs.mundus.editor.history.commands
 
-import com.mbrlabs.mundus.commons.terrain.Terrain
+import com.mbrlabs.mundus.commons.terrain.TerrainObject
 import com.mbrlabs.mundus.editor.history.Command
 
 /**
  * @author Marcus Brummer
  * @version 07-02-2016
  */
-class TerrainHeightCommand(private var terrain: Terrain?) : Command {
+class TerrainHeightCommand(private var terrain: TerrainObject?) : Command {
 
     private var heightDataBefore: FloatArray? = null
     private var heightDataAfter: FloatArray? = null

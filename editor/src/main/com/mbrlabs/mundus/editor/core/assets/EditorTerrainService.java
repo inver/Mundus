@@ -11,7 +11,7 @@ import com.mbrlabs.mundus.commons.core.ecs.base.RenderComponent;
 import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
 import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObjectDelegate;
 import com.mbrlabs.mundus.commons.scene3d.HierarchyNode;
-import com.mbrlabs.mundus.commons.terrain.Terrain;
+import com.mbrlabs.mundus.commons.terrain.TerrainObject;
 import com.mbrlabs.mundus.commons.terrain.TerrainService;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
@@ -37,7 +37,7 @@ public class EditorTerrainService extends TerrainService {
     private final MetaService metaService;
 
     @SneakyThrows
-    public TerrainAsset createAndSaveTerrainAsset(int vertexResolution, int size) {
+    private TerrainAsset createAndSaveAsset(int vertexResolution, int size) {
         var meta = new Meta<TerrainMeta>();
 
         var folderName = "terrain_" + meta.getUuid();
@@ -87,7 +87,7 @@ public class EditorTerrainService extends TerrainService {
         var id = world.create();
         var name = "Terrain " + id;
 
-        var asset = createAndSaveTerrainAsset(Terrain.DEFAULT_VERTEX_RESOLUTION, Terrain.DEFAULT_SIZE);
+        var asset = createAndSaveAsset(TerrainObject.DEFAULT_VERTEX_RESOLUTION, TerrainObject.DEFAULT_SIZE);
 
         var terrain = createFromAsset(asset);
 

@@ -1,10 +1,8 @@
 package com.mbrlabs.mundus.commons.assets.terrain;
 
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.FloatArray;
 import com.mbrlabs.mundus.commons.assets.AssetLoader;
 import com.mbrlabs.mundus.commons.assets.meta.Meta;
-import com.mbrlabs.mundus.commons.terrain.Terrain;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.DataInputStream;

@@ -76,15 +76,15 @@ public class ModelAsset extends Asset<ModelMeta> implements RenderableProvider {
     public void resolveDependencies(Map<String, Asset> assets) {
         try {
             // materials
-            var metaModel = meta.getAdditional();
-            if (metaModel == null) {
-                return;
-            }
-
-            for (String g3dbMatID : metaModel.getMaterials().keys()) {
-                String uuid = metaModel.getMaterials().get(g3dbMatID);
-                defaultMaterials.put(g3dbMatID, (MaterialAsset) assets.get(uuid));
-            }
+//            var metaModel = meta.getAdditional();
+//            if (metaModel == null) {
+//                return;
+//            }
+//
+//            for (var g3dbMatID : metaModel.getMaterials().keySet()) {
+//                String uuid = metaModel.getMaterials().get(g3dbMatID);
+//                defaultMaterials.put(g3dbMatID, (MaterialAsset) assets.get(uuid));
+//            }
         } catch (Exception e) {
             //todo display error
             log.error("ERROR", e);

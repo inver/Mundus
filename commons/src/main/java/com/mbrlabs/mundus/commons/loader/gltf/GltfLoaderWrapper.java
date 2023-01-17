@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
 import com.badlogic.gdx.utils.Json;
 import com.mbrlabs.mundus.commons.core.AppModelLoader;
-import com.mbrlabs.mundus.commons.core.ModelFiles;
+import com.mbrlabs.mundus.commons.model.ModelFiles;
 import net.mgsx.gltf.data.GLTF;
 import net.mgsx.gltf.loaders.gltf.GLTFLoader;
 import org.apache.commons.lang3.NotImplementedException;

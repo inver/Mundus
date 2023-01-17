@@ -77,6 +77,7 @@ public abstract class Asset<M> implements Disposable, AssetUsage {
      *
      * @param assets map of loaded assets with asset id as key
      */
+    @Deprecated
     public abstract void resolveDependencies(Map<String, Asset> assets);
 
     /**
@@ -86,6 +87,7 @@ public abstract class Asset<M> implements Disposable, AssetUsage {
      * Note, that the asset and all it's set dependencies must have called
      * load() before calling this method.
      */
+    @Deprecated
     public abstract void applyDependencies();
 
 

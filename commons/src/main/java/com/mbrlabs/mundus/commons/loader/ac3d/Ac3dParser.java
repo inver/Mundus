@@ -34,7 +34,7 @@ public class Ac3dParser {
                 continue;
             }
             if (line.startsWith(Ac3dConstants.MATERIAL_BLOCK)) {
-                res.getMaterials().add(parseMaterialLine(line));
+                res.getMaterials().add(parseMaterialBlock(line));
                 continue;
             }
 

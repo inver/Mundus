@@ -9,10 +9,7 @@ import com.mbrlabs.mundus.commons.assets.shader.ShaderAssetLoader;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAssetLoader;
 import com.mbrlabs.mundus.commons.importer.CameraConverter;
 import com.mbrlabs.mundus.commons.importer.SceneConverter;
-import com.mbrlabs.mundus.editor.core.assets.AssetWriter;
-import com.mbrlabs.mundus.editor.core.assets.AssetsStorage;
-import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager;
-import com.mbrlabs.mundus.editor.core.assets.EditorTerrainService;
+import com.mbrlabs.mundus.editor.core.assets.*;
 import com.mbrlabs.mundus.editor.core.ecs.EditorEcsService;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.scene.SceneStorage;
@@ -83,6 +80,8 @@ public class TestConfig {
     private EditorAssetManager editorAssetManager;
     @Autowired
     private EditorTerrainService terrainService;
+    @Autowired
+    private EditorModelService modelService;
 
     @Bean
     public ShaderAssetLoader shaderAssetLoader() {
@@ -111,7 +110,7 @@ public class TestConfig {
 
     @Bean
     public EditorEcsService ecsService() {
-        return new EditorEcsService(editorAssetManager, terrainService);
+        return new EditorEcsService(editorAssetManager, terrainService, modelService);
     }
 
     @Bean

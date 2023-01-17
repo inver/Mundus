@@ -5,7 +5,6 @@ import com.badlogic.gdx.math.Matrix4;
 import com.mbrlabs.mundus.commons.core.ecs.base.RenderableDelegate;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
-import com.mbrlabs.mundus.commons.terrain.Terrain;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,7 +25,6 @@ public class RenderableObjectDelegate implements RenderableDelegate {
 
     @Override
     public void setPosition(Matrix4 position) {
-        Terrain terrain = (Terrain) asset;
-        terrain.modelInstance.transform.set(position);
+        asset.getModelInstance().transform.set(position);
     }
 }

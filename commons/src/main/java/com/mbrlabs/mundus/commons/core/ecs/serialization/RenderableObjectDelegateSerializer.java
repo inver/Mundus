@@ -4,9 +4,11 @@ import com.esotericsoftware.jsonbeans.Json;
 import com.esotericsoftware.jsonbeans.JsonSerializer;
 import com.esotericsoftware.jsonbeans.JsonValue;
 import com.mbrlabs.mundus.commons.assets.AssetManager;
+import com.mbrlabs.mundus.commons.assets.model.ModelAsset;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset;
 import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObject;
 import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObjectDelegate;
+import com.mbrlabs.mundus.commons.model.ModelService;
 import com.mbrlabs.mundus.commons.terrain.TerrainService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 public class RenderableObjectDelegateSerializer implements JsonSerializer<RenderableObjectDelegate> {
     private final AssetManager assetManager;
     private final TerrainService terrainService;
+    private final ModelService modelService;
 
     @Override
     public void write(Json json, RenderableObjectDelegate object, Class knownType) {
@@ -31,14 +34,14 @@ public class RenderableObjectDelegateSerializer implements JsonSerializer<Render
         var dto = json.readValue(RenderableObject.Dto.class, jsonData.get("asset"));
         var res = new RenderableObjectDelegate();
         res.setShaderName(jsonData.getString("shaderName"));
+        var asset = assetManager.loadCurrentProjectAsset(dto.getAssetName());
         switch (dto.getType()) {
             case TERRAIN:
-                var asset = assetManager.loadCurrentProjectAsset(dto.getAssetName());
                 res.setAsset(terrainService.createFromAsset((TerrainAsset) asset));
                 return res;
             case MODEL:
-
-                break;
+                res.setAsset(modelService.createFromAsset((ModelAsset) asset));
+                return res;
         }
         log.error("Wrong type of RenderableObject for deserialization {}", dto.getType());
         return null;

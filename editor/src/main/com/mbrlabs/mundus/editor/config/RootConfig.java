@@ -70,7 +70,7 @@ public class RootConfig {
 
     @Bean
     public ModelAssetLoader modelService() {
-        return new ModelAssetLoader(modelImporter());
+        return new ModelAssetLoader();
     }
 
     @Bean

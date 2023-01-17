@@ -23,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Setter;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +50,11 @@ public class Registry {
 
     @JsonCreator
     public Registry(@JsonProperty("tmpDir") String tmpDir) {
-        this.tmpDir = tmpDir;
+        if (StringUtils.isEmpty(tmpDir)) {
+            this.tmpDir = System.getProperty("java.io.tmpdir");
+        } else {
+            this.tmpDir = tmpDir;
+        }
     }
 
     public FileHandle createTempFolder() {

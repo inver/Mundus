@@ -16,7 +16,7 @@
 
 package com.mbrlabs.mundus.editor.terrain;
 
-import com.mbrlabs.mundus.commons.terrain.Terrain;
+import com.mbrlabs.mundus.commons.terrain.TerrainObject;
 
 /**
  * Factory class for terraform generators.
@@ -26,11 +26,11 @@ import com.mbrlabs.mundus.commons.terrain.Terrain;
  */
 public class Terraformer {
 
-    public static PerlinNoiseGenerator perlin(Terrain terrain) {
+    public static PerlinNoiseGenerator perlin(TerrainObject terrain) {
         return new PerlinNoiseGenerator(terrain);
     }
 
-    public static HeightMapGenerator heightMap(Terrain terrain) {
+    public static HeightMapGenerator heightMap(TerrainObject terrain) {
         return new HeightMapGenerator(terrain);
     }
 

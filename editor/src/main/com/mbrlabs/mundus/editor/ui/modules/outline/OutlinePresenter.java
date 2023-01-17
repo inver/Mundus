@@ -130,11 +130,11 @@ public class OutlinePresenter {
         initAddShaderButton(outline.getRightClickMenu().getAddShader());
         initAddGroupButton(outline, outline.getRightClickMenu().getAddGroup());
         initAddCameraButton(outline.getRightClickMenu().getAddCamera());
-        initAddTerrainButton(outline, outline.getRightClickMenu().getAddTerrain());
+        initAddTerrainButton(outline.getRightClickMenu().getAddTerrain());
         initAddDirectionLightButton(outline.getRightClickMenu().getAddDirectionalLight());
     }
 
-    private void initAddTerrainButton(Outline outline, MenuItem addTerrain) {
+    private void initAddTerrainButton(MenuItem addTerrain) {
         addTerrain.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {

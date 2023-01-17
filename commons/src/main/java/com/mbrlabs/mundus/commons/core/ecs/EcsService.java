@@ -14,7 +14,9 @@ import com.mbrlabs.mundus.commons.core.ecs.behavior.SynchronizeRenderPoint2Point
 import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObjectDelegate;
 import com.mbrlabs.mundus.commons.core.ecs.serialization.RenderableObjectDelegateSerializer;
 import com.mbrlabs.mundus.commons.core.ecs.serialization.RenderableObjectSerializer;
-import com.mbrlabs.mundus.commons.terrain.Terrain;
+import com.mbrlabs.mundus.commons.model.ModelObject;
+import com.mbrlabs.mundus.commons.model.ModelService;
+import com.mbrlabs.mundus.commons.terrain.TerrainObject;
 import com.mbrlabs.mundus.commons.terrain.TerrainService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.tuple.Pair;
@@ -27,6 +29,7 @@ public class EcsService {
 
     private final AssetManager assetManager;
     private final TerrainService terrainService;
+    private final ModelService modelService;
 
     public World createWorld() {
         var serializationManager = new WorldSerializationManager();
@@ -50,9 +53,10 @@ public class EcsService {
     public List<Pair<Class<?>, JsonSerializer>> getSerializers() {
         return Arrays.asList(
                 Pair.of(RenderableObjectDelegate.class, new RenderableObjectDelegateSerializer(
-                        assetManager, terrainService
+                        assetManager, terrainService, modelService
                 )),
-                Pair.of(Terrain.class, new RenderableObjectSerializer())
+                Pair.of(TerrainObject.class, new RenderableObjectSerializer()),
+                Pair.of(ModelObject.class, new RenderableObjectSerializer())
         );
     }
 }

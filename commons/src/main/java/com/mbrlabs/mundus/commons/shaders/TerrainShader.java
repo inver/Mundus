@@ -21,7 +21,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.DirectionalLightsAttribute;
-import com.badlogic.gdx.graphics.g3d.environment.BaseLight;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.math.Vector2;
@@ -29,7 +28,7 @@ import com.badlogic.gdx.utils.Array;
 import com.mbrlabs.mundus.commons.env.Fog;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.terrain.SplatTexture;
-import com.mbrlabs.mundus.commons.terrain.Terrain;
+import com.mbrlabs.mundus.commons.terrain.TerrainObject;
 import com.mbrlabs.mundus.commons.terrain.TerrainTexture;
 import com.mbrlabs.mundus.commons.terrain.TerrainTextureAttribute;
 
@@ -105,7 +104,7 @@ public class TerrainShader extends DefaultBaseShader {
     public void render(Renderable renderable) {
         final SceneEnvironment env = (SceneEnvironment) renderable.environment;
 
-        setLights(env, (Terrain.TerrainUserData) renderable.userData);
+        setLights(env, (TerrainObject.TerrainUserData) renderable.userData);
         setTerrainSplatTextures(renderable);
         set(UNIFORM_TRANS_MATRIX, renderable.worldTransform);
 
@@ -124,7 +123,7 @@ public class TerrainShader extends DefaultBaseShader {
         renderable.meshPart.render(program);
     }
 
-    protected void setLights(SceneEnvironment env, Terrain.TerrainUserData userData) {
+    protected void setLights(SceneEnvironment env, TerrainObject.TerrainUserData userData) {
         // ambient
         set(UNIFORM_AMBIENT_LIGHT_COLOR, env.getAmbientLight().getColor());
         set(UNIFORM_AMBIENT_LIGHT_INTENSITY, env.getAmbientLight().getIntensity());
@@ -181,7 +180,7 @@ public class TerrainShader extends DefaultBaseShader {
             set(UNIFORM_TEXTURE_HAS_SPLATMAP, 0);
         }
 
-        Terrain.TerrainUserData userData = (Terrain.TerrainUserData) renderable.userData;
+        TerrainObject.TerrainUserData userData = (TerrainObject.TerrainUserData) renderable.userData;
         // set terrain world size
         //todo migrate to Vector2
         terrainSize.x = userData.getTerrainWidth();

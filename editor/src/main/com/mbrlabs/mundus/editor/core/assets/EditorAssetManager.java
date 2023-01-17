@@ -18,7 +18,7 @@ import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAssetLoader;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAssetLoader;
-import com.mbrlabs.mundus.commons.core.ModelFiles;
+import com.mbrlabs.mundus.commons.model.ModelFiles;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.utils.FileUtils;
 import com.mbrlabs.mundus.editor.core.ProjectConstants;

@@ -18,7 +18,7 @@ package com.mbrlabs.mundus.editor.terrain;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.mbrlabs.mundus.commons.terrain.Terrain;
+import com.mbrlabs.mundus.commons.terrain.TerrainObject;
 
 import java.nio.ByteBuffer;
 
@@ -31,7 +31,7 @@ public class HeightMapGenerator extends Generator<HeightMapGenerator> {
 
     private Pixmap map;
 
-    HeightMapGenerator(Terrain terrain) {
+    HeightMapGenerator(TerrainObject terrain) {
         super(terrain);
     }
 

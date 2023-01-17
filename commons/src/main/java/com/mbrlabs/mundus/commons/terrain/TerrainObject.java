@@ -50,7 +50,7 @@ import java.util.List;
  * @author Marcus Brummer
  * @version 30-11-2015
  */
-public class Terrain implements RenderableObject, Disposable {
+public class TerrainObject implements RenderableObject, Disposable {
 
     public static final int DEFAULT_SIZE = 1600;
     public static final int DEFAULT_VERTEX_RESOLUTION = 180;
@@ -85,10 +85,11 @@ public class Terrain implements RenderableObject, Disposable {
     private transient final Material material;
     // Mesh
     private transient Model model;
+    @Getter
     public transient ModelInstance modelInstance;
     private transient Mesh mesh;
 
-    private Terrain(TerrainAsset asset, int vertexResolution) {
+    private TerrainObject(TerrainAsset asset, int vertexResolution) {
         this.assetName = asset.getName();
         this.transform = new Matrix4();
         this.attributes = MeshBuilder.createAttributes(
@@ -108,7 +109,7 @@ public class Terrain implements RenderableObject, Disposable {
         material.set(new TerrainTextureAttribute(TerrainTextureAttribute.ATTRIBUTE_SPLAT0, terrainTexture));
     }
 
-    public Terrain(TerrainAsset asset, int size, float[] heightData) {
+    public TerrainObject(TerrainAsset asset, int size, float[] heightData) {
         this(asset, (int) Math.sqrt(heightData.length));
         this.terrainWidth = size;
         this.terrainDepth = size;

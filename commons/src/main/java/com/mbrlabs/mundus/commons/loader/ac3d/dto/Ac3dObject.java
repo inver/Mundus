@@ -6,6 +6,7 @@ import com.mbrlabs.mundus.commons.dto.Vector3Dto;
 import com.mbrlabs.mundus.commons.dto.vertex.VertexDto;
 import lombok.Builder;
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
@@ -43,4 +44,13 @@ public class Ac3dObject {
     private final List<Ac3dSurface> surfaces;
 
     private final List<Ac3dObject> children;
+
+    @Override
+    public String toString() {
+        var res = new StringBuilder("Ac3dObject{").append(type);
+        if (StringUtils.isNotBlank(name)) {
+            res.append(" | ").append(name);
+        }
+        return res.append("}").toString();
+    }
 }
