@@ -107,10 +107,12 @@ public class ProjectStorage {
      * @return loaded project context without scenes
      */
     public ProjectContext loadProjectContext(ProjectRef ref) {
-        // find .pro file
-        File projectFile = FileUtils
-                .listFiles(new File(ref.getPath()), new String[]{PROJECT_EXTENSION}, false)
-                .stream()
+        var searchFolder = new File(ref.getPath());
+        if (!searchFolder.exists()) {
+            return null;
+        }
+
+        var projectFile = FileUtils.listFiles(searchFolder, new String[]{PROJECT_EXTENSION}, false).stream()
                 .findFirst()
                 .orElse(null);
 

@@ -5,10 +5,8 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.mbrlabs.mundus.commons.Scene;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
-import com.mbrlabs.mundus.commons.scene3d.components.Component;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.shader.ShaderStorage;
-import com.mbrlabs.mundus.editor.scene3d.components.PickableComponent;
 import lombok.RequiredArgsConstructor;
 
 @org.springframework.stereotype.Component
@@ -40,7 +38,7 @@ public class EntityPicker extends BasePicker {
     }
 
     private void renderPickableScene(Scene scene) {
-        batch.begin(ctx.getCamera());
+        batch.begin(ctx.getCurrent().getCamera());
 //        for (GameObject go : scene.getSceneGraph().getGameObjects()) {
 //            renderPickableGameObject(scene, go);
 //        }
@@ -48,16 +46,16 @@ public class EntityPicker extends BasePicker {
     }
 
     private void renderPickableGameObject(Scene scene, GameObject go) {
-        for (Component c : go.getComponents()) {
-            if (c instanceof PickableComponent) {
-                c.render(batch, scene.getEnvironment(), shaderStorage, Gdx.graphics.getDeltaTime());
-            }
-        }
-
-        if (go.getChildren() != null) {
-            for (GameObject goc : go.getChildren()) {
-                renderPickableGameObject(scene, goc);
-            }
-        }
+//        for (Component c : go.getComponents()) {
+//            if (c instanceof PickableComponent) {
+//                c.render(batch, scene.getEnvironment(), shaderStorage, Gdx.graphics.getDeltaTime());
+//            }
+//        }
+//
+//        if (go.getChildren() != null) {
+//            for (GameObject goc : go.getChildren()) {
+//                renderPickableGameObject(scene, goc);
+//            }
+//        }
     }
 }

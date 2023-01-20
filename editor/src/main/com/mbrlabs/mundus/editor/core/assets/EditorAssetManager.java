@@ -19,15 +19,13 @@ import com.mbrlabs.mundus.commons.assets.terrain.TerrainAssetLoader;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAssetLoader;
 import com.mbrlabs.mundus.commons.model.ModelFiles;
-import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.utils.FileUtils;
 import com.mbrlabs.mundus.editor.core.ProjectConstants;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
-import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
-import com.mbrlabs.mundus.editor.scene3d.components.PickableModelComponent;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -51,25 +49,13 @@ public class EditorAssetManager extends AssetManager {
         this.ctx = ctx;
     }
 
-//    public EditorAssetManager(AppEnvironment appEnvironment, MetaLoader metaFileService, TextureAssetLoader textureService,
-//                              TerrainAssetLoader terrainService, MaterialAssetLoader materialService,
-//                              PixmapTextureAssetLoader pixmapTextureService, ModelAssetLoader modelService,
-//                              EditorCtx ctx, ShaderStorage shaderStorage) {
-//        super(new FileHandle(appEnvironment.getHomeDir() + "/" + PROJECT_ASSETS_DIR), metaFileService,
-//                textureService, terrainService, materialService, pixmapTextureService, modelService);
-//        this.ctx = ctx;
-//        this.shaderStorage = shaderStorage;
-//        if (rootFolder != null && (!rootFolder.exists() || !rootFolder.isDirectory())) {
-//            log.error("Folder {} doesn't exist or is not a directory", rootFolder.file());
-//        }
-//    }
-
     @PostConstruct
     public void init() {
         loadStandardAssets(ctx.getAssetLibrary());
     }
 
     public void saveAsset(Asset asset) {
+        throw new NotImplementedException();
 //        if (asset instanceof MaterialAsset) {
 //            materialService.save((MaterialAsset) asset);
 //        } else if (asset instanceof TerrainAsset) {
@@ -84,6 +70,10 @@ public class EditorAssetManager extends AssetManager {
     @Override
     public Asset<?> loadCurrentProjectAsset(String assetName) {
         return loadProjectAsset(ctx.getCurrent().path, assetName);
+    }
+
+    public <T extends Asset<?>> T loadCurrentProjectAsset(Class<T> tClass, String assetName) {
+        return (T) loadCurrentProjectAsset(assetName);
     }
 
     public Asset<?> loadProjectAsset(String projectPath, String assetName) {
@@ -328,25 +318,26 @@ public class EditorAssetManager extends AssetManager {
         return null;
     }
 
-    public void dirty(Asset asset) {
-        dirtyAssets.add(asset);
+    public void dirty(int entityId) {
+        //todo
+//        dirtyAssets.add(asset);
     }
 
-    public GameObject convert(int goID, String name, Asset asset) {
-        var res = new GameObject(name, goID);
-
-        if (asset.getType() == AssetType.MODEL) {
-            var modelAsset = (ModelAsset) asset;
-
-            var modelComponent = new PickableModelComponent(res, ShaderConstants.PICKER);
-            modelComponent.setModel(modelAsset, true);
-            modelComponent.encodeRayPickColorId();
-
-            res.getComponents().add(modelComponent);
-        } else if (asset.getType() == AssetType.MATERIAL) {
-
-        }
-
-        return res;
-    }
+//    public GameObject convert(int goID, String name, Asset asset) {
+//        var res = new GameObject(name, goID);
+//
+//        if (asset.getType() == AssetType.MODEL) {
+//            var modelAsset = (ModelAsset) asset;
+//
+//            var modelComponent = new PickableModelComponent(res, ShaderConstants.PICKER);
+//            modelComponent.setModel(modelAsset, true);
+//            modelComponent.encodeRayPickColorId();
+//
+//            res.getComponents().add(modelComponent);
+//        } else if (asset.getType() == AssetType.MATERIAL) {
+//
+//        }
+//
+//        return res;
+//    }
 }

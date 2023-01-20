@@ -18,11 +18,6 @@ public class MaterialPreviewShader extends AppBaseShader {
     }
 
     @Override
-    public void init() {
-        super.init();
-    }
-
-    @Override
     public void render(Renderable renderable) {
         final SceneEnvironment env = (SceneEnvironment) renderable.environment;
 

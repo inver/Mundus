@@ -19,7 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Tree
 import com.kotcrab.vis.ui.widget.VisTable
 import com.mbrlabs.mundus.commons.scene3d.GameObject
 import com.mbrlabs.mundus.editor.history.Command
-import com.mbrlabs.mundus.editor.ui.modules.outline.OutlineNode
+import com.mbrlabs.mundus.editor.ui.modules.outline.IdNode
 import org.slf4j.LoggerFactory
 
 /**
@@ -28,15 +28,15 @@ import org.slf4j.LoggerFactory
  * @author codenigma
  * @version 28-09-2016
  */
-class DeleteCommand(private var go: GameObject?, private var node: OutlineNode) : Command {
+class DeleteCommand(private var go: GameObject?, private var node: IdNode) : Command {
 
     companion object {
         private val log = LoggerFactory.getLogger(DeleteCommand::class.java)
     }
 
     private var parentGO: GameObject? = null
-    private var parentNode: Tree.Node<OutlineNode, GameObject, VisTable>? = null
-    private var tree: Tree<OutlineNode, GameObject>? = null
+    private var parentNode: Tree.Node<IdNode, Int, VisTable>? = null
+    private var tree: Tree<IdNode, Int>? = null
 
     init {
         this.parentGO = go!!.parent

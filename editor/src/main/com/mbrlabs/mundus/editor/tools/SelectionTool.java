@@ -17,7 +17,6 @@ package com.mbrlabs.mundus.editor.tools;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
@@ -50,12 +49,7 @@ public class SelectionTool extends Tool {
     }
 
     public void entitySelected(int entityId) {
-        getCtx().setSelectedEntityId(entityId);
-    }
-
-    @Override
-    public Drawable getIcon() {
-        return null;
+        getCtx().selectEntity(entityId);
     }
 
     @Override
@@ -65,10 +59,10 @@ public class SelectionTool extends Tool {
 
     @Override
     public void render(ModelBatch batch, SceneEnvironment environment, ShaderHolder shaders, float delta) {
-        if (getCtx().getSelectedEntityId() < 0) {
+        if (getCtx().getSelectedEntity() == null) {
             return;
         }
-        getBatch().begin(getCtx().getCamera());
+        getBatch().begin(getCtx().getCurrent().getCamera());
 
         //todo
 //        for (GameObject go : getCtx().getSelectedEntityId()) {
@@ -129,7 +123,7 @@ public class SelectionTool extends Tool {
 
     @Override
     public void onDisabled() {
-        getCtx().setSelectedEntityId(-1);
+        getCtx().selectEntity(-1);
     }
 
 }

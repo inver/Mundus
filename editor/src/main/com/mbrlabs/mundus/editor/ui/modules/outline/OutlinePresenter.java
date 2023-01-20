@@ -77,7 +77,7 @@ public class OutlinePresenter {
                 ctx.getCurrentWorld().getEntity(entityId).getComponent(PositionComponent.class)
                         .getTransform().getTranslation(pos);
 
-                var cam = ctx.getCamera();
+                var cam = ctx.getCurrent().getCamera();
                 // just lerp in the direction of the object if certain distance away
                 if (pos.dst(cam.position) > 100) {
                     cam.position.lerp(pos.cpy().add(0f, 40f, 0f), 0.5f);
@@ -120,7 +120,7 @@ public class OutlinePresenter {
                 }
 
                 var entityId = selection.first().getValue();
-                ctx.setSelectedEntityId(entityId);
+                ctx.selectEntity(entityId);
                 toolManager.translateTool.entitySelected(entityId);
 
                 eventBus.post(new EntitySelectedEvent(entityId));
@@ -218,7 +218,7 @@ public class OutlinePresenter {
                     log.trace("Add empty game object [{}] in root node.", go);
 //                    ctx.getCurrent().getCurrentScene().getSceneGraph().addGameObject(go);
                     // update outline
-                    outline.addGoToTree(null, go);
+                    ctx.getCurrent().getCurrentScene().getRootNode().addChild(node);
                 } else {
                     throw new NotImplementedException();
 //                    log.trace("Add empty game object [{}] child in node [{}].", go, selectedGO);

@@ -26,7 +26,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
@@ -273,11 +272,6 @@ public class RotateTool extends TransformTool {
 //
 //        zHandle.getScale().set(scaleFactor, scaleFactor, scaleFactor);
 //        zHandle.applyTransform();
-    }
-
-    @Override
-    public Drawable getIcon() {
-        return null;
     }
 
     @Override

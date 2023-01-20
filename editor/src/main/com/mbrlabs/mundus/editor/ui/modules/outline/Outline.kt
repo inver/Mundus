@@ -138,29 +138,6 @@ class Outline(
     }
 
     /**
-     * Adding game object to outline
-
-     * @param treeParentNode
-     * *
-     * @param gameObject
-     */
-    fun addGoToTree(treeParentNode: OutlineNode?, gameObject: GameObject) {
-        val leaf = OutlineNode(gameObject, null)
-        if (treeParentNode == null) {
-//            tree.add(leaf)
-        } else {
-            treeParentNode.add(leaf)
-        }
-        // Always expand after adding new node
-        leaf.expandTo()
-        if (gameObject.children != null) {
-            for (goChild in gameObject.children) {
-                addGoToTree(leaf, goChild)
-            }
-        }
-    }
-
-    /**
      * Removing game object from tree and outline
 
      * @param go

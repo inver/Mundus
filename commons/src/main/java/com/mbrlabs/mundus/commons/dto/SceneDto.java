@@ -20,9 +20,6 @@ import com.mbrlabs.mundus.commons.scene3d.HierarchyNode;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author Tibor Zsuro
  * @version 12-08-2021
@@ -33,10 +30,6 @@ public class SceneDto {
     private FogDTO fog;
     private String skyboxName;
     private BaseLightDto ambientLight;
-    //todo add support of several cameras
-    @Getter
-    @Setter
-    private CameraDto camera;
 
     @Getter
     @Setter

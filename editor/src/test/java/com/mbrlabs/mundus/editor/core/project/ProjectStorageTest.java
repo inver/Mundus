@@ -2,6 +2,7 @@ package com.mbrlabs.mundus.editor.core.project;
 
 
 import com.artemis.World;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.mbrlabs.mundus.commons.Scene;
 import com.mbrlabs.mundus.editor.config.BaseCtxTest;
 import com.mbrlabs.mundus.editor.core.registry.ProjectRef;
@@ -23,7 +24,7 @@ public class ProjectStorageTest extends BaseCtxTest {
     @Test
     public void testSaveProject() {
 
-        var project = new ProjectContext(111);
+        var project = new ProjectContext(111, new PerspectiveCamera());
         project.path = PROJECT_PATH;
         project.name = "alala";
 

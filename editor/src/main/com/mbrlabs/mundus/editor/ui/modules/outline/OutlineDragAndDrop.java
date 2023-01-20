@@ -52,7 +52,7 @@ public class OutlineDragAndDrop extends DragAndDrop {
             @Override
             public void drop(Source source, Payload payload, float x, float y, int pointer) {
                 var newParent = treeWidget.getNodeAt(y);
-                var node = (OutlineNode) payload.getObject();
+                var node = (IdNode) payload.getObject();
                 if (node == null) {
                     return;
                 }
@@ -66,38 +66,39 @@ public class OutlineDragAndDrop extends DragAndDrop {
 //                        return;
 //                    }
                 }
-                var oldParent = draggedGO.getParent();
-                // remove child from old parent
-                draggedGO.remove();
-
-                var draggedPos = new Vector3();
-                // add to new parent
-                if (newParent == null) {
-                    // recalculate position for root layer
-                    var newPos = draggedPos;
-                    draggedGO.getPosition(draggedPos);
-                    newPos = calculatePosition(oldParent, draggedPos);
-
-                    listener.movedToRoot(draggedGO);
-                    draggedGO.setLocalPosition(newPos.x, newPos.y, newPos.z);
-                } else {
-                    throw new NotImplementedException();
-//                    draggedGO.getPosition(draggedPos);
-//                    // recalculate position
-//                    var parentPos = new Vector3();
-                    // World coorinates
-//                    var parentGO = newParent.getValue();
-//                    parentGO.getPosition(parentPos);
-//                    draggedPos = calculatePosition(oldParent, draggedPos);
+                throw new NotImplementedException();
+//                var oldParent = draggedGO.getParent();
+//                // remove child from old parent
+//                draggedGO.remove();
 //
-//                    // Local in releation to new parent
-//                    var newPos = draggedPos.sub(parentPos);
-//                    // add
-//                    parentGO.addChild(draggedGO);
+//                var draggedPos = new Vector3();
+//                // add to new parent
+//                if (newParent == null) {
+//                    // recalculate position for root layer
+//                    var newPos = draggedPos;
+//                    draggedGO.getPosition(draggedPos);
+//                    newPos = calculatePosition(oldParent, draggedPos);
+//
+//                    listener.movedToRoot(draggedGO);
 //                    draggedGO.setLocalPosition(newPos.x, newPos.y, newPos.z);
-                }
+//                } else {
+//                    throw new NotImplementedException();
+////                    draggedGO.getPosition(draggedPos);
+////                    // recalculate position
+////                    var parentPos = new Vector3();
+//                    // World coorinates
+////                    var parentGO = newParent.getValue();
+////                    parentGO.getPosition(parentPos);
+////                    draggedPos = calculatePosition(oldParent, draggedPos);
+////
+////                    // Local in releation to new parent
+////                    var newPos = draggedPos.sub(parentPos);
+////                    // add
+////                    parentGO.addChild(draggedGO);
+////                    draggedGO.setLocalPosition(newPos.x, newPos.y, newPos.z);
+//                }
 
-                listener.updateTree();
+//                listener.updateTree();
             }
 
             private Vector3 calculatePosition(GameObject oldParent, Vector3 newPosition) {

@@ -14,6 +14,7 @@ import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.project.ProjectManager;
 import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
 import com.mbrlabs.mundus.editor.core.shader.ShaderStorage;
+import com.mbrlabs.mundus.editor.events.CameraChangedEvent;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent;
 import com.mbrlabs.mundus.editor.events.SceneChangedEvent;
@@ -48,7 +49,8 @@ import java.io.File;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class Editor implements ProjectChangedEvent.ProjectChangedListener, SceneChangedEvent.SceneChangedListener {
+public class Editor implements ProjectChangedEvent.ProjectChangedListener, SceneChangedEvent.SceneChangedListener,
+        CameraChangedEvent.CameraChangedListener {
 
     private final EditorCtx ctx;
     private final FreeCamController camController;
@@ -166,7 +168,7 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
     private void setupSceneWidget() {
         var scene = ctx.getCurrent().getCurrentScene();
 
-        appUi.getSceneWidget().setCam(ctx.getCamera());
+        appUi.getSceneWidget().setCam(ctx.getCurrent().getCamera());
         appUi.getSceneWidget().setRenderer(camera -> {
             try {
                 scene.getAssets().stream()
@@ -198,10 +200,10 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
             }
         });
 
-        compass.setWorldCam(ctx.getCamera());
-        directCameraController.setCurrent(ctx.getCamera());
+        compass.setWorldCam(ctx.getCurrent().getCamera());
+        directCameraController.setCurrent(ctx.getCurrent().getCamera());
 //        camController.setCamera(ctx.getCamera());
-        appUi.getSceneWidget().setCam(ctx.getCamera());
+        appUi.getSceneWidget().setCam(ctx.getCurrent().getCamera());
         ctx.setViewport(appUi.getSceneWidget().getViewport());
     }
 
@@ -227,7 +229,7 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
     @Override
     public void onProjectChanged(@NotNull ProjectChangedEvent event) {
         setupSceneWidget();
-        compass.setWorldCam(ctx.getCamera());
+        compass.setWorldCam(ctx.getCurrent().getCamera());
     }
 
     @Override
@@ -238,5 +240,10 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
     public boolean closeRequested() {
         appUi.showDialog(exitDialog);
         return false;
+    }
+
+    @Override
+    public void onCameraChanged(@NotNull CameraChangedEvent event) {
+        setupSceneWidget();
     }
 }

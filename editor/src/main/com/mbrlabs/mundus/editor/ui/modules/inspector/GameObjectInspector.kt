@@ -20,9 +20,6 @@ import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Array
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
-import com.mbrlabs.mundus.commons.scene3d.components.Component
-import com.mbrlabs.mundus.commons.scene3d.components.ModelComponent
-import com.mbrlabs.mundus.commons.scene3d.components.TerrainComponent
 import com.mbrlabs.mundus.editor.config.UiWidgetsHolder
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
@@ -30,8 +27,9 @@ import com.mbrlabs.mundus.editor.history.CommandHistory
 import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.PreviewGenerator
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
-import com.mbrlabs.mundus.editor.ui.modules.inspector.components.*
-import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.TerrainComponentWidget
+import com.mbrlabs.mundus.editor.ui.modules.inspector.components.ComponentWidget
+import com.mbrlabs.mundus.editor.ui.modules.inspector.components.IdentifierWidget
+import com.mbrlabs.mundus.editor.ui.modules.inspector.components.TransformWidget
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.TerrainWidgetPresenter
 import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerPresenter
 
@@ -53,7 +51,7 @@ class GameObjectInspector(
 
     private val identifierWidget = IdentifierWidget(ctx)
     private val transformWidget = TransformWidget(uiWidgetsHolder.separatorStyle, ctx)
-    private val componentWidgets: Array<ComponentWidget<*>> = Array()
+    private val componentWidgets: Array<ComponentWidget> = Array()
     private val addComponentBtn = VisTextButton("Add Component")
     private val componentTable = VisTable()
 

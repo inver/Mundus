@@ -24,7 +24,6 @@ import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset
-import com.mbrlabs.mundus.commons.scene3d.GameObject
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.tools.ToolManager
@@ -132,7 +131,7 @@ class ModelAssetInspectorWidget(
                     modelAsset!!.defaultMaterials.put(g3dbMatID, materialAsset)
                     modelAsset!!.applyDependencies()
                     toolManager.modelPlacementTool.setModel(modelAsset)
-                    assetManager.dirty(modelAsset!!)
+//                    assetManager.dirty(modelAsset!!)
                 }
             }
             mw.material = mat

@@ -16,15 +16,19 @@
 
 package com.mbrlabs.mundus.editor.ui.modules.toolbar
 
+import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.Array
 import com.kotcrab.vis.ui.widget.*
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
+import com.mbrlabs.mundus.editor.core.project.ProjectContext
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
+import com.mbrlabs.mundus.editor.events.CameraChangedEvent
 import com.mbrlabs.mundus.editor.events.EventBus
+import com.mbrlabs.mundus.editor.events.ProjectChangedEvent
 import com.mbrlabs.mundus.editor.events.SceneGraphChangedEvent
-import com.mbrlabs.mundus.editor.events.SceneGraphChangedEvent.SceneGraphChangedListener
 import com.mbrlabs.mundus.editor.tools.*
 import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.ExportDialog
@@ -50,7 +54,7 @@ class MundusToolbar(
     private val toaster: Toaster,
     private val exportDialog: ExportDialog,
     private val appUi: AppUi
-) : Toolbar(), SceneGraphChangedEvent.SceneGraphChangedListener {
+) : Toolbar(), SceneGraphChangedEvent.SceneGraphChangedListener, ProjectChangedEvent.ProjectChangedListener {
     private val saveBtn = FaTextButton(Fa.SAVE)
     private val importBtn = FaTextButton(Fa.DOWNLOAD)
     private val exportBtn = FaTextButton(Fa.GIFT)
@@ -67,7 +71,7 @@ class MundusToolbar(
     private val createMaterial = MenuItem("Create material")
 
     private val sceneSelector = VisSelectBox<String>();
-    private val cameraSelector = VisSelectBox<String>();
+    private val cameraSelector = VisSelectBox<Pair<String, Int>>();
 
     init {
         eventBus.register(this)
@@ -102,8 +106,13 @@ class MundusToolbar(
         Tooltip.Builder(toolManager.scaleTool.name).target(scaleBtn).build()
 
         sceneSelector.setItems("Main");
-        cameraSelector.setItems("Main", "Pilot")
-//        cameraSelector.addListener(object )
+
+        cameraSelector.addListener(object : ChangeListener() {
+            override fun changed(event: ChangeEvent, actor: Actor) {
+                ctx.current.selectedCamera = cameraSelector.selected.second
+                eventBus.post(CameraChangedEvent(cameraSelector.selected.second))
+            }
+        })
 
         addItem(saveBtn, true)
         addItem(importBtn, true)
@@ -211,17 +220,32 @@ class MundusToolbar(
         }
     }
 
-    override fun onSceneGraphChanged(event: SceneGraphChangedEvent) {
-        val cameras = ArrayList<com.mbrlabs.mundus.commons.scene3d.components.Component>()
-//        ctx.current.currentScene.sceneGraph.gameObjects.forEach {
-//            it.findComponentsByType(cameras, com.mbrlabs.mundus.commons.scene3d.components.Component.Type.CAMERA, true)
-//        }
-
-        val arr = Array<String>()
-        arr.add("Main")
-        cameras.forEach() {
-            arr.add(it.gameObject.parent.name)
+    private fun reloadCamerasList() {
+        val arr = Array<Pair<String, Int>>()
+        arr.add(Pair("Main", ProjectContext.MAIN_CAMERA_SELECTED))
+        ctx.current.currentScene.cameras.forEach {
+            arr.add(Pair("Camera " + it.right, it.right))
         }
+
         cameraSelector.items = arr
+//        val cameras = ArrayList<com.mbrlabs.mundus.commons.scene3d.components.Component>()
+////        ctx.current.currentScene.sceneGraph.gameObjects.forEach {
+////            it.findComponentsByType(cameras, com.mbrlabs.mundus.commons.scene3d.components.Component.Type.CAMERA, true)
+////        }
+//
+//        val arr = Array<String>()
+//        arr.add("Main")
+//        cameras.forEach() {
+//            arr.add(it.gameObject.parent.name)
+//        }
+//        cameraSelector.items = arr
+    }
+
+    override fun onSceneGraphChanged(event: SceneGraphChangedEvent) {
+        reloadCamerasList()
+    }
+
+    override fun onProjectChanged(event: ProjectChangedEvent?) {
+        reloadCamerasList()
     }
 }

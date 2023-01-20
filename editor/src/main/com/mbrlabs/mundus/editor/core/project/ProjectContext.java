@@ -16,15 +16,19 @@
 
 package com.mbrlabs.mundus.editor.core.project;
 
-import com.artemis.World;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.utils.Disposable;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mbrlabs.mundus.commons.Scene;
+import com.mbrlabs.mundus.commons.core.ecs.base.RenderComponent;
+import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObject;
+import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObjectDelegate;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.springframework.util.CollectionUtils;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -39,6 +43,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @Slf4j
 public class ProjectContext implements Disposable {
+
+    public static final int MAIN_CAMERA_SELECTED = -1;
     private final AtomicInteger idProvider;
 
     public ProjectSettings settings;
@@ -55,19 +61,33 @@ public class ProjectContext implements Disposable {
      */
     @Getter
     private String activeSceneName;
+    @Getter
+    private PerspectiveCamera mainCamera;
+    private int selectedCamera = MAIN_CAMERA_SELECTED;
 
-    public ProjectContext(@JsonProperty("idProvider") int startId) {
+    @JsonCreator
+    public ProjectContext(@JsonProperty("idProvider") int startId, @JsonProperty("mainCamera") PerspectiveCamera camera) {
         settings = new ProjectSettings();
 //        currentScene = new Scene(world);
         idProvider = new AtomicInteger(startId);
+        mainCamera = camera;
     }
 
     public int obtainID() {
         return idProvider.incrementAndGet();
     }
 
-    public int inspectCurrentID() {
-        return idProvider.get();
+    @JsonIgnore
+    public Camera getCamera() {
+        if (selectedCamera < 0) {
+            return mainCamera;
+        }
+
+        if (currentScene == null || CollectionUtils.isEmpty(currentScene.getCameras())) {
+            log.warn("Selected camera doesn't exist");
+            return mainCamera;
+        }
+        return currentScene.getCamera(selectedCamera);
     }
 
     @Override
@@ -93,42 +113,19 @@ public class ProjectContext implements Disposable {
         }
     }
 
-    public int getIdProvider() {
-        return inspectCurrentID();
+    public <T extends RenderableObject> T getRenderableObject(Class<T> clazz, int entityId) {
+        var delegate = currentScene.getWorld().getMapper(RenderComponent.class).get(entityId).getRenderable();
+        if (!(delegate instanceof RenderableObjectDelegate)) {
+            return null;
+        }
+        return (T) ((RenderableObjectDelegate) delegate).getAsset();
     }
 
-//    public Camera getCurrentCamera() {
-//        return currentScene.getCurrentCamera();
-//    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ProjectContext that = (ProjectContext) o;
-
-        return new EqualsBuilder()
-                .append(idProvider.get(), that.idProvider.get())
-                .append(settings, that.settings)
-                .append(path, that.path)
-                .append(name, that.name)
-                .append(currentScene, that.currentScene)
-                .append(activeSceneName, that.activeSceneName)
-                .isEquals();
+    public int getSelectedCamera() {
+        return selectedCamera;
     }
 
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(idProvider.get())
-                .append(settings)
-                .append(path)
-                .append(name)
-                .append(currentScene)
-                .append(activeSceneName)
-                .toHashCode();
+    public void setSelectedCamera(int selectedCamera) {
+        this.selectedCamera = selectedCamera;
     }
 }

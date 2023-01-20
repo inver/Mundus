@@ -30,8 +30,6 @@ import com.kotcrab.vis.ui.widget.VisTextButton
 import com.kotcrab.vis.ui.widget.VisTextField
 import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset
-import com.mbrlabs.mundus.commons.scene3d.components.Component
-import com.mbrlabs.mundus.commons.scene3d.components.ModelComponent
 import com.mbrlabs.mundus.editor.assets.AssetMaterialFilter
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
@@ -155,7 +153,7 @@ class MaterialWidget(
                 material?.diffuseColor?.set(newColor)
                 applyMaterialToModelAssets()
                 applyMaterialToModelComponents()
-                assetManager.dirty(material!!)
+//                assetManager.dirty(material!!)
             }
         }
 

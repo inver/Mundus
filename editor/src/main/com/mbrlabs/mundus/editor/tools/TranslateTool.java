@@ -29,7 +29,6 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
@@ -103,11 +102,6 @@ public class TranslateTool extends TransformTool {
     }
 
     @Override
-    public Drawable getIcon() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public String getIconFont() {
         return Fa.Companion.getARROWS();
     }
@@ -137,7 +131,7 @@ public class TranslateTool extends TransformTool {
         if (getCtx().getSelectedEntityId() < 0) {
             return;
         }
-        getBatch().begin(getCtx().getCamera());
+        getBatch().begin(getCtx().getCurrent().getCamera());
         GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
         xHandle.render(batch, environment, shaders, delta);
         yHandle.render(batch, environment, shaders, delta);
@@ -161,7 +155,7 @@ public class TranslateTool extends TransformTool {
 
         var positionComponent = getCtx().getSelectedEntity().getComponent(PositionComponent.class);
         Vector3 rayEnd = positionComponent.getLocalPosition(temp0);
-        float dst = getCtx().getCamera().position.dst(rayEnd);
+        float dst = getCtx().getCurrent().getCamera().position.dst(rayEnd);
         rayEnd = ray.getEndPoint(rayEnd, dst);
 
         if (initTranslate) {
@@ -210,7 +204,7 @@ public class TranslateTool extends TransformTool {
         }
 
         Vector3 pos = getCtx().getSelectedEntity().getComponent(PositionComponent.class).getPosition(temp0);
-        float scaleFactor = getCtx().getCamera().position.dst(pos) * 0.25f;
+        float scaleFactor = getCtx().getCurrent().getCamera().position.dst(pos) * 0.25f;
         xHandle.getScale().set(scaleFactor * 0.7f, scaleFactor / 2, scaleFactor / 2);
         xHandle.applyTransform();
 

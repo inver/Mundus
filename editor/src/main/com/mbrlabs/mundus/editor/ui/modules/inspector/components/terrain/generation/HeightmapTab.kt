@@ -1,19 +1,15 @@
 package com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.generation
 
 import com.badlogic.gdx.files.FileHandle
-import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.kotcrab.vis.ui.widget.tabbedpane.Tab
-import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset
 import com.mbrlabs.mundus.editor.history.Command
-import com.mbrlabs.mundus.editor.history.commands.TerrainHeightCommand
-import com.mbrlabs.mundus.editor.terrain.Terraformer
 import com.mbrlabs.mundus.editor.ui.widgets.FileChooserField
 
-class HeightmapTab(private val terrainAsset: TerrainAsset) : Tab(false, false) {
+class HeightmapTab(private val entityId: Int) : Tab(false, false) {
 
     private val root = VisTable()
 

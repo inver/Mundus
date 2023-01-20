@@ -26,7 +26,6 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
@@ -360,11 +359,6 @@ public class ScaleTool extends TransformTool {
 //
 //        xyzHandle.getScale().set(scaleFactor, scaleFactor, scaleFactor);
 //        xyzHandle.applyTransform();
-    }
-
-    @Override
-    public Drawable getIcon() {
-        return null;
     }
 
     @Override

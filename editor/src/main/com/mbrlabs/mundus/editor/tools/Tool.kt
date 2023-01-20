@@ -18,7 +18,6 @@ package com.mbrlabs.mundus.editor.tools
 
 import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.graphics.g3d.ModelBatch
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Disposable
 import com.mbrlabs.mundus.commons.scene3d.components.Renderable
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
@@ -39,11 +38,9 @@ abstract class Tool(
 //    protected var shader: Shader = shaderStorage.get(ShaderConstants.WIREFRAME)
 
     //    abstract val name: String
-    abstract val icon: Drawable
     abstract val iconFont: String
 
     abstract fun act()
     abstract fun onActivated()
     abstract fun onDisabled()
-
 }

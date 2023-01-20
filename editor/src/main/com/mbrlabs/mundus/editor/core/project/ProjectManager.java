@@ -17,12 +17,11 @@
 package com.mbrlabs.mundus.editor.core.project;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.utils.Disposable;
 import com.mbrlabs.mundus.commons.Scene;
 import com.mbrlabs.mundus.commons.core.ecs.EcsService;
 import com.mbrlabs.mundus.commons.importer.SceneConverter;
-import com.mbrlabs.mundus.commons.scene3d.GameObject;
-import com.mbrlabs.mundus.commons.scene3d.components.Component;
 import com.mbrlabs.mundus.editor.Main;
 import com.mbrlabs.mundus.editor.core.ProjectConstants;
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager;
@@ -41,8 +40,6 @@ import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.mbrlabs.mundus.editor.core.ProjectConstants.*;
 
@@ -89,14 +86,14 @@ public class ProjectManager implements Disposable {
         new File(path, PROJECT_ASSETS_DIR).mkdirs();
         new File(path, PROJECT_SCENES_DIR).mkdirs();
 
-        var ctx = new ProjectContext(-1);
+        var ctx = new ProjectContext(-1, new PerspectiveCamera());
         ctx.path = path;
         ctx.name = ref.getName();
 
         var scene = sceneStorage.createDefault(ctx.path, ctx.obtainID());
         scene.getEnvironment().setSkyboxName(DEFAULT_SKYBOX_NAME);
-        sceneStorage.copyAssetToProject(ctx.path,
-                editorCtx.getAssetLibrary().get(ProjectConstants.DEFAULT_SKYBOX_PATH)
+        sceneStorage.copyAssetToProject(
+                ctx.path, editorCtx.getAssetLibrary().get(ProjectConstants.DEFAULT_SKYBOX_PATH)
         );
         loadSkybox(ctx, scene);
 
@@ -108,7 +105,6 @@ public class ProjectManager implements Disposable {
 //        ctx.getCurrentScene().setEnvironment(newCtx.getCurrentScene().getEnvironment());
 //        ctx.getCurrentScene().getCameras().clear();
 //        ctx.getCurrentScene().getCameras().addAll(newCtx.getCurrentScene().getCameras());
-        log.info("contexts equals: " + ctx.equals(newCtx));
         return ctx;
     }
 
@@ -277,7 +273,7 @@ public class ProjectManager implements Disposable {
         var scene = new Scene(ecsService.createWorld());
 
         //todo preload assets to cache
-        sceneConverter.fillScene(scene, dto, editorCtx.getAssetLibrary());
+        sceneConverter.fillScene(scene, dto);
         loadSkybox(context, scene);
 
         return scene;

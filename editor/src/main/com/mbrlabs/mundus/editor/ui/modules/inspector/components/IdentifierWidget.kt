@@ -49,7 +49,7 @@ class IdentifierWidget(private val ctx: EditorCtx) : VisTable() {
     private fun setupListeners() {
         active.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                if (ctx.selectedEntityId == null) {
+                if (ctx.selectedEntity == null) {
                     return
                 }
 //                ctx.selectedEntityId.isActive = active.isChecked
@@ -58,7 +58,7 @@ class IdentifierWidget(private val ctx: EditorCtx) : VisTable() {
 
         name.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                if (ctx.selectedEntityId == null) {
+                if (ctx.selectedEntity == null) {
                     return
                 }
 //                ctx.selectedEntityId.name = name.text

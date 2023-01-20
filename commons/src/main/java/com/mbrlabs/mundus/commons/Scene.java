@@ -16,12 +16,14 @@
 
 package com.mbrlabs.mundus.commons;
 
+import com.artemis.Aspect;
 import com.artemis.World;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.utils.Disposable;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.core.ecs.behavior.RenderComponentSystem;
+import com.mbrlabs.mundus.commons.core.ecs.component.CameraComponent;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.HierarchyNode;
 import com.mbrlabs.mundus.commons.scene3d.components.Renderable;
@@ -29,10 +31,10 @@ import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -51,8 +53,6 @@ public class Scene implements Disposable, Renderable {
     private SceneEnvironment environment = new SceneEnvironment();
     @Getter
     private final List<Asset<?>> assets = new ArrayList<>();
-    @Getter
-    private final List<Camera> cameras = new ArrayList<>();
 
     @Setter
     @Getter
@@ -85,30 +85,23 @@ public class Scene implements Disposable, Renderable {
     public void dispose() {
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
+    public List<Pair<Camera, Integer>> getCameras() {
+        var entityIds = world.getAspectSubscriptionManager().get(Aspect.all(CameraComponent.class)).getEntities();
+        if (entityIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+        var mapper = world.getMapper(CameraComponent.class);
 
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Scene scene = (Scene) o;
-
-        return new EqualsBuilder().append(id, scene.id)
-                .append(name, scene.name)
-                .append(environment, scene.environment)
-                .append(assets, scene.assets)
-                .append(cameras, scene.cameras)
-                .isEquals();
+        var res = new ArrayList<Pair<Camera, Integer>>();
+        for (int i = 0; i < entityIds.size(); i++) {
+            res.add(Pair.of(mapper.get(entityIds.get(i)).getCamera(), entityIds.get(i)));
+        }
+        return res;
     }
 
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(id)
-                .append(name)
-                .append(environment)
-                .append(assets)
-                .append(cameras)
-                .toHashCode();
+    public Camera getCamera(int cameraId) {
+        var mapper = world.getMapper(CameraComponent.class);
+        return mapper.get(cameraId).getCamera();
     }
+
 }

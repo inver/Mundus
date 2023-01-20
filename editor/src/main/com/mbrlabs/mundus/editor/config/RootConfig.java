@@ -1,9 +1,11 @@
 package com.mbrlabs.mundus.editor.config;
 
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.mbrlabs.mundus.commons.assets.material.MaterialAssetLoader;
 import com.mbrlabs.mundus.commons.assets.meta.MetaService;
 import com.mbrlabs.mundus.commons.assets.model.ModelAssetLoader;
@@ -12,7 +14,8 @@ import com.mbrlabs.mundus.commons.assets.shader.ShaderAssetLoader;
 import com.mbrlabs.mundus.commons.assets.skybox.SkyboxAssetLoader;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAssetLoader;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAssetLoader;
-import com.mbrlabs.mundus.commons.importer.CameraConverter;
+import com.mbrlabs.mundus.commons.importer.CameraDeserializer;
+import com.mbrlabs.mundus.commons.importer.CameraSerializer;
 import com.mbrlabs.mundus.commons.importer.SceneConverter;
 import com.mbrlabs.mundus.commons.loader.ModelImporter;
 import com.mbrlabs.mundus.editor.core.ecs.EditorEcsService;
@@ -40,6 +43,12 @@ public class RootConfig {
         var res = new ObjectMapper();
         res.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         res.configure(ALLOW_NON_NUMERIC_NUMBERS, true);
+
+        var appModule = new SimpleModule();
+        appModule.addSerializer(PerspectiveCamera.class, new CameraSerializer());
+        appModule.addDeserializer(PerspectiveCamera.class, new CameraDeserializer());
+
+        res.registerModule(appModule);
         return res;
     }
 
@@ -115,12 +124,7 @@ public class RootConfig {
     }
 
     @Bean
-    public CameraConverter cameraConverter() {
-        return new CameraConverter();
-    }
-
-    @Bean
     public SceneConverter sceneConverter() {
-        return new SceneConverter(mapper(), cameraConverter());
+        return new SceneConverter(mapper());
     }
 }

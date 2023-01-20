@@ -4,10 +4,14 @@ import com.badlogic.gdx.math.Vector3;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 @Getter
-public class Vector3Dto {
-    private final float x, y, z;
+@NoArgsConstructor
+public class Vector3Dto implements Serializable {
+    private float x, y, z;
 
     public Vector3Dto(float[] floatArray) {
         if (floatArray == null || floatArray.length != 3) {

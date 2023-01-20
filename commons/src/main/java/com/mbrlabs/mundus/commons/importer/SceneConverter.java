@@ -21,7 +21,6 @@ import com.artemis.io.SaveFileFormat;
 import com.artemis.managers.WorldSerializationManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mbrlabs.mundus.commons.Scene;
-import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.dto.SceneDto;
 import com.mbrlabs.mundus.commons.env.lights.AmbientLight;
 import com.mbrlabs.mundus.commons.mapper.BaseLightConverter;
@@ -31,7 +30,6 @@ import lombok.SneakyThrows;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.util.Map;
 
 /**
  * The converter for scene.
@@ -40,7 +38,6 @@ import java.util.Map;
 public class SceneConverter {
 
     private final ObjectMapper mapper;
-    private final CameraConverter cameraConverter;
 
     /**
      * Converts {@link Scene} to {@link SceneDto}.
@@ -65,14 +62,11 @@ public class SceneConverter {
         // getEnvironment() stuff
         dto.setFog(FogConverter.convert(scene.getEnvironment().getFog()));
         dto.setAmbientLight(BaseLightConverter.convert(scene.getEnvironment().getAmbientLight()));
-
-        var cm = scene.getCameras().get(0);
-        dto.setCamera(cameraConverter.fromCamera(cm));
         return dto;
     }
 
     @SneakyThrows
-    public void fillScene(Scene scene, SceneDto dto, Map<String, Asset<?>> assets) {
+    public void fillScene(Scene scene, SceneDto dto) {
         scene.setId(dto.getId());
         scene.setName(dto.getName());
 
@@ -92,9 +86,5 @@ public class SceneConverter {
         if (ambientLight != null) {
             scene.getEnvironment().setAmbientLight(ambientLight);
         }
-
-        var camera = cameraConverter.fromDto(dto.getCamera());
-        camera.update();
-        scene.getCameras().add(camera);
     }
 }

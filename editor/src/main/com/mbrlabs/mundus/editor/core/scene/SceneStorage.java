@@ -62,9 +62,6 @@ public class SceneStorage {
         scene.getEnvironment().setSkyboxName(DEFAULT_SKYBOX_NAME);
         scene.getEnvironment().setFog(new Fog());
         scene.setId(id);
-
-        var defCamera = createDefaultCamera();
-        scene.getCameras().add(defCamera);
         scene.getEnvironment().setAmbientLight(createDefaultAmbientLight());
 
         saveScene(projectPath, scene);

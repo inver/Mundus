@@ -22,8 +22,6 @@ import com.mbrlabs.mundus.commons.scene3d.components.Component;
 import com.mbrlabs.mundus.commons.scene3d.components.Renderable;
 import com.mbrlabs.mundus.commons.scene3d.traversal.DepthFirstIterator;
 import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -40,7 +38,7 @@ public class GameObject extends SimpleNode<GameObject> implements Iterable<GameO
     public String name;
     private boolean active;
     private final List<String> tags = new ArrayList<>();
-    private final List<Component> components = new ArrayList<>();
+//    private final List<Component> components = new ArrayList<>();
 
     public GameObject() {
         this(-1);
@@ -77,18 +75,18 @@ public class GameObject extends SimpleNode<GameObject> implements Iterable<GameO
         }
 
         // copy components
-        for (Component c : gameObject.components) {
-            this.components.add(c.clone(this));
-        }
+//        for (Component c : gameObject.components) {
+//            this.components.add(c.clone(this));
+//        }
         setParent(gameObject.parent);
     }
 
     @Override
     public void render(ModelBatch batch, SceneEnvironment environment, ShaderHolder shaders, float delta) {
         if (active) {
-            for (Component component : this.components) {
-                component.render(batch, environment, shaders, delta);
-            }
+//            for (Component component : this.components) {
+//                component.render(batch, environment, shaders, delta);
+//            }
 
             if (getChildren() != null) {
                 for (GameObject node : getChildren()) {
@@ -105,9 +103,9 @@ public class GameObject extends SimpleNode<GameObject> implements Iterable<GameO
      */
     public void update(float delta) {
         if (active) {
-            for (Component component : this.components) {
-                component.update(delta);
-            }
+//            for (Component component : this.components) {
+//                component.update(delta);
+//            }
 
             if (getChildren() != null) {
                 for (GameObject node : getChildren()) {
@@ -145,18 +143,18 @@ public class GameObject extends SimpleNode<GameObject> implements Iterable<GameO
     public void findComponentsByType(List<Component> out, Component.Type type, boolean includeChildren) {
         if (includeChildren) {
             for (GameObject go : this) {
-                for (Component c : go.components) {
-                    if (c.getType() == type) {
-                        out.add(c);
-                    }
-                }
+//                for (Component c : go.components) {
+//                    if (c.getType() == type) {
+//                        out.add(c);
+//                    }
+//                }
             }
         } else {
-            for (Component c : components) {
-                if (c.getType() == type) {
-                    out.add(c);
-                }
-            }
+//            for (Component c : components) {
+//                if (c.getType() == type) {
+//                    out.add(c);
+//                }
+//            }
         }
     }
 
@@ -167,9 +165,9 @@ public class GameObject extends SimpleNode<GameObject> implements Iterable<GameO
      * @return component if found or null
      */
     public Component findComponentByType(Component.Type type) {
-        for (Component c : components) {
-            if (c.getType() == type) return c;
-        }
+//        for (Component c : components) {
+//            if (c.getType() == type) return c;
+//        }
 
         return null;
     }
@@ -179,18 +177,18 @@ public class GameObject extends SimpleNode<GameObject> implements Iterable<GameO
      *
      * @return components
      */
-    public List<Component> getComponents() {
-        return this.components;
-    }
+//    public List<Component> getComponents() {
+//        return this.components;
+//    }
 
     /**
      * Removes a component.
      *
      * @param component component to remove
      */
-    public void removeComponent(Component component) {
-        components.remove(component);
-    }
+//    public void removeComponent(Component component) {
+//        components.remove(component);
+//    }
 
     /**
      * Adds a component.
@@ -198,45 +196,27 @@ public class GameObject extends SimpleNode<GameObject> implements Iterable<GameO
      * @param component component to add
      * @throws InvalidComponentException
      */
-    public void addComponent(Component component) {
-        isComponentAddable(component);
-        components.add(component);
-    }
-
-    /**
-     * @param component
-     * @throws InvalidComponentException
-     */
-    public void isComponentAddable(Component component) {
-        // check for component of the same type
-        for (Component c : components) {
-            if (c.getType() == component.getType()) {
-                throw new InvalidComponentException(
-                        "One Game object can't have more then 1 component of type " + c.getType());
-            }
-        }
-    }
-
+//    public void addComponent(Component component) {
+//        isComponentAddable(component);
+//        components.add(component);
+//    }
+//
+//    /**
+//     * @param component
+//     * @throws InvalidComponentException
+//     */
+//    public void isComponentAddable(Component component) {
+//        // check for component of the same type
+//        for (Component c : components) {
+//            if (c.getType() == component.getType()) {
+//                throw new InvalidComponentException(
+//                        "One Game object can't have more then 1 component of type " + c.getType());
+//            }
+//        }
+//    }
     @Override
     public Iterator<GameObject> iterator() {
         return new DepthFirstIterator(this);
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-
-        if (o == null || getClass() != o.getClass()) return false;
-
-        GameObject that = (GameObject) o;
-
-        return new EqualsBuilder().append(active, that.active).append(name, that.name).append(tags, that.tags).append(components, that.components).isEquals();
-    }
-
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(name).append(active).append(tags).append(components).toHashCode();
     }
 
     @Override

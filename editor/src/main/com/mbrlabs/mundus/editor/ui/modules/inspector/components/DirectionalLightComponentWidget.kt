@@ -16,21 +16,13 @@
 
 package com.mbrlabs.mundus.editor.ui.modules.inspector.components
 
-import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.scenes.scene2d.Actor
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
-import com.kotcrab.vis.ui.util.FloatDigitsOnlyFilter
 import com.kotcrab.vis.ui.widget.Separator
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextField
-import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter
-import com.mbrlabs.mundus.commons.scene3d.GameObject
-import com.mbrlabs.mundus.commons.scene3d.components.Component
 import com.mbrlabs.mundus.editor.ui.widgets.FloatFieldWithLabel
 import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerField
 import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerPresenter
-import com.mbrlabs.mundus.editor.utils.formatFloat
 
 /**
  * @author Guilherme Nemeth
@@ -38,9 +30,9 @@ import com.mbrlabs.mundus.editor.utils.formatFloat
  */
 class DirectionalLightComponentWidget(
     separatorStyle: Separator.SeparatorStyle,
-    dirLightComponent: DirectionalLightComponent,
+    entityId: Int,
     colorPickerPresenter: ColorPickerPresenter
-) : ComponentWidget<DirectionalLightComponent>(separatorStyle, "Directional Light Component", dirLightComponent) {
+) : ComponentWidget(separatorStyle, "Directional Light Component", entityId) {
 
     private val FIELD_SIZE = 65
     private val dirX = FloatFieldWithLabel("x", FIELD_SIZE)
@@ -52,8 +44,6 @@ class DirectionalLightComponentWidget(
 
     init {
         colorPickerPresenter.init(colorField)
-
-        this.component = dirLightComponent
         setupUI()
         setupListeners()
     }
@@ -75,36 +65,36 @@ class DirectionalLightComponentWidget(
     }
 
     private fun setupListeners() {
-        dirX.addListener(object : ChangeListener() {
-            override fun changed(event: ChangeEvent?, actor: Actor?) {
-                component.directionalLight.direction.x = dirX.float
-            }
-        })
-        dirY.addListener(object : ChangeListener() {
-            override fun changed(event: ChangeEvent?, actor: Actor?) {
-                component.directionalLight.direction.y = dirY.float
-            }
-        })
-        dirZ.addListener(object : ChangeListener() {
-            override fun changed(event: ChangeEvent?, actor: Actor?) {
-                component.directionalLight.direction.z = dirZ.float
-            }
-        })
-
-        colorField.colorAdapter = object : ColorPickerAdapter() {
-            override fun finished(newColor: Color) {
-                component.directionalLight.color.set(newColor)
-            }
-        }
-
-        intensityField.textFieldFilter = FloatDigitsOnlyFilter(false)
-        intensityField.addListener(object : ChangeListener() {
-            override fun changed(event: ChangeEvent?, actor: Actor?) {
-                if (!intensityField.isEmpty && intensityField.isInputValid) {
-                    component.directionalLight.intensity = intensityField.text.toFloat()
-                }
-            }
-        })
+//        dirX.addListener(object : ChangeListener() {
+//            override fun changed(event: ChangeEvent?, actor: Actor?) {
+//                component.directionalLight.direction.x = dirX.float
+//            }
+//        })
+//        dirY.addListener(object : ChangeListener() {
+//            override fun changed(event: ChangeEvent?, actor: Actor?) {
+//                component.directionalLight.direction.y = dirY.float
+//            }
+//        })
+//        dirZ.addListener(object : ChangeListener() {
+//            override fun changed(event: ChangeEvent?, actor: Actor?) {
+//                component.directionalLight.direction.z = dirZ.float
+//            }
+//        })
+//
+//        colorField.colorAdapter = object : ColorPickerAdapter() {
+//            override fun finished(newColor: Color) {
+//                component.directionalLight.color.set(newColor)
+//            }
+//        }
+//
+//        intensityField.textFieldFilter = FloatDigitsOnlyFilter(false)
+//        intensityField.addListener(object : ChangeListener() {
+//            override fun changed(event: ChangeEvent?, actor: Actor?) {
+//                if (!intensityField.isEmpty && intensityField.isInputValid) {
+//                    component.directionalLight.intensity = intensityField.text.toFloat()
+//                }
+//            }
+//        })
     }
 
     override fun setValues(entityId: Int) {

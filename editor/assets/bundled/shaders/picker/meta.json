@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "lastModified": 1663444124794,
+  "type": "SHADER",
+  "additional": {
+    "vertex": "picker.vert.glsl",
+    "fragment": "picker.frag.glsl"
+  }
+}

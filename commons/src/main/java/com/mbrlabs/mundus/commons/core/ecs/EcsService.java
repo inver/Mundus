@@ -5,13 +5,12 @@ import com.artemis.WorldConfigurationBuilder;
 import com.artemis.io.JsonArtemisSerializer;
 import com.artemis.link.EntityLinkManager;
 import com.artemis.managers.WorldSerializationManager;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.esotericsoftware.jsonbeans.JsonSerializer;
 import com.mbrlabs.mundus.commons.assets.AssetManager;
-import com.mbrlabs.mundus.commons.core.ecs.behavior.LookAtSystem;
-import com.mbrlabs.mundus.commons.core.ecs.behavior.RenderComponentSystem;
-import com.mbrlabs.mundus.commons.core.ecs.behavior.SynchronizeRenderComponentSystem;
-import com.mbrlabs.mundus.commons.core.ecs.behavior.SynchronizeRenderPoint2PointSystem;
+import com.mbrlabs.mundus.commons.core.ecs.behavior.*;
 import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObjectDelegate;
+import com.mbrlabs.mundus.commons.core.ecs.serialization.PerspectiveCameraSerializer;
 import com.mbrlabs.mundus.commons.core.ecs.serialization.RenderableObjectDelegateSerializer;
 import com.mbrlabs.mundus.commons.core.ecs.serialization.RenderableObjectSerializer;
 import com.mbrlabs.mundus.commons.model.ModelObject;
@@ -39,6 +38,7 @@ public class EcsService {
                 .with(new EntityLinkManager())
                 .with(new LookAtSystem())
                 .with(new SynchronizeRenderComponentSystem())
+                .with(new SynchronizeCameraComponentSystem())
                 .with(new SynchronizeRenderPoint2PointSystem())
                 .with(new RenderComponentSystem())
                 .build();
@@ -56,7 +56,8 @@ public class EcsService {
                         assetManager, terrainService, modelService
                 )),
                 Pair.of(TerrainObject.class, new RenderableObjectSerializer()),
-                Pair.of(ModelObject.class, new RenderableObjectSerializer())
+                Pair.of(ModelObject.class, new RenderableObjectSerializer()),
+                Pair.of(PerspectiveCamera.class, new PerspectiveCameraSerializer())
         );
     }
 }

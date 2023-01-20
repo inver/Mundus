@@ -48,7 +48,7 @@ public abstract class AbstractComponent implements Component {
 
     @Override
     public void remove() {
-        gameObject.removeComponent(this);
+//        gameObject.removeComponent(this);
     }
 
     @Override

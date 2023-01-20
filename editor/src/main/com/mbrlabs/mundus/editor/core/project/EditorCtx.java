@@ -2,13 +2,10 @@ package com.mbrlabs.mundus.editor.core.project;
 
 import com.artemis.Entity;
 import com.artemis.World;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mbrlabs.mundus.commons.assets.Asset;
-import org.springframework.util.CollectionUtils;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +13,7 @@ import java.util.Map;
 /**
  * Used as singleton current state of editor
  */
+@Slf4j
 public class EditorCtx implements Disposable {
 
     private ProjectContext current;
@@ -24,21 +22,21 @@ public class EditorCtx implements Disposable {
 
     private int selectedEntityId = -1;
 
-    private final Camera mainCamera = new PerspectiveCamera();
-    private Camera selectedCamera = null;
-
     public EditorCtx() {
-        mainCamera.near = 0.2f;
-        mainCamera.far = 10000;
-        mainCamera.rotateAround(Vector3.Zero, Vector3.X, -30);
-        mainCamera.rotateAround(Vector3.Zero, Vector3.Y, 45);
-
-        var tmp = new Vector3();
-        tmp.set(mainCamera.direction).nor().scl(-30);
-        mainCamera.position.add(tmp);
+//        mainCamera.near = 0.2f;
+//        mainCamera.far = 10000;
+//        mainCamera.rotateAround(Vector3.Zero, Vector3.X, -30);
+//        mainCamera.rotateAround(Vector3.Zero, Vector3.Y, 45);
+//
+//        var tmp = new Vector3();
+//        tmp.set(mainCamera.direction).nor().scl(-30);
+//        mainCamera.position.add(tmp);
     }
 
     public Entity getSelectedEntity() {
+        if (selectedEntityId < 0) {
+            return null;
+        }
         return current.getCurrentScene().getWorld().getEntity(selectedEntityId);
     }
 
@@ -46,7 +44,7 @@ public class EditorCtx implements Disposable {
         return selectedEntityId;
     }
 
-    public void setSelectedEntityId(int selectedEntityId) {
+    public void selectEntity(int selectedEntityId) {
         this.selectedEntityId = selectedEntityId;
     }
 
@@ -56,18 +54,6 @@ public class EditorCtx implements Disposable {
 
     public void setCurrent(ProjectContext current) {
         this.current = current;
-    }
-
-    public Camera getCamera() {
-        if (selectedCamera == null) {
-            return mainCamera;
-        }
-
-        if (current == null || current.getCurrentScene() == null
-                || CollectionUtils.isEmpty(current.getCurrentScene().getCameras())) {
-            return null;
-        }
-        return current.getCurrentScene().getCameras().get(0);
     }
 
     public Viewport getViewport() {
@@ -92,3 +78,4 @@ public class EditorCtx implements Disposable {
         return getCurrent().getCurrentScene().getWorld();
     }
 }
+

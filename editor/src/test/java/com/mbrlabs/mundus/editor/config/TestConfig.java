@@ -1,13 +1,16 @@
 package com.mbrlabs.mundus.editor.config;
 
-import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.mbrlabs.mundus.commons.assets.shader.ShaderAssetLoader;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAssetLoader;
-import com.mbrlabs.mundus.commons.importer.CameraConverter;
+import com.mbrlabs.mundus.commons.importer.CameraDeserializer;
+import com.mbrlabs.mundus.commons.importer.CameraSerializer;
 import com.mbrlabs.mundus.commons.importer.SceneConverter;
 import com.mbrlabs.mundus.editor.core.assets.*;
 import com.mbrlabs.mundus.editor.core.ecs.EditorEcsService;
@@ -28,6 +31,7 @@ import org.springframework.context.annotation.Import;
 import java.io.File;
 import java.util.UUID;
 
+import static com.fasterxml.jackson.core.JsonParser.Feature.ALLOW_NON_NUMERIC_NUMBERS;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -64,7 +68,16 @@ public class TestConfig {
 
     @Bean
     public ObjectMapper mapper() {
-        return new ObjectMapper();
+        var res = new ObjectMapper();
+        res.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        res.configure(ALLOW_NON_NUMERIC_NUMBERS, true);
+
+        var appModule = new SimpleModule();
+        appModule.addSerializer(PerspectiveCamera.class, new CameraSerializer());
+        appModule.addDeserializer(PerspectiveCamera.class, new CameraDeserializer());
+
+        res.registerModule(appModule);
+        return res;
     }
 
     @Bean
@@ -90,22 +103,12 @@ public class TestConfig {
 
     @Bean
     public AssetsStorage assetsStorage() {
-        return new AssetsStorage(assetWriter, shaderAssetLoader(), editorCtx) {
-            @Override
-            public FileHandle loadAssetFile(String path) {
-                return new FileHandle(path);
-            }
-        };
-    }
-
-    @Bean
-    public CameraConverter cameraConverter() {
-        return new CameraConverter();
+        return new AssetsStorage(assetWriter, shaderAssetLoader(), editorCtx);
     }
 
     @Bean
     public SceneConverter sceneConverter() {
-        return new SceneConverter(mapper(), cameraConverter());
+        return new SceneConverter(mapper());
     }
 
     @Bean

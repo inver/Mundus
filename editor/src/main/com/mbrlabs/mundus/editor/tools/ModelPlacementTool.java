@@ -21,7 +21,6 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
@@ -70,11 +69,6 @@ public class ModelPlacementTool extends Tool {
     }
 
     @Override
-    public Drawable getIcon() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public String getIconFont() {
         throw new UnsupportedOperationException();
     }
@@ -90,7 +84,7 @@ public class ModelPlacementTool extends Tool {
     @Override
     public void render(ModelBatch batch, SceneEnvironment environment, ShaderHolder shaders, float delta) {
         if (modelInstance != null) {
-            batch.begin(getCtx().getCamera());
+            batch.begin(getCtx().getCurrent().getCamera());
             batch.render(modelInstance, environment, shaders.get(getShaderKey()));
             batch.end();
         }
@@ -118,7 +112,7 @@ public class ModelPlacementTool extends Tool {
             modelComponent.encodeRayPickColorId();
 
             try {
-                modelGo.addComponent(modelComponent);
+//                modelGo.addComponent(modelComponent);
             } catch (InvalidComponentException e) {
                 Dialogs.showErrorDialog(appUi, e.getMessage());
                 return false;

@@ -14,5 +14,5 @@ import lombok.Setter;
 public class HierarchyComponent extends Component {
     private String name;
     @EntityId
-    private int entityId;
+    private int parentId;
 }

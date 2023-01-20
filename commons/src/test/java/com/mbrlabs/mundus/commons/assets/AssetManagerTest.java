@@ -17,7 +17,6 @@ import com.mbrlabs.mundus.commons.assets.skybox.SkyboxAssetLoader;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAssetLoader;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAssetLoader;
-import com.mbrlabs.mundus.commons.loader.ModelImporter;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +33,7 @@ public class AssetManagerTest {
     protected final TerrainAssetLoader terrainService = new TerrainAssetLoader();
     protected final MaterialAssetLoader materialService = new MaterialAssetLoader();
     protected final PixmapTextureAssetLoader pixmapTextureService = new PixmapTextureAssetLoader();
-    protected final ModelAssetLoader modelService = new ModelAssetLoader(new ModelImporter());
+    protected final ModelAssetLoader modelService = new ModelAssetLoader();
     protected final ShaderAssetLoader shaderAssetLoader = new ShaderAssetLoader();
     protected final SkyboxAssetLoader skyboxAssetLoader = new SkyboxAssetLoader();
 
