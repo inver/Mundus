@@ -18,7 +18,7 @@ import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAssetLoader;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAssetLoader;
-import com.mbrlabs.mundus.commons.model.ModelFiles;
+import com.mbrlabs.mundus.commons.model.ImportedModel;
 import com.mbrlabs.mundus.commons.utils.FileUtils;
 import com.mbrlabs.mundus.editor.core.ProjectConstants;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
@@ -144,7 +144,7 @@ public class EditorAssetManager extends AssetManager {
         return null;
     }
 
-    public ModelAsset createModelAsset(ModelFiles model) {
+    public ModelAsset createModelAsset(ImportedModel model) {
 //        var meta = createMetaFileFromAsset(model.getMain(), AssetType.MODEL);
 //
 //        // copy model file

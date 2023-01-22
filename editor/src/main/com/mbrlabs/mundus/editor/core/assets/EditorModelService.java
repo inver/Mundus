@@ -10,7 +10,7 @@ import com.mbrlabs.mundus.commons.core.ecs.base.RenderComponent;
 import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
 import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObjectDelegate;
 import com.mbrlabs.mundus.commons.loader.ModelImporter;
-import com.mbrlabs.mundus.commons.model.ModelFiles;
+import com.mbrlabs.mundus.commons.model.ImportedModel;
 import com.mbrlabs.mundus.commons.model.ModelService;
 import com.mbrlabs.mundus.commons.scene3d.HierarchyNode;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
@@ -35,7 +35,7 @@ public class EditorModelService extends ModelService {
     private final GLTFExporter gltfExporter = new GLTFExporter();
 
     @SneakyThrows
-    public ModelAsset importAndSaveAsset(ModelFiles modelFiles) {
+    public ModelAsset importAndSaveAsset(ImportedModel importedModel) {
         var meta = new Meta<ModelMeta>();
 
         var folderName = "model_" + meta.getUuid();
@@ -54,7 +54,7 @@ public class EditorModelService extends ModelService {
         meta.setFile(assetFolder);
         metaService.save(meta);
 
-        var model = modelImporter.loadModel(modelFiles.getMain());
+        var model = modelImporter.loadModel(importedModel.getMain());
         gltfExporter.export(model, assetFolder.child(modelFileName));
         //todo remove binary file if it needed
 
@@ -62,13 +62,13 @@ public class EditorModelService extends ModelService {
         return res;
     }
 
-    public HierarchyNode createTerrainEntity(ModelFiles modelFiles) {
+    public HierarchyNode createTerrainEntity(ImportedModel importedModel) {
         var world = ctx.getCurrentWorld();
 
         var id = world.create();
         var name = "Model " + id;
 
-        var asset = importAndSaveAsset(modelFiles);
+        var asset = importAndSaveAsset(importedModel);
 
         var terrain = createFromAsset(asset);
 

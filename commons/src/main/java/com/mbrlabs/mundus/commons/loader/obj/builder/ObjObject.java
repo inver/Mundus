@@ -23,7 +23,7 @@ public class ObjObject implements BuilderInterface {
     // triplets, each index referring to a vertex within ONE of the three arraylists verticesG,  verticesT
     // or verticesN, two faces might end up specifying the same combination.  Clearly (@TODO: really?) this 
     // combination should be shared between both faces. 
-    Map<String, FaceVertex> faceVerticeMap = new HashMap<>();
+    private final Map<String, FaceVertex> faceVerticeMap = new HashMap<>();
     // Each face vertex as it is parsed, minus the redundant face vertices.  @TODO: Not used anywhere yet, maybe get rid of this.
     public List<FaceVertex> faceVerticeList = new ArrayList<>();
     public List<Face> faces = new ArrayList<>();

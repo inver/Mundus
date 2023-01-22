@@ -351,7 +351,7 @@ public class ObjParser {
     // 	in a single file.
     // 
     // All grouping statements are state-setting.  This means that once a
-    // group statement is set, it alpplies to all elements that follow
+    // group statement is set, it applies to all elements that follow
     // until the next group statement.
     // 
     // This portion of a sample file shows a single element which belongs to

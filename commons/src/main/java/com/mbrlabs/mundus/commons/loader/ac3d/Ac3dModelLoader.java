@@ -3,11 +3,12 @@ package com.mbrlabs.mundus.commons.loader.ac3d;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.ModelLoader;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
 import com.mbrlabs.mundus.commons.core.AppModelLoader;
 import com.mbrlabs.mundus.commons.loader.ac3d.dto.Ac3dModel;
 import com.mbrlabs.mundus.commons.loader.ac3d.dto.Ac3dObject;
-import com.mbrlabs.mundus.commons.model.ModelFiles;
+import com.mbrlabs.mundus.commons.model.ImportedModel;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -46,13 +47,14 @@ public class Ac3dModelLoader extends ModelLoader<ModelLoader.ModelParameters> im
     }
 
     @Override
-    public ModelFiles getFileWithDependencies(FileHandle handle) {
+    public ImportedModel importModel(FileHandle handle) {
         var model = load(handle);
         if (model == null) {
             return null;
         }
 
-        var res = new ModelFiles(handle);
+        var converted = converter.convert(model);
+        var res = new ImportedModel(new Model(converted), handle);
         if (CollectionUtils.isNotEmpty(model.getObjects())) {
             model.getObjects().forEach(obj -> getDependencies(handle, obj, res.getDependencies()));
         }

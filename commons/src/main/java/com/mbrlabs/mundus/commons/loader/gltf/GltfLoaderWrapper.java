@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
 import com.badlogic.gdx.utils.Json;
 import com.mbrlabs.mundus.commons.core.AppModelLoader;
-import com.mbrlabs.mundus.commons.model.ModelFiles;
+import com.mbrlabs.mundus.commons.model.ImportedModel;
 import net.mgsx.gltf.data.GLTF;
 import net.mgsx.gltf.loaders.gltf.GLTFLoader;
 import org.apache.commons.lang3.NotImplementedException;
@@ -21,8 +21,9 @@ public class GltfLoaderWrapper extends ModelLoader<ModelLoader.ModelParameters> 
     }
 
     @Override
-    public ModelFiles getFileWithDependencies(FileHandle file) {
-        var res = new ModelFiles(file);
+    public ImportedModel importModel(FileHandle file) {
+        var model = loader.load(file);
+        var res = new ImportedModel(model.scene.model, file);
 
         var dto = json.fromJson(GLTF.class, file);
         dto.images.forEach(i -> {

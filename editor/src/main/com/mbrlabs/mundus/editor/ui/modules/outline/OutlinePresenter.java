@@ -212,7 +212,7 @@ public class OutlinePresenter {
                 // the new game object
                 var go = new GameObject(GameObject.DEFAULT_NAME, ctx.getCurrent().obtainID());
                 // update outline
-                var selectedGO = outline.getRightClickMenu().getSelectedGO();
+                var selectedGO = outline.getRightClickMenu().getSelectedEntityId();
                 if (selectedGO == -1) {
                     // update sceneGraph
                     log.trace("Add empty game object [{}] in root node.", go);

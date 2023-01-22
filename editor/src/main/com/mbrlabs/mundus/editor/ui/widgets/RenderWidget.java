@@ -67,7 +67,9 @@ public class RenderWidget extends Widget {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        if (renderer == null || cam == null) return;
+        if (renderer == null || cam == null) {
+            return;
+        }
 
         // render part of the ui & pause rest
         batch.end();

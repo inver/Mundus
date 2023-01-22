@@ -14,12 +14,11 @@ import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.math.collision.BoundingBox
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Disposable
-import com.badlogic.gdx.utils.GdxRuntimeException
 import com.kotcrab.vis.ui.util.dialog.Dialogs
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
-import com.mbrlabs.mundus.commons.model.ModelFiles
+import com.mbrlabs.mundus.commons.model.ImportedModel
 import com.mbrlabs.mundus.editor.ui.widgets.FileChooserField
 import com.mbrlabs.mundus.editor.ui.widgets.RenderWidget
 import com.mbrlabs.mundus.editor.ui.widgets.presenter.FileChooserFieldPresenter
@@ -38,7 +37,7 @@ class ImportModelWidget(
 
     val importBtn = VisTextButton("Import")
 
-    var importedModel: ModelFiles? = null
+    var importedModel: ImportedModel? = null
     private var modelBatch: ModelBatch? = null
     var previewInstance: ModelInstance? = null
 
@@ -95,14 +94,8 @@ class ImportModelWidget(
                     Dialogs.showErrorDialog(stage, "Import error\nPlease make sure you specified the right files")
                     return@setCallback
                 }
-
-                try {
-                    val model = importModelPresenter.loadModel(importedModel!!)
-                    previewInstance = ModelInstance(model)
-                    showPreview()
-                } catch (e: GdxRuntimeException) {
-                    Dialogs.showErrorDialog(stage, e.message)
-                }
+                previewInstance = ModelInstance(importedModel?.model)
+                showPreview()
             }
         }
     }

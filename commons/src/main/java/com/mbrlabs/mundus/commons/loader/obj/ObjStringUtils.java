@@ -1,6 +1,7 @@
 package com.mbrlabs.mundus.commons.loader.obj;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,7 @@ public class ObjStringUtils {
     // ----------------------------------------------------------------------
     // String parsing stuff
     // ----------------------------------------------------------------------
-    public static void printErrMsg(String methodName, String errorMsg, int mCount, char message[]) {
+    public static void printErrMsg(String methodName, String errorMsg, int mCount, char[] message) {
         log.error(methodName + ": " + errorMsg);
         String msg1 = "ERROR: " + methodName + ": msg=\\";
         String msg2 = "ERROR: " + methodName + ":      ";
@@ -30,7 +31,7 @@ public class ObjStringUtils {
     // if errMsg != null, then we test if we've run past end of message
     // and if so, printErrMsg(errMsg), and return -1.  If no error then
     // we return the mCount indexing the next non-whitespace char.
-    public static int skipWhiteSpace(int mCount, char messageChars[], String errMsg) {
+    public static int skipWhiteSpace(int mCount, char[] messageChars, String errMsg) {
         //Skip whitespace
         while (mCount < messageChars.length) {
             if (messageChars[mCount] == ' ' || messageChars[mCount] == '\n' || messageChars[mCount] == '\t') {
@@ -49,10 +50,7 @@ public class ObjStringUtils {
     }
 
     public static float[] parseFloatList(int numFloats, String list, int startIndex) {
-        if (list == null) {
-            return null;
-        }
-        if (list.equals("")) {
+        if (StringUtils.isBlank(list)) {
             return null;
         }
 
@@ -60,7 +58,7 @@ public class ObjStringUtils {
         int returnArrayCount = 0;
 
         // Copy list into a char array.
-        char listChars[];
+        char[] listChars;
         listChars = new char[list.length()];
         list.getChars(0, list.length(), listChars, 0);
         int listLength = listChars.length;

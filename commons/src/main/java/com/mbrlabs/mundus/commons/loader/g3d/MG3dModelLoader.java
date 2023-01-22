@@ -29,7 +29,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.*;
 import com.mbrlabs.mundus.commons.core.AppModelLoader;
-import com.mbrlabs.mundus.commons.model.ModelFiles;
+import com.mbrlabs.mundus.commons.model.ImportedModel;
 
 /**
  * This is a modified version of the libGDX MG3dModelLoader.
@@ -462,7 +462,7 @@ public class MG3dModelLoader extends ModelLoader<ModelLoader.ModelParameters> im
 
                     JsonValue scalingKF = node.get("scaling");
                     if (scalingKF != null && scalingKF.isArray()) {
-                        nodeAnim.scaling = new Array<ModelNodeKeyframe<Vector3>>();
+                        nodeAnim.scaling = new Array<>();
                         nodeAnim.scaling.ensureCapacity(scalingKF.size);
                         for (JsonValue keyframe = scalingKF.child; keyframe != null; keyframe = keyframe.next) {
                             ModelNodeKeyframe<Vector3> kf = new ModelNodeKeyframe<Vector3>();
@@ -479,7 +479,7 @@ public class MG3dModelLoader extends ModelLoader<ModelLoader.ModelParameters> im
     }
 
     @Override
-    public ModelFiles getFileWithDependencies(FileHandle handle) {
-        return new ModelFiles(handle);
+    public ImportedModel importModel(FileHandle handle) {
+        return new ImportedModel(loadModel(handle), handle);
     }
 }
