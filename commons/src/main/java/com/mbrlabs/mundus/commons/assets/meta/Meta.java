@@ -18,13 +18,78 @@ package com.mbrlabs.mundus.commons.assets.meta;
 
 
 import com.badlogic.gdx.files.FileHandle;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mbrlabs.mundus.commons.assets.AssetType;
+import lombok.Getter;
+import lombok.Setter;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
+import java.util.UUID;
 
 /**
  * @author Marcus Brummer
  * @version 26-10-2016
  */
-public class Meta {
+@Getter
+@Setter
+public class Meta<M> {
+    private int version = 1;
+    private long lastModified = System.currentTimeMillis();
+    private String uuid = UUID.randomUUID().toString();
+    private AssetType type;
+    private M additional;
+
+    // Path of meta file
+    @JsonIgnore
+    private FileHandle file;
+
+    public Meta withFile(FileHandle file) {
+        this.file = file;
+        return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Meta<?> meta = (Meta<?>) o;
+
+        return new EqualsBuilder()
+                .append(version, meta.version)
+                .append(lastModified, meta.lastModified)
+//                .append(uuid, meta.uuid)
+                .append(type, meta.type)
+                .append(additional, meta.additional)
+                .append(file, meta.file)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(version)
+                .append(lastModified)
+//                .append(uuid)
+                .append(type)
+                .append(additional)
+                .append(file)
+                .toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Meta{" +
+                "version=" + version +
+                ", lastModified=" + lastModified +
+                ", uuid='" + uuid + '\'' +
+                ", type=" + type +
+                ", file=" + file +
+                '}';
+    }
+
 
     public static final String META_EXTENSION = "meta";
     public static final int CURRENT_VERSION = 1;
@@ -36,99 +101,4 @@ public class Meta {
     public static final String JSON_TERRAIN = "ter";
     public static final String JSON_MODEL = "mdl";
 
-    private int version;
-    private long lastModified;
-    private String uuid;
-    private AssetType type;
-
-    private MetaModel model;
-    private MetaTerrain terrain;
-
-    private final FileHandle file;
-
-    public Meta(FileHandle file) {
-        this.file = file;
-    }
-
-    public FileHandle getFile() {
-        return file;
-    }
-
-    public int getVersion() {
-        return version;
-    }
-
-    public void setVersion(int version) {
-        this.version = version;
-    }
-
-    public long getLastModified() {
-        return lastModified;
-    }
-
-    public void setLastModified(long lastModified) {
-        this.lastModified = lastModified;
-    }
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
-
-    public AssetType getType() {
-        return type;
-    }
-
-    public void setType(AssetType type) {
-        this.type = type;
-    }
-
-    public MetaModel getModel() {
-        return model;
-    }
-
-    public void setModel(MetaModel model) {
-        this.model = model;
-    }
-
-    public MetaTerrain getTerrain() {
-        return terrain;
-    }
-
-    public void setTerrain(MetaTerrain terrain) {
-        this.terrain = terrain;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Meta meta = (Meta) o;
-
-        return uuid.equals(meta.uuid) && file.equals(meta.file);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = uuid.hashCode();
-        result = 31 * result + file.hashCode();
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "Meta{" +
-                "version=" + version +
-                ", lastModified=" + lastModified +
-                ", uuid='" + uuid + '\'' +
-                ", type=" + type +
-                ", model=" + model +
-                ", terrain=" + terrain +
-                ", file=" + file +
-                '}';
-    }
 }

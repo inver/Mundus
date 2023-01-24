@@ -16,22 +16,13 @@
 
 package com.mbrlabs.mundus.editor.ui.modules.inspector.components
 
-import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.scenes.scene2d.Actor
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
-import com.kotcrab.vis.ui.util.FloatDigitsOnlyFilter
 import com.kotcrab.vis.ui.widget.Separator
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextField
-import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter
-import com.mbrlabs.mundus.commons.scene3d.GameObject
-import com.mbrlabs.mundus.commons.scene3d.components.Component
-import com.mbrlabs.mundus.editor.config.UiWidgetsHolder
-import com.mbrlabs.mundus.editor.ui.AppUi
-import com.mbrlabs.mundus.editor.ui.widgets.ColorPickerField
 import com.mbrlabs.mundus.editor.ui.widgets.FloatFieldWithLabel
-import com.mbrlabs.mundus.editor.utils.formatFloat
+import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerField
+import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerPresenter
 
 /**
  * @author Guilherme Nemeth
@@ -39,21 +30,20 @@ import com.mbrlabs.mundus.editor.utils.formatFloat
  */
 class DirectionalLightComponentWidget(
     separatorStyle: Separator.SeparatorStyle,
-    dirLightComponent: DirectionalLightComponent,
-    uiWidgetsHolder: UiWidgetsHolder,
-    appUi: AppUi
-) : ComponentWidget<DirectionalLightComponent>(separatorStyle, "Directional Light Component", dirLightComponent) {
+    entityId: Int,
+    colorPickerPresenter: ColorPickerPresenter
+) : ComponentWidget(separatorStyle, "Directional Light Component", entityId) {
 
     private val FIELD_SIZE = 65
     private val dirX = FloatFieldWithLabel("x", FIELD_SIZE)
     private val dirY = FloatFieldWithLabel("y", FIELD_SIZE)
     private val dirZ = FloatFieldWithLabel("z", FIELD_SIZE)
 
-    private val colorField: ColorPickerField = ColorPickerField(uiWidgetsHolder.colorPicker, appUi)
+    val colorField: ColorPickerField = ColorPickerField()
     private val intensityField: VisTextField = VisTextField()
 
     init {
-        this.component = dirLightComponent
+        colorPickerPresenter.init(colorField)
         setupUI()
         setupListeners()
     }
@@ -75,50 +65,50 @@ class DirectionalLightComponentWidget(
     }
 
     private fun setupListeners() {
-        dirX.addListener(object : ChangeListener() {
-            override fun changed(event: ChangeEvent?, actor: Actor?) {
-                component.directionalLight.direction.x = dirX.float
-            }
-        })
-        dirY.addListener(object : ChangeListener() {
-            override fun changed(event: ChangeEvent?, actor: Actor?) {
-                component.directionalLight.direction.y = dirY.float
-            }
-        })
-        dirZ.addListener(object : ChangeListener() {
-            override fun changed(event: ChangeEvent?, actor: Actor?) {
-                component.directionalLight.direction.z = dirZ.float
-            }
-        })
-
-        colorField.colorAdapter = object : ColorPickerAdapter() {
-            override fun finished(newColor: Color) {
-                component.directionalLight.color.set(newColor)
-            }
-        }
-
-        intensityField.textFieldFilter = FloatDigitsOnlyFilter(false)
-        intensityField.addListener(object : ChangeListener() {
-            override fun changed(event: ChangeEvent?, actor: Actor?) {
-                if (!intensityField.isEmpty && intensityField.isInputValid) {
-                    component.directionalLight.intensity = intensityField.text.toFloat()
-                }
-            }
-        })
+//        dirX.addListener(object : ChangeListener() {
+//            override fun changed(event: ChangeEvent?, actor: Actor?) {
+//                component.directionalLight.direction.x = dirX.float
+//            }
+//        })
+//        dirY.addListener(object : ChangeListener() {
+//            override fun changed(event: ChangeEvent?, actor: Actor?) {
+//                component.directionalLight.direction.y = dirY.float
+//            }
+//        })
+//        dirZ.addListener(object : ChangeListener() {
+//            override fun changed(event: ChangeEvent?, actor: Actor?) {
+//                component.directionalLight.direction.z = dirZ.float
+//            }
+//        })
+//
+//        colorField.colorAdapter = object : ColorPickerAdapter() {
+//            override fun finished(newColor: Color) {
+//                component.directionalLight.color.set(newColor)
+//            }
+//        }
+//
+//        intensityField.textFieldFilter = FloatDigitsOnlyFilter(false)
+//        intensityField.addListener(object : ChangeListener() {
+//            override fun changed(event: ChangeEvent?, actor: Actor?) {
+//                if (!intensityField.isEmpty && intensityField.isInputValid) {
+//                    component.directionalLight.intensity = intensityField.text.toFloat()
+//                }
+//            }
+//        })
     }
 
-    override fun setValues(go: GameObject) {
-        val c = go.findComponentByType(Component.Type.LIGHT)
-        if (c != null) {
-            component = c as DirectionalLightComponent
-            val light = component.directionalLight
-
-            dirX.text = formatFloat(light.direction.x, 2)
-            dirY.text = formatFloat(light.direction.y, 2)
-            dirZ.text = formatFloat(light.direction.z, 2)
-
-            colorField.selectedColor = light.color
-            intensityField.text = light.intensity.toString()
-        }
+    override fun setValues(entityId: Int) {
+//        val c = go.findComponentByType(Component.Type.LIGHT)
+//        if (c != null) {
+//            component = c as DirectionalLightComponent
+//            val light = component.directionalLight
+//
+//            dirX.text = formatFloat(light.direction.x, 2)
+//            dirY.text = formatFloat(light.direction.y, 2)
+//            dirZ.text = formatFloat(light.direction.z, 2)
+//
+//            colorField.selectedColor = light.color
+//            intensityField.text = light.intensity.toString()
+//        }
     }
 }

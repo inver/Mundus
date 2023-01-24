@@ -15,39 +15,34 @@
  */
 package com.mbrlabs.mundus.commons.assets.model;
 
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.UBJsonReader;
+import com.badlogic.gdx.graphics.g3d.Renderable;
+import com.badlogic.gdx.graphics.g3d.RenderableProvider;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pool;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset;
 import com.mbrlabs.mundus.commons.assets.meta.Meta;
-import com.mbrlabs.mundus.commons.loader.ac3d.Ac3dModelLoader;
-import com.mbrlabs.mundus.commons.loader.ac3d.Ac3dParser;
-import com.mbrlabs.mundus.commons.loader.g3d.MG3dModelLoader;
-import com.mbrlabs.mundus.commons.loader.gltf.GltfLoaderWrapper;
-import com.mbrlabs.mundus.commons.loader.obj.ObjModelLoader;
-import com.mbrlabs.mundus.commons.utils.FileFormatUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Slf4j
+
 /**
  * @author Marcus Brummer
  * @version 01-10-2016
  */
-public class ModelAsset extends Asset {
+@Slf4j
+public class ModelAsset extends Asset<ModelMeta> implements RenderableProvider {
 
     private Model model;
-    private final Map<String, MaterialAsset> defaultMaterials;
+    private final Map<String, MaterialAsset> defaultMaterials = new HashMap<>();
 
-    public ModelAsset(Meta meta, FileHandle assetFile) {
-        super(meta, assetFile);
-        defaultMaterials = new HashMap<>();
+    public ModelAsset(Meta<ModelMeta> meta) {
+        super(meta);
     }
 
     public Model getModel() {
@@ -61,35 +56,35 @@ public class ModelAsset extends Asset {
     @Override
     public void load() {
         // TODO don't create a new loader each time
-        if (FileFormatUtils.isG3DB(file)) {
-            MG3dModelLoader loader = new MG3dModelLoader(new UBJsonReader());
-            model = loader.loadModel(file);
-        } else if (FileFormatUtils.isGLTF(file)) {
-            GltfLoaderWrapper loader = new GltfLoaderWrapper(new Json());
-            model = loader.loadModel(file);
-        } else if (FileFormatUtils.isAC3D(file)) {
-            Ac3dModelLoader loader = new Ac3dModelLoader(new Ac3dParser());
-            model = loader.loadModel(file);
-        } else if (FileFormatUtils.isOBJ(file)) {
-            model = new ObjModelLoader().loadModel(file);
-        } else {
-            throw new GdxRuntimeException("Unsupported 3D model");
-        }
+//        if (FileFormatUtils.isG3DB(file)) {
+//            MG3dModelLoader loader = new MG3dModelLoader(new UBJsonReader());
+//            model = loader.loadModel(file);
+//        } else if (FileFormatUtils.isGLTF(file)) {
+//            GltfLoaderWrapper loader = new GltfLoaderWrapper(new Json());
+//            model = loader.loadModel(file);
+//        } else if (FileFormatUtils.isAC3D(file)) {
+//            Ac3dModelLoader loader = new Ac3dModelLoader(new Ac3dParser());
+//            model = loader.loadModel(file);
+//        } else if (FileFormatUtils.isOBJ(file)) {
+//            model = new ObjModelLoader().loadModel(file);
+//        } else {
+//            throw new GdxRuntimeException("Unsupported 3D model");
+//        }
     }
 
     @Override
     public void resolveDependencies(Map<String, Asset> assets) {
         try {
             // materials
-            var metaModel = meta.getModel();
-            if (metaModel == null) {
-                return;
-            }
-
-            for (String g3dbMatID : metaModel.getDefaultMaterials().keys()) {
-                String uuid = metaModel.getDefaultMaterials().get(g3dbMatID);
-                defaultMaterials.put(g3dbMatID, (MaterialAsset) assets.get(uuid));
-            }
+//            var metaModel = meta.getAdditional();
+//            if (metaModel == null) {
+//                return;
+//            }
+//
+//            for (var g3dbMatID : metaModel.getMaterials().keySet()) {
+//                String uuid = metaModel.getMaterials().get(g3dbMatID);
+//                defaultMaterials.put(g3dbMatID, (MaterialAsset) assets.get(uuid));
+//            }
         } catch (Exception e) {
             //todo display error
             log.error("ERROR", e);
@@ -129,5 +124,10 @@ public class ModelAsset extends Asset {
             }
         }
         return false;
+    }
+
+    @Override
+    public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
+        throw new NotImplementedException();
     }
 }

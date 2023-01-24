@@ -81,48 +81,8 @@ public class AssetsDock extends Tab/*(false, false)*/ {
 //        deleteAsset.addListener(object :ClickListener() {
 //            override fun clicked(event:InputEvent, x:Float, y:Float){
 //                selected ?.asset ?.let {
-//                    projectManager.current().assetManager.deleteAsset(it, projectManager)
+//                    projectManager.current().getAssetManager().deleteAsset(it, projectManager)
 //                    reloadAssets()
-//                }
-//            }
-//        })
-//        addAssetToScene.addListener(object :ClickListener() {
-//            override fun clicked(event:InputEvent ?, x:Float, y:Float){
-//                selected ?.asset ?.let {
-//                    try {
-//                        //todo
-//                        Log.trace(this @AssetsDock2.javaClass.name,"Add terrain game object in root node.")
-//                        val context = projectManager.current()
-//                        val sceneGraph = context.currScene.sceneGraph
-//                        val goID = context.obtainID()
-//                        val name = "${it.meta.type} $goID"
-//                        // create asset
-////                        val asset = context.assetManager.createModelAsset(it.file)
-//
-////                        asset.load()
-////                        asset.applyDependencies()
-//
-//                        val modelGO = GameObjectUtils.createModelGO(
-//                                sceneGraph, Shaders.modelShader, goID, name,
-//                                it as ModelAsset ?
-//                        )
-////                        val terrainGO = createTerrainGO(
-////                            sceneGraph,
-////                            Shaders.terrainShader, goID, name, asset
-////                        )
-//                        // update sceneGraph
-//                        sceneGraph.addGameObject(modelGO)
-//                        // update outline
-//                        //todo
-////                        addGoToTree(null, terrainGO)
-//
-////                        context.currScene..add(asset)
-//                        projectManager.saveProject(context)
-//                        Mundus.postEvent(AssetImportEvent(it))
-//                        Mundus.postEvent(SceneGraphChangedEvent())
-//                    } catch (e:Exception){
-//                        e.printStackTrace()
-//                    }
 //                }
 //            }
 //        })
@@ -132,10 +92,11 @@ public class AssetsDock extends Tab/*(false, false)*/ {
         selected = assetItem;
         for (var child : assetsView.getChildren()) {
             var item = (AssetItem) child;
+            //todo
             if (assetItem != null && assetItem == item) {
-                item.background(VisUI.getSkin().getDrawable("default-select-selection"));
+//                item.background(VisUI.getSkin().getDrawable("default-select-selection"));
             } else {
-                item.background(VisUI.getSkin().getDrawable("menu-bg"));
+//                item.background(VisUI.getSkin().getDrawable("menu-bg"));
             }
         }
     }

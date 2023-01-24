@@ -21,9 +21,6 @@ import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.tabbedpane.Tab
 import com.kotcrab.vis.ui.widget.tabbedpane.TabbedPane
 import com.kotcrab.vis.ui.widget.tabbedpane.TabbedPaneListener
-import com.mbrlabs.mundus.commons.scene3d.GameObject
-import com.mbrlabs.mundus.commons.scene3d.components.Component
-import com.mbrlabs.mundus.commons.scene3d.components.TerrainComponent
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.ComponentWidget
 
 /**
@@ -32,10 +29,9 @@ import com.mbrlabs.mundus.editor.ui.modules.inspector.components.ComponentWidget
  */
 class TerrainComponentWidget(
     separatorStyle: SeparatorStyle,
-    terrainComponent: TerrainComponent,
+    entityId: Int,
     private val terrainWidgetPresenter: TerrainWidgetPresenter
-) :
-    ComponentWidget<TerrainComponent>(separatorStyle, "Terrain Component", terrainComponent), TabbedPaneListener {
+) : ComponentWidget(separatorStyle, "Terrain Component", entityId), TabbedPaneListener {
 
     private val tabbedPane = TabbedPane()
     private val tabContainer = VisTable()
@@ -86,11 +82,12 @@ class TerrainComponentWidget(
         terrainWidgetPresenter.initBrushGrid(raiseLowerTab.grid)
     }
 
-    override fun setValues(go: GameObject) {
-        val c = go.findComponentByType(Component.Type.TERRAIN)
-        if (c != null) {
-            this.component = c as TerrainComponent
-        }
+    override fun setValues(entityId: Int) {
+        this.entityId = entityId
+//        val c = go.findComponentByType(Component.Type.TERRAIN)
+//        if (c != null) {
+//            this.component = c as TerrainComponent
+//        }
     }
 
     override fun switchedTab(tab: Tab) {

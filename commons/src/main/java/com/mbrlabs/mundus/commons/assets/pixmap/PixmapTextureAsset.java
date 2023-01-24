@@ -20,8 +20,8 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.mbrlabs.mundus.commons.assets.Asset;
-import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
 import com.mbrlabs.mundus.commons.assets.meta.Meta;
+import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
 
 import java.util.Map;
 
@@ -29,13 +29,13 @@ import java.util.Map;
  * @author Marcus Brummer
  * @version 02-10-2016
  */
-public class PixmapTextureAsset extends Asset {
+public class PixmapTextureAsset extends Asset<PixmapMeta> {
 
     private Pixmap pixmap;
     private Texture texture;
 
     public PixmapTextureAsset(Meta meta, FileHandle assetFile) {
-        super(meta, assetFile);
+        super(meta);
     }
 
     public Pixmap getPixmap() {
@@ -48,7 +48,7 @@ public class PixmapTextureAsset extends Asset {
 
     @Override
     public void load() {
-        pixmap = new Pixmap(file);
+        pixmap = new Pixmap(meta.getFile());
         texture = new Texture(pixmap);
     }
 
@@ -70,7 +70,7 @@ public class PixmapTextureAsset extends Asset {
 
     @Override
     public boolean usesAsset(Asset assetToCheck) {
-        if (assetToCheck instanceof TextureAsset){
+        if (assetToCheck instanceof TextureAsset) {
             return texture == ((TextureAsset) assetToCheck).getTexture();
         }
         return false;

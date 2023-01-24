@@ -26,7 +26,7 @@ import com.badlogic.gdx.utils.Array;
 public class SunLightsAttribute extends Attribute {
 
     public final static String Alias = "sunLights";
-    public final Array<SunLight> lights;
+    public final Array<SpotLight> lights;
 
     public final static long Type = register(Alias);
 
@@ -52,7 +52,7 @@ public class SunLightsAttribute extends Attribute {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        for (SunLight light : lights)
+        for (SpotLight light : lights)
             result = 1237 * result + (light == null ? 0 : light.hashCode());
         return result;
     }

@@ -19,23 +19,21 @@ package com.mbrlabs.mundus.editor.tools;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset;
+import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.scene3d.InvalidComponentException;
+import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
+import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.project.ProjectContext;
-import com.mbrlabs.mundus.editor.core.project.ProjectManager;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.SceneGraphChangedEvent;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.scene3d.components.PickableModelComponent;
-import com.mbrlabs.mundus.editor.shader.Shaders;
 import com.mbrlabs.mundus.editor.ui.AppUi;
-import com.mbrlabs.mundus.editor.utils.TerrainUtils;
 
 /**
  * @author Marcus Brummer
@@ -46,10 +44,8 @@ public class ModelPlacementTool extends Tool {
     public static final String NAME = "Placement Tool";
     public static Vector3 DEFAULT_ORIENTATION = Vector3.Z.cpy();
 
-    private Vector3 tempV3 = new Vector3();
-
+    private final Vector3 tempV3 = new Vector3();
     private boolean shouldRespectTerrainSlope = false;
-
     // DO NOT DISPOSE THIS
     private ModelAsset model;
     private ModelInstance modelInstance;
@@ -57,12 +53,11 @@ public class ModelPlacementTool extends Tool {
     private final AppUi appUi;
     private final EventBus eventBus;
 
-    public ModelPlacementTool(ProjectManager projectManager, ModelBatch batch, CommandHistory history, AppUi appUi, EventBus eventBus) {
-        super(projectManager, batch, history);
+    public ModelPlacementTool(EditorCtx ctx, String shaderKey, ModelBatch batch, CommandHistory history,
+                              AppUi appUi, EventBus eventBus) {
+        super(ctx, shaderKey, batch, history, NAME);
         this.appUi = appUi;
         this.eventBus = eventBus;
-
-        setShader(Shaders.INSTANCE.getModelShader());
         this.model = null;
         this.modelInstance = null;
     }
@@ -71,16 +66,6 @@ public class ModelPlacementTool extends Tool {
         this.model = model;
         modelInstance = null;
         this.modelInstance = new ModelInstance(model.getModel());
-    }
-
-    @Override
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
-    public Drawable getIcon() {
-        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -97,11 +82,11 @@ public class ModelPlacementTool extends Tool {
     }
 
     @Override
-    public void render() {
+    public void render(ModelBatch batch, SceneEnvironment environment, ShaderHolder shaders, float delta) {
         if (modelInstance != null) {
-            getBatch().begin(getProjectManager().getCurrent().currScene.cam);
-            getBatch().render(modelInstance, getProjectManager().getCurrent().currScene.environment, getShader());
-            getBatch().end();
+            batch.begin(getCtx().getCurrent().getCamera());
+            batch.render(modelInstance, environment, shaders.get(getShaderKey()));
+            batch.end();
         }
     }
 
@@ -114,20 +99,20 @@ public class ModelPlacementTool extends Tool {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 
         if (modelInstance != null && button == Input.Buttons.LEFT) {
-            int id = getProjectManager().getCurrent().obtainID();
-            GameObject modelGo = new GameObject(getProjectManager().getCurrent().currScene.sceneGraph, model.getName(), id);
-            getProjectManager().getCurrent().currScene.sceneGraph.addGameObject(modelGo);
+            int id = getCtx().getCurrent().obtainID();
+            GameObject modelGo = new GameObject(model.getName(), id);
+//            getCtx().getCurrent().getCurrentScene().getSceneGraph().addGameObject(modelGo);
 
             modelInstance.transform.getTranslation(tempV3);
             modelGo.translate(tempV3);
 
-            PickableModelComponent modelComponent = new PickableModelComponent(modelGo, Shaders.INSTANCE.getModelShader());
-            modelComponent.setShader(getShader());
+            PickableModelComponent modelComponent = new PickableModelComponent(modelGo, getShaderKey());
+//            modelComponent.setShader(getShader());
             modelComponent.setModel(model, true);
-            modelComponent.encodeRaypickColorId();
+            modelComponent.encodeRayPickColorId();
 
             try {
-                modelGo.addComponent(modelComponent);
+//                modelGo.addComponent(modelComponent);
             } catch (InvalidComponentException e) {
                 Dialogs.showErrorDialog(appUi, e.getMessage());
                 return false;
@@ -143,22 +128,22 @@ public class ModelPlacementTool extends Tool {
     public boolean mouseMoved(int screenX, int screenY) {
         if (this.model == null || modelInstance == null) return false;
 
-        final ProjectContext context = getProjectManager().getCurrent();
+        final ProjectContext context = getCtx().getCurrent();
 
-        final Ray ray = getProjectManager().getCurrent().currScene.viewport.getPickRay(screenX, screenY);
-        if (context.currScene.terrains.size > 0 && modelInstance != null) {
-            MeshPartBuilder.VertexInfo vi = TerrainUtils.getRayIntersectionAndUp(context.currScene.terrains, ray);
-            if (vi != null) {
-                if (shouldRespectTerrainSlope) {
-                    modelInstance.transform.setToLookAt(DEFAULT_ORIENTATION, vi.normal);
-                }
-                modelInstance.transform.setTranslation(vi.position);
-            }
-        } else {
-            tempV3.set(getProjectManager().getCurrent().currScene.cam.position);
-            tempV3.add(ray.direction.nor().scl(200));
-            modelInstance.transform.setTranslation(tempV3);
-        }
+        final Ray ray = getCtx().getViewport().getPickRay(screenX, screenY);
+//        if (context.getCurrentScene().terrains.size > 0 && modelInstance != null) {
+//            MeshPartBuilder.VertexInfo vi = TerrainUtils.getRayIntersectionAndUp(context.getCurrentScene().terrains, ray);
+//            if (vi != null) {
+//                if (shouldRespectTerrainSlope) {
+//                    modelInstance.transform.setToLookAt(DEFAULT_ORIENTATION, vi.normal);
+//                }
+//                modelInstance.transform.setTranslation(vi.position);
+//            }
+//        } else {
+//            tempV3.set(getCtx().getCurrent().getCurrentScene().cam.position);
+//            tempV3.add(ray.direction.nor().scl(200));
+//            modelInstance.transform.setTranslation(tempV3);
+//        }
 
         return false;
     }

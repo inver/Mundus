@@ -1,0 +1,20 @@
+{
+  "id": 5,
+  "skyboxName": "skybox_default",
+  "camera": {
+    "type": "CAMERA",
+    "position": {
+      "x": -27.96014,
+      "y": 12.03928,
+      "z": -4.8420897
+    },
+    "viewPointPosition": {
+      "x": 0.84418625,
+      "y": -0.5149841,
+      "z": 0.1487968
+    },
+    "directionGameObjectId": 0,
+    "near": 0.2,
+    "far": 10000.0
+  }
+}

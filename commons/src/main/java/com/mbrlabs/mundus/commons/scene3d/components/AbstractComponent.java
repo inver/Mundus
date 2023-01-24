@@ -24,7 +24,7 @@ import com.mbrlabs.mundus.commons.scene3d.GameObject;
  */
 public abstract class AbstractComponent implements Component {
 
-    public GameObject gameObject;
+    protected GameObject gameObject;
     protected Type type;
 
     public AbstractComponent(GameObject go) {
@@ -48,7 +48,7 @@ public abstract class AbstractComponent implements Component {
 
     @Override
     public void remove() {
-        gameObject.removeComponent(this);
+//        gameObject.removeComponent(this);
     }
 
     @Override

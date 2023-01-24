@@ -31,7 +31,7 @@ import com.mbrlabs.mundus.editor.ui.widgets.ImprovedSlider
  * @author Marcus Brummer
  * @version 30-01-2016
  */
-class TerrainBrushGrid(private val parent: TerrainComponentWidget) : VisTable(),
+class TerrainBrushGrid() : VisTable(),
     GlobalBrushSettingsChangedEvent.GlobalBrushSettingsChangedListener {
 
     var brushMode: TerrainBrush.BrushMode? = null
@@ -62,13 +62,13 @@ class TerrainBrushGrid(private val parent: TerrainComponentWidget) : VisTable(),
         add(settingsTable).expand().fill().padLeft(5f).padRight(5f).padTop(5f).row()
     }
 
-    constructor(parent: TerrainComponentWidget, mode: TerrainBrush.BrushMode) : this(parent) {
+    constructor(parent: TerrainComponentWidget, mode: TerrainBrush.BrushMode) : this() {
         this.brushMode = mode
     }
 
     fun activateBrush(brush: TerrainBrush) {
         brush.mode = brushMode
-        brush.terrainAsset = parent.component.terrain
+//        brush.terrainAsset = parent.component.terrain
     }
 
     override fun onSettingsChanged(event: GlobalBrushSettingsChangedEvent) {

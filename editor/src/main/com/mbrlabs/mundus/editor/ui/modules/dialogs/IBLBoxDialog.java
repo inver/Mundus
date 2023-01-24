@@ -15,13 +15,11 @@ import org.springframework.stereotype.Component;
 public class IBLBoxDialog extends BaseDialog
         implements ProjectChangedEvent.ProjectChangedListener, SceneChangedEvent.SceneChangedListener {
 
-    private final EventBus eventBus;
     private final ImageChooserField iblImageField;
     private final VisTextButton applyButton = new VisTextButton("Apply");
 
     public IBLBoxDialog(EventBus eventBus, AppUi appUi, FileChooser fileChooser) {
         super("IBLBox");
-        this.eventBus = eventBus;
 
         iblImageField = new ImageChooserField(appUi, 300, fileChooser);
 

@@ -25,22 +25,22 @@ import com.badlogic.gdx.graphics.g3d.Attribute;
 public class PickerIDAttribute extends Attribute {
 
     public final static String Alias = "goID";
-    public final static long Type = register(Alias);
+    public final static long TYPE = register(Alias);
 
     public int r = 255;
     public int g = 255;
     public int b = 255;
 
-    public final static boolean is(final long mask) {
-        return (mask & Type) == mask;
+    public static boolean is(final long mask) {
+        return (mask & TYPE) == mask;
     }
 
     public PickerIDAttribute() {
-        super(Type);
+        super(TYPE);
     }
 
     public PickerIDAttribute(PickerIDAttribute other) {
-        super(Type);
+        super(TYPE);
     }
 
     @Override

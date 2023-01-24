@@ -40,7 +40,7 @@ public enum AssetType {
      */
     SKYBOX_HDR,
     /**
-     * 3D file. Can be g3db, g3dbj, dae, obj, fbx.
+     * 3D file. Can be g3db, g3dbj, dae, obj, fbx, ac3d.
      */
     MODEL,
     /**
@@ -50,5 +50,10 @@ public enum AssetType {
     /**
      * Material file. Mundus material file contains material information.
      */
-    MATERIAL
+    MATERIAL,
+
+    /**
+     * Shader asset
+     */
+    SHADER
 }

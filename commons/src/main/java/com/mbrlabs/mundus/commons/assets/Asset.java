@@ -16,12 +16,13 @@
 
 package com.mbrlabs.mundus.commons.assets;
 
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Disposable;
 import com.mbrlabs.mundus.commons.assets.meta.Meta;
 import com.mbrlabs.mundus.commons.scene3d.components.AssetUsage;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.Map;
 
@@ -37,19 +38,17 @@ import java.util.Map;
  * @version 01-10-2016
  */
 @RequiredArgsConstructor
-public abstract class Asset implements Disposable, AssetUsage {
+public abstract class Asset<M> implements Disposable, AssetUsage {
 
     @Getter
-    protected final Meta meta;
-    @Getter
-    protected final FileHandle file;
+    protected final Meta<M> meta;
 
     public AssetType getType() {
         return meta.getType();
     }
 
     public String getName() {
-        return file.name();
+        return meta.getFile().name();
     }
 
     public String getID() {
@@ -58,7 +57,7 @@ public abstract class Asset implements Disposable, AssetUsage {
 
     @Override
     public String toString() {
-        return "[" + getMeta().getType().toString() + "] " + file.name();
+        return "[" + getMeta().getType().toString() + "] " + getName();
     }
 
     /**
@@ -66,6 +65,8 @@ public abstract class Asset implements Disposable, AssetUsage {
      * <p>
      * Loads the asset from disk and creates it.
      */
+    @Deprecated
+    //todo remove this method
     public abstract void load();
 
     /**
@@ -76,6 +77,7 @@ public abstract class Asset implements Disposable, AssetUsage {
      *
      * @param assets map of loaded assets with asset id as key
      */
+    @Deprecated
     public abstract void resolveDependencies(Map<String, Asset> assets);
 
     /**
@@ -85,6 +87,23 @@ public abstract class Asset implements Disposable, AssetUsage {
      * Note, that the asset and all it's set dependencies must have called
      * load() before calling this method.
      */
+    @Deprecated
     public abstract void applyDependencies();
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Asset<?> asset = (Asset<?>) o;
+
+        return new EqualsBuilder().append(meta, asset.meta).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).append(meta).toHashCode();
+    }
 }

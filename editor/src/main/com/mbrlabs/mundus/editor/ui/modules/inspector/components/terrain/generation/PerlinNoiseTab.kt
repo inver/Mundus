@@ -5,15 +5,11 @@ import com.badlogic.gdx.utils.Align
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.kotcrab.vis.ui.widget.tabbedpane.Tab
-import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset
 import com.mbrlabs.mundus.editor.history.Command
-import com.mbrlabs.mundus.editor.history.commands.TerrainHeightCommand
-import com.mbrlabs.mundus.editor.terrain.Terraformer
 import com.mbrlabs.mundus.editor.ui.widgets.FloatFieldWithLabel
 import com.mbrlabs.mundus.editor.ui.widgets.IntegerFieldWithLabel
 
-class PerlinNoiseTab(private val terrainAsset: TerrainAsset) : Tab(false, false) {
-
+class PerlinNoiseTab(private val entityId: Int) : Tab(false, false) {
     private val root = VisTable()
 
     val perlinNoiseBtn = VisTextButton("Generate Perlin noise")
@@ -34,14 +30,14 @@ class PerlinNoiseTab(private val terrainAsset: TerrainAsset) : Tab(false, false)
     override fun getContentTable(): Table = root
 
     //todo move to presenter
-    fun generatePerlinNoise(seed: Int, min: Float, max: Float): Command {
-        val terrain = terrainAsset.terrain
-        val command = TerrainHeightCommand(terrain)
-        command.setHeightDataBefore(terrain.heightData)
-
-        Terraformer.perlin(terrain).minHeight(min).maxHeight(max).seed(seed.toLong()).terraform()
-
-        command.setHeightDataAfter(terrain.heightData)
-        return command
+    fun generatePerlinNoise(seed: Int, min: Float, max: Float): Command? {
+//        val terrain = terrainAsset.terrain
+//        val command = TerrainHeightCommand(terrain)
+//        command.setHeightDataBefore(terrain.heightData)
+//
+//        Terraformer.perlin(terrain).minHeight(min).maxHeight(max).seed(seed.toLong()).terraform()
+//
+//        command.setHeightDataAfter(terrain.heightData)
+        return null
     }
 }

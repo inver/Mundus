@@ -76,22 +76,22 @@ class TerrainPaintTab(private val parentWidget: TerrainComponentWidget) : Tab(fa
 
     fun setTexturesInUiGrid() {
         textureGrid.removeTextures()
-        val terrainTexture = parentWidget.component.terrain.terrain.terrainTexture
-        if (terrainTexture.getTexture(SplatTexture.Channel.BASE) != null) {
-            textureGrid.addTexture(terrainTexture.getTexture(SplatTexture.Channel.BASE))
-        }
-        if (terrainTexture.getTexture(SplatTexture.Channel.R) != null) {
-            textureGrid.addTexture(terrainTexture.getTexture(SplatTexture.Channel.R))
-        }
-        if (terrainTexture.getTexture(SplatTexture.Channel.G) != null) {
-            textureGrid.addTexture(terrainTexture.getTexture(SplatTexture.Channel.G))
-        }
-        if (terrainTexture.getTexture(SplatTexture.Channel.B) != null) {
-            textureGrid.addTexture(terrainTexture.getTexture(SplatTexture.Channel.B))
-        }
-        if (terrainTexture.getTexture(SplatTexture.Channel.A) != null) {
-            textureGrid.addTexture(terrainTexture.getTexture(SplatTexture.Channel.A))
-        }
+//        val terrainTexture = parentWidget.component.terrain.terrain.terrainTexture
+//        if (terrainTexture.getTexture(SplatTexture.Channel.BASE) != null) {
+//            textureGrid.addTexture(terrainTexture.getTexture(SplatTexture.Channel.BASE))
+//        }
+//        if (terrainTexture.getTexture(SplatTexture.Channel.R) != null) {
+//            textureGrid.addTexture(terrainTexture.getTexture(SplatTexture.Channel.R))
+//        }
+//        if (terrainTexture.getTexture(SplatTexture.Channel.G) != null) {
+//            textureGrid.addTexture(terrainTexture.getTexture(SplatTexture.Channel.G))
+//        }
+//        if (terrainTexture.getTexture(SplatTexture.Channel.B) != null) {
+//            textureGrid.addTexture(terrainTexture.getTexture(SplatTexture.Channel.B))
+//        }
+//        if (terrainTexture.getTexture(SplatTexture.Channel.A) != null) {
+//            textureGrid.addTexture(terrainTexture.getTexture(SplatTexture.Channel.A))
+//        }
     }
 
     override fun getTabTitle(): String {

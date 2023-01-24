@@ -26,8 +26,11 @@ import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.utils.Array;
 import com.mbrlabs.mundus.commons.env.Fog;
-import com.mbrlabs.mundus.commons.env.MundusEnvironment;
+import com.mbrlabs.mundus.commons.env.SceneEnvironment;
+import com.mbrlabs.mundus.commons.env.lights.DirectionalLight;
+import com.mbrlabs.mundus.commons.env.lights.DirectionalLightsAttribute;
 import com.mbrlabs.mundus.commons.utils.ShaderUtils;
 
 /**
@@ -36,8 +39,8 @@ import com.mbrlabs.mundus.commons.utils.ShaderUtils;
  */
 public class ModelShader extends BaseShader {
 
-    private static final String VERTEX_SHADER = "shaders/model.vert.glsl";
-    private static final String FRAGMENT_SHADER = "shaders/model.frag.glsl";
+    private static final String VERTEX_SHADER = "bundled/shaders/model.vert.glsl";
+    private static final String FRAGMENT_SHADER = "bundled/shaders/model.frag.glsl";
 
     // ============================ MATERIALS ============================
     protected final int UNIFORM_MATERIAL_DIFFUSE_TEXTURE = register(new Uniform("u_diffuseTexture"));
@@ -72,7 +75,7 @@ public class ModelShader extends BaseShader {
 
     @Override
     public void init() {
-        super.init(program, null);
+        init(program, null);
     }
 
     @Override
@@ -102,7 +105,7 @@ public class ModelShader extends BaseShader {
 
     @Override
     public void render(Renderable renderable) {
-        final MundusEnvironment env = (MundusEnvironment) renderable.environment;
+        final SceneEnvironment env = (SceneEnvironment) renderable.environment;
 
         setLights(env);
         set(UNIFORM_TRANS_MATRIX, renderable.worldTransform);
@@ -140,23 +143,24 @@ public class ModelShader extends BaseShader {
         renderable.meshPart.render(program);
     }
 
-    private void setLights(MundusEnvironment env) {
+    private void setLights(SceneEnvironment env) {
         // ambient
-        set(UNIFORM_AMBIENT_LIGHT_COLOR, env.getAmbientLight().color);
-        set(UNIFORM_AMBIENT_LIGHT_INTENSITY, env.getAmbientLight().intensity);
+        set(UNIFORM_AMBIENT_LIGHT_COLOR, env.getAmbientLight().getColor());
+        set(UNIFORM_AMBIENT_LIGHT_INTENSITY, env.getAmbientLight().getIntensity());
 
         // TODO light array for each light type
 
         // directional lights
-//        final DirectionalLightsAttribute dirLightAttribs = env.get(DirectionalLightsAttribute.class,
-//                DirectionalLightsAttribute.Type);
-//        final Array<DirectionalLight> dirLights = dirLightAttribs == null ? null : dirLightAttribs.lights;
-//        if (dirLights != null && dirLights.size > 0) {
-//            final DirectionalLight light = dirLights.first();
-//            set(UNIFORM_DIRECTIONAL_LIGHT_COLOR, light.color);
-//            set(UNIFORM_DIRECTIONAL_LIGHT_DIR, light.direction);
-//            set(UNIFORM_DIRECTIONAL_LIGHT_INTENSITY, light.intensity);
-//        }
+        final DirectionalLightsAttribute dirLightAttribs = env.get(DirectionalLightsAttribute.class,
+                DirectionalLightsAttribute.TYPE);
+        final Array<DirectionalLight> dirLights = dirLightAttribs == null ? null : dirLightAttribs.lights;
+        if (dirLights != null && dirLights.size > 0) {
+            final DirectionalLight light = dirLights.first();
+            set(UNIFORM_DIRECTIONAL_LIGHT_COLOR, light.getColor());
+            //todo
+//            set(UNIFORM_DIRECTIONAL_LIGHT_DIR, light.getDirection());
+            set(UNIFORM_DIRECTIONAL_LIGHT_INTENSITY, light.getIntensity());
+        }
 
         // TODO point lights, spot lights
     }

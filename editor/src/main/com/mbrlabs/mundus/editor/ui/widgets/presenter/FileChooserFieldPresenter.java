@@ -16,6 +16,11 @@ public class FileChooserFieldPresenter {
     private final AppUi appUi;
     private final FileChooser fileChooser;
 
+    public void initFileChooserField(FileChooserField field, FileChooserField.FileSelectedListener fileSelected) {
+        initFileChooserField(field);
+        field.setCallback(fileSelected);
+    }
+
     public void initFileChooserField(FileChooserField field) {
         field.getFcBtn().addListener(new ClickListener() {
             @Override

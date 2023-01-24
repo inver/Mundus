@@ -21,10 +21,9 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.mbrlabs.mundus.commons.assets.exceptions.AssetNotFoundException;
+import com.mbrlabs.mundus.commons.assets.exceptions.MetaFileParseException;
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset;
 import com.mbrlabs.mundus.commons.assets.meta.Meta;
-import com.mbrlabs.mundus.commons.assets.exceptions.MetaFileParseException;
-import com.mbrlabs.mundus.commons.assets.meta.MetaService;
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset;
 import com.mbrlabs.mundus.commons.assets.pixmap.PixmapTextureAsset;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset;
@@ -158,7 +157,7 @@ public class OldAssetManager implements Disposable {
             }
         };
 
-        final MetaService metaLoader = new MetaService();
+//        final MetaService metaLoader = new MetaService();
 
         FileHandle[] metaFiles;
 
@@ -188,27 +187,27 @@ public class OldAssetManager implements Disposable {
         }
 
         // load assets
-        for (FileHandle meta : metaFiles) {
-            Asset asset = loadAsset(metaLoader.load(meta));
-            if (listener != null) {
-                listener.onLoad(asset, assets.size, metaFiles.length);
-            }
-        }
-
-        // resolve material assets
-        for (Asset asset : assets) {
-            if (asset instanceof MaterialAsset) {
-                asset.resolveDependencies(assetIndex);
-                asset.applyDependencies();
-            }
-        }
-
-        // resolve other assets
-        for (Asset asset : assets) {
-            if (asset instanceof MaterialAsset) continue;
-            asset.resolveDependencies(assetIndex);
-            asset.applyDependencies();
-        }
+//        for (FileHandle meta : metaFiles) {
+//            Asset asset = loadAsset(metaLoader.load(meta));
+//            if (listener != null) {
+//                listener.onLoad(asset, assets.size, metaFiles.length);
+//            }
+//        }
+//
+//        // resolve material assets
+//        for (Asset asset : assets) {
+//            if (asset instanceof MaterialAsset) {
+//                asset.resolveDependencies(assetIndex);
+//                asset.applyDependencies();
+//            }
+//        }
+//
+//        // resolve other assets
+//        for (Asset asset : assets) {
+//            if (asset instanceof MaterialAsset) continue;
+//            asset.resolveDependencies(assetIndex);
+//            asset.applyDependencies();
+//        }
 
         if (listener != null) {
             listener.onFinish(assets.size);
@@ -260,22 +259,22 @@ public class OldAssetManager implements Disposable {
     }
 
     private MaterialAsset loadMaterialAsset(Meta meta, FileHandle assetFile) {
-        MaterialAsset asset = new MaterialAsset(meta, assetFile);
+        MaterialAsset asset = new MaterialAsset(meta);
         asset.load();
         return asset;
     }
 
     private TextureAsset loadTextureAsset(Meta meta, FileHandle assetFile) {
-        TextureAsset asset = new TextureAsset(meta, assetFile);
+        TextureAsset asset = new TextureAsset(meta);
         // TODO parse special texture instead of always setting them
-        asset.setTileable(true);
-        asset.generateMipmaps(true);
+//        asset.setTileable(true);
+//        asset.generateMipmaps(true);
         asset.load();
         return asset;
     }
 
     private TerrainAsset loadTerrainAsset(Meta meta, FileHandle assetFile) {
-        TerrainAsset asset = new TerrainAsset(meta, assetFile);
+        TerrainAsset asset = new TerrainAsset(meta);
         asset.load();
         return asset;
     }
@@ -287,7 +286,7 @@ public class OldAssetManager implements Disposable {
     }
 
     private ModelAsset loadModelAsset(Meta meta, FileHandle assetFile) {
-        ModelAsset asset = new ModelAsset(meta, assetFile);
+        ModelAsset asset = new ModelAsset(meta);
         asset.load();
         return asset;
     }

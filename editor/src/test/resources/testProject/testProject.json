@@ -1,0 +1,28 @@
+{
+  "settings": {
+    "export": {
+      "jsonType": "json",
+      "compressScenes": false,
+      "allAssets": true,
+      "outputFolder": null
+    }
+  },
+  "path": "/home/inv3r/MundusProjects/Default Project",
+  "name": "Default Project",
+  "activeSceneName": "main",
+  "mainCamera": {
+    "viewPointPosition": {
+      "x": -0.27284753,
+      "y": -0.4694677,
+      "z": -0.8397353
+    },
+    "position": {
+      "x": 13.642371,
+      "y": 23.473373,
+      "z": 41.98674
+    },
+    "far": 100.0,
+    "near": 1.0,
+    "fieldOfView": 67.0
+  }
+}

@@ -26,7 +26,7 @@ import com.mbrlabs.mundus.editor.ui.modules.inspector.BaseInspectorWidget
  * @author Marcus Brummer
  * @version 15-10-2016
  */
-class TerrainAssetInspectorWidget(separatorStyle: Separator.SeparatorStyle) :
+class TerrainAssetInspectorWidget(separatorStyle: Separator.SeparatorStyle?) :
     BaseInspectorWidget(separatorStyle, "Terrain Asset") {
 
     private val name = VisLabel()
@@ -49,7 +49,7 @@ class TerrainAssetInspectorWidget(separatorStyle: Separator.SeparatorStyle) :
 
     }
 
-    override fun setValues(go: GameObject) {
+    override fun setValues(entityId: Int) {
 
     }
 

@@ -26,7 +26,8 @@ import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.mbrlabs.mundus.commons.assets.Asset
 import com.mbrlabs.mundus.editor.assets.AssetFilter
-import com.mbrlabs.mundus.editor.core.project.ProjectManager
+import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
+import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.events.AssetImportEvent
 import com.mbrlabs.mundus.editor.events.EventBus
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent
@@ -46,7 +47,8 @@ import org.springframework.stereotype.Component
 @Component
 class AssetPickerDialog(
     eventBus: EventBus,
-    private val projectManager: ProjectManager,
+    private val ctx: EditorCtx,
+    private val assetManager: EditorAssetManager,
     private val appUi: AppUi
 ) : BaseDialog(TITLE),
     AssetImportEvent.AssetImportListener,
@@ -57,7 +59,7 @@ class AssetPickerDialog(
     }
 
     private val root = VisTable()
-    private val listAdapter = SimpleListAdapter(Array<Asset>())
+    private val listAdapter = SimpleListAdapter(Array<Asset<Any>>())
     private val list = ListView(listAdapter)
     private val noneBtn = VisTextButton("None / Remove old asset")
 
@@ -73,8 +75,8 @@ class AssetPickerDialog(
 
     private fun setupUI() {
         root.add(list.mainTable).grow().size(350f, 450f).row()
-        root.add<VisTextButton>(noneBtn).padTop(10f).grow().row()
-        add<VisTable>(root).padRight(5f).padBottom(5f).grow().row()
+        root.add(noneBtn).padTop(10f).grow().row()
+        add(root).padRight(5f).padBottom(5f).grow().row()
     }
 
     private fun setupListeners() {
@@ -104,18 +106,17 @@ class AssetPickerDialog(
     }
 
     private fun reloadData() {
-        val assetManager = projectManager.current.assetManager
         listAdapter.clear()
 
         // filter assets
-        for (asset in assetManager.assets) {
-            if (filter != null) {
-                if (filter!!.ignore(asset)) {
-                    continue
-                }
-            }
-            listAdapter.add(asset)
-        }
+//        for (asset in assetManager.assets) {
+//            if (filter != null) {
+//                if (filter!!.ignore(asset)) {
+//                    continue
+//                }
+//            }
+//            listAdapter.add(asset)
+//        }
 
         listAdapter.itemsDataChanged()
     }
@@ -140,12 +141,4 @@ class AssetPickerDialog(
         reloadData()
         appUi.showDialog(this)
     }
-
-    /**
-     */
-    interface AssetPickerListener {
-        fun onSelected(asset: Asset?)
-    }
-
-
 }

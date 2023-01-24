@@ -25,17 +25,20 @@ import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisScrollPane
 import com.kotcrab.vis.ui.widget.VisTable
 import com.mbrlabs.mundus.editor.config.UiWidgetsHolder
-import com.mbrlabs.mundus.editor.core.project.ProjectManager
+import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
+import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.events.AssetSelectedEvent
+import com.mbrlabs.mundus.editor.events.EntitySelectedEvent
 import com.mbrlabs.mundus.editor.events.EventBus
 import com.mbrlabs.mundus.editor.events.GameObjectModifiedEvent
-import com.mbrlabs.mundus.editor.events.GameObjectSelectedEvent
 import com.mbrlabs.mundus.editor.history.CommandHistory
 import com.mbrlabs.mundus.editor.tools.ToolManager
 import com.mbrlabs.mundus.editor.ui.AppUi
+import com.mbrlabs.mundus.editor.ui.PreviewGenerator
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.TerrainWidgetPresenter
-import com.mbrlabs.mundus.editor.utils.Log
+import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerPresenter
+import org.slf4j.LoggerFactory.getLogger
 import org.springframework.stereotype.Component
 
 /**
@@ -45,20 +48,24 @@ import org.springframework.stereotype.Component
 @Component
 class Inspector(
     eventBus: EventBus,
+    private val ctx: EditorCtx,
+    private val assetManager: EditorAssetManager,
     private val appUi: AppUi,
     private val uiWidgetsHolder: UiWidgetsHolder,
     private val assetPickerDialog: AssetPickerDialog,
     private val toolManager: ToolManager,
-    private val projectManager: ProjectManager,
     private val terrainWidgetPresenter: TerrainWidgetPresenter,
-    private val history: CommandHistory
+    private val history: CommandHistory,
+    private val previewGenerator: PreviewGenerator,
+    private val colorPickerPresenter: ColorPickerPresenter
 ) : VisTable(),
-    GameObjectSelectedEvent.GameObjectSelectedListener,
     GameObjectModifiedEvent.GameObjectModifiedListener,
-    AssetSelectedEvent.AssetSelectedListener {
+    AssetSelectedEvent.AssetSelectedListener,
+    EntitySelectedEvent.EntitySelectedListener {
 
     companion object {
-        private val TAG = Inspector::class.java.simpleName
+        @JvmStatic
+        private val log = getLogger(Inspector::class.java)
     }
 
     enum class InspectorMode {
@@ -71,25 +78,31 @@ class Inspector(
 
     private val goInspector: GameObjectInspector
     private val assetInspector: AssetInspector
+//    private val cameraInspector = CameraInspector(previewGenerator, appUi)
 
     init {
         eventBus.register(this)
 
         goInspector = GameObjectInspector(
+            ctx,
             appUi,
             uiWidgetsHolder,
             assetPickerDialog,
-            projectManager,
+            assetManager,
             history,
-            terrainWidgetPresenter
+            terrainWidgetPresenter,
+            previewGenerator,
+            colorPickerPresenter
         )
         assetInspector = AssetInspector(
             uiWidgetsHolder.separatorStyle,
+            ctx,
             appUi,
-            uiWidgetsHolder,
+            assetManager,
             assetPickerDialog,
             toolManager,
-            projectManager
+            previewGenerator,
+            colorPickerPresenter
         )
 
         init()
@@ -116,13 +129,13 @@ class Inspector(
         add<ScrollPane>(scrollPane).expand().fill().top()
     }
 
-    override fun onGameObjectSelected(event: GameObjectSelectedEvent) {
+    override fun onEntitySelected(event: EntitySelectedEvent) {
         if (mode != InspectorMode.GAME_OBJECT) {
             mode = InspectorMode.GAME_OBJECT
             root.clear()
             root.add(goInspector).grow().row()
         }
-        goInspector.setGameObject(event.gameObject!!)
+        goInspector.setEntity(event.entityId)
     }
 
     override fun onGameObjectModified(event: GameObjectModifiedEvent) {
@@ -130,7 +143,7 @@ class Inspector(
     }
 
     override fun onAssetSelected(event: AssetSelectedEvent) {
-        Log.debug(TAG, event.asset.toString())
+        log.debug(event.asset.toString())
         if (mode != InspectorMode.ASSET) {
             mode = InspectorMode.ASSET
             root.clear()

@@ -16,20 +16,21 @@
 
 package com.mbrlabs.mundus.editor.terrain;
 
-import com.mbrlabs.mundus.commons.terrain.Terrain;
+import com.mbrlabs.mundus.commons.terrain.TerrainObject;
 
 /**
  *
  * @author Marcus Brummer
  * @version 20-06-2016
  */
+@SuppressWarnings("unchecked")
 public abstract class Generator<T extends Generator<T>> {
 
-    protected Terrain terrain;
+    protected TerrainObject terrain;
     protected float minHeight = 0;
     protected float maxHeight = 50;
 
-    Generator(Terrain terrain) {
+    Generator(TerrainObject terrain) {
         this.terrain = terrain;
     }
 

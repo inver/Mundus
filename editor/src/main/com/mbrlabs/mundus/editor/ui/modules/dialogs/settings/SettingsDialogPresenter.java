@@ -3,9 +3,9 @@ package com.mbrlabs.mundus.editor.ui.modules.dialogs.settings;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.mbrlabs.mundus.commons.core.registry.Registry;
-import com.mbrlabs.mundus.editor.core.kryo.KryoManager;
-import com.mbrlabs.mundus.editor.core.project.ProjectManager;
+import com.mbrlabs.mundus.editor.core.project.EditorCtx;
+import com.mbrlabs.mundus.editor.core.project.ProjectStorage;
+import com.mbrlabs.mundus.editor.core.registry.Registry;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent;
 import com.mbrlabs.mundus.editor.events.SettingsChangedEvent;
@@ -18,12 +18,13 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class SettingsDialogPresenter {
+
+    private final EditorCtx ctx;
     private final Registry registry;
     private final FileChooserFieldPresenter fileChooserFieldPresenter;
-    private final KryoManager kryoManager;
+    private final ProjectStorage projectStorage;
     private final EventBus eventBus;
     private final Toaster toaster;
-    private final ProjectManager projectManager;
 
     public void initGeneralSettings(@NotNull GeneralSettingsTable table) {
         table.getKeyboardLayouts().setSelected(registry.getSettings().getKeyboardLayout());
@@ -35,9 +36,12 @@ public class SettingsDialogPresenter {
         });
         fileChooserFieldPresenter.initFileChooserField(table.getFbxBinary());
         table.getFbxBinary().setText(registry.getSettings().getFbxConvBinary());
+        table.getAutoReloadFromDisk().setChecked(registry.getSettings().isReloadShaderFromDisk());
         table.setSaveListener(() -> {
             registry.getSettings().setFbxConvBinary(table.getFbxBinary().getPath());
-            kryoManager.saveRegistry(registry);
+            registry.getSettings().setReloadShaderFromDisk(table.getAutoReloadFromDisk().isChecked());
+
+            projectStorage.saveRegistry(registry);
             eventBus.post(new SettingsChangedEvent(registry.getSettings()));
             toaster.success("Settings saved");
         });
@@ -47,7 +51,7 @@ public class SettingsDialogPresenter {
         eventBus.register(table);
         fileChooserFieldPresenter.initFileChooserField(table.getFileChooserField());
         eventBus.register((ProjectChangedEvent.ProjectChangedListener) event -> {
-            var settings = projectManager.getCurrent().settings;
+            var settings = ctx.getCurrent().settings;
             if (settings != null && settings.getExport() != null) {
                 var exportSettings = settings.getExport();
                 if (exportSettings.outputFolder != null) {
@@ -59,7 +63,7 @@ public class SettingsDialogPresenter {
             }
         });
         table.setSaveListener(() -> {
-            var settings = projectManager.getCurrent().settings;
+            var settings = ctx.getCurrent().settings;
             if (settings == null || settings.getExport() == null) {
                 return;
             }
@@ -69,7 +73,7 @@ public class SettingsDialogPresenter {
             exportSettings.jsonType = table.getJsonType().getSelected();
             exportSettings.outputFolder = new FileHandle(table.getFileChooserField().getPath());
 
-            kryoManager.saveProjectContext(projectManager.getCurrent());
+            projectStorage.saveProjectContext(ctx.getCurrent());
             toaster.success("Settings saved");
         });
 

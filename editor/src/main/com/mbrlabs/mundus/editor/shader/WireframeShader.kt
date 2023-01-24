@@ -17,34 +17,21 @@
 package com.mbrlabs.mundus.editor.shader
 
 import com.badlogic.gdx.graphics.Camera
-
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.g3d.Renderable
 import com.badlogic.gdx.graphics.g3d.Shader
-import com.badlogic.gdx.graphics.g3d.shaders.BaseShader
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext
-import com.mbrlabs.mundus.commons.utils.ShaderUtils
+import com.mbrlabs.mundus.commons.shaders.DefaultBaseShader
 import com.mbrlabs.mundus.editor.utils.GlUtils
-
-private const val VERTEX_SHADER = "com/mbrlabs/mundus/editor/shader/wire.vert.glsl"
-private const val FRAGMENT_SHADER = "com/mbrlabs/mundus/editor/shader/wire.frag.glsl"
 
 /**
  * @author Marcus Brummer
  * @version 03-12-2015
  */
-class WireframeShader : BaseShader() {
+class WireframeShader(vertex: String, fragment: String) : DefaultBaseShader(vertex, fragment) {
 
     private val UNIFORM_PROJ_VIEW_MATRIX = register(Uniform("u_projViewMatrix"))
     private val UNIFORM_TRANS_MATRIX = register(Uniform("u_transMatrix"))
-
-    init {
-        program = ShaderUtils.compile(VERTEX_SHADER, FRAGMENT_SHADER)
-    }
-
-    override fun init() {
-        super.init(program, null)
-    }
 
     override fun compareTo(other: Shader): Int {
         return 0

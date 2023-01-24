@@ -17,6 +17,7 @@
 package com.mbrlabs.mundus.commons.scene3d.components;
 
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
+import org.apache.commons.lang3.NotImplementedException;
 
 /**
  * @author Marcus Brummer
@@ -25,7 +26,9 @@ import com.mbrlabs.mundus.commons.scene3d.GameObject;
 public interface Component extends Renderable {
 
     enum Type {
-        MODEL, TERRAIN, LIGHT, PARTICLE_SYSTEM
+        MODEL, TERRAIN, LIGHT, PARTICLE_SYSTEM, CAMERA, SKYBOX,
+        // e.x. for useful control of camera
+        HANDLE, ACTION
     }
 
     GameObject getGameObject();
@@ -38,5 +41,7 @@ public interface Component extends Renderable {
 
     void remove();
 
-    Component clone(GameObject go);
+    default Component clone(GameObject go) {
+        throw new NotImplementedException();
+    }
 }

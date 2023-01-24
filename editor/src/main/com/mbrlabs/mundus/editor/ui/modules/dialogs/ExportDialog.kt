@@ -20,13 +20,15 @@ import com.kotcrab.vis.ui.util.async.AsyncTaskListener
 import com.kotcrab.vis.ui.widget.VisDialog
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisProgressBar
-import com.mbrlabs.mundus.editor.core.kryo.KryoManager
-import com.mbrlabs.mundus.editor.core.project.ProjectManager
+import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
+import com.mbrlabs.mundus.editor.core.project.EditorCtx
+import com.mbrlabs.mundus.editor.core.project.ProjectStorage
+import com.mbrlabs.mundus.editor.core.scene.SceneStorage
 import com.mbrlabs.mundus.editor.exporter.Exporter
 import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.UiConstants
-import com.mbrlabs.mundus.editor.utils.Log
 import com.mbrlabs.mundus.editor.utils.Toaster
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 /**
@@ -35,11 +37,17 @@ import org.springframework.stereotype.Component
  */
 @Component
 class ExportDialog(
+    private val assetManager: EditorAssetManager,
     private val toaster: Toaster,
-    private val projectManager: ProjectManager,
-    private val kryoManager: KryoManager,
-    private val appUi: AppUi
+    private val projectStorage: ProjectStorage,
+    private val sceneStorage: SceneStorage,
+    private val appUi: AppUi,
+    private val ctx: EditorCtx
 ) : VisDialog("Exporting") {
+
+    companion object {
+        private val log = LoggerFactory.getLogger(javaClass)
+    }
 
     private var lastExport: Long = 0
 
@@ -56,7 +64,7 @@ class ExportDialog(
 
     fun export() {
         // validate
-        val export = projectManager.current.settings?.export
+        val export = ctx.current.settings?.export
         if (export?.outputFolder == null
             || export.outputFolder.path().isEmpty() || !export.outputFolder.exists()
         ) {
@@ -75,34 +83,36 @@ class ExportDialog(
 
         show(appUi)
 
-        Exporter(kryoManager, projectManager.current).exportAsync(export.outputFolder, object : AsyncTaskListener {
-            private var error = false
+        Exporter(ctx.current, sceneStorage, assetManager).exportAsync(
+            export.outputFolder,
+            object : AsyncTaskListener {
+                private var error = false
 
-            override fun progressChanged(newProgressPercent: Int) {
-                progressBar.value = newProgressPercent.toFloat()
-            }
-
-            override fun finished() {
-                if (!error) {
-                    toaster.success("Project exported")
+                override fun progressChanged(newProgressPercent: Int) {
+                    progressBar.value = newProgressPercent.toFloat()
                 }
-                resetValues()
-                close()
-                lastExport = System.currentTimeMillis()
-            }
 
-            override fun messageChanged(message: String?) {
-                label.setText(message)
-            }
+                override fun finished() {
+                    if (!error) {
+                        toaster.success("Project exported")
+                    }
+                    resetValues()
+                    close()
+                    lastExport = System.currentTimeMillis()
+                }
 
-            override fun failed(message: String?, exception: Exception?) {
-                Log.exception("Exporter", exception)
-                toaster.sticky(Toaster.ToastType.ERROR, "Export failed: " + exception.toString())
-                error = true
-                resetValues()
-                close()
-            }
-        })
+                override fun messageChanged(message: String?) {
+                    label.setText(message)
+                }
+
+                override fun failed(message: String?, exception: Exception?) {
+                    log.error("Exporter", exception)
+                    toaster.sticky(Toaster.ToastType.ERROR, "Export failed: " + exception.toString())
+                    error = true
+                    resetValues()
+                    close()
+                }
+            })
     }
 
     private fun resetValues() {

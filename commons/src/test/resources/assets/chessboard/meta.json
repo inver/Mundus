@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "lastModified": 1663444124794,
+  "type": "TEXTURE",
+  "additional": {
+    "file": "chessboard.png",
+    "tileable": true,
+    "generateMipMaps": true
+  }
+}

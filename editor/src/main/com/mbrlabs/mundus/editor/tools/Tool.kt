@@ -18,31 +18,29 @@ package com.mbrlabs.mundus.editor.tools
 
 import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.graphics.g3d.ModelBatch
-import com.badlogic.gdx.graphics.g3d.Shader
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Disposable
-import com.mbrlabs.mundus.editor.core.project.ProjectManager
+import com.mbrlabs.mundus.commons.scene3d.components.Renderable
+import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.history.CommandHistory
-import com.mbrlabs.mundus.editor.shader.Shaders
 
 /**
  * @author Marcus Brummer
  * @version 25-12-2015
  */
 abstract class Tool(
-    protected var projectManager: ProjectManager, protected var batch: ModelBatch,
-    protected var history: CommandHistory
-) : InputAdapter(), Disposable {
+    protected var ctx: EditorCtx,
+    protected var shaderKey: String,
+    protected var batch: ModelBatch,
+    protected var history: CommandHistory,
+    val name: String
+) : Renderable, InputAdapter(), Disposable {
 
-    protected var shader: Shader = Shaders.wireframeShader
+//    protected var shader: Shader = shaderStorage.get(ShaderConstants.WIREFRAME)
 
-    abstract val name: String
-    abstract val icon: Drawable
+    //    abstract val name: String
     abstract val iconFont: String
 
-    abstract fun render()
     abstract fun act()
     abstract fun onActivated()
     abstract fun onDisabled()
-
 }

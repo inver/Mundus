@@ -18,8 +18,7 @@ package com.mbrlabs.mundus.editor.tools.brushes;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.mbrlabs.mundus.editor.core.project.ProjectManager;
+import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.utils.Fa;
 
@@ -29,18 +28,8 @@ import com.mbrlabs.mundus.editor.utils.Fa;
  */
 public class StarBrush extends TerrainBrush {
 
-    public StarBrush(ProjectManager projectManager, ModelBatch batch, CommandHistory history) {
-        super(projectManager, batch, history, Gdx.files.internal("brushes/star.png"));
-    }
-
-    @Override
-    public String getName() {
-        return "Star brush";
-    }
-
-    @Override
-    public Drawable getIcon() {
-        throw new UnsupportedOperationException();
+    public StarBrush(EditorCtx ctx, String shaderKey, ModelBatch batch, CommandHistory history) {
+        super(ctx, shaderKey, batch, history, Gdx.files.internal("brushes/star.png"), "Star brush");
     }
 
     @Override

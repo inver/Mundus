@@ -16,16 +16,25 @@
 
 package com.mbrlabs.mundus.editor.ui.modules.toolbar
 
+import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
-import com.kotcrab.vis.ui.widget.MenuItem
-import com.kotcrab.vis.ui.widget.PopupMenu
-import com.kotcrab.vis.ui.widget.Tooltip
+import com.badlogic.gdx.utils.Array
+import com.kotcrab.vis.ui.widget.*
+import com.mbrlabs.mundus.commons.scene3d.HierarchyNode
+import com.mbrlabs.mundus.editor.core.project.EditorCtx
+import com.mbrlabs.mundus.editor.core.project.ProjectContext
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
+import com.mbrlabs.mundus.editor.events.CameraChangedEvent
+import com.mbrlabs.mundus.editor.events.EventBus
+import com.mbrlabs.mundus.editor.events.ProjectChangedEvent
+import com.mbrlabs.mundus.editor.events.SceneGraphChangedEvent
 import com.mbrlabs.mundus.editor.tools.*
 import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.ExportDialog
 import com.mbrlabs.mundus.editor.ui.widgets.FaTextButton
+import com.mbrlabs.mundus.editor.ui.widgets.MundusSelectBox
 import com.mbrlabs.mundus.editor.ui.widgets.ToggleButton
 import com.mbrlabs.mundus.editor.ui.widgets.Toolbar
 import com.mbrlabs.mundus.editor.utils.Fa
@@ -39,13 +48,15 @@ import org.springframework.stereotype.Component
  */
 @Component
 class MundusToolbar(
+    private val ctx: EditorCtx,
+    private val eventBus: EventBus,
     toolbarPresenter: ToolbarPresenter,
     private val toolManager: ToolManager,
     private val projectManager: ProjectManager,
     private val toaster: Toaster,
     private val exportDialog: ExportDialog,
     private val appUi: AppUi
-) : Toolbar() {
+) : Toolbar(), SceneGraphChangedEvent.SceneGraphChangedListener, ProjectChangedEvent.ProjectChangedListener {
     private val saveBtn = FaTextButton(Fa.SAVE)
     private val importBtn = FaTextButton(Fa.DOWNLOAD)
     private val exportBtn = FaTextButton(Fa.GIFT)
@@ -61,7 +72,12 @@ class MundusToolbar(
     private val importTexture = MenuItem("Import texture")
     private val createMaterial = MenuItem("Create material")
 
+    private val sceneSelector = VisSelectBox<String>()
+    private val cameraSelector = MundusSelectBox<HierarchyNode>()
+
     init {
+        eventBus.register(this)
+
         importMenu.addItem(importMesh)
         importMenu.addItem(importTexture)
         importMenu.addItem(createMaterial)
@@ -91,6 +107,16 @@ class MundusToolbar(
         scaleBtn.padRight(7f).padLeft(7f)
         Tooltip.Builder(toolManager.scaleTool.name).target(scaleBtn).build()
 
+        sceneSelector.setItems("Main");
+
+        cameraSelector.setValueRenderer { it.name }
+        cameraSelector.addListener(object : ChangeListener() {
+            override fun changed(event: ChangeEvent, actor: Actor) {
+                ctx.current.selectedCamera = cameraSelector.selected.id
+                eventBus.post(CameraChangedEvent(cameraSelector.selected.id))
+            }
+        })
+
         addItem(saveBtn, true)
         addItem(importBtn, true)
         addItem(exportBtn, true)
@@ -100,6 +126,11 @@ class MundusToolbar(
         addItem(rotateBtn, true)
         addItem(scaleBtn, true)
         addSeperator(true)
+        addItem(VisLabel(" Scene: "), true)
+        addItem(sceneSelector, true)
+        addSeperator(true)
+        addItem(VisLabel(" Camera: "), true)
+        addItem(cameraSelector, true)
         // addItem(globalLocalSwitch, true);
 
         setActive(translateBtn)
@@ -192,4 +223,21 @@ class MundusToolbar(
         }
     }
 
+    private fun reloadCamerasList() {
+        val arr = Array<HierarchyNode>()
+        arr.add(HierarchyNode(ProjectContext.MAIN_CAMERA_SELECTED, "Main", HierarchyNode.Type.CAMERA))
+        ctx.current.currentScene.rootNode.children.filter { it.type == HierarchyNode.Type.CAMERA }.forEach {
+            arr.add(it)
+        }
+
+        cameraSelector.items = arr
+    }
+
+    override fun onSceneGraphChanged(event: SceneGraphChangedEvent) {
+        reloadCamerasList()
+    }
+
+    override fun onProjectChanged(event: ProjectChangedEvent?) {
+        reloadCamerasList()
+    }
 }

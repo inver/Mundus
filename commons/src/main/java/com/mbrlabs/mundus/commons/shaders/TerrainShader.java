@@ -20,25 +20,26 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
-import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
+import com.badlogic.gdx.graphics.g3d.attributes.DirectionalLightsAttribute;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.mbrlabs.mundus.commons.env.Fog;
-import com.mbrlabs.mundus.commons.env.MundusEnvironment;
+import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.terrain.SplatTexture;
+import com.mbrlabs.mundus.commons.terrain.TerrainObject;
 import com.mbrlabs.mundus.commons.terrain.TerrainTexture;
 import com.mbrlabs.mundus.commons.terrain.TerrainTextureAttribute;
-import com.mbrlabs.mundus.commons.utils.ShaderUtils;
 
 /**
  * @author Marcus Brummer
  * @version 22-11-2015
  */
-public class TerrainShader extends BaseShader {
+public class TerrainShader extends DefaultBaseShader {
 
-    protected static final String VERTEX_SHADER = "shaders/terrain.vert.glsl";
-    protected static final String FRAGMENT_SHADER = "shaders/terrain.frag.glsl";
+    protected static final String VERTEX_SHADER = "bundled/shaders/terrain.vert.glsl";
+    protected static final String FRAGMENT_SHADER = "bundled/shaders/terrain.frag.glsl";
 
     // ============================ MATRICES & CAM POSITION ============================
     protected final int UNIFORM_PROJ_VIEW_MATRIX = register(new Uniform("u_projViewMatrix"));
@@ -68,18 +69,10 @@ public class TerrainShader extends BaseShader {
     protected final int UNIFORM_FOG_GRADIENT = register(new Uniform("u_fogGradient"));
     protected final int UNIFORM_FOG_COLOR = register(new Uniform("u_fogColor"));
 
-
     private Vector2 terrainSize = new Vector2();
 
-    protected ShaderProgram program;
-
-    public TerrainShader() {
-        program = ShaderUtils.compile(VERTEX_SHADER, FRAGMENT_SHADER);
-    }
-
-    @Override
-    public void init() {
-        super.init(program, null);
+    public TerrainShader(String vertexShader, String fragmentShader) {
+        super(vertexShader, fragmentShader);
     }
 
     @Override
@@ -98,8 +91,8 @@ public class TerrainShader extends BaseShader {
         context.begin();
         context.setCullFace(GL20.GL_BACK);
 
-        this.context.setDepthTest(GL20.GL_LEQUAL, 0f, 1f);
-        this.context.setDepthMask(true);
+        context.setDepthTest(GL20.GL_LEQUAL, 0f, 1f);
+        context.setDepthMask(true);
 
         program.bind();
 
@@ -109,9 +102,9 @@ public class TerrainShader extends BaseShader {
 
     @Override
     public void render(Renderable renderable) {
-        final MundusEnvironment env = (MundusEnvironment) renderable.environment;
+        final SceneEnvironment env = (SceneEnvironment) renderable.environment;
 
-        setLights(env);
+        setLights(env, (TerrainObject.TerrainUserData) renderable.userData);
         setTerrainSplatTextures(renderable);
         set(UNIFORM_TRANS_MATRIX, renderable.worldTransform);
 
@@ -130,23 +123,29 @@ public class TerrainShader extends BaseShader {
         renderable.meshPart.render(program);
     }
 
-    protected void setLights(MundusEnvironment env) {
+    protected void setLights(SceneEnvironment env, TerrainObject.TerrainUserData userData) {
         // ambient
-        set(UNIFORM_AMBIENT_LIGHT_COLOR, env.getAmbientLight().color);
-        set(UNIFORM_AMBIENT_LIGHT_INTENSITY, env.getAmbientLight().intensity);
+        set(UNIFORM_AMBIENT_LIGHT_COLOR, env.getAmbientLight().getColor());
+        set(UNIFORM_AMBIENT_LIGHT_INTENSITY, env.getAmbientLight().getIntensity());
+
+        for (var light : userData.getLights()) {
+
+        }
 
         // TODO light array for each light type
 
         // directional lights
-//        final DirectionalLightsAttribute dirLightAttribs = env.get(DirectionalLightsAttribute.class,
-//                DirectionalLightsAttribute.Type);
-//        final Array<DirectionalLight> dirLights = dirLightAttribs == null ? null : dirLightAttribs.lights;
-//        if (dirLights != null && dirLights.size > 0) {
-//            final DirectionalLight light = dirLights.first();
-//            set(UNIFORM_DIRECTIONAL_LIGHT_COLOR, light.color);
-//            set(UNIFORM_DIRECTIONAL_LIGHT_DIR, light.direction);
+        final DirectionalLightsAttribute dirLightAttribs = env.get(DirectionalLightsAttribute.class,
+                DirectionalLightsAttribute.Type);
+        final Array<DirectionalLight> dirLights = dirLightAttribs == null ? null : dirLightAttribs.lights;
+        if (dirLights != null && dirLights.size > 0) {
+            final DirectionalLight light = dirLights.first();
+            set(UNIFORM_DIRECTIONAL_LIGHT_COLOR, light.color);
+            set(UNIFORM_DIRECTIONAL_LIGHT_DIR, light.direction);
+            //todo
 //            set(UNIFORM_DIRECTIONAL_LIGHT_INTENSITY, light.intensity);
-//        }
+            set(UNIFORM_DIRECTIONAL_LIGHT_INTENSITY, 0.3f);
+        }
 
         // TODO point lights, spot lights
     }
@@ -166,9 +165,9 @@ public class TerrainShader extends BaseShader {
         }
 
         // splat textures
-        if (terrainTexture.getSplatmap() != null) {
+        if (terrainTexture.getSplatMap() != null) {
             set(UNIFORM_TEXTURE_HAS_SPLATMAP, 1);
-            set(UNIFORM_TEXTURE_SPLAT, terrainTexture.getSplatmap().getTexture());
+            set(UNIFORM_TEXTURE_SPLAT, terrainTexture.getSplatMap().getTexture());
             st = terrainTexture.getTexture(SplatTexture.Channel.R);
             if (st != null) set(UNIFORM_TEXTURE_R, st.texture.getTexture());
             st = terrainTexture.getTexture(SplatTexture.Channel.G);
@@ -181,9 +180,11 @@ public class TerrainShader extends BaseShader {
             set(UNIFORM_TEXTURE_HAS_SPLATMAP, 0);
         }
 
+        TerrainObject.TerrainUserData userData = (TerrainObject.TerrainUserData) renderable.userData;
         // set terrain world size
-        terrainSize.x = terrainTexture.getTerrain().terrainWidth;
-        terrainSize.y = terrainTexture.getTerrain().terrainDepth;
+        //todo migrate to Vector2
+        terrainSize.x = userData.getTerrainWidth();
+        terrainSize.y = userData.getTerrainDepth();
         set(UNIFORM_TERRAIN_SIZE, terrainSize);
     }
 

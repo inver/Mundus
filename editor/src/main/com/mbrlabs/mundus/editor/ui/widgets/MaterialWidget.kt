@@ -28,18 +28,16 @@ import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.kotcrab.vis.ui.widget.VisTextField
-import com.kotcrab.vis.ui.widget.color.ColorPicker
 import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter
-import com.mbrlabs.mundus.commons.assets.Asset
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset
-import com.mbrlabs.mundus.commons.assets.texture.TextureAsset
-import com.mbrlabs.mundus.commons.scene3d.components.Component
-import com.mbrlabs.mundus.commons.scene3d.components.ModelComponent
 import com.mbrlabs.mundus.editor.assets.AssetMaterialFilter
-import com.mbrlabs.mundus.editor.assets.AssetTextureFilter
-import com.mbrlabs.mundus.editor.core.project.ProjectManager
+import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
+import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.ui.AppUi
+import com.mbrlabs.mundus.editor.ui.PreviewGenerator
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
+import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerListener
+import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerField
 
 /**
  * Displays all properties of a material.
@@ -50,20 +48,32 @@ import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
  * @version 13-10-2016
  */
 class MaterialWidget(
-    colorPicker: ColorPicker,
-    appUi: AppUi,
+    private val ctx: EditorCtx,
+    private val appUi: AppUi,
     private val assetSelectionDialog: AssetPickerDialog,
-    private val projectManager: ProjectManager
+    private val assetManager: EditorAssetManager,
+    private val previewGenerator: PreviewGenerator
 ) : VisTable() {
 
     private val matFilter: AssetMaterialFilter = AssetMaterialFilter()
     private val matChangedBtn: VisTextButton = VisTextButton("change")
-    private val matPickerListener: AssetPickerDialog.AssetPickerListener
+    private val matPickerListener: AssetPickerListener
 
     private val matNameLabel: VisLabel = VisLabel()
-    private val diffuseColorField: ColorPickerField = ColorPickerField(colorPicker, appUi)
-    private val diffuseAssetField: AssetSelectionField = AssetSelectionField(assetSelectionDialog)
-    private val shininessField = VisTextField()
+    val previewPathFiled = FileChooserField()
+    val diffuseTextureField = AssetSelectionField()
+    val ambientOcclusionTextureField = AssetSelectionField()
+    val albedoTextureField = AssetSelectionField()
+    val heightTextureField = AssetSelectionField()
+    val metallicTextureField = AssetSelectionField()
+    val normalTextureField = AssetSelectionField()
+    val roughnessTextureField = AssetSelectionField()
+
+    val diffuseColorField = ColorPickerField()
+    val shininessField = VisTextField()
+    val opacityField = VisTextField()
+
+    private val previewWidgetContainer = VisTable()
 
     /**
      * The currently active material of the widget.
@@ -73,9 +83,12 @@ class MaterialWidget(
             if (value != null) {
                 field = value
                 diffuseColorField.selectedColor = value.diffuseColor
-                diffuseAssetField.setAsset(value.diffuseTexture)
+//                diffuseAssetField.setAsset(value.diffuseTexture)
                 matNameLabel.setText(value.name)
-                shininessField.text = value.shininess.toString()
+//                shininessField.text = value.shininess.toString()
+
+                previewWidgetContainer.clearChildren()
+                previewWidgetContainer.add(previewGenerator.createPreviewWidget(appUi, value)).expand().fill()
             }
         }
 
@@ -93,28 +106,29 @@ class MaterialWidget(
         align(Align.topLeft)
         matNameLabel.setWrap(true)
 
-        matPickerListener = object : AssetPickerDialog.AssetPickerListener {
-            override fun onSelected(asset: Asset?) {
-                material = asset as? MaterialAsset
-                matChangedListener?.materialChanged(material!!)
-            }
+        matPickerListener = AssetPickerListener { asset ->
+            material = asset as? MaterialAsset
+            matChangedListener?.materialChanged(material!!)
         }
 
         setupWidgets()
     }
 
     private fun setupWidgets() {
+        previewWidgetContainer.debugAll()
+        add(previewWidgetContainer).height(250f).width(250f).row()
+
         val table = VisTable()
         table.add(matNameLabel).grow()
-        table.add<VisTextButton>(matChangedBtn).padLeft(4f).right().row()
+        table.add(matChangedBtn).padLeft(4f).right().row()
         add(table).grow().row()
 
         addSeparator().growX().row()
 
-        add(VisLabel("Diffuse texture")).grow().row()
-        add(diffuseAssetField).growX().row()
         add(VisLabel("Diffuse color")).grow().row()
         add(diffuseColorField).growX().row()
+        add(VisLabel("Diffuse texture")).grow().row()
+        add(diffuseTextureField).growX().row()
         add(VisLabel("Shininess")).growX().row()
         add(shininessField).growX().row()
 
@@ -125,15 +139,13 @@ class MaterialWidget(
         })
 
         // diffuse texture
-        diffuseAssetField.assetFilter = AssetTextureFilter()
-        diffuseAssetField.pickerListener = object : AssetPickerDialog.AssetPickerListener {
-            override fun onSelected(asset: Asset?) {
-                material?.diffuseTexture = asset as? TextureAsset
-                applyMaterialToModelAssets()
-                applyMaterialToModelComponents()
-                projectManager.current.assetManager.dirty(material!!)
-            }
-        }
+//        diffuseAssetField.assetFilter = AssetTextureFilter()
+//        diffuseAssetField.pickerListener = AssetPickerListener { asset ->
+////            material?.diffuseTexture = asset as? TextureAsset
+////            applyMaterialToModelAssets()
+////            applyMaterialToModelComponents()
+////            assetManager.dirty(material!!)
+//        }
 
         // diffuse color
         diffuseColorField.colorAdapter = object : ColorPickerAdapter() {
@@ -141,7 +153,7 @@ class MaterialWidget(
                 material?.diffuseColor?.set(newColor)
                 applyMaterialToModelAssets()
                 applyMaterialToModelComponents()
-                projectManager.current.assetManager.dirty(material!!)
+//                assetManager.dirty(material!!)
             }
         }
 
@@ -150,10 +162,10 @@ class MaterialWidget(
         shininessField.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent?, actor: Actor?) {
                 if (shininessField.isInputValid && !shininessField.isEmpty) {
-                    material?.shininess = shininessField.text.toFloat()
-                    applyMaterialToModelAssets()
-                    applyMaterialToModelComponents()
-                    projectManager.current.assetManager.dirty(material!!)
+//                    material?.shininess = shininessField.text.toFloat()
+//                    applyMaterialToModelAssets()
+//                    applyMaterialToModelComponents()
+//                    assetManager.dirty(material!!)
                 }
             }
         })
@@ -162,21 +174,20 @@ class MaterialWidget(
 
     // TODO find better solution than iterating through all components
     private fun applyMaterialToModelComponents() {
-        val sceneGraph = projectManager.current.currScene.sceneGraph
-        for (go in sceneGraph.gameObjects) {
-            val mc = go.findComponentByType(Component.Type.MODEL)
-            if (mc != null && mc is ModelComponent) {
-                mc.applyMaterials()
-            }
-        }
+//        val sceneGraph = ctx.current.currentScene.sceneGraph
+//        for (go in sceneGraph.gameObjects) {
+//            val mc = go.findComponentByType(Component.Type.MODEL)
+//            if (mc != null && mc is ModelComponent) {
+//                mc.applyMaterials()
+//            }
+//        }
     }
 
     // TODO find better solution than iterating through all assets
     private fun applyMaterialToModelAssets() {
-        val assetManager = projectManager.current.assetManager
-        for (modelAsset in assetManager.assets) {
-            modelAsset.applyDependencies()
-        }
+//        for (modelAsset in assetManager.assets) {
+//            modelAsset.applyDependencies()
+//        }
     }
 
     /**

@@ -17,17 +17,16 @@
 package com.mbrlabs.mundus.editor.ui.modules.inspector.components
 
 import com.kotcrab.vis.ui.widget.Separator.SeparatorStyle
-import com.mbrlabs.mundus.commons.scene3d.components.Component
 import com.mbrlabs.mundus.editor.ui.modules.inspector.BaseInspectorWidget
 
 /**
  * @author Marcus Brummer
  * @version 22-01-2016
  */
-abstract class ComponentWidget<T : Component>(
+abstract class ComponentWidget(
     separatorStyle: SeparatorStyle,
     title: String,
-    var component: T
+    var entityId: Int
 ) : BaseInspectorWidget(separatorStyle, title) {
 
     init {
@@ -35,7 +34,8 @@ abstract class ComponentWidget<T : Component>(
     }
 
     override fun onDelete() {
-        component.remove()
+        //todo
+//        component.remove()
         remove()
     }
 

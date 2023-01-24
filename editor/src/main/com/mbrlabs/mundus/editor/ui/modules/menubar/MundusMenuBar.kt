@@ -22,19 +22,15 @@ import com.badlogic.gdx.scenes.scene2d.EventListener
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.kotcrab.vis.ui.VisUI
 import com.kotcrab.vis.ui.widget.*
-import com.mbrlabs.mundus.commons.core.registry.Registry
 import com.mbrlabs.mundus.editor.appUimodules.menu.FileMenu
 
 /**
  * @author Marcus Brummer
  * @version 22-11-2015
  */
-class MundusMenuBar(
-    registry: Registry,
-    private val menuBarController: MenuBarPresenter
-) : MenuBar() {
+class MundusMenuBar(private val menuBarPresenter: MenuBarPresenter) : MenuBar() {
 
-    private val fileMenu = FileMenu(registry)
+    private val fileMenu = FileMenu()
     private val editMenu = EditMenu()
     private val assetsMenu = Menu("Assets")
     private val environmentMenu = Menu("Environment")
@@ -52,29 +48,29 @@ class MundusMenuBar(
 
     private fun initFileMenu() {
         addMenu(fileMenu)
-        fileMenu.newProject.addListener(menuBarController.newProjectListener())
-        fileMenu.importProject.addListener(menuBarController.importProjectListener())
-        fileMenu.exit.addListener(menuBarController.exitListener())
-        fileMenu.addRecentProjectsListener(menuBarController.recentProjectListener())
+        fileMenu.newProject.addListener(menuBarPresenter.newProjectListener())
+        fileMenu.importProject.addListener(menuBarPresenter.importProjectListener())
+        fileMenu.exit.addListener(menuBarPresenter.exitListener())
+        menuBarPresenter.initRecentProjectsMenu(fileMenu.recentProjectsPopup)
     }
 
     private fun initEditMenu() {
         addMenu(editMenu)
-        editMenu.redo.addListener(menuBarController.redoListener())
-        editMenu.undo.addListener(menuBarController.undoListener())
+        editMenu.redo.addListener(menuBarPresenter.redoListener())
+        editMenu.undo.addListener(menuBarPresenter.undoListener())
     }
 
     private fun initAssetsMenu() {
         addMenu(assetsMenu)
-        assetsMenu.addItem(createMenu("Import Mesh", menuBarController.importMeshListener()))
+        assetsMenu.addItem(createMenu("Import Mesh", menuBarPresenter.importMeshListener()))
     }
 
     private fun initEnvironmentMenu() {
         addMenu(environmentMenu)
-        environmentMenu.addItem(createMenu("Ambient Light", menuBarController.addAmbilentLight()))
-        environmentMenu.addItem(createMenu("Skybox", menuBarController.addSkyBox()))
-        environmentMenu.addItem(createMenu("IBL Image", menuBarController.addIblImage()))
-        environmentMenu.addItem(createMenu("Fog", menuBarController.addFog()))
+        environmentMenu.addItem(createMenu("Ambient Light", menuBarPresenter.addAmbilentLight()))
+        environmentMenu.addItem(createMenu("Skybox", menuBarPresenter.addSkyBox()))
+        environmentMenu.addItem(createMenu("IBL Image", menuBarPresenter.addIblImage()))
+        environmentMenu.addItem(createMenu("Fog", menuBarPresenter.addFog()))
     }
 
     private fun initSceneMenu() {
@@ -83,7 +79,7 @@ class MundusMenuBar(
 
     private fun initWindowMenu() {
         addMenu(windowMenu)
-        windowMenu.addItem(createMenu("Settings", menuBarController.windowsSettingsListener()))
+        windowMenu.addItem(createMenu("Settings", menuBarPresenter.windowsSettingsListener()))
     }
 
     private fun createMenu(text: String, listener: EventListener?): MenuItem {

@@ -20,42 +20,26 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.CubemapAttribute;
-import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.mbrlabs.mundus.commons.env.Fog;
-import com.mbrlabs.mundus.commons.env.MundusEnvironment;
-import com.mbrlabs.mundus.commons.utils.ShaderUtils;
+import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 
 /**
  * @author Marcus Brummer
  * @version 08-01-2016
  */
-public class SkyboxShader extends BaseShader {
-
-    private final String VERTEX_SHADER = "shaders/skybox.vert.glsl";
-    private final String FRAGMENT_SHADER = "shaders/skybox.frag.glsl";
-
+public class SkyboxShader extends DefaultBaseShader {
     protected final int UNIFORM_PROJ_VIEW_MATRIX = register(new Uniform("u_projViewMatrix"));
     protected final int UNIFORM_TRANS_MATRIX = register(new Uniform("u_transMatrix"));
     protected final int UNIFORM_TEXTURE = register(new Uniform("u_texture"));
-
     protected final int UNIFORM_FOG = register(new Uniform("u_fog"));
     protected final int UNIFORM_FOG_COLOR = register(new Uniform("u_fogColor"));
 
-    private ShaderProgram program;
+    private final Matrix4 transform = new Matrix4();
 
-    private Matrix4 transform = new Matrix4();
-
-    public SkyboxShader() {
-        super();
-        program = ShaderUtils.compile(VERTEX_SHADER, FRAGMENT_SHADER);
-    }
-
-    @Override
-    public void init() {
-        super.init(program, null);
+    public SkyboxShader(String vertexShader, String fragmentShader) {
+        super(vertexShader, fragmentShader);
     }
 
     @Override
@@ -82,16 +66,16 @@ public class SkyboxShader extends BaseShader {
 
     @Override
     public void render(Renderable renderable) {
-
         // texture uniform
-        CubemapAttribute cubemapAttribute = ((CubemapAttribute) (renderable.material
-                .get(CubemapAttribute.EnvironmentMap)));
+        var cubemapAttribute = ((CubemapAttribute) (
+                renderable.material.get(CubemapAttribute.EnvironmentMap))
+        );
         if (cubemapAttribute != null) {
             set(UNIFORM_TEXTURE, cubemapAttribute.textureDescription);
         }
 
         // Fog
-        Fog fog = ((MundusEnvironment) renderable.environment).getFog();
+        Fog fog = ((SceneEnvironment) renderable.environment).getFog();
         if (fog == null) {
             set(UNIFORM_FOG, 0);
         } else {

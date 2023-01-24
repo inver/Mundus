@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "lastModified": 1663444124794,
+  "type": "SHADER",
+  "additional": {
+    "vertex": "skybox.vert.glsl",
+    "fragment": "skybox.frag.glsl"
+  }
+}

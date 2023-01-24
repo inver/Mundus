@@ -17,7 +17,7 @@
 package com.mbrlabs.mundus.editor.terrain;
 
 import com.badlogic.gdx.math.Interpolation;
-import com.mbrlabs.mundus.commons.terrain.Terrain;
+import com.mbrlabs.mundus.commons.terrain.TerrainObject;
 
 import java.util.Random;
 
@@ -34,7 +34,7 @@ public class PerlinNoiseGenerator extends Generator<PerlinNoiseGenerator> {
     // decrease of amplitude per octave
     private float roughness = 0;
 
-    PerlinNoiseGenerator(Terrain terrain) {
+    PerlinNoiseGenerator(TerrainObject terrain) {
         super(terrain);
     }
 

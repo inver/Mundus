@@ -16,65 +16,52 @@
 
 package com.mbrlabs.mundus.commons;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.artemis.World;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
-import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset;
-import com.mbrlabs.mundus.commons.env.MundusEnvironment;
-import com.mbrlabs.mundus.commons.env.lights.DirectionalLight;
-import com.mbrlabs.mundus.commons.scene3d.SceneGraph;
-import com.mbrlabs.mundus.commons.skybox.Skybox;
+import com.mbrlabs.mundus.commons.assets.Asset;
+import com.mbrlabs.mundus.commons.core.ecs.WorldUtils;
+import com.mbrlabs.mundus.commons.core.ecs.behavior.RenderComponentSystem;
+import com.mbrlabs.mundus.commons.core.ecs.component.CameraComponent;
+import com.mbrlabs.mundus.commons.env.SceneEnvironment;
+import com.mbrlabs.mundus.commons.scene3d.HierarchyNode;
+import com.mbrlabs.mundus.commons.scene3d.components.Renderable;
+import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Marcus Brummer
  * @version 22-12-2015
  */
-public class Scene implements Disposable {
-
-    private String name;
+@RequiredArgsConstructor
+public class Scene implements Disposable, Renderable {
     private long id;
+    private String name;
 
-    public SceneGraph sceneGraph;
-    public MundusEnvironment environment;
-    public Skybox skybox;
+    @Getter
+    private final World world;
+    @Getter
+    @Setter
+    private SceneEnvironment environment = new SceneEnvironment();
+    @Getter
+    private final List<Asset<?>> assets = new ArrayList<>();
 
-    @Deprecated // TODO not here
-    public Array<TerrainAsset> terrains;
+    @Setter
+    @Getter
+    private HierarchyNode rootNode = new HierarchyNode(-1, "Root");
 
-    public PerspectiveCamera cam;
-    public ModelBatch batch;
-
-    public Scene() {
-        environment = new MundusEnvironment();
-        terrains = new Array<>();
-
-        cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        cam.position.set(0, 1, -3);
-        cam.lookAt(0, 1, -1);
-        cam.near = 0.2f;
-        cam.far = 10000;
-
-        var dirLight = new DirectionalLight();
-        dirLight.color.set(1, 1, 1, 1);
-        dirLight.intensity = 1f;
-        dirLight.direction.set(0, -1f, 0);
-        dirLight.direction.nor();
-        environment.add(dirLight);
-        environment.getAmbientLight().intensity = 0.3f;
-
-        sceneGraph = new SceneGraph(this);
-    }
-
-    public void render() {
-        render(Gdx.graphics.getDeltaTime());
-    }
-
-    public void render(float delta) {
-        batch.begin(cam);
-        sceneGraph.render(delta);
-        batch.end();
+    @Override
+    public void render(ModelBatch batch, SceneEnvironment environment, ShaderHolder shaders, float delta) {
+        world.setDelta(delta);
+        world.getSystem(RenderComponentSystem.class).setRenderData(batch, environment, shaders);
+        world.process();
     }
 
     public String getName() {
@@ -95,8 +82,16 @@ public class Scene implements Disposable {
 
     @Override
     public void dispose() {
-        if (skybox != null) {
-            skybox.dispose();
-        }
     }
+
+    public List<Pair<Camera, Integer>> getCameras() {
+        return WorldUtils.getFromWorld(
+                world, CameraComponent.class, (entityId, component) -> Pair.of(component.getCamera(), entityId)
+        );
+    }
+
+    public Camera getCamera(int cameraId) {
+        return world.getMapper(CameraComponent.class).get(cameraId).getCamera();
+    }
+
 }

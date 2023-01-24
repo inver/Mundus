@@ -20,10 +20,9 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
-import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector3;
+import com.mbrlabs.mundus.commons.shaders.DefaultBaseShader;
 
 /**
  * Used to render game objects in only one color.
@@ -38,34 +37,16 @@ import com.badlogic.gdx.math.Vector3;
  * @author Marcus Brummer
  * @version 20-02-2016
  */
-public class PickerShader extends BaseShader {
-
-    private static final String VERTEX_SHADER = "attribute vec3 a_position;" + "uniform mat4 u_transMatrix;"
-            + "uniform mat4 u_projViewMatrix;" + "void main(void) {"
-            + "vec4 worldPos = u_transMatrix * vec4(a_position, 1.0);" + "gl_Position = u_projViewMatrix * worldPos;"
-            + "}";
-
-    private static final String FRAGMENT_SHADER = "#ifdef GL_ES\n" + "precision mediump float;\n" + "#endif \n"
-            + "uniform vec3 u_color;" + "void main(void) {"
-            + "gl_FragColor = vec4(u_color.r/255.0, u_color.g/255.0, u_color.b/255.0, 1.0);" + "}";
+public class PickerShader extends DefaultBaseShader {
 
     protected final int UNIFORM_PROJ_VIEW_MATRIX = register(new Uniform("u_projViewMatrix"));
     protected final int UNIFORM_TRANS_MATRIX = register(new Uniform("u_transMatrix"));
-
     protected final int UNIFORM_COLOR = register(new Uniform("u_color"));
 
     private static Vector3 vec3 = new Vector3();
 
-    private ShaderProgram program;
-
-    public PickerShader() {
-        super();
-        program = new ShaderProgram(VERTEX_SHADER, FRAGMENT_SHADER);
-    }
-
-    @Override
-    public void init() {
-        super.init(program, null);
+    public PickerShader(String vertexShader, String fragmentShader) {
+        super(vertexShader, fragmentShader);
     }
 
     @Override
@@ -94,7 +75,7 @@ public class PickerShader extends BaseShader {
     public void render(Renderable renderable) {
         set(UNIFORM_TRANS_MATRIX, renderable.worldTransform);
 
-        PickerIDAttribute goID = (PickerIDAttribute) renderable.material.get(PickerIDAttribute.Type);
+        PickerIDAttribute goID = (PickerIDAttribute) renderable.material.get(PickerIDAttribute.TYPE);
         if (goID != null) {
             set(UNIFORM_COLOR, vec3.set(goID.r, goID.g, goID.b));
         }

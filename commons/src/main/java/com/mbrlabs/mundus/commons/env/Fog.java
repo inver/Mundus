@@ -17,15 +17,31 @@
 package com.mbrlabs.mundus.commons.env;
 
 import com.badlogic.gdx.graphics.Color;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  * @author Marcus Brummer
  * @version 06-01-2016
  */
 public class Fog {
-
     public float density = 0.001f;
     public float gradient = 1.5f;
     public Color color = new Color(Color.WHITE);
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Fog fog = (Fog) o;
+
+        return new EqualsBuilder().append(density, fog.density).append(gradient, fog.gradient).append(color, fog.color).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).append(density).append(gradient).append(color).toHashCode();
+    }
 }

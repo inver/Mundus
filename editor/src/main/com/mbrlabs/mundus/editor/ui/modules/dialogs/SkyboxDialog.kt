@@ -22,14 +22,12 @@ import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.kotcrab.vis.ui.widget.file.FileChooser
-import com.mbrlabs.mundus.commons.skybox.Skybox
-import com.mbrlabs.mundus.editor.core.project.ProjectManager
+import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.events.EventBus
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent
 import com.mbrlabs.mundus.editor.events.SceneChangedEvent
 import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.widgets.ImageChooserField
-import com.mbrlabs.mundus.editor.utils.createDefaultSkybox
 import org.springframework.stereotype.Component
 
 /**
@@ -38,20 +36,20 @@ import org.springframework.stereotype.Component
  */
 @Component
 class SkyboxDialog(
+    private val ctx: EditorCtx,
     eventBus: EventBus,
-    private val projectManager: ProjectManager,
-    private val appUi: AppUi,
-    private val fileChooser: FileChooser
+    appUi: AppUi,
+    fileChooser: FileChooser
 ) : BaseDialog("Skybox"),
     ProjectChangedEvent.ProjectChangedListener,
     SceneChangedEvent.SceneChangedListener {
 
-    private val positiveX: ImageChooserField = ImageChooserField(appUi, 100, fileChooser)
-    private var negativeX: ImageChooserField = ImageChooserField(appUi, 100, fileChooser)
-    private var positiveY: ImageChooserField = ImageChooserField(appUi, 100, fileChooser)
-    private var negativeY: ImageChooserField = ImageChooserField(appUi, 100, fileChooser)
-    private var positiveZ: ImageChooserField = ImageChooserField(appUi, 100, fileChooser)
-    private var negativeZ: ImageChooserField = ImageChooserField(appUi, 100, fileChooser)
+    private val positiveX = ImageChooserField(appUi, 100, fileChooser)
+    private var negativeX = ImageChooserField(appUi, 100, fileChooser)
+    private var positiveY = ImageChooserField(appUi, 100, fileChooser)
+    private var negativeY = ImageChooserField(appUi, 100, fileChooser)
+    private var positiveZ = ImageChooserField(appUi, 100, fileChooser)
+    private var negativeZ = ImageChooserField(appUi, 100, fileChooser)
 
     private var createBtn = VisTextButton("Create skybox")
     private var defaultBtn = VisTextButton("Create default skybox")
@@ -93,18 +91,17 @@ class SkyboxDialog(
     }
 
     private fun setupListeners() {
-        val projectContext = projectManager.current
-
         // create btn
         createBtn.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                val oldSkybox = projectContext.currScene.skybox
-                oldSkybox?.dispose()
+//                val scene = ctx.current.currentScene;
+//                val oldSkybox = scene.skyboxName
+//                oldSkybox?.dispose()
 
-                projectContext.currScene.skybox = Skybox(
-                    positiveX.file, negativeX.file,
-                    positiveY.file, negativeY.file, positiveZ.file, negativeZ.file
-                )
+//                scene.skybox = Skybox(
+//                    positiveX.file, negativeX.file,
+//                    positiveY.file, negativeY.file, positiveZ.file, negativeZ.file
+//                )
                 resetImages()
             }
         })
@@ -112,10 +109,12 @@ class SkyboxDialog(
         // default skybox btn
         defaultBtn.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                if (projectContext.currScene.skybox != null) {
-                    projectContext.currScene.skybox.dispose()
-                }
-                projectContext.currScene.skybox = createDefaultSkybox()
+                val scene = ctx.current.currentScene;
+
+//                if (scene.skyboxName != null) {
+//                    scene.skyboxName.dispose()
+//                }
+//                scene.skybox = createDefaultSkybox()
                 resetImages()
             }
         })
@@ -123,8 +122,10 @@ class SkyboxDialog(
         // delete skybox btn
         deleteBtn.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                projectContext.currScene.skybox.dispose()
-                projectContext.currScene.skybox = null
+                val scene = ctx.current.currentScene;
+
+//                scene.skyboxName.dispose()
+//                scene.skybox = null
                 resetImages()
             }
         })
@@ -132,22 +133,22 @@ class SkyboxDialog(
     }
 
     private fun resetImages() {
-        val skybox = projectManager.current.currScene.skybox
-        if (skybox != null) {
-            positiveX.setImage(skybox.positiveX)
-            negativeX.setImage(skybox.negativeX)
-            positiveY.setImage(skybox.positiveY)
-            negativeY.setImage(skybox.negativeY)
-            positiveZ.setImage(skybox.positiveY)
-            negativeZ.setImage(skybox.negativeZ)
-        } else {
-            positiveX.setImage(null)
-            negativeX.setImage(null)
-            positiveY.setImage(null)
-            negativeY.setImage(null)
-            positiveZ.setImage(null)
-            negativeZ.setImage(null)
-        }
+//        val skybox = ctx.current.getCurrentScene().skyboxName
+//        if (skybox != null) {
+//            positiveX.setImage(skybox.positiveX)
+//            negativeX.setImage(skybox.negativeX)
+//            positiveY.setImage(skybox.positiveY)
+//            negativeY.setImage(skybox.negativeY)
+//            positiveZ.setImage(skybox.positiveY)
+//            negativeZ.setImage(skybox.negativeZ)
+//        } else {
+//            positiveX.setImage(null)
+//            negativeX.setImage(null)
+//            positiveY.setImage(null)
+//            negativeY.setImage(null)
+//            positiveZ.setImage(null)
+//            negativeZ.setImage(null)
+//        }
     }
 
     override fun onProjectChanged(event: ProjectChangedEvent) {

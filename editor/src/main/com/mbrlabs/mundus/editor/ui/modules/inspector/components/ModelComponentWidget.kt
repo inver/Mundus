@@ -19,15 +19,12 @@ package com.mbrlabs.mundus.editor.ui.modules.inspector.components
 import com.kotcrab.vis.ui.widget.Separator.SeparatorStyle
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
-import com.mbrlabs.mundus.commons.assets.material.MaterialAsset
-import com.mbrlabs.mundus.commons.scene3d.GameObject
-import com.mbrlabs.mundus.commons.scene3d.components.Component
 import com.mbrlabs.mundus.commons.scene3d.components.ModelComponent
-import com.mbrlabs.mundus.editor.config.UiWidgetsHolder
-import com.mbrlabs.mundus.editor.core.project.ProjectManager
+import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
+import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.ui.AppUi
+import com.mbrlabs.mundus.editor.ui.PreviewGenerator
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
-import com.mbrlabs.mundus.editor.ui.widgets.MaterialWidget
 
 /**
  * @author Marcus Brummer
@@ -36,17 +33,17 @@ import com.mbrlabs.mundus.editor.ui.widgets.MaterialWidget
 class ModelComponentWidget(
     separatorStyle: SeparatorStyle,
     modelComponent: ModelComponent,
+    private val ctx: EditorCtx,
     private val appUi: AppUi,
-    private val uiWidgetsHolder: UiWidgetsHolder,
     private val assetSelectionDialog: AssetPickerDialog,
-    private val projectManager: ProjectManager
-) :
-    ComponentWidget<ModelComponent>(separatorStyle, "Model Component", modelComponent) {
+    private val assetManager: EditorAssetManager,
+    private val previewGenerator: PreviewGenerator,
+    entityId: Int
+) : ComponentWidget(separatorStyle, "Model Component", entityId) {
 
     private val materialContainer = VisTable()
 
     init {
-        this.component = modelComponent
         setupUI()
     }
 
@@ -55,7 +52,7 @@ class ModelComponentWidget(
         collapsibleContent.add(VisLabel("Model")).left().row()
         collapsibleContent.addSeparator().padBottom(5f).row()
         //collapsibleContent.add(selectBox).expandX().fillX().row();
-        collapsibleContent.add(VisLabel("Model asset: " + component.modelAsset.name)).grow().padBottom(15f).row()
+//        collapsibleContent.add(VisLabel("Model asset: " + component.modelAsset.name)).grow().padBottom(15f).row()
 
         // create materials for all model nodes
         collapsibleContent.add(VisLabel("Materials")).expandX().fillX().left().padBottom(3f).padTop(3f).row()
@@ -75,26 +72,32 @@ class ModelComponentWidget(
 
     private fun buildMaterials() {
         materialContainer.clear()
-        for (g3dbMatID in component.materials.keys()) {
-
-            val mw = MaterialWidget(uiWidgetsHolder.colorPicker, appUi, assetSelectionDialog, projectManager)
-            mw.matChangedListener = object : MaterialWidget.MaterialChangedListener {
-                override fun materialChanged(materialAsset: MaterialAsset) {
-                    component.materials.put(g3dbMatID, materialAsset)
-                    component.applyMaterials()
-                }
-            }
-
-            mw.material = component.materials[g3dbMatID]
-            materialContainer.add(mw).grow().padBottom(20f).row()
-        }
+//        for (g3dbMatID in component.materials.keys()) {
+//
+//            val mw = MaterialWidget(
+//                ctx,
+//                appUi,
+//                assetSelectionDialog,
+//                assetManager,
+//                previewGenerator
+//            )
+//            mw.matChangedListener = object : MaterialWidget.MaterialChangedListener {
+//                override fun materialChanged(materialAsset: MaterialAsset) {
+//                    component.materials.put(g3dbMatID, materialAsset)
+//                    component.applyMaterials()
+//                }
+//            }
+//
+//            mw.material = component.materials[g3dbMatID]
+//            materialContainer.add(mw).grow().padBottom(20f).row()
+//        }
     }
 
-    override fun setValues(go: GameObject) {
-        val c = go.findComponentByType(Component.Type.MODEL)
-        if (c != null) {
-            component = c as ModelComponent
-        }
+    override fun setValues(entityId: Int) {
+//        val c = go.findComponentByType(Component.Type.MODEL)
+//        if (c != null) {
+//            component = c as ModelComponent
+//        }
     }
 
 }

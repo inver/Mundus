@@ -1,23 +1,30 @@
 package com.mbrlabs.mundus.editor;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.kotcrab.vis.ui.widget.VisTable;
-import com.mbrlabs.mundus.commons.core.registry.Registry;
-import com.mbrlabs.mundus.editor.core.project.ProjectContext;
+import com.mbrlabs.mundus.commons.assets.AssetType;
+import com.mbrlabs.mundus.commons.assets.skybox.SkyboxAsset;
+import com.mbrlabs.mundus.editor.config.AppEnvironment;
+import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.project.ProjectManager;
+import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
+import com.mbrlabs.mundus.editor.core.shader.ShaderStorage;
+import com.mbrlabs.mundus.editor.events.CameraChangedEvent;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent;
 import com.mbrlabs.mundus.editor.events.SceneChangedEvent;
+import com.mbrlabs.mundus.editor.input.DirectCameraController;
 import com.mbrlabs.mundus.editor.input.FreeCamController;
 import com.mbrlabs.mundus.editor.input.InputManager;
 import com.mbrlabs.mundus.editor.input.ShortcutController;
-import com.mbrlabs.mundus.editor.shader.Shaders;
 import com.mbrlabs.mundus.editor.tools.ToolManager;
 import com.mbrlabs.mundus.editor.ui.AppUi;
+import com.mbrlabs.mundus.editor.ui.components.CoordinateSystemComponent;
 import com.mbrlabs.mundus.editor.ui.modules.StatusBar;
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.ExitDialog;
 import com.mbrlabs.mundus.editor.ui.modules.dock.DockBar;
@@ -33,42 +40,47 @@ import com.mbrlabs.mundus.editor.utils.Compass;
 import com.mbrlabs.mundus.editor.utils.GlUtils;
 import com.mbrlabs.mundus.editor.utils.UsefulMeshs;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
-public class Editor implements ProjectChangedEvent.ProjectChangedListener, SceneChangedEvent.SceneChangedListener {
+public class Editor implements ProjectChangedEvent.ProjectChangedListener, SceneChangedEvent.SceneChangedListener,
+        CameraChangedEvent.CameraChangedListener {
 
+    private final EditorCtx ctx;
     private final FreeCamController camController;
+    private final DirectCameraController directCameraController;
     private final ShortcutController shortcutController;
     private final InputManager inputManager;
     private final ProjectManager projectManager;
-    private final Registry registry;
     private final ToolManager toolManager;
     private final ModelBatch batch;
     private final EventBus eventBus;
     private final AppUi appUi;
     private final ExitDialog exitDialog;
-
+    private final ShaderStorage shaderStorage;
     private final MenuBarPresenter menuBarPresenter;
     private final DockBarPresenter dockBarPresenter;
-    private Compass compass;
-    private MundusMenuBar menuBar;
     private final Outline outline;
     private final MundusToolbar toolbar;
     private final StatusBar statusBar;
     private final Inspector inspector;
+    private final AppEnvironment appEnvironment;
+
     private DockBar dockBar;
+    private Compass compass;
+
+    private CoordinateSystemComponent wirePlane;
 
     public void create() {
-        var homeDir = new File(Registry.HOME_DIR);
-        if (!homeDir.exists()) {
-            homeDir.mkdirs();
+        var homeDirFile = new File(appEnvironment.getHomeDir());
+        if (!homeDirFile.exists()) {
+            homeDirFile.mkdirs();
         }
 
         // init stuff
@@ -85,23 +97,23 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
         // open last edited project or create default project
         var context = projectManager.loadLastProject();
         if (context == null) {
-            context = createDefaultProject();
+            context = projectManager.createDefaultProject();
         }
 
         if (context == null) {
             throw new GdxRuntimeException("Couldn't open a project");
         }
 
-        compass = new Compass(context.currScene.cam);
-
+        compass = new Compass(null);
         // change project; this will fire a ProjectChangedEvent
         projectManager.changeProject(context);
+
+        wirePlane = new CoordinateSystemComponent();
     }
 
 
     private void setupUI() {
-        menuBar = new MundusMenuBar(registry, menuBarPresenter);
-//        greenSeparatorStyle = new Separator.SeparatorStyle(VisUI.getSkin().getDrawable("mundus-separator-green"), 1);
+        MundusMenuBar menuBar = new MundusMenuBar(menuBarPresenter);
 
         var root = new VisTable();
         appUi.addActor(root);
@@ -148,39 +160,59 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
             }
         });
         inputManager.addProcessor(toolManager);
-        inputManager.addProcessor(camController);
+        inputManager.addProcessor(directCameraController);
+//        inputManager.addProcessor(camController);
         toolManager.setDefaultTool();
     }
 
     private void setupSceneWidget() {
-        var scene = projectManager.getCurrent().currScene;
-        var sg = scene.sceneGraph;
+        var scene = ctx.getCurrent().getCurrentScene();
 
-        appUi.getSceneWidget().setCam(scene.cam);
-        appUi.getSceneWidget().setRenderer(cam -> {
-            if (scene.skybox != null) {
-                batch.begin(scene.cam);
-                batch.render(scene.skybox.getSkyboxInstance(), scene.environment, Shaders.INSTANCE.getSkyboxShader());
+        appUi.getSceneWidget().setCam(ctx.getCurrent().getCamera());
+        appUi.getSceneWidget().setRenderer(camera -> {
+            try {
+                scene.getAssets().stream()
+                        .filter(a -> a.getType() == AssetType.SKYBOX && a.getName().equals(scene.getEnvironment().getSkyboxName()))
+                        .findFirst()
+                        .ifPresent(asset -> {
+                            try {
+                                batch.begin(camera);
+                                batch.render(((SkyboxAsset) asset).getBoxInstance(), scene.getEnvironment(),
+                                        shaderStorage.get(ShaderConstants.SKYBOX));
+                            } catch (Exception e) {
+                                log.error("ERROR", e);
+                            } finally {
+                                batch.end();
+                            }
+                        });
+
+                batch.begin(camera);
+                scene.render(batch, scene.getEnvironment(), shaderStorage, Gdx.graphics.getDeltaTime());
+                wirePlane.render(batch, scene.getEnvironment(), shaderStorage, Gdx.graphics.getDeltaTime());
+                //todo check current camera
+
                 batch.end();
+
+                toolManager.render(batch, scene.getEnvironment(), shaderStorage, Gdx.graphics.getDeltaTime());
+                compass.render(batch);
+            } catch (Exception e) {
+                log.error("ERROR", e);
             }
-
-            sg.update();
-            scene.render();
-
-            toolManager.render();
-            compass.render(batch);
         });
 
-        compass.setWorldCam(scene.cam);
-        camController.setCamera(scene.cam);
-        appUi.getSceneWidget().setCam(scene.cam);
-        scene.viewport = appUi.getSceneWidget().getViewport();
+        compass.setWorldCam(ctx.getCurrent().getCamera());
+        directCameraController.setCurrent(ctx.getCurrent().getCamera());
+//        camController.setCamera(ctx.getCamera());
+        appUi.getSceneWidget().setCam(ctx.getCurrent().getCamera());
+        ctx.setViewport(appUi.getSceneWidget().getViewport());
     }
 
     public void render() {
         GlUtils.clearScreen(Color.WHITE);
         appUi.act();
         dockBar.update();
+//        todo
+//        directCameraController.update();
         camController.update();
         toolManager.act();
         appUi.draw();
@@ -191,12 +223,13 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
     }
 
     public void dispose() {
-
+        shaderStorage.dispose();
     }
 
     @Override
     public void onProjectChanged(@NotNull ProjectChangedEvent event) {
         setupSceneWidget();
+        compass.setWorldCam(ctx.getCurrent().getCamera());
     }
 
     @Override
@@ -204,18 +237,13 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
         setupSceneWidget();
     }
 
-    private ProjectContext createDefaultProject() {
-        if (registry.getLastOpenedProject() == null || registry.getProjects().size() == 0) {
-            var path = FilenameUtils.concat(FileUtils.getUserDirectoryPath(), "MundusProjects");
-
-            return projectManager.createProject("Default Project", path);
-        }
-
-        return null;
-    }
-
     public boolean closeRequested() {
         appUi.showDialog(exitDialog);
         return false;
+    }
+
+    @Override
+    public void onCameraChanged(@NotNull CameraChangedEvent event) {
+        setupSceneWidget();
     }
 }

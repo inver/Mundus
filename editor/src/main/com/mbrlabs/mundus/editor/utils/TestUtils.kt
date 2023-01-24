@@ -20,7 +20,7 @@ import com.badlogic.gdx.graphics.g3d.Model
 import com.badlogic.gdx.graphics.g3d.ModelInstance
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.utils.Array
-import com.mbrlabs.mundus.commons.terrain.Terrain
+import com.mbrlabs.mundus.commons.terrain.TerrainObject
 import java.util.*
 
 /**
@@ -30,7 +30,7 @@ import java.util.*
  */
 object TestUtils {
 
-    fun createABunchOfModelsOnTheTerrain(count: Int, model: Model, terrain: Terrain): Array<ModelInstance> {
+    fun createABunchOfModelsOnTheTerrain(count: Int, model: Model, terrain: TerrainObject): Array<ModelInstance> {
         val boxInstances = Array<ModelInstance>()
         val rand = Random()
 

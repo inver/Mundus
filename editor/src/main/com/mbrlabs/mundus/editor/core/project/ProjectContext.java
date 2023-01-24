@@ -16,12 +16,19 @@
 
 package com.mbrlabs.mundus.editor.core.project;
 
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.utils.Disposable;
-import com.mbrlabs.mundus.commons.scene3d.GameObject;
-import com.mbrlabs.mundus.editor.assets.EditorAssetManager;
-import com.mbrlabs.mundus.editor.core.EditorScene;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.mbrlabs.mundus.commons.Scene;
+import com.mbrlabs.mundus.commons.core.ecs.base.RenderComponent;
+import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObject;
+import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObjectDelegate;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -37,55 +44,88 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Slf4j
 public class ProjectContext implements Disposable {
 
+    public static final int MAIN_CAMERA_SELECTED = -1;
+    private final AtomicInteger idProvider;
+
     public ProjectSettings settings;
     public String path;
     public String name;
 
-    public Array<String> scenes;
-    public EditorScene currScene;
+//    @JsonIgnore
+//    private final List<String> scenes = new ArrayList<>();
 
-    public EditorAssetManager assetManager;
-
-    private GameObject selected;
-    private final AtomicInteger idProvider;
-
+    @JsonIgnore
+    private Scene currentScene;
     /**
-     * set by kryo when project is loaded. do not use this
+     * set by jackson when project is deserialized from json file
      */
-    public String activeSceneName;
+    @Getter
+    private String activeSceneName;
+    @Getter
+    private PerspectiveCamera mainCamera;
+    private int selectedCamera = MAIN_CAMERA_SELECTED;
 
-    public ProjectContext(int idProvider) {
-        this(new AtomicInteger(idProvider));
-    }
-
-    public ProjectContext(AtomicInteger idProvider) {
-        scenes = new Array<>();
+    @JsonCreator
+    public ProjectContext(@JsonProperty("idProvider") int startId, @JsonProperty("mainCamera") PerspectiveCamera camera) {
         settings = new ProjectSettings();
-        currScene = new EditorScene();
-        this.idProvider = idProvider;
+//        currentScene = new Scene(world);
+        idProvider = new AtomicInteger(startId);
+        mainCamera = camera;
     }
 
     public int obtainID() {
         return idProvider.incrementAndGet();
     }
 
-    public int inspectCurrentID() {
-        return idProvider.get();
+    @JsonIgnore
+    public Camera getCamera() {
+        if (selectedCamera < 0) {
+            return mainCamera;
+        }
+
+        if (currentScene == null || CollectionUtils.isEmpty(currentScene.getCameras())) {
+            log.warn("Selected camera doesn't exist");
+            return mainCamera;
+        }
+        return currentScene.getCamera(selectedCamera);
     }
 
     @Override
     public void dispose() {
         log.debug("Disposing current project: {}", path);
-        if (assetManager != null) {
-            assetManager.dispose();
+//        if (assetManager != null) {
+//            assetManager.dispose();
+//        }
+    }
+
+//    public List<String> getScenes() {
+//        return scenes;
+//    }
+
+    public Scene getCurrentScene() {
+        return currentScene;
+    }
+
+    public void setCurrentScene(Scene currentScene) {
+        this.currentScene = currentScene;
+        if (currentScene != null) {
+            activeSceneName = currentScene.getName();
         }
     }
 
-    public GameObject getSelected() {
-        return selected;
+    public <T extends RenderableObject> T getRenderableObject(Class<T> clazz, int entityId) {
+        var delegate = currentScene.getWorld().getMapper(RenderComponent.class).get(entityId).getRenderable();
+        if (!(delegate instanceof RenderableObjectDelegate)) {
+            return null;
+        }
+        return (T) ((RenderableObjectDelegate) delegate).getAsset();
     }
 
-    public void setSelected(GameObject selected) {
-        this.selected = selected;
+    public int getSelectedCamera() {
+        return selectedCamera;
+    }
+
+    public void setSelectedCamera(int selectedCamera) {
+        this.selectedCamera = selectedCamera;
     }
 }

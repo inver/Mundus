@@ -18,9 +18,9 @@ package com.mbrlabs.mundus.editor.assets;
 
 import com.badlogic.gdx.Gdx;
 import com.mbrlabs.mundus.editor.utils.Callback;
-import com.mbrlabs.mundus.editor.utils.Log;
 import com.mbrlabs.mundus.editor.utils.Os;
 import com.mbrlabs.mundus.editor.utils.OsNotSupported;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SystemUtils;
@@ -31,13 +31,14 @@ import java.util.List;
 
 /**
  * Wrapper around the command line program fbx-conv.
- *
+ * <p>
  * Converts FBX & Collada (dae) 3D files into the g3db/g3dj format. Supports
  * Linux, Windows & Mac.
  *
  * @author Marcus Brummer
  * @version 24-11-2015
  */
+@Slf4j
 public class FbxConv {
 
     private final String TAG = FbxConv.class.getSimpleName();
@@ -114,14 +115,14 @@ public class FbxConv {
         if (input == null || output == null) {
             result.setSuccess(false);
             result.setResultCode(FbxConvResult.RESULT_CODE_PARAM_ERROR);
-            Log.error(TAG, "FbxCov input or output not defined");
+            log.error("FbxCov input or output not defined");
             return result;
         }
 
         if (!input.endsWith("fbx")) {
             result.setSuccess(false);
             result.setResultCode(FbxConvResult.RESULT_CODE_WRONG_INPUT_FORMAT);
-            Log.error(TAG, "FbxCov input format not supported");
+            log.error("FbxCov input format not supported");
         }
 
         // build arguments
@@ -140,7 +141,7 @@ public class FbxConv {
         args.add(input);
         String path = FilenameUtils.concat(output, outputFilename);
         args.add(path);
-        Log.debug("FbxConv", "Command: " + args);
+        log.debug("FbxConv | Command: " + args);
         pb.command().addAll(args);
 
         // execute fbx-conv process

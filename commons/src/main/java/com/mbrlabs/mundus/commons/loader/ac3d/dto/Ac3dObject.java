@@ -1,11 +1,12 @@
 package com.mbrlabs.mundus.commons.loader.ac3d.dto;
 
-import com.mbrlabs.mundus.commons.dto.Matrix3DTO;
-import com.mbrlabs.mundus.commons.dto.Vector2DTO;
+import com.mbrlabs.mundus.commons.dto.Matrix3Dto;
+import com.mbrlabs.mundus.commons.dto.Vector2Dto;
 import com.mbrlabs.mundus.commons.dto.Vector3Dto;
 import com.mbrlabs.mundus.commons.dto.vertex.VertexDto;
 import lombok.Builder;
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
@@ -20,8 +21,8 @@ public class Ac3dObject {
     private final List<String> data;
 
     private final String texturePath;
-    private final Vector2DTO textureOffset;
-    private final Vector2DTO textureRepeat;
+    private final Vector2Dto textureOffset;
+    private final Vector2Dto textureRepeat;
 
     //Optional - default 0. Change subdivision level. Also at the same time the mesh will be smoothed.
     private final int subdivisionLevel;
@@ -30,7 +31,7 @@ public class Ac3dObject {
 
     private final String url;
 
-    private Matrix3DTO rotation;
+    private Matrix3Dto rotation;
     private Vector3Dto translation;
 
     private boolean hidden;
@@ -43,4 +44,13 @@ public class Ac3dObject {
     private final List<Ac3dSurface> surfaces;
 
     private final List<Ac3dObject> children;
+
+    @Override
+    public String toString() {
+        var res = new StringBuilder("Ac3dObject{").append(type);
+        if (StringUtils.isNotBlank(name)) {
+            res.append(" | ").append(name);
+        }
+        return res.append("}").toString();
+    }
 }

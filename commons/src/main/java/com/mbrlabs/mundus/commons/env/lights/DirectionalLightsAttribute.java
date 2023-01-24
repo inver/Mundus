@@ -24,18 +24,16 @@ import com.badlogic.gdx.utils.Array;
  * @version 14-02-2016
  */
 public class DirectionalLightsAttribute extends Attribute {
+    public static final long TYPE = register("directionalLights");
 
-    public final static String Alias = "directionalLights";
     public final Array<DirectionalLight> lights;
 
-    public final static long Type = register(Alias);
-
     public static boolean is(final long mask) {
-        return (mask & Type) == mask;
+        return (mask & TYPE) == mask;
     }
 
     public DirectionalLightsAttribute() {
-        super(Type);
+        super(TYPE);
         lights = new Array<>(1);
     }
 

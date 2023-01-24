@@ -4,7 +4,7 @@ import com.badlogic.gdx.assets.loaders.ModelLoader;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
 import com.mbrlabs.mundus.commons.core.AppModelLoader;
-import com.mbrlabs.mundus.commons.core.ModelFiles;
+import com.mbrlabs.mundus.commons.model.ModelFiles;
 import lombok.SneakyThrows;
 
 public class ObjModelLoader extends ModelLoader<ModelLoader.ModelParameters> implements AppModelLoader {

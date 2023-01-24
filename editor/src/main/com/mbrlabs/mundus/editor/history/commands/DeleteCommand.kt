@@ -19,8 +19,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Tree
 import com.kotcrab.vis.ui.widget.VisTable
 import com.mbrlabs.mundus.commons.scene3d.GameObject
 import com.mbrlabs.mundus.editor.history.Command
-import com.mbrlabs.mundus.editor.ui.modules.outline.OutlineNode
-import com.mbrlabs.mundus.editor.utils.Log
+import com.mbrlabs.mundus.editor.ui.modules.outline.IdNode
+import org.slf4j.LoggerFactory
 
 /**
  * Delete command for game objects Deletion will update sceneGraph and outline
@@ -28,15 +28,15 @@ import com.mbrlabs.mundus.editor.utils.Log
  * @author codenigma
  * @version 28-09-2016
  */
-class DeleteCommand(private var go: GameObject?, private var node: OutlineNode) : Command {
+class DeleteCommand(private var go: GameObject?, private var node: IdNode) : Command {
 
     companion object {
-        private val TAG = DeleteCommand::class.java.simpleName
+        private val log = LoggerFactory.getLogger(DeleteCommand::class.java)
     }
 
     private var parentGO: GameObject? = null
-    private var parentNode: Tree.Node<OutlineNode, GameObject, VisTable>? = null
-    private var tree: Tree<OutlineNode, GameObject>? = null
+    private var parentNode: Tree.Node<IdNode, Int, VisTable>? = null
+    private var tree: Tree<IdNode, Int>? = null
 
     init {
         this.parentGO = go!!.parent
@@ -45,7 +45,7 @@ class DeleteCommand(private var go: GameObject?, private var node: OutlineNode) 
     }
 
     override fun execute() {
-        Log.trace(TAG, "Remove game object [{}]", go)
+        log.trace("Remove game object [{}]", go)
         // remove go from sceneGraph
         go!!.remove()
         // remove from outline tree
@@ -53,7 +53,7 @@ class DeleteCommand(private var go: GameObject?, private var node: OutlineNode) 
     }
 
     override fun undo() {
-        Log.trace(TAG, "Undo remove of game object [{}]", go)
+        log.trace("Undo remove of game object [{}]", go)
         // add to sceneGraph
         parentGO!!.addChild(go)
         // add to outline

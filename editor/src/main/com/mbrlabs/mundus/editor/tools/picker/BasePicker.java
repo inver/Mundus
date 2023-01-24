@@ -25,7 +25,7 @@ import com.badlogic.gdx.graphics.glutils.HdpiUtils;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.mbrlabs.mundus.editor.utils.Log;
+import lombok.extern.slf4j.Slf4j;
 
 import java.nio.ByteBuffer;
 
@@ -33,6 +33,7 @@ import java.nio.ByteBuffer;
  * @author Marcus Brummer
  * @version 07-03-2016
  */
+@Slf4j
 public abstract class BasePicker implements Disposable {
 
     protected FrameBuffer fbo;
@@ -44,13 +45,13 @@ public abstract class BasePicker implements Disposable {
         try {
             fbo = new FrameBuffer(Pixmap.Format.RGBA8888, width, height, true);
         } catch (Exception e) {
-            Log.error("FBO dimensions 100%: {}", e.getMessage());
+            log.error("FBO dimensions 100%", e);
             width *= 0.9f;
             height *= 0.9f;
             try {
                 fbo = new FrameBuffer(Pixmap.Format.RGBA8888, width, height, true);
             } catch (Exception ee) {
-                Log.error("FBO dimensions 90%: {}", e.getMessage());
+                log.error("FBO dimensions 90%", e);
             }
         }
 
@@ -59,8 +60,7 @@ public abstract class BasePicker implements Disposable {
     protected void begin(Viewport viewport) {
         fbo.begin();
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-        HdpiUtils.glViewport(viewport.getScreenX(), viewport.getScreenY(), viewport.getScreenWidth(),
-                viewport.getScreenHeight());
+        HdpiUtils.glViewport(viewport.getScreenX(), viewport.getScreenY(), viewport.getScreenWidth(), viewport.getScreenHeight());
     }
 
     protected void end() {

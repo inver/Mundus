@@ -17,12 +17,16 @@
 package com.mbrlabs.mundus.editor.tools.picker;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.mbrlabs.mundus.editor.core.EditorScene;
+import com.badlogic.gdx.graphics.glutils.HdpiUtils;
+import com.mbrlabs.mundus.editor.core.project.EditorCtx;
+import com.mbrlabs.mundus.editor.core.shader.ShaderStorage;
 import com.mbrlabs.mundus.editor.tools.ToolHandle;
-import com.mbrlabs.mundus.editor.utils.Log;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 /**
@@ -30,23 +34,26 @@ import org.springframework.stereotype.Component;
  * @version 07-03-2016
  */
 @Component
+@RequiredArgsConstructor
+@Slf4j
 public class ToolHandlePicker extends BasePicker {
+    private final EditorCtx ctx;
+    private final ModelBatch batch;
+    private final ShaderStorage shaderStorage;
 
-    public ToolHandlePicker() {
-        super();
-    }
+    public ToolHandle pick(ToolHandle[] handles, int screenX, int screenY) {
+        //todo may be needed to revert render of image, but it needs to thinks
+        var x = HdpiUtils.toBackBufferX(screenX);
+        var y = Gdx.graphics.getBackBufferHeight() - HdpiUtils.toBackBufferY(screenY);
 
-    public ToolHandle pick(ToolHandle[] handles, EditorScene scene, int screenX, int screenY) {
-        begin(scene.viewport);
-        renderPickableScene(handles, scene.batch, scene.cam);
-        end();
-        Pixmap pm = getFrameBufferPixmap(scene.viewport);
+        var pixmap = Pixmap.createFromFrameBuffer(x, y, 1, 1);
+        pixmap.getPixels().put(3, (byte) 255);
 
-        int x = screenX - scene.viewport.getScreenX();
-        int y = screenY - (Gdx.graphics.getHeight() - (scene.viewport.getScreenY() + scene.viewport.getScreenHeight()));
+        log.debug("Coordinates of pixel is {}:{}", x, y);
 
-        int id = PickerColorEncoder.decode(pm.getPixel(x, y));
-        Log.trace("ToolHandlePicker", "Picking handle with id {}", id);
+        int id = new Color(pixmap.getPixel(0, 0)).toIntBits();
+        pixmap.dispose();
+        log.debug("Picking handle with id {}", id);
         for (ToolHandle handle : handles) {
             if (handle.getId() == id) {
                 return handle;
@@ -56,10 +63,10 @@ public class ToolHandlePicker extends BasePicker {
         return null;
     }
 
-    private void renderPickableScene(ToolHandle[] handles, ModelBatch batch, PerspectiveCamera cam) {
+    private void renderPickableScene(ToolHandle[] handles, ModelBatch batch, Camera cam) {
         batch.begin(cam);
         for (ToolHandle handle : handles) {
-            handle.renderPick(batch);
+            handle.renderPick(batch, shaderStorage);
         }
         batch.end();
     }

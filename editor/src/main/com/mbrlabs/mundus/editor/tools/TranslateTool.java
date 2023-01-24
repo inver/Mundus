@@ -29,15 +29,15 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.mbrlabs.mundus.commons.scene3d.GameObject;
-import com.mbrlabs.mundus.editor.core.project.ProjectManager;
+import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
+import com.mbrlabs.mundus.commons.env.SceneEnvironment;
+import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
+import com.mbrlabs.mundus.editor.core.project.EditorCtx;
+import com.mbrlabs.mundus.editor.events.EntityModifiedEvent;
 import com.mbrlabs.mundus.editor.events.EventBus;
-import com.mbrlabs.mundus.editor.events.GameObjectModifiedEvent;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.history.commands.TranslateCommand;
-import com.mbrlabs.mundus.editor.shader.Shaders;
-import com.mbrlabs.mundus.editor.tools.picker.GameObjectPicker;
+import com.mbrlabs.mundus.editor.tools.picker.EntityPicker;
 import com.mbrlabs.mundus.editor.tools.picker.ToolHandlePicker;
 import com.mbrlabs.mundus.editor.utils.Fa;
 import org.lwjgl.opengl.GL11;
@@ -70,43 +70,35 @@ public class TranslateTool extends TransformTool {
 
     private TranslateCommand command;
 
-    public TranslateTool(ProjectManager projectManager, GameObjectPicker goPicker, ToolHandlePicker handlePicker,
+    public TranslateTool(EditorCtx ctx, String shaderKey, EntityPicker picker, ToolHandlePicker handlePicker,
                          ModelBatch batch, CommandHistory history, EventBus eventBus) {
 
-        super(projectManager, goPicker, handlePicker, batch, history, eventBus);
+        super(ctx, shaderKey, picker, handlePicker, batch, history, eventBus, NAME);
 
         ModelBuilder modelBuilder = new ModelBuilder();
 
-        Model xHandleModel = modelBuilder.createArrow(0, 0, 0, 1, 0, 0, ARROW_CAP_SIZE, ARROW_THIKNESS, ARROW_DIVISIONS,
+        Model xHandleModel = modelBuilder.createArrow(0, 0, 0, 1, 0, 0, ARROW_CAP_SIZE,
+                ARROW_THIKNESS, ARROW_DIVISIONS,
                 GL20.GL_TRIANGLES, new Material(ColorAttribute.createDiffuse(COLOR_X)),
                 VertexAttributes.Usage.Position);
-        Model yHandleModel = modelBuilder.createArrow(0, 0, 0, 0, 1, 0, ARROW_CAP_SIZE, ARROW_THIKNESS, ARROW_DIVISIONS,
+        Model yHandleModel = modelBuilder.createArrow(0, 0, 0, 0, 1, 0, ARROW_CAP_SIZE,
+                ARROW_THIKNESS, ARROW_DIVISIONS,
                 GL20.GL_TRIANGLES, new Material(ColorAttribute.createDiffuse(COLOR_Y)),
                 VertexAttributes.Usage.Position);
-        Model zHandleModel = modelBuilder.createArrow(0, 0, 0, 0, 0, 1, ARROW_CAP_SIZE, ARROW_THIKNESS, ARROW_DIVISIONS,
+        Model zHandleModel = modelBuilder.createArrow(0, 0, 0, 0, 0, 1, ARROW_CAP_SIZE,
+                ARROW_THIKNESS, ARROW_DIVISIONS,
                 GL20.GL_TRIANGLES, new Material(ColorAttribute.createDiffuse(COLOR_Z)),
                 VertexAttributes.Usage.Position);
         Model xzPlaneHandleModel = modelBuilder.createSphere(1, 1, 1, 20, 20,
                 new Material(ColorAttribute.createDiffuse(COLOR_XZ)), VertexAttributes.Usage.Position);
 
-
-        xHandle = new TranslateHandle(X_HANDLE_ID, xHandleModel);
-        yHandle = new TranslateHandle(Y_HANDLE_ID, yHandleModel);
-        zHandle = new TranslateHandle(Z_HANDLE_ID, zHandleModel);
-        xzPlaneHandle = new TranslateHandle(XZ_HANDLE_ID, xzPlaneHandleModel);
+        xHandle = new TranslateHandle(COLOR_X.toIntBits(), TransformState.TRANSFORM_X, xHandleModel);
+        yHandle = new TranslateHandle(COLOR_Y.toIntBits(), TransformState.TRANSFORM_Y, yHandleModel);
+        zHandle = new TranslateHandle(COLOR_Z.toIntBits(), TransformState.TRANSFORM_Z, zHandleModel);
+        xzPlaneHandle = new TranslateHandle(COLOR_XZ.toIntBits(), TransformState.TRANSFORM_XZ, xzPlaneHandleModel);
         handles = new TranslateHandle[]{xHandle, yHandle, zHandle, xzPlaneHandle};
 
-        gameObjectModifiedEvent = new GameObjectModifiedEvent(null);
-    }
-
-    @Override
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
-    public Drawable getIcon() {
-        throw new UnsupportedOperationException();
+        entityModifiedEvent = new EntityModifiedEvent(-1);
     }
 
     @Override
@@ -115,8 +107,8 @@ public class TranslateTool extends TransformTool {
     }
 
     @Override
-    public void gameObjectSelected(GameObject go) {
-        super.gameObjectSelected(go);
+    public void entitySelected(int entityId) {
+        super.entitySelected(entityId);
         scaleHandles();
         translateHandles();
     }
@@ -134,81 +126,85 @@ public class TranslateTool extends TransformTool {
     }
 
     @Override
-    public void render() {
-        super.render();
-        if (getProjectManager().getCurrent().getSelected() != null) {
-            getBatch().begin(getProjectManager().getCurrent().currScene.cam);
-            GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
-            xHandle.render(getBatch());
-            yHandle.render(getBatch());
-            zHandle.render(getBatch());
-            xzPlaneHandle.render(getBatch());
-
-            getBatch().end();
+    public void render(ModelBatch batch, SceneEnvironment environment, ShaderHolder shaders, float delta) {
+        super.render(batch, environment, shaders, delta);
+        if (getCtx().getSelectedEntityId() < 0) {
+            return;
         }
+        getBatch().begin(getCtx().getCurrent().getCamera());
+        GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
+        xHandle.render(batch, environment, shaders, delta);
+        yHandle.render(batch, environment, shaders, delta);
+        zHandle.render(batch, environment, shaders, delta);
+        xzPlaneHandle.render(batch, environment, shaders, delta);
+
+        getBatch().end();
     }
 
     @Override
     public void act() {
         super.act();
 
-        if (getProjectManager().getCurrent().getSelected() != null) {
-            translateHandles();
-            if (state == TransformState.IDLE) return;
+        if (getCtx().getSelectedEntityId() < 0) {
+            return;
+        }
+        translateHandles();
+        if (state == TransformState.IDLE) return;
 
-            Ray ray = getProjectManager().getCurrent().currScene.viewport.getPickRay(Gdx.input.getX(), Gdx.input.getY());
-            Vector3 rayEnd = getProjectManager().getCurrent().getSelected().getLocalPosition(temp0);
-            float dst = getProjectManager().getCurrent().currScene.cam.position.dst(rayEnd);
-            rayEnd = ray.getEndPoint(rayEnd, dst);
+        Ray ray = getCtx().getViewport().getPickRay(Gdx.input.getX(), Gdx.input.getY());
 
-            if (initTranslate) {
-                initTranslate = false;
-                lastPos.set(rayEnd);
-            }
+        var positionComponent = getCtx().getSelectedEntity().getComponent(PositionComponent.class);
+        Vector3 rayEnd = positionComponent.getLocalPosition(temp0);
+        float dst = getCtx().getCurrent().getCamera().position.dst(rayEnd);
+        rayEnd = ray.getEndPoint(rayEnd, dst);
 
-            GameObject go = getProjectManager().getCurrent().getSelected();
-
-            boolean modified = false;
-            Vector3 vec = new Vector3();
-            if (state == TransformState.TRANSFORM_XZ) {
-                vec.set(rayEnd.x - lastPos.x, 0, rayEnd.z - lastPos.z);
-                modified = true;
-            } else if (state == TransformState.TRANSFORM_X) {
-                vec.set(rayEnd.x - lastPos.x, 0, 0);
-                modified = true;
-            } else if (state == TransformState.TRANSFORM_Y) {
-                vec.set(0, rayEnd.y - lastPos.y, 0);
-                modified = true;
-            } else if (state == TransformState.TRANSFORM_Z) {
-                vec.set(0, 0, rayEnd.z - lastPos.z);
-                modified = true;
-            }
-
-            // TODO translation in global sapce
-            // if(globalSpace) {
-            // System.out.println("Before: " + vec);
-            // System.out.println("After: " + vec);
-            // }
-
-            go.translate(vec);
-
-            if (modified) {
-                gameObjectModifiedEvent.setGameObject(getProjectManager().getCurrent().getSelected());
-                eventBus.post(gameObjectModifiedEvent);
-            }
-
+        if (initTranslate) {
+            initTranslate = false;
             lastPos.set(rayEnd);
         }
+
+//        GameObject go = getCtx().getSelectedEntityId();
+
+        boolean modified = false;
+        Vector3 vec = new Vector3();
+        if (state == TransformState.TRANSFORM_XZ) {
+            vec.set(rayEnd.x - lastPos.x, 0, rayEnd.z - lastPos.z);
+            modified = true;
+        } else if (state == TransformState.TRANSFORM_X) {
+            vec.set(rayEnd.x - lastPos.x, 0, 0);
+            modified = true;
+        } else if (state == TransformState.TRANSFORM_Y) {
+            vec.set(0, rayEnd.y - lastPos.y, 0);
+            modified = true;
+        } else if (state == TransformState.TRANSFORM_Z) {
+            vec.set(0, 0, rayEnd.z - lastPos.z);
+            modified = true;
+        }
+
+        // TODO translation in global space
+        // if(globalSpace) {
+        // System.out.println("Before: " + vec);
+        // System.out.println("After: " + vec);
+        // }
+
+        positionComponent.translate(vec);
+
+        if (modified) {
+            entityModifiedEvent.setEntityId(getCtx().getSelectedEntityId());
+            eventBus.post(entityModifiedEvent);
+        }
+
+        lastPos.set(rayEnd);
     }
 
     @Override
     protected void scaleHandles() {
-        if (getProjectManager().getCurrent().getSelected() == null) {
+        if (getCtx().getSelectedEntityId() < 0) {
             return;
         }
 
-        Vector3 pos = getProjectManager().getCurrent().getSelected().getPosition(temp0);
-        float scaleFactor = getProjectManager().getCurrent().currScene.cam.position.dst(pos) * 0.25f;
+        Vector3 pos = getCtx().getSelectedEntity().getComponent(PositionComponent.class).getPosition(temp0);
+        float scaleFactor = getCtx().getCurrent().getCamera().position.dst(pos) * 0.25f;
         xHandle.getScale().set(scaleFactor * 0.7f, scaleFactor / 2, scaleFactor / 2);
         xHandle.applyTransform();
 
@@ -224,11 +220,12 @@ public class TranslateTool extends TransformTool {
 
     @Override
     protected void translateHandles() {
-        if (getProjectManager().getCurrentSelection() == null) {
+        if (getCtx().getSelectedEntityId() < 0) {
             return;
         }
 
-        final Vector3 pos = getProjectManager().getCurrentSelection().getTransform().getTranslation(temp0);
+
+        final Vector3 pos = getCtx().getSelectedEntity().getComponent(PositionComponent.class).getTransform().getTranslation(temp0);
         xHandle.getPosition().set(pos);
         xHandle.applyTransform();
         yHandle.getPosition().set(pos);
@@ -245,42 +242,31 @@ public class TranslateTool extends TransformTool {
     }
 
     @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        return state != TransformState.IDLE;
+    }
+
+    @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         super.touchDown(screenX, screenY, pointer, button);
 
-        if (button == Input.Buttons.LEFT && getProjectManager().getCurrentSelection() != null) {
-            TranslateHandle handle = (TranslateHandle) handlePicker.pick(handles,
-                    getProjectManager().getCurrent().currScene, screenX, screenY);
-            if (handle == null) {
-                state = TransformState.IDLE;
-                return false;
-            }
-
-            if (handle.getId() == XZ_HANDLE_ID) {
-                state = TransformState.TRANSFORM_XZ;
-                initTranslate = true;
-                xzPlaneHandle.changeColor(COLOR_SELECTED);
-            } else if (handle.getId() == X_HANDLE_ID) {
-                state = TransformState.TRANSFORM_X;
-                initTranslate = true;
-                xHandle.changeColor(COLOR_SELECTED);
-            } else if (handle.getId() == Y_HANDLE_ID) {
-                state = TransformState.TRANSFORM_Y;
-                initTranslate = true;
-                yHandle.changeColor(COLOR_SELECTED);
-            } else if (handle.getId() == Z_HANDLE_ID) {
-                state = TransformState.TRANSFORM_Z;
-                initTranslate = true;
-                zHandle.changeColor(COLOR_SELECTED);
-            }
+        if (button != Input.Buttons.LEFT || getCtx().getSelectedEntityId() < 0) {
+            return false;
         }
 
-        if (state != TransformState.IDLE) {
-            command = new TranslateCommand(getProjectManager().getCurrent().getSelected());
-            command.setBefore(getProjectManager().getCurrent().getSelected().getLocalPosition(temp0));
+        var handle = (TranslateHandle) handlePicker.pick(handles, screenX, screenY);
+        if (handle == null) {
+            state = TransformState.IDLE;
+            return false;
         }
 
-        return false;
+        state = handle.getState();
+        initTranslate = true;
+        handle.changeColor(COLOR_SELECTED);
+
+//        command = new TranslateCommand(getCtx().getSelectedEntityId());
+//        command.setBefore(getCtx().getSelectedEntityId().getLocalPosition(temp0));
+        return true;
     }
 
     @Override
@@ -292,8 +278,8 @@ public class TranslateTool extends TransformTool {
             zHandle.changeColor(COLOR_Z);
             xzPlaneHandle.changeColor(COLOR_XZ);
 
-            command.setAfter(getProjectManager().getCurrent().getSelected().getLocalPosition(temp0));
-            getHistory().add(command);
+//            command.setAfter(getCtx().getSelectedEntityId().getLocalPosition(temp0));
+//            getHistory().add(command);
             command = null;
             state = TransformState.IDLE;
         }
@@ -317,8 +303,8 @@ public class TranslateTool extends TransformTool {
         private Model model;
         private ModelInstance modelInstance;
 
-        public TranslateHandle(int id, Model model) {
-            super(id);
+        public TranslateHandle(int id, TransformState state, Model model) {
+            super(id, state);
             this.model = model;
             this.modelInstance = new ModelInstance(model);
             modelInstance.materials.first().set(getIdAttribute());
@@ -330,13 +316,13 @@ public class TranslateTool extends TransformTool {
         }
 
         @Override
-        public void render(ModelBatch batch) {
+        public void render(ModelBatch batch, SceneEnvironment environment, ShaderHolder shaders, float delta) {
             batch.render(modelInstance);
         }
 
         @Override
-        public void renderPick(ModelBatch modelBatch) {
-            getBatch().render(modelInstance, Shaders.INSTANCE.getPickerShader());
+        public void renderPick(ModelBatch modelBatch, ShaderHolder shaders) {
+            modelBatch.render(modelInstance, shaders.get(getShaderKey()));
         }
 
         @Override

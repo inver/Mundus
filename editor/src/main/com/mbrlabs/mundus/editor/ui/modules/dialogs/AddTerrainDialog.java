@@ -102,10 +102,10 @@
 //        //                    Terrain terrainAsset = TerrainUtils.createTerrain(projectContext.obtainID(), nom, width, depth, res);
 //        //                    terrainAsset.transform.setTranslation(posX, 0, posZ);
 //        //                    projectContext.terrains.add(terrainAsset);
-//        //                    projectContext.currScene.terrains.add(terrainAsset);
-//        //                    GameObject terrainGO = TerrainUtils.createTerrainGO(projectContext.currScene.sceneGraph,
+//        //                    projectContext.getCurrentScene().terrains.add(terrainAsset);
+//        //                    GameObject terrainGO = TerrainUtils.createTerrainGO(projectContext.getCurrentScene().sceneGraph,
 //        //                            shaders.terrainShader, projectContext.obtainID(), nom, terrainAsset);
-//        //                    projectContext.currScene.sceneGraph.addGameObject(terrainGO);
+//        //                    projectContext.getCurrentScene().sceneGraph.addGameObject(terrainGO);
 //        //
 //        //                    eventBus.post(new SceneGraphChangedEvent());
 //        //

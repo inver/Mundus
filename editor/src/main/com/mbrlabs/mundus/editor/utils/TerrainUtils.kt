@@ -23,53 +23,48 @@ import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.math.collision.Ray
 import com.badlogic.gdx.utils.Array
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset
-import com.mbrlabs.mundus.commons.scene3d.GameObject
-import com.mbrlabs.mundus.commons.scene3d.SceneGraph
-import com.mbrlabs.mundus.commons.shaders.TerrainShader
-import com.mbrlabs.mundus.editor.scene3d.components.PickableTerrainComponent
-import com.mbrlabs.mundus.editor.shader.Shaders
 
 private var tempVI = VertexInfo()
 
-fun createTerrainGO(
-    sg: SceneGraph,
-    shader: TerrainShader,
-    goID: Int,
-    goName: String,
-    terrain: TerrainAsset
-): GameObject {
-    val terrainGO = GameObject(sg, null, goID)
-    terrainGO.name = goName
-
-    terrain.terrain.setTransform(terrainGO.transform)
-    val terrainComponent = PickableTerrainComponent(terrainGO, Shaders.terrainShader)
-    terrainComponent.terrain = terrain
-    terrainGO.components.add(terrainComponent)
-    terrainComponent.shader = shader
-    terrainComponent.encodeRaypickColorId()
-
-    return terrainGO
-}
+//fun createTerrainGO(
+//    shader: BaseShader,
+//    goID: Int,
+//    goName: String,
+//    terrain: TerrainAsset,
+//    pickShader: BaseShader
+//): GameObject {
+//    val terrainGO = GameObject(null as String, goID)
+//    terrainGO.name = goName
+//
+//    terrain.terrain.setTransform(terrainGO.transform)
+//    val terrainComponent = PickableTerrainComponent(terrainGO, pickShader)
+//    terrainComponent.terrain = terrain
+//    terrainGO.components.add(terrainComponent)
+//    terrainComponent.shader = shader
+//    terrainComponent.encodeRayPickColorId()
+//
+//    return terrainGO
+//}
 
 fun getRayIntersection(terrains: Array<TerrainAsset>, ray: Ray, out: Vector3): Vector3? {
     for (terrain in terrains) {
-        val terr = terrain.terrain
-        terr.getRayIntersection(out, ray)
-        if (terr.isOnTerrain(out.x, out.z)) {
-            return out
-        }
+//        val terr = terrain.terrain
+//        terr.getRayIntersection(out, ray)
+//        if (terr.isOnTerrain(out.x, out.z)) {
+//            return out
+//        }
     }
     return null
 }
 
 fun getRayIntersectionAndUp(terrains: Array<TerrainAsset>, ray: Ray): VertexInfo? {
     for (terrain in terrains) {
-        val terr = terrain.terrain
-        terr.getRayIntersection(tempVI.position, ray)
-        if (terr.isOnTerrain(tempVI.position.x, tempVI.position.z)) {
-            tempVI.normal.set(terr.getNormalAtWordCoordinate(tempVI.position.x, tempVI.position.z))
-            return tempVI
-        }
+//        val terr = terrain.terrain
+//        terr.getRayIntersection(tempVI.position, ray)
+//        if (terr.isOnTerrain(tempVI.position.x, tempVI.position.z)) {
+//            tempVI.normal.set(terr.getNormalAtWordCoordinate(tempVI.position.x, tempVI.position.z))
+//            return tempVI
+//        }
     }
     return null
 }

@@ -20,7 +20,7 @@ package com.mbrlabs.mundus.commons.scene3d;
  * @author Marcus Brummer
  * @version 18-01-2016
  */
-public class InvalidComponentException extends Exception {
+public class InvalidComponentException extends RuntimeException {
 
     public InvalidComponentException(String message) {
         super(message);

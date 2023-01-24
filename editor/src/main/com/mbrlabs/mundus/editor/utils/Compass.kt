@@ -16,10 +16,7 @@
 
 package com.mbrlabs.mundus.editor.utils
 
-import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.GL20
-import com.badlogic.gdx.graphics.PerspectiveCamera
-import com.badlogic.gdx.graphics.VertexAttributes
+import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.graphics.g3d.Material
 import com.badlogic.gdx.graphics.g3d.Model
 import com.badlogic.gdx.graphics.g3d.ModelBatch
@@ -33,7 +30,7 @@ import com.badlogic.gdx.utils.Disposable
  * @author Marcus Brummer
  * @version 05-12-2015
  */
-class Compass(private var worldCam: PerspectiveCamera?) : Disposable {
+class Compass(private var worldCam: Camera?) : Disposable {
 
     private val ARROW_LENGTH = 0.05f
     private val ARROW_THIKNESS = 0.4f
@@ -51,14 +48,49 @@ class Compass(private var worldCam: PerspectiveCamera?) : Disposable {
         val modelBuilder = ModelBuilder()
         modelBuilder.begin()
 
-        val builder = modelBuilder.part("compass", GL20.GL_TRIANGLES,
-                (VertexAttributes.Usage.Position or VertexAttributes.Usage.ColorUnpacked).toLong(), Material())
+        val builder = modelBuilder.part(
+            "compass", GL20.GL_TRIANGLES,
+            (VertexAttributes.Usage.Position or VertexAttributes.Usage.ColorUnpacked).toLong(), Material()
+        )
         builder.setColor(Color.RED)
-        ArrowShapeBuilder.build(builder, 0f, 0f, 0f, ARROW_LENGTH, 0f, 0f, ARROW_CAP_SIZE, ARROW_THIKNESS, ARROW_DIVISIONS)
+        ArrowShapeBuilder.build(
+            builder,
+            0f,
+            0f,
+            0f,
+            ARROW_LENGTH,
+            0f,
+            0f,
+            ARROW_CAP_SIZE,
+            ARROW_THIKNESS,
+            ARROW_DIVISIONS
+        )
         builder.setColor(Color.GREEN)
-        ArrowShapeBuilder.build(builder, 0f, 0f, 0f, 0f, ARROW_LENGTH, 0f, ARROW_CAP_SIZE, ARROW_THIKNESS, ARROW_DIVISIONS)
+        ArrowShapeBuilder.build(
+            builder,
+            0f,
+            0f,
+            0f,
+            0f,
+            ARROW_LENGTH,
+            0f,
+            ARROW_CAP_SIZE,
+            ARROW_THIKNESS,
+            ARROW_DIVISIONS
+        )
         builder.setColor(Color.BLUE)
-        ArrowShapeBuilder.build(builder, 0f, 0f, 0f, 0f, 0f, ARROW_LENGTH, ARROW_CAP_SIZE, ARROW_THIKNESS, ARROW_DIVISIONS)
+        ArrowShapeBuilder.build(
+            builder,
+            0f,
+            0f,
+            0f,
+            0f,
+            0f,
+            ARROW_LENGTH,
+            ARROW_CAP_SIZE,
+            ARROW_THIKNESS,
+            ARROW_DIVISIONS
+        )
         compassModel = modelBuilder.end()
         compassInstance = ModelInstance(compassModel)
 
@@ -66,7 +98,7 @@ class Compass(private var worldCam: PerspectiveCamera?) : Disposable {
         compassInstance.transform.translate(0.93f, 0.94f, 0f)
     }
 
-    fun setWorldCam(cam: PerspectiveCamera) {
+    fun setWorldCam(cam: Camera) {
         this.worldCam = cam
     }
 
@@ -79,7 +111,9 @@ class Compass(private var worldCam: PerspectiveCamera?) : Disposable {
 
     private fun update() {
         compassInstance.transform.getTranslation(tempV3)
-        compassInstance.transform.set(worldCam!!.view)
+        if (worldCam != null) {
+            compassInstance.transform.set(worldCam!!.view)
+        }
         compassInstance.transform.setTranslation(tempV3)
     }
 

@@ -24,43 +24,55 @@ import com.mbrlabs.mundus.commons.assets.material.MaterialAsset
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset
-import com.mbrlabs.mundus.editor.config.UiWidgetsHolder
-import com.mbrlabs.mundus.editor.core.project.ProjectManager
+import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
+import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.tools.ToolManager
 import com.mbrlabs.mundus.editor.ui.AppUi
+import com.mbrlabs.mundus.editor.ui.PreviewGenerator
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
 import com.mbrlabs.mundus.editor.ui.modules.inspector.assets.MaterialAssetInspectorWidget
 import com.mbrlabs.mundus.editor.ui.modules.inspector.assets.ModelAssetInspectorWidget
 import com.mbrlabs.mundus.editor.ui.modules.inspector.assets.TerrainAssetInspectorWidget
 import com.mbrlabs.mundus.editor.ui.modules.inspector.assets.TextureAssetInspectorWidget
+import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerPresenter
 
 /**
  * @author Marcus Brummer
  * @version 13-10-2016
  */
 class AssetInspector(
-    separatorStyle: Separator.SeparatorStyle,
+    separatorStyle: Separator.SeparatorStyle?,
+    private val ctx: EditorCtx,
     private val appUi: AppUi,
-    private val uiWidgetsHolder: UiWidgetsHolder,
+    private val assetManager: EditorAssetManager,
     private val assetSelectionDialog: AssetPickerDialog,
     private val toolManager: ToolManager,
-    private val projectManager: ProjectManager
+    private val previewGenerator: PreviewGenerator,
+    private val colorPickerPresenter: ColorPickerPresenter
 ) : VisTable() {
 
-    private val materialWidget =
-        MaterialAssetInspectorWidget(separatorStyle, appUi, uiWidgetsHolder, assetSelectionDialog, projectManager)
+    private val materialWidget = MaterialAssetInspectorWidget(
+        separatorStyle,
+        ctx,
+        appUi,
+        assetSelectionDialog,
+        assetManager,
+        previewGenerator,
+        colorPickerPresenter
+    )
     private val modelWidget = ModelAssetInspectorWidget(
         separatorStyle,
+        ctx,
         appUi,
-        uiWidgetsHolder,
+        assetManager,
         assetSelectionDialog,
         toolManager,
-        projectManager
+        previewGenerator
     )
     private val textureWidget = TextureAssetInspectorWidget(separatorStyle)
     private val terrainWidget = TerrainAssetInspectorWidget(separatorStyle)
 
-    var asset: Asset? = null
+    var asset: Asset<*>? = null
         set(value) {
             field = value
             clear()

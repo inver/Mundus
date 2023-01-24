@@ -22,7 +22,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.mbrlabs.mundus.commons.env.Fog;
-import com.mbrlabs.mundus.commons.env.MundusEnvironment;
+import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.shaders.TerrainShader;
 
 public class EditorTerrainShader extends TerrainShader {
@@ -37,6 +37,7 @@ public class EditorTerrainShader extends TerrainShader {
     private float pickerRadius = 0;
 
     public EditorTerrainShader() {
+        super("", "");
         String vertexShader = "\n#define PICKER\n" + Gdx.files.classpath(VERTEX_SHADER).readString();
         String fragmentShader = "\n#define PICKER\n" + Gdx.files.classpath(FRAGMENT_SHADER).readString();
 
@@ -48,9 +49,9 @@ public class EditorTerrainShader extends TerrainShader {
 
     @Override
     public void render(Renderable renderable) {
-        final MundusEnvironment env = (MundusEnvironment) renderable.environment;
+        final SceneEnvironment env = (SceneEnvironment) renderable.environment;
 
-        setLights(env);
+//        setLights(env);
         setTerrainSplatTextures(renderable);
         set(UNIFORM_TRANS_MATRIX, renderable.worldTransform);
 
@@ -66,7 +67,7 @@ public class EditorTerrainShader extends TerrainShader {
         }
 
         // mouse picking
-        if(pickerActive) {
+        if (pickerActive) {
             set(UNIFORM_MOUSE_ACTIVE, 1);
             set(UNIFORM_PICKER_POS, pickerPosition);
             set(UNIFORM_PICKER_RADIUS, pickerRadius);

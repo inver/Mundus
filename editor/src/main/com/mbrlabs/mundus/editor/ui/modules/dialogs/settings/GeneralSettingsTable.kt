@@ -16,9 +16,10 @@
 
 package com.mbrlabs.mundus.editor.ui.modules.dialogs.settings
 
+import com.kotcrab.vis.ui.widget.VisCheckBox
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisSelectBox
-import com.mbrlabs.mundus.commons.core.registry.KeyboardLayout
+import com.mbrlabs.mundus.editor.core.registry.KeyboardLayout
 import com.mbrlabs.mundus.editor.ui.UiConstants
 import com.mbrlabs.mundus.editor.ui.widgets.FileChooserField
 
@@ -30,7 +31,8 @@ class GeneralSettingsTable : BaseSettingsTable() {
 
     val fbxBinary = FileChooserField(500)
     val keyboardLayouts = VisSelectBox<KeyboardLayout>()
-
+    val autoReloadFromDisk = VisCheckBox("Auto reload from disk");
+    val displayCoordinateSystem = VisCheckBox("Display coordinate system")
     init {
         top().left()
         padRight(UiConstants.PAD_SIDE).padLeft(UiConstants.PAD_SIDE)
@@ -44,5 +46,8 @@ class GeneralSettingsTable : BaseSettingsTable() {
 
         add(VisLabel("Keyboard Layout")).growX().row()
         add(keyboardLayouts).growX().row()
+
+        add(autoReloadFromDisk).growX().row();
+        add(displayCoordinateSystem).growX().row();
     }
 }

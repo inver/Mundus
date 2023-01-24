@@ -18,8 +18,8 @@ package com.mbrlabs.mundus.editor.input
 
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputAdapter
-import com.mbrlabs.mundus.commons.core.registry.KeyboardLayout
-import com.mbrlabs.mundus.commons.core.registry.Registry
+import com.mbrlabs.mundus.editor.core.registry.KeyboardLayout
+import com.mbrlabs.mundus.editor.core.registry.Registry
 
 /**
  * Workaround for LWJGL3's (or GLFW's) key codes and different keyboard layouts.

@@ -16,11 +16,11 @@
 
 package com.mbrlabs.mundus.commons.scene3d;
 
-import com.badlogic.gdx.utils.Array;
 import com.mbrlabs.mundus.commons.scene3d.traversal.DepthFirstIterator;
 import lombok.Getter;
 
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Marcus Brummer
@@ -29,9 +29,9 @@ import java.util.Iterator;
 public abstract class BaseNode<T extends BaseNode<T>> implements Node<T> {
 
     @Getter
-    public final int id;
+    protected final int id;
 
-    protected Array<T> children;
+    protected List<T> children;
     protected T parent;
 
     public BaseNode(int id) {
@@ -40,13 +40,13 @@ public abstract class BaseNode<T extends BaseNode<T>> implements Node<T> {
 
     @Override
     public void initChildrenArray() {
-        this.children = new Array<T>();
+        this.children = new ArrayList<>();
     }
 
     @Override
     public void addChild(T child) {
         if (children == null) {
-            children = new Array<>();
+            children = new ArrayList<>();
         }
         children.add(child);
         child.setParent((T) this);
@@ -64,7 +64,7 @@ public abstract class BaseNode<T extends BaseNode<T>> implements Node<T> {
     }
 
     @Override
-    public Array<T> getChildren() {
+    public List<T> getChildren() {
         return this.children;
     }
 
@@ -81,9 +81,12 @@ public abstract class BaseNode<T extends BaseNode<T>> implements Node<T> {
     @Override
     public void remove() {
         if (parent != null) {
-            parent.getChildren().removeValue((T) this, true);
+            parent.getChildren().remove((T) this);
             this.parent = null;
         }
     }
 
+    public enum Type {
+        SKYBOX
+    }
 }

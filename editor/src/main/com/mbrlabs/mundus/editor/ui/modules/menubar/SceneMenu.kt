@@ -23,7 +23,7 @@ import com.kotcrab.vis.ui.widget.Menu
 import com.kotcrab.vis.ui.widget.MenuItem
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent
 import com.mbrlabs.mundus.editor.events.SceneAddedEvent
-import com.mbrlabs.mundus.editor.utils.Log
+import org.slf4j.LoggerFactory
 
 /**
  * @author Marcus Brummer
@@ -34,7 +34,7 @@ class SceneMenu : Menu("Scenes"),
     SceneAddedEvent.SceneAddedListener {
 
     companion object {
-        private val TAG = SceneMenu::class.java.simpleName
+        private val log = LoggerFactory.getLogger(SceneMenu::class.java)
     }
 
     private val sceneItems = Array<MenuItem>()
@@ -96,7 +96,7 @@ class SceneMenu : Menu("Scenes"),
     override fun onSceneAdded(event: SceneAddedEvent) {
         val sceneName = event.scene!!.name
         buildMenuItem(sceneName)
-        Log.trace(TAG, "SceneMenu", "New scene [{}] added.", sceneName)
+        log.trace("SceneMenu | New scene [{}] added.", sceneName)
     }
 
 }

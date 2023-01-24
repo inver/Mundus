@@ -19,31 +19,36 @@ package com.mbrlabs.mundus.editor.ui.modules.inspector.assets
 import com.kotcrab.vis.ui.widget.Separator.SeparatorStyle
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset
 import com.mbrlabs.mundus.commons.scene3d.GameObject
-import com.mbrlabs.mundus.editor.config.UiWidgetsHolder
-import com.mbrlabs.mundus.editor.core.project.ProjectManager
+import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
+import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.ui.AppUi
+import com.mbrlabs.mundus.editor.ui.PreviewGenerator
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
 import com.mbrlabs.mundus.editor.ui.modules.inspector.BaseInspectorWidget
 import com.mbrlabs.mundus.editor.ui.widgets.MaterialWidget
+import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerPresenter
 
 /**
  * @author Marcus Brummer
  * @version 13-10-2016
  */
 class MaterialAssetInspectorWidget(
-    separatorStyle: SeparatorStyle,
+    separatorStyle: SeparatorStyle?,
+    private val ctx: EditorCtx,
     private val appUi: AppUi,
-    private val uiWidgetsHolder: UiWidgetsHolder,
     private val assetSelectionDialog: AssetPickerDialog,
-    private val projectManager: ProjectManager
-) :
-    BaseInspectorWidget(separatorStyle, "Material Asset") {
+    private val assetManager: EditorAssetManager,
+    private val previewGenerator: PreviewGenerator,
+    colorPickerPresenter: ColorPickerPresenter
+) : BaseInspectorWidget(separatorStyle, "Material Asset") {
 
     private var material: MaterialAsset? = null
     private val materialWidget =
-        MaterialWidget(uiWidgetsHolder.colorPicker, appUi, assetSelectionDialog, projectManager)
+        MaterialWidget(ctx, appUi, assetSelectionDialog, assetManager, previewGenerator)
 
     init {
+        colorPickerPresenter.init(materialWidget.diffuseColorField)
+
         isDeletable = false
         collapsibleContent.add(materialWidget).grow().row()
     }
@@ -57,7 +62,7 @@ class MaterialAssetInspectorWidget(
         // can't be deleted
     }
 
-    override fun setValues(go: GameObject) {
+    override fun setValues(entityId: Int) {
         // nope
     }
 

@@ -17,11 +17,11 @@ package com.mbrlabs.mundus.editor.tools;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.mbrlabs.mundus.editor.core.project.ProjectManager;
+import com.mbrlabs.mundus.editor.core.project.EditorCtx;
+import com.mbrlabs.mundus.editor.events.EntityModifiedEvent;
 import com.mbrlabs.mundus.editor.events.EventBus;
-import com.mbrlabs.mundus.editor.events.GameObjectModifiedEvent;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
-import com.mbrlabs.mundus.editor.tools.picker.GameObjectPicker;
+import com.mbrlabs.mundus.editor.tools.picker.EntityPicker;
 import com.mbrlabs.mundus.editor.tools.picker.ToolHandlePicker;
 
 /**
@@ -30,15 +30,9 @@ import com.mbrlabs.mundus.editor.tools.picker.ToolHandlePicker;
  */
 public abstract class TransformTool extends SelectionTool {
 
-    protected enum TransformState {
+    public enum TransformState {
         TRANSFORM_X, TRANSFORM_Y, TRANSFORM_Z, TRANSFORM_XZ, TRANSFORM_XYZ, IDLE
     }
-
-    protected static final int X_HANDLE_ID = 0;
-    protected static final int Y_HANDLE_ID = 1;
-    protected static final int Z_HANDLE_ID = 2;
-    protected static final int XZ_HANDLE_ID = 3;
-    protected static final int XYZ_HANDLE_ID = 4;
 
     protected static Color COLOR_X = Color.RED;
     protected static Color COLOR_Y = Color.GREEN;
@@ -47,15 +41,21 @@ public abstract class TransformTool extends SelectionTool {
     protected static Color COLOR_XYZ = Color.LIGHT_GRAY;
     protected static Color COLOR_SELECTED = Color.YELLOW;
 
-    protected ToolHandlePicker handlePicker;
-    protected GameObjectModifiedEvent gameObjectModifiedEvent;
+    protected static final int X_HANDLE_ID = COLOR_X.toIntBits();
+    protected static final int Y_HANDLE_ID = COLOR_Y.toIntBits();
+    protected static final int Z_HANDLE_ID = COLOR_Z.toIntBits();
+    protected static final int XZ_HANDLE_ID = COLOR_XZ.toIntBits();
+    protected static final int XYZ_HANDLE_ID = 4;
 
-    public TransformTool(ProjectManager projectManager, GameObjectPicker goPicker, ToolHandlePicker handlePicker,
-                         ModelBatch batch, CommandHistory history, EventBus eventBus) {
-        super(projectManager, goPicker, batch, history, eventBus);
+    protected ToolHandlePicker handlePicker;
+    protected EntityModifiedEvent entityModifiedEvent;
+
+    public TransformTool(EditorCtx ctx, String shaderKey, EntityPicker picker, ToolHandlePicker handlePicker,
+                         ModelBatch batch, CommandHistory history, EventBus eventBus, String name) {
+        super(ctx, shaderKey, picker, batch, history, eventBus, name);
         this.handlePicker = handlePicker;
 
-        gameObjectModifiedEvent = new GameObjectModifiedEvent(null);
+        entityModifiedEvent = new EntityModifiedEvent(-1);
     }
 
     protected abstract void scaleHandles();
