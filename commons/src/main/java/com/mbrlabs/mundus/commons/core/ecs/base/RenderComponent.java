@@ -9,11 +9,7 @@ import lombok.NoArgsConstructor;
 public final class RenderComponent extends Component {
     private RenderableDelegate renderable;
 
-    public RenderComponent(RenderableDelegate renderable) {
+    RenderComponent(RenderableDelegate renderable) {
         this.renderable = renderable;
-    }
-
-    public static RenderComponent of(RenderableDelegate renderable) {
-        return new RenderComponent(renderable);
     }
 }

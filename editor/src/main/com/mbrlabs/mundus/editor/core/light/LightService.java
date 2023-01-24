@@ -1,7 +1,6 @@
 package com.mbrlabs.mundus.editor.core.light;
 
 import com.badlogic.gdx.math.Vector3;
-import com.mbrlabs.mundus.commons.core.ecs.base.RenderComponent;
 import com.mbrlabs.mundus.commons.core.ecs.component.LightComponent;
 import com.mbrlabs.mundus.commons.scene3d.HierarchyNode;
 import com.mbrlabs.mundus.editor.core.ecs.EditorEcsService;
@@ -19,6 +18,6 @@ public class LightService {
     public HierarchyNode createDirectionLight() {
         return editorEcsService.createEntityWithDirection(ctx.getCurrentWorld(), new Vector3(0, 10f, 0),
                 Vector3.Zero, "Direction light", new LightComponent(),
-                RenderComponent.of(new LightRenderDelegate()));
+                new LightRenderDelegate().asComponent());
     }
 }

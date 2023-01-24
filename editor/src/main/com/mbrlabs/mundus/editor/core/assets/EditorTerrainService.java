@@ -7,7 +7,6 @@ import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAssetLoader;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainMeta;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAssetLoader;
-import com.mbrlabs.mundus.commons.core.ecs.base.RenderComponent;
 import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
 import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObjectDelegate;
 import com.mbrlabs.mundus.commons.scene3d.HierarchyNode;
@@ -81,7 +80,7 @@ public class EditorTerrainService extends TerrainService {
         return asset;
     }
 
-    public HierarchyNode createTerrainEntity() {
+    public HierarchyNode createTerrain() {
         var world = ctx.getCurrentWorld();
 
         var id = world.create();
@@ -93,10 +92,8 @@ public class EditorTerrainService extends TerrainService {
 
         world.edit(id)
                 .add(new PositionComponent())
-                .add(RenderComponent.of(new RenderableObjectDelegate(terrain, ShaderConstants.TERRAIN)));
+                .add(new RenderableObjectDelegate(terrain, ShaderConstants.TERRAIN).asComponent());
 
         return new HierarchyNode(id, name);
     }
-
-
 }

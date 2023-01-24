@@ -16,6 +16,12 @@ public class SynchronizeCameraComponentSystem extends IteratingSystem {
     protected void process(int entityId) {
         var camera = cameraMapper.get(entityId).getCamera();
         var positionComponent = positionMapper.get(entityId);
-        camera.combined.set(positionComponent.getTransform());
+
+        camera.position.set(positionComponent.getLocalPosition());
+        // Todo migrate to set direction from quaternion
+        if (positionComponent.lookAtId >= 0) {
+            positionComponent = positionMapper.get(positionComponent.lookAtId);
+            camera.lookAt(positionComponent.getLocalPosition());
+        }
     }
 }

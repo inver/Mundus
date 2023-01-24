@@ -16,12 +16,12 @@
 
 package com.mbrlabs.mundus.commons;
 
-import com.artemis.Aspect;
 import com.artemis.World;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.utils.Disposable;
 import com.mbrlabs.mundus.commons.assets.Asset;
+import com.mbrlabs.mundus.commons.core.ecs.WorldUtils;
 import com.mbrlabs.mundus.commons.core.ecs.behavior.RenderComponentSystem;
 import com.mbrlabs.mundus.commons.core.ecs.component.CameraComponent;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
@@ -34,7 +34,6 @@ import lombok.Setter;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -86,22 +85,13 @@ public class Scene implements Disposable, Renderable {
     }
 
     public List<Pair<Camera, Integer>> getCameras() {
-        var entityIds = world.getAspectSubscriptionManager().get(Aspect.all(CameraComponent.class)).getEntities();
-        if (entityIds.isEmpty()) {
-            return Collections.emptyList();
-        }
-        var mapper = world.getMapper(CameraComponent.class);
-
-        var res = new ArrayList<Pair<Camera, Integer>>();
-        for (int i = 0; i < entityIds.size(); i++) {
-            res.add(Pair.of(mapper.get(entityIds.get(i)).getCamera(), entityIds.get(i)));
-        }
-        return res;
+        return WorldUtils.getFromWorld(
+                world, CameraComponent.class, (entityId, component) -> Pair.of(component.getCamera(), entityId)
+        );
     }
 
     public Camera getCamera(int cameraId) {
-        var mapper = world.getMapper(CameraComponent.class);
-        return mapper.get(cameraId).getCamera();
+        return world.getMapper(CameraComponent.class).get(cameraId).getCamera();
     }
 
 }

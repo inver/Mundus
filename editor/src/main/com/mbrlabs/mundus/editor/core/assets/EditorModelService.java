@@ -6,7 +6,6 @@ import com.mbrlabs.mundus.commons.assets.meta.MetaService;
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset;
 import com.mbrlabs.mundus.commons.assets.model.ModelAssetLoader;
 import com.mbrlabs.mundus.commons.assets.model.ModelMeta;
-import com.mbrlabs.mundus.commons.core.ecs.base.RenderComponent;
 import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
 import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObjectDelegate;
 import com.mbrlabs.mundus.commons.loader.ModelImporter;
@@ -62,7 +61,7 @@ public class EditorModelService extends ModelService {
         return res;
     }
 
-    public HierarchyNode createTerrainEntity(ModelFiles modelFiles) {
+    public HierarchyNode createModel(ModelFiles modelFiles) {
         var world = ctx.getCurrentWorld();
 
         var id = world.create();
@@ -74,7 +73,7 @@ public class EditorModelService extends ModelService {
 
         world.edit(id)
                 .add(new PositionComponent())
-                .add(RenderComponent.of(new RenderableObjectDelegate(terrain, ShaderConstants.MODEL)));
+                .add(new RenderableObjectDelegate(terrain, ShaderConstants.MODEL).asComponent());
 
         return new HierarchyNode(id, name);
     }

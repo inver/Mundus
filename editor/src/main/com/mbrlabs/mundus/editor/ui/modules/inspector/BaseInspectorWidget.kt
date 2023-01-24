@@ -31,10 +31,7 @@ import com.mbrlabs.mundus.editor.utils.Fa
  * @author Marcus Brummer
  * @version 19-01-2016
  */
-abstract class BaseInspectorWidget(
-    private val separatorStyle: SeparatorStyle?,
-    title: String
-) : VisTable() {
+abstract class BaseInspectorWidget(private val separatorStyle: SeparatorStyle?, title: String) : VisTable() {
 
     companion object {
         private val COLLAPSE_BTN_DOWN = Fa.CARET_UP
