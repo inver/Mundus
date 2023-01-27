@@ -52,7 +52,7 @@ public abstract class TransformTool extends SelectionTool {
 
     public TransformTool(EditorCtx ctx, String shaderKey, EntityPicker picker, ToolHandlePicker handlePicker,
                          ModelBatch batch, CommandHistory history, EventBus eventBus, String name) {
-        super(ctx, shaderKey, picker, batch, history, eventBus, name);
+        super(ctx, shaderKey, picker, batch, history, eventBus);
         this.handlePicker = handlePicker;
 
         entityModifiedEvent = new EntityModifiedEvent(-1);

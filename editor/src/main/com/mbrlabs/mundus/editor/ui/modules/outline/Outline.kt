@@ -222,12 +222,12 @@ class Outline(
         private val lightsPopupMenu: PopupMenu = PopupMenu()
         val addDirectionalLight: MenuItem = MenuItem("Directional Light")
 
-        var selectedGO = -1
+        var selectedEntityId = -1
 
         init {
             rename.addListener(object : ClickListener() {
                 override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                    if (selectedGO > 0) {
+                    if (selectedEntityId > 0) {
                         showRenameDialog()
                     }
                 }
@@ -236,7 +236,7 @@ class Outline(
             // duplicate node
             duplicate.addListener(object : ClickListener() {
                 override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                    if (selectedGO > 0 && !duplicate.isDisabled) {
+                    if (selectedEntityId > 0 && !duplicate.isDisabled) {
                         TODO()
 //                        duplicateGO(selectedGO!!, selectedGO!!.parent)
 //                        eventBus.post(SceneGraphChangedEvent())
@@ -247,11 +247,17 @@ class Outline(
             // delete game object
             delete.addListener(object : ClickListener() {
                 override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                    if (selectedGO != null) {
-                        TODO()
+                    if (selectedEntityId < 0) {
+                        return
+                    }
+
+                    ctx.currentWorld.delete(selectedEntityId)
+//                    ctx.current.currentScene.rootNode.
+//                    if (selectedEntityId != null) {
+//                        TODO()
 //                        removeGo(selectedGO!!)
 //                        eventBus.post(SceneGraphChangedEvent())
-                    }
+//                    }
                 }
             })
 
@@ -277,11 +283,11 @@ class Outline(
          * @param y
          */
         fun show(go: Int, x: Float, y: Float) {
-            selectedGO = go
+            selectedEntityId = go
             showMenu(appUi, x, y)
 
             // check if game object is selected
-            if (selectedGO > 0) {
+            if (selectedEntityId > 0) {
                 // Activate menu options for selected game objects
                 rename.isDisabled = false
                 delete.isDisabled = false

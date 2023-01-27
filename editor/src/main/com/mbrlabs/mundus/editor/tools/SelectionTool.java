@@ -25,6 +25,7 @@ import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.tools.picker.EntityPicker;
 import com.mbrlabs.mundus.editor.utils.Fa;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Marcus Brummer
@@ -37,21 +38,17 @@ public class SelectionTool extends Tool {
     protected final EventBus eventBus;
 
     public SelectionTool(EditorCtx ctx, String shaderKey, EntityPicker picker, ModelBatch batch,
-                         CommandHistory history, EventBus eventBus, String name) {
-        super(ctx, shaderKey, batch, history, name);
+                         CommandHistory history, EventBus eventBus) {
+        super(ctx, shaderKey, batch, history, NAME);
         this.picker = picker;
         this.eventBus = eventBus;
-    }
-
-    public SelectionTool(EditorCtx ctx, String shaderKey, EntityPicker picker, ModelBatch batch,
-                         CommandHistory history, EventBus eventBus) {
-        this(ctx, shaderKey, picker, batch, history, eventBus, NAME);
     }
 
     public void entitySelected(int entityId) {
         getCtx().selectEntity(entityId);
     }
 
+    @NotNull
     @Override
     public String getIconFont() {
         return Fa.Companion.getMOUSE_POINTER();
@@ -96,11 +93,6 @@ public class SelectionTool extends Tool {
             }
         }
 
-        return false;
-    }
-
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         return false;
     }
 

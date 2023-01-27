@@ -44,6 +44,10 @@ public class EditorCtx implements Disposable {
         return selectedEntityId;
     }
 
+    public boolean isEntitySelected() {
+        return getSelectedEntityId() >= 0;
+    }
+
     public void selectEntity(int selectedEntityId) {
         this.selectedEntityId = selectedEntityId;
     }

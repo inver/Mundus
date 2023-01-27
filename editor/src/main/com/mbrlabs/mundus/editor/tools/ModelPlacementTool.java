@@ -126,7 +126,9 @@ public class ModelPlacementTool extends Tool {
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
-        if (this.model == null || modelInstance == null) return false;
+        if (this.model == null || modelInstance == null) {
+            return false;
+        }
 
         final ProjectContext context = getCtx().getCurrent();
 
