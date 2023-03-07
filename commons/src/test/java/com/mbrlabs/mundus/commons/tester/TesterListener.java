@@ -60,7 +60,7 @@ public class TesterListener extends Lwjgl3WindowAdapter implements ApplicationLi
     }
 
     private void loadModel() {
-        var res = loader.loadModel("ololo", new FileHandle("/home/inv3r/Development/gamedev/Mundus/commons/src/test/resources/obj/seat/seat.obj"));
+        var res = loader.loadModel("ololo", new FileHandle("/home/inv3r/Development/gamedev/Mundus/commons/src/test/resources/obj/cessna172/cessna172.obj"));
         modelInstance = new ModelInstance(new AppModel(res));
     }
 

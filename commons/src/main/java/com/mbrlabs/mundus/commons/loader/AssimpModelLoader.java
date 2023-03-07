@@ -12,6 +12,7 @@ import org.lwjgl.system.MemoryStack;
 import java.io.File;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static com.badlogic.gdx.graphics.g3d.model.data.ModelTexture.USAGE_DIFFUSE;
@@ -91,7 +92,7 @@ public class AssimpModelLoader {
                 var texture = new ModelTexture();
                 texture.id = "0";
                 texture.usage = USAGE_DIFFUSE;
-                texture.fileName = modelDir + File.separator + new File(texturePath).getName();
+                texture.fileName = modelDir + File.separator + new File(texturePath).getName().replace("\\", "/");
                 material.textures.add(texture);
 //                material.diffuse = Color.WHITE;
             }
@@ -110,25 +111,25 @@ public class AssimpModelLoader {
         float[] textCoords = processTextCoords(aiMesh);
         float[] normals = processNormals(aiMesh);
 
-        float[] merged = new float[vertices.length / 3 * 8];
-        for (int i = 0; i < vertices.length / 3; i++) {
-            merged[i * 8] = vertices[i * 3];
-            merged[i * 8 + 1] = vertices[i * 3 + 1];
-            merged[i * 8 + 2] = vertices[i * 3 + 2];
-            merged[i * 8 + 3] = textCoords[i * 2];
-            merged[i * 8 + 4] = textCoords[i * 2 + 1];
-            merged[i * 8 + 5] = normals[i * 3];
-            merged[i * 8 + 6] = normals[i * 3 + 1];
-            merged[i * 8 + 7] = normals[i * 3 + 2];
+        mesh.vertices = mergeVerticesData(vertices, textCoords, normals);
+        List<VertexAttribute> attributes = new ArrayList<>();
+        if (vertices.length > 0) {
+            attributes.add(VertexAttribute.Position());
         }
-        mesh.vertices = merged;
-        mesh.attributes = new VertexAttribute[]{VertexAttribute.Position(), VertexAttribute.TexCoords(1), VertexAttribute.Normal()};
-        mesh.parts = processParts(aiMesh);
+        if (textCoords.length > 0) {
+            attributes.add(VertexAttribute.TexCoords(1));
+        }
+        if (normals.length > 0) {
+            attributes.add(VertexAttribute.Normal());
+        }
+        mesh.attributes = attributes.toArray(new VertexAttribute[]{});
+        mesh.parts = new ModelMeshPart[]{processParts(aiMesh)};
 
+        String materialId = modelData.materials.get(aiMesh.mMaterialIndex()).id;
         node.parts = new ModelNodePart[mesh.parts.length];
         for (int i = 0; i < mesh.parts.length; i++) {
             var nodePart = new ModelNodePart();
-            nodePart.materialId = modelData.materials.get(aiMesh.mMaterialIndex()).id;
+            nodePart.materialId = materialId;
             nodePart.meshPartId = mesh.parts[i].id;
             node.parts[i] = nodePart;
         }
@@ -137,35 +138,67 @@ public class AssimpModelLoader {
         modelData.nodes.add(node);
     }
 
-    private ModelMeshPart[] processParts(AIMesh aiMesh) {
+    private float[] mergeVerticesData(float[] vertices, float[] textCoords, float[] normals) {
+        if (vertices.length == 0) {
+            return new float[]{};
+        }
+
+        int dataLength = 3;
+        boolean hasTextCoords = false;
+        if (textCoords.length > 0) {
+            dataLength += 2;
+            hasTextCoords = true;
+        }
+
+        boolean hasNormals = false;
+        if (normals.length > 0) {
+            dataLength += 3;
+            hasNormals = true;
+        }
+
+        float[] merged = new float[vertices.length / 3 * dataLength];
+        for (int i = 0; i < vertices.length / 3; i++) {
+            merged[i * dataLength] = vertices[i * 3];
+            merged[i * dataLength + 1] = vertices[i * 3 + 1];
+            merged[i * dataLength + 2] = vertices[i * 3 + 2];
+
+            int shift = 0;
+            if (hasTextCoords) {
+                shift = 2;
+                merged[i * dataLength + 3] = textCoords[i * 2];
+                merged[i * dataLength + 4] = textCoords[i * 2 + 1];
+            }
+
+            if (hasNormals) {
+                merged[i * dataLength + 3 + shift] = normals[i * 3];
+                merged[i * dataLength + 4 + shift] = normals[i * 3 + 1];
+                merged[i * dataLength + 5 + shift] = normals[i * 3 + 2];
+            }
+        }
+        return merged;
+    }
+
+    private ModelMeshPart processParts(AIMesh aiMesh) {
         var faces = aiMesh.mFaces();
 
-        var res = new ModelMeshPart[faces.remaining()];
-        int pos = 0;
+        var resIndices = new ArrayList<Short>();
         while (faces.remaining() > 0) {
             var face = faces.get();
             var indices = face.mIndices();
-            var part = new ModelMeshPart();
-            part.id = UUID.randomUUID().toString();
-
-            var resIndices = new ArrayList<Short>();
             while (indices.remaining() > 0) {
                 resIndices.add(Integer.valueOf(indices.get()).shortValue());
             }
-            part.indices = new short[resIndices.size()];
-//            part.indices = resIndices.stream();
-            for (int i = 0; i < resIndices.size(); i++) {
-                part.indices[i] = resIndices.get(i);
-            }
-            if (face.mNumIndices() > 3) {
-                part.primitiveType = GL20.GL_TRIANGLE_FAN;
-            } else {
-                part.primitiveType = GL20.GL_TRIANGLES;
-            }
-            res[pos++] = part;
         }
 
-        return res;
+        var part = new ModelMeshPart();
+        part.id = UUID.randomUUID().toString();
+        part.indices = new short[resIndices.size()];
+        for (int i = 0; i < resIndices.size(); i++) {
+            part.indices[i] = resIndices.get(i);
+        }
+        part.primitiveType = GL20.GL_TRIANGLES;
+
+        return part;
     }
 
     private float[] processNormals(AIMesh aiMesh) {
