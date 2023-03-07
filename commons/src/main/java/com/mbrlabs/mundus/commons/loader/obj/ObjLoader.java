@@ -6,8 +6,8 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.g3d.model.data.*;
-import com.mbrlabs.mundus.commons.dto.Vector2Dto;
-import com.mbrlabs.mundus.commons.dto.Vector3Dto;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.mbrlabs.mundus.commons.loader.obj.material.ObjMaterialLoader;
 import com.mbrlabs.mundus.commons.loader.obj.material.ObjModelMaterial;
 import lombok.AllArgsConstructor;
@@ -123,7 +123,7 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
         if (values == null) {
             return;
         }
-        ctx.vertexTextures.add(new Vector2Dto(values[0], values[1]));
+        ctx.vertexTextures.add(new Vector2(values[0], values[1]));
     }
 
     private static void processVertex(String line, ParseCtx ctx) {
@@ -131,7 +131,7 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
         if (values == null) {
             return;
         }
-        ctx.vertices.add(new Vector3Dto(values[0], values[1], values[2]));
+        ctx.vertices.add(new Vector3(values[0], values[1], values[2]));
     }
 
     private void processVertexNormal(String line, ParseCtx ctx) {
@@ -139,7 +139,7 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
         if (values == null) {
             return;
         }
-        ctx.vertexNormals.add(new Vector3Dto(values[0], values[1], values[2]));
+        ctx.vertexNormals.add(new Vector3(values[0], values[1], values[2]));
     }
 
     /**
@@ -155,7 +155,7 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
         }
         var names = Arrays.asList(tokens).subList(1, tokens.length);
         for (var name : names) {
-            ctx.groups.put(name, new Group(name));
+            ctx.groups.put(name, new GroupOrObject(name));
         }
         if (names.size() > 0) {
             String oldMat = null;
@@ -278,16 +278,27 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
             return;
         }
 
+        var activeGroup = ctx.activeGroup;
+        if (activeGroup == null) {
+            return;
+        }
+
         var face = new Face();
         for (int i = 1; i < tokens.length; i++) {
-            face.verticesRefs.add(processFaceVertex(tokens[i], ctx));
+            var vertex = processFaceVertex(tokens[i]);
+            if (!activeGroup.firstFaceParsed) {
+                activeGroup.firstFaceParsed = true;
+                activeGroup.hasUVs = vertex.uv >= 0;
+                activeGroup.hasNormals = vertex.normal >= 0;
+            }
+            face.verticesRefs.add(vertex);
         }
         if (ctx.activeGroup != null) {
             ctx.activeGroup.surfaces.add(face);
         }
     }
 
-    private Vertex processFaceVertex(String token, ParseCtx ctx) {
+    private Vertex processFaceVertex(String token) {
         var res = new Vertex();
         var ids = token.split("/");
         if (StringUtils.isNotBlank(ids[0]) && NumberUtils.isCreatable(ids[0])) {
@@ -313,47 +324,72 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
         return res;
     }
 
-    public void convert(Group obj, ModelData res, ModelNode parent, int index, ParseCtx ctx) {
+    public void convert(GroupOrObject obj, ModelData res, ModelNode parent, int index, ParseCtx ctx) {
+
+
         var node = new ModelNode();
-        node.id = "node_" + obj.name;
-//        if (obj.getTranslation() != null) {
-//            node.translation = new Vector3(obj.getTranslation().getX(), obj.getTranslation().getY(), obj.getTranslation().getZ());
-//        }
-        //todo
-//        node.rotation = new Quaternion(obj.getRotation())
-//        node.scale
+        node.id = obj.name;
         if (parent == null) {
             res.nodes.add(node);
         } else {
             parent.children[index] = node;
         }
 
-        if (CollectionUtils.isNotEmpty(obj.getSurfaces())) {
-            var mesh = new ModelMesh();
-            mesh.id = "mesh_" + obj.getName();
+        if (CollectionUtils.isEmpty(obj.getSurfaces())) {
+            return;
+        }
 
-            mesh.attributes = new VertexAttribute[]{VertexAttribute.Position()};
-            var vertices = obj.getSurfaces().stream().flatMap(f -> f.getVerticesRefs().stream()).collect(Collectors.toList());
-            mesh.vertices = new float[vertices.size() * 3];
-            for (int i = 0; i < vertices.size(); i++) {
-                var vertexIdx = vertices.get(i);
-                var vertex = ctx.vertices.get(vertexIdx.position);
-                mesh.vertices[i * 3] = vertex.getX();
-                mesh.vertices[i * 3 + 1] = vertex.getY();
-                mesh.vertices[i * 3 + 2] = vertex.getZ();
-            }
 
-            mesh.parts = new ModelMeshPart[obj.getSurfaces().size()];
-            node.parts = new ModelNodePart[obj.getSurfaces().size()];
-            for (int i = 0; i < obj.getSurfaces().size(); i++) {
-                processSurface(obj, node, mesh, i);
-            }
+        var mesh = new ModelMesh();
+        res.meshes.add(mesh);
 
-            res.meshes.add(mesh);
+        mesh.id = "mesh_" + obj.getName();
+        node.meshId = mesh.id;
+
+        var vertexSize = 3;
+        var attrs = new ArrayList<VertexAttribute>();
+        attrs.add(VertexAttribute.Position());
+        if (obj.hasUVs) {
+            //todo check correctness of unit
+            attrs.add(VertexAttribute.TexCoords(1));
+            vertexSize += 2;
+        }
+        if (obj.hasNormals) {
+            attrs.add(VertexAttribute.Normal());
+            vertexSize += 3;
+        }
+
+        mesh.attributes = attrs.toArray(new VertexAttribute[0]);
+
+
+        var vertices = obj.getSurfaces().stream().flatMap(f -> f.getVerticesRefs().stream()).collect(Collectors.toList());
+//        for (int i = 0; i < vertices.size(); i++) {
+//            var vertexIdx = vertices.get(i);
+//            var vertex = ctx.vertices.get(vertexIdx.position);
+//            mesh.vertices[i * vertexSize] = vertex.getX();
+//            mesh.vertices[i * vertexSize + 1] = vertex.getY();
+//            mesh.vertices[i * vertexSize + 2] = vertex.getZ();
+//            if (obj.hasUVs) {
+//                var uv = ctx.vertexTextures.get(vertexIdx.uv);
+//                mesh.vertices[i * vertexSize + 3] = uv.getX();
+//                mesh.vertices[i * vertexSize + 4] = uv.getY();
+//            }
+//            if (obj.hasNormals) {
+//                //todo wrong logic here if vertex has normal, but doesn't have a texture coordinate
+//                var normal = ctx.vertexNormals.get(vertexIdx.normal);
+//                mesh.vertices[i * vertexSize + 5] = normal.getX();
+//                mesh.vertices[i * vertexSize + 6] = normal.getY();
+//                mesh.vertices[i * vertexSize + 7] = normal.getZ();
+//            }
+//        }
+        mesh.parts = new ModelMeshPart[obj.getSurfaces().size()];
+        node.parts = new ModelNodePart[obj.getSurfaces().size()];
+        for (int i = 0; i < obj.getSurfaces().size(); i++) {
+            processSurface(obj, node, mesh, i);
         }
     }
 
-    private void processSurface(Group obj, ModelNode node, ModelMesh mesh, int i) {
+    private void processSurface(GroupOrObject obj, ModelNode node, ModelMesh mesh, int i) {
         var surface = obj.getSurfaces().get(i);
 
         var part = new ModelMeshPart();
@@ -384,21 +420,21 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 
     private static class ParseCtx {
         final Map<String, ObjModelMaterial> materials = new HashMap<>();
-        Map<String, Group> groups = new HashMap<>();
-        Group activeGroup = null;
-        List<Vector3Dto> vertices = new ArrayList<>();
-        List<Vector2Dto> vertexTextures = new ArrayList<>();
-        List<Vector3Dto> vertexNormals = new ArrayList<>();
+        Map<String, GroupOrObject> groups = new HashMap<>();
+        GroupOrObject activeGroup = null;
+        List<Vector3> vertices = new ArrayList<>();
+        List<Vector2> vertexTextures = new ArrayList<>();
+        List<Vector3> vertexNormals = new ArrayList<>();
     }
 
     @Getter
     @RequiredArgsConstructor
-    private static class Group {
+    private static class GroupOrObject {
         final String name;
-
         final List<Face> surfaces = new ArrayList<>();
-        boolean hasNormals = false;
+        boolean firstFaceParsed = false;
         boolean hasUVs = false;
+        boolean hasNormals = true;
         String currentMaterial;
     }
 

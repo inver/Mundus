@@ -40,7 +40,10 @@ public class Ac3dParser {
 
             if (line.startsWith(Ac3dConstants.OBJECT)) {
                 res.getObjects().add(parseObject(line, br));
+                continue;
             }
+
+            log.warn("Unknown line '" + line + "'");
         }
         return res;
     }

@@ -75,7 +75,7 @@ public class ObjMaterialLoader {
                     current = new ObjModelMaterial();
                     res.add(current);
                     if (tokens.length > 1) {
-                        current.id = tokens[1].replace(".", "_");
+                        current.id = tokens[1];
                     } else {
                         current.id = "default";
                     }

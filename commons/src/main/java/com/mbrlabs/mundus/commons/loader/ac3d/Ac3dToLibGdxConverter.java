@@ -102,6 +102,7 @@ public class Ac3dToLibGdxConverter {
         var nodePart = new ModelNodePart();
         nodePart.meshPartId = part.id;
         nodePart.materialId = surface.getMaterialIndex() + "";
+
         node.parts[i] = nodePart;
     }
 

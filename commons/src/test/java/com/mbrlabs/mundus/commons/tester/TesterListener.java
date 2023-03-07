@@ -13,7 +13,8 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.mbrlabs.mundus.commons.loader.ModelImporter;
+import com.mbrlabs.mundus.commons.loader.AppModel;
+import com.mbrlabs.mundus.commons.loader.AssimpModelLoader;
 
 public class TesterListener extends Lwjgl3WindowAdapter implements ApplicationListener {
 
@@ -24,7 +25,7 @@ public class TesterListener extends Lwjgl3WindowAdapter implements ApplicationLi
     public CameraInputController camController;
 
     private final Environment environment = new Environment();
-    private final ModelImporter importer = new ModelImporter();
+    private final AssimpModelLoader loader = new AssimpModelLoader();
 
     @Override
     public void create() {
@@ -59,8 +60,8 @@ public class TesterListener extends Lwjgl3WindowAdapter implements ApplicationLi
     }
 
     private void loadModel() {
-        var res = importer.loadModel(new FileHandle("/home/inv3r/Development/gamedev/Mundus/commons/src/test/resources/ac3d/sr22.ac"));
-        modelInstance = new ModelInstance(res);
+        var res = loader.loadModel("ololo", new FileHandle("/home/inv3r/Development/gamedev/Mundus/commons/src/test/resources/obj/seat/seat.obj"));
+        modelInstance = new ModelInstance(new AppModel(res));
     }
 
     @Override
@@ -77,7 +78,7 @@ public class TesterListener extends Lwjgl3WindowAdapter implements ApplicationLi
 
         modelBatch.begin(camera);
         modelBatch.render(modelInstance, environment);
-        modelBatch.render(cubeInstance, environment);
+//        modelBatch.render(cubeInstance, environment);
         modelBatch.end();
     }
 
