@@ -125,6 +125,45 @@ project(":commons") {
 //    build.dependsOn 'pitest'
 }
 
+project(":core") {
+    apply plugin: "java"
+
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+
+    dependencies {
+        compileOnly 'org.projectlombok:lombok:1.18.24'
+        annotationProcessor 'org.projectlombok:lombok:1.18.24'
+
+        implementation 'org.lwjgl:lwjgl-assimp:3.3.1'
+        implementation 'org.lwjgl:lwjgl-assimp:3.3.1:natives-linux'
+
+        implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.4'
+        implementation 'com.fasterxml.jackson.core:jackson-annotations:2.13.4'
+
+        implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+        implementation "com.github.mgsx-dev.gdx-gltf:gltf:$gltfVersion"
+        implementation "net.onedaybeard.artemis:artemis-odb:2.3.0"
+        implementation 'net.onedaybeard.artemis:artemis-odb-serializer-json:2.3.0'
+
+        implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
+        implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
+        implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.4'
+        implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.0'
+
+        implementation 'org.locationtech.jts:jts-core:1.19.0'
+
+        testCompileOnly 'org.projectlombok:lombok:1.18.24'
+        testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
+        testImplementation "junit:junit:$junitVersion"
+        testImplementation 'org.mockito:mockito-core:4.8.0'
+        testImplementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
+        testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+        testImplementation 'ch.qos.logback:logback-classic:1.4.0'
+
+    }
+}
+
 project(":editor") {
     apply plugin: "java"
     apply plugin: "kotlin"
