@@ -12,7 +12,6 @@ import java.util.UUID;
 
 public class ProjectManagerTest extends BaseCtxTest {
     private static final String PROJECT_PATH = "/tmp/" + UUID.randomUUID() + "/mundusProject";
-
     @Autowired
     private ProjectManager projectManager;
 
@@ -25,7 +24,7 @@ public class ProjectManagerTest extends BaseCtxTest {
 
     @SneakyThrows
     @Test
-    public void testLoadDoesntExistProject() {
+    public void testLoadDoesNotExistProject() {
         var ref = new ProjectRef();
         ref.setName("missedProject");
         ref.setPath(PROJECT_PATH);

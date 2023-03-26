@@ -134,10 +134,9 @@ public class SceneStorage {
     public void copyAssetToProject(String projectPath, Asset<?> asset) {
         if (asset.getMeta().getFile().type() == Files.FileType.Classpath) {
             for (var path : FileUtils.getResourceFiles(getClass(), asset.getMeta().getFile().path(), "")) {
-                var file = new File(getClass().getClassLoader()
-                        .getResource( path).toURI());
-                org.apache.commons.io.FileUtils.copyFile(file, Paths.get(
-                        projectPath + "/" + PROJECT_ASSETS_DIR + "/" + asset.getName() + "/" + path
+                var file = new File(getClass().getClassLoader().getResource(path).toURI());
+                org.apache.commons.io.FileUtils.copyDirectory(file.getParentFile(), Paths.get(
+                        projectPath + "/" + PROJECT_ASSETS_DIR + asset.getName()
                 ).toFile());
             }
         } else {
