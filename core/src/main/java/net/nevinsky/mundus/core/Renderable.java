@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.math.Matrix4;
 import lombok.Getter;
 import lombok.Setter;
+import net.nevinsky.mundus.core.mesh.MeshPart;
 import net.nevinsky.mundus.core.shader.Shader;
 import net.nevinsky.mundus.core.shader.ShaderProvider;
 
@@ -35,7 +36,7 @@ public class Renderable {
      * combine multiple bones into a single transformation matrix, which is used to transform the vertex to model space. In other
      * words: the bone transformation is applied prior to the {@link #worldTransform}.
      */
-    private Matrix4 bones[];
+    private Matrix4[] bones;
     /**
      * The {@link Shader} to be used to render this Renderable using a {@link ModelBatch}, may be null. It is not guaranteed that
      * the shader will be used, the used {@link ShaderProvider} is responsible for actually choosing the correct shader to use.

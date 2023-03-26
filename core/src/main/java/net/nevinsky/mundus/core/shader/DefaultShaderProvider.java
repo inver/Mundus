@@ -1,8 +1,7 @@
-package net.nevinsky.mundus.core;
+package net.nevinsky.mundus.core.shader;
 
 import com.badlogic.gdx.files.FileHandle;
-import net.nevinsky.mundus.core.shader.DefaultShader;
-import net.nevinsky.mundus.core.shader.Shader;
+import net.nevinsky.mundus.core.Renderable;
 
 public class DefaultShaderProvider extends BaseShaderProvider {
     public final DefaultShader.Config config;

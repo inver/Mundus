@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.FlushablePool;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool;
 import net.nevinsky.mundus.core.shader.DefaultShader;
+import net.nevinsky.mundus.core.shader.DefaultShaderProvider;
 import net.nevinsky.mundus.core.shader.Shader;
 import net.nevinsky.mundus.core.shader.ShaderProvider;
 
@@ -237,16 +238,19 @@ public class ModelBatch implements Disposable {
     public void flush() {
         sorter.sort(camera, renderables);
         Shader currentShader = null;
-        for (int i = 0; i < renderables.size(); i++) {
-            final Renderable renderable = renderables.get(i);
+        for (final Renderable renderable : renderables) {
             if (currentShader != renderable.getShader()) {
-                if (currentShader != null) currentShader.end();
+                if (currentShader != null) {
+                    currentShader.end();
+                }
                 currentShader = renderable.getShader();
                 currentShader.begin(camera, context);
             }
             currentShader.render(renderable);
         }
-        if (currentShader != null) currentShader.end();
+        if (currentShader != null) {
+            currentShader.end();
+        }
         renderablesPool.flush();
         renderables.clear();
     }
@@ -270,7 +274,6 @@ public class ModelBatch implements Disposable {
      */
     public void render(final Renderable renderable) {
         renderable.setShader(shaderProvider.getShader(renderable));
-        ;
         renderables.add(renderable);
     }
 
@@ -290,14 +293,16 @@ public class ModelBatch implements Disposable {
     }
 
     /**
-     * Calls {@link RenderableProvider#getRenderables(List, Pool)} and adds all returned {@link Renderable} instances to the
-     * current batch to be rendered. Can only be called after a call to {@link #begin(Camera)} and before a call to {@link #end()}.
+     * Calls {@link RenderableProvider#getRenderables(List, Pool)} and adds all returned {@link Renderable} instances
+     * to the current batch to be rendered. Can only be called after a call to {@link #begin(Camera)} and before a call
+     * to {@link #end()}.
      *
      * @param renderableProviders one or more renderable providers
      */
     public <T extends RenderableProvider> void render(final Iterable<T> renderableProviders) {
-        for (final RenderableProvider renderableProvider : renderableProviders)
+        for (final RenderableProvider renderableProvider : renderableProviders) {
             render(renderableProvider);
+        }
     }
 
     /**

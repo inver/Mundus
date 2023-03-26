@@ -19,7 +19,7 @@ import com.mbrlabs.mundus.commons.model.ImportedModel
 import com.mbrlabs.mundus.editor.ui.widgets.FileChooserField
 import com.mbrlabs.mundus.editor.ui.widgets.RenderWidget
 import com.mbrlabs.mundus.editor.ui.widgets.presenter.FileChooserFieldPresenter
-import net.nevinsky.mundus.core.DefaultShaderProvider
+import net.nevinsky.mundus.core.shader.DefaultShaderProvider
 import net.nevinsky.mundus.core.ModelBatch
 import net.nevinsky.mundus.core.ModelInstance
 

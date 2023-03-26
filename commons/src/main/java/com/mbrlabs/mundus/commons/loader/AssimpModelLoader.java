@@ -29,9 +29,9 @@ public class AssimpModelLoader {
 
 
     public ModelData loadModel(String modelId, FileHandle modelPath) {
-        return loadModel(modelId, modelPath, aiProcess_GenNormals | aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices |
-                aiProcess_Triangulate | aiProcess_FixInfacingNormals | aiProcess_CalcTangentSpace | aiProcess_LimitBoneWeights |
-                aiProcess_PreTransformVertices);
+        return loadModel(modelId, modelPath, aiProcess_GenNormals | aiProcess_GenSmoothNormals |
+                aiProcess_JoinIdenticalVertices | aiProcess_Triangulate | aiProcess_FixInfacingNormals |
+                aiProcess_CalcTangentSpace | aiProcess_LimitBoneWeights | aiProcess_PreTransformVertices);
 
     }
 
@@ -47,8 +47,8 @@ public class AssimpModelLoader {
             throw new RuntimeException("Error loading model [modelPath: " + modelPath + "]");
         }
 
-        var res = new ModelData();
-        res.materials.addAll(loadMaterials(modelDir, aiScene));
+        var res = new ModelData(modelId);
+        res.getMaterials().addAll(loadMaterials(modelDir, aiScene));
         loadMeshes(res, aiScene);
 
         return res;
@@ -96,11 +96,10 @@ public class AssimpModelLoader {
             var texturePath = aiTexturePath.dataString();
             if (texturePath.length() > 0) {
                 var texture = new ModelTexture();
-                texture.id = "0";
+                texture.id = UUID.randomUUID().toString();
                 texture.usage = USAGE_DIFFUSE;
                 texture.fileName = modelDir + File.separator + new File(texturePath).getName().replace("\\", "/");
                 material.textures.add(texture);
-//                material.diffuse = Color.WHITE;
             }
 
             return material;
@@ -131,7 +130,7 @@ public class AssimpModelLoader {
         mesh.attributes = attributes.toArray(new VertexAttribute[]{});
         mesh.parts = new ModelMeshPart[]{processParts(aiMesh)};
 
-        String materialId = modelData.materials.get(aiMesh.mMaterialIndex()).id;
+        String materialId = modelData.getMaterials().get(aiMesh.mMaterialIndex()).id;
         node.parts = new ModelNodePart[mesh.parts.length];
         for (int i = 0; i < mesh.parts.length; i++) {
             var nodePart = new ModelNodePart();

@@ -14,13 +14,14 @@
  * limitations under the License.
  ******************************************************************************/
 
-package net.nevinsky.mundus.core;
+package net.nevinsky.mundus.core.builder;
 
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import net.nevinsky.mundus.core.builder.BaseShapeBuilder;
+import net.nevinsky.mundus.core.mesh.MeshPartBuilder;
 
 /** Helper class with static methods to build ellipse shapes using {@link MeshPartBuilder}.
  * @author xoppa */

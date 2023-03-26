@@ -21,7 +21,7 @@ import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
 import net.nevinsky.mundus.core.builder.BoxShapeBuilder;
-import net.nevinsky.mundus.core.MeshPartBuilder;
+import net.nevinsky.mundus.core.mesh.MeshPartBuilder;
 import net.nevinsky.mundus.core.ModelBuilder;
 import net.nevinsky.mundus.core.model.Model;
 import com.badlogic.gdx.math.Vector3;

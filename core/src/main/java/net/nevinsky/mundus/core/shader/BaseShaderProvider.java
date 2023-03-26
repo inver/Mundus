@@ -1,6 +1,7 @@
-package net.nevinsky.mundus.core;
+package net.nevinsky.mundus.core.shader;
 
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import net.nevinsky.mundus.core.Renderable;
 import net.nevinsky.mundus.core.shader.Shader;
 import net.nevinsky.mundus.core.shader.ShaderProvider;
 

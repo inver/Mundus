@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import net.nevinsky.mundus.core.MeshPart;
+import net.nevinsky.mundus.core.mesh.MeshPart;
 
 import java.util.ArrayList;
 import java.util.List;

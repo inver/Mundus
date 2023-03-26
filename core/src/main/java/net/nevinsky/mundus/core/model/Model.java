@@ -19,8 +19,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.*;
 import lombok.Getter;
-import net.nevinsky.mundus.core.Mesh;
-import net.nevinsky.mundus.core.MeshPart;
+import net.nevinsky.mundus.core.mesh.Mesh;
+import net.nevinsky.mundus.core.mesh.MeshPart;
 import net.nevinsky.mundus.core.ModelInstance;
 import net.nevinsky.mundus.core.node.Animation;
 import net.nevinsky.mundus.core.node.Node;
@@ -73,10 +73,10 @@ public class Model implements Disposable {
     }
 
     protected void load(ModelData modelData, TextureProvider textureProvider) {
-        loadMeshes(modelData.meshes);
-        loadMaterials(modelData.materials, textureProvider);
-        loadNodes(modelData.nodes);
-        loadAnimations(modelData.animations);
+        loadMeshes(modelData.getMeshes());
+        loadMaterials(modelData.getMaterials(), textureProvider);
+        loadNodes(modelData.getNodes());
+        loadAnimations(modelData.getAnimations());
         calculateTransforms();
     }
 

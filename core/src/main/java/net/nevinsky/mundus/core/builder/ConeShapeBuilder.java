@@ -17,8 +17,7 @@
 package net.nevinsky.mundus.core.builder;
 
 import com.badlogic.gdx.math.MathUtils;
-import net.nevinsky.mundus.core.EllipseShapeBuilder;
-import net.nevinsky.mundus.core.MeshPartBuilder;
+import net.nevinsky.mundus.core.mesh.MeshPartBuilder;
 
 /** Helper class with static methods to build cone shapes using {@link MeshPartBuilder}.
  * @author xoppa */

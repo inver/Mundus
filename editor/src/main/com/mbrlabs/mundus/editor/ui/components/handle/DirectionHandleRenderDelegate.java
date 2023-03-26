@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import net.nevinsky.mundus.core.ModelBatch;
 import net.nevinsky.mundus.core.ModelInstance;
 import net.nevinsky.mundus.core.ModelBuilder;
-import net.nevinsky.mundus.core.SphereShapeBuilder;
+import net.nevinsky.mundus.core.builder.SphereShapeBuilder;
 import com.badlogic.gdx.math.Matrix4;
 import com.mbrlabs.mundus.commons.core.ecs.base.RenderableDelegate;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;

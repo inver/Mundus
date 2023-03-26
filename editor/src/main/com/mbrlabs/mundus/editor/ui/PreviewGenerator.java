@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Material;
-import net.nevinsky.mundus.core.DefaultShaderProvider;
+import net.nevinsky.mundus.core.shader.DefaultShaderProvider;
 import net.nevinsky.mundus.core.ModelBatch;
 import net.nevinsky.mundus.core.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;

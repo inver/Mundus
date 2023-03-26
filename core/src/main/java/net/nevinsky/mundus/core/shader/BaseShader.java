@@ -12,7 +12,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.IntIntMap;
-import net.nevinsky.mundus.core.Mesh;
+import net.nevinsky.mundus.core.mesh.Mesh;
 import net.nevinsky.mundus.core.Renderable;
 
 import java.util.ArrayList;

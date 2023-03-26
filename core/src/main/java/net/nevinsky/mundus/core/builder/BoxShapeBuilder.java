@@ -21,7 +21,7 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
-import net.nevinsky.mundus.core.MeshPartBuilder;
+import net.nevinsky.mundus.core.mesh.MeshPartBuilder;
 
 /** Helper class with static methods to build box shapes using {@link MeshPartBuilder}.
  * @author realitix, xoppa */

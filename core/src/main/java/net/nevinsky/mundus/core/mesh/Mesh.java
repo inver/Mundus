@@ -1,4 +1,4 @@
-package net.nevinsky.mundus.core;
+package net.nevinsky.mundus.core.mesh;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import net.nevinsky.mundus.core.IndexBufferObject;
 
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
@@ -32,14 +33,14 @@ public class Mesh implements Disposable {
     private static final Map<Application, Array<Mesh>> meshes = new HashMap<Application, Array<Mesh>>();
 
     private final VertexData vertices;
-    private final IndexData indices;
+    private final net.nevinsky.mundus.core.IndexData indices;
     private boolean autoBind = true;
     private final boolean isVertexArray;
 
     private InstanceData instances;
     private boolean isInstanced = false;
 
-    protected Mesh(VertexData vertices, IndexData indices, boolean isVertexArray) {
+    protected Mesh(VertexData vertices, net.nevinsky.mundus.core.IndexData indices, boolean isVertexArray) {
         this.vertices = vertices;
         this.indices = indices;
         this.isVertexArray = isVertexArray;
@@ -58,7 +59,7 @@ public class Mesh implements Disposable {
      */
     public Mesh(boolean isStatic, int maxVertices, int maxIndices, VertexAttribute... attributes) {
         vertices = makeVertexBuffer(isStatic, maxVertices, new VertexAttributes(attributes));
-        indices = new IndexBufferObject(isStatic, maxIndices);
+        indices = new net.nevinsky.mundus.core.IndexBufferObject(isStatic, maxIndices);
         isVertexArray = false;
 
         addManagedMesh(Gdx.app, this);
@@ -75,7 +76,7 @@ public class Mesh implements Disposable {
      */
     public Mesh(boolean isStatic, int maxVertices, int maxIndices, VertexAttributes attributes) {
         vertices = makeVertexBuffer(isStatic, maxVertices, attributes);
-        indices = new IndexBufferObject(isStatic, maxIndices);
+        indices = new net.nevinsky.mundus.core.IndexBufferObject(isStatic, maxIndices);
         isVertexArray = false;
 
         addManagedMesh(Gdx.app, this);
@@ -94,7 +95,7 @@ public class Mesh implements Disposable {
      **/
     public Mesh(boolean staticVertices, boolean staticIndices, int maxVertices, int maxIndices, VertexAttributes attributes) {
         vertices = makeVertexBuffer(staticVertices, maxVertices, attributes);
-        indices = new IndexBufferObject(staticIndices, maxIndices);
+        indices = new net.nevinsky.mundus.core.IndexBufferObject(staticIndices, maxIndices);
         isVertexArray = false;
 
         addManagedMesh(Gdx.app, this);
@@ -135,23 +136,23 @@ public class Mesh implements Disposable {
         switch (type) {
             case VertexBufferObject:
                 vertices = new VertexBufferObject(isStatic, maxVertices, attributes);
-                indices = new IndexBufferObject(isStatic, maxIndices);
+                indices = new net.nevinsky.mundus.core.IndexBufferObject(isStatic, maxIndices);
                 isVertexArray = false;
                 break;
             case VertexBufferObjectSubData:
                 vertices = new VertexBufferObjectSubData(isStatic, maxVertices, attributes);
-                indices = new IndexBufferObjectSubData(isStatic, maxIndices);
+                indices = new net.nevinsky.mundus.core.IndexBufferObjectSubData(isStatic, maxIndices);
                 isVertexArray = false;
                 break;
             case VertexBufferObjectWithVAO:
                 vertices = new VertexBufferObjectWithVAO(isStatic, maxVertices, attributes);
-                indices = new IndexBufferObjectSubData(isStatic, maxIndices);
+                indices = new net.nevinsky.mundus.core.IndexBufferObjectSubData(isStatic, maxIndices);
                 isVertexArray = false;
                 break;
             case VertexArray:
             default:
                 vertices = new VertexArray(maxVertices, attributes);
-                indices = new IndexArray(maxIndices);
+                indices = new net.nevinsky.mundus.core.IndexArray(maxIndices);
                 isVertexArray = true;
                 break;
         }
@@ -532,7 +533,7 @@ public class Mesh implements Disposable {
     }
 
     /**
-     * Binds the underlying {@link VertexBufferObject} and {@link IndexBufferObject} if indices where given. Use this with OpenGL
+     * Binds the underlying {@link VertexBufferObject} and {@link net.nevinsky.mundus.core.IndexBufferObject} if indices where given. Use this with OpenGL
      * ES 2.0 and when auto-bind is disabled.
      *
      * @param shader the shader (does not bind the shader)
@@ -542,7 +543,7 @@ public class Mesh implements Disposable {
     }
 
     /**
-     * Binds the underlying {@link VertexBufferObject} and {@link IndexBufferObject} if indices where given. Use this with OpenGL
+     * Binds the underlying {@link VertexBufferObject} and {@link net.nevinsky.mundus.core.IndexBufferObject} if indices where given. Use this with OpenGL
      * ES 2.0 and when auto-bind is disabled.
      *
      * @param shader    the shader (does not bind the shader)
@@ -555,7 +556,7 @@ public class Mesh implements Disposable {
     }
 
     /**
-     * Unbinds the underlying {@link VertexBufferObject} and {@link IndexBufferObject} is indices were given. Use this with OpenGL
+     * Unbinds the underlying {@link VertexBufferObject} and {@link net.nevinsky.mundus.core.IndexBufferObject} is indices were given. Use this with OpenGL
      * ES 1.x and when auto-bind is disabled.
      *
      * @param shader the shader (does not unbind the shader)

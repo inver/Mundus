@@ -3,7 +3,7 @@ package net.nevinsky.mundus.core.node;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.ArrayMap;
-import net.nevinsky.mundus.core.MeshPart;
+import net.nevinsky.mundus.core.mesh.MeshPart;
 import net.nevinsky.mundus.core.ModelInstance;
 import net.nevinsky.mundus.core.Renderable;
 

@@ -1,4 +1,4 @@
-package net.nevinsky.mundus.core;
+package net.nevinsky.mundus.core.mesh;
 
 import com.badlogic.gdx.graphics.GL20;
 import net.nevinsky.mundus.core.model.Model;
