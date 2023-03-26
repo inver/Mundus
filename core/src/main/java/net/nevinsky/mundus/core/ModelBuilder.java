@@ -81,7 +81,7 @@ public class ModelBuilder {
 
         endnode();
 
-        model.nodes.add(node);
+        model.getNodes().add(node);
         this.node = node;
 
         return node;
@@ -95,7 +95,7 @@ public class ModelBuilder {
     public Node node() {
         final Node node = new Node();
         node(node);
-        node.id = "node" + model.nodes.size();
+        node.id = "node" + model.getNodes().size();
         return node;
     }
 
@@ -108,7 +108,7 @@ public class ModelBuilder {
     public Node node(final String id, final Model model) {
         final Node node = new Node();
         node.id = id;
-        node.addChildren(model.nodes);
+        node.addChildren(model.getNodes());
         node(node);
         for (final Disposable disposable : model.getManagedDisposables())
             manage(disposable);
@@ -427,19 +427,23 @@ public class ModelBuilder {
      * it's nodes. This will make the model responsible for disposing all referenced meshes.
      */
     public static void rebuildReferences(final Model model) {
-        model.materials.clear();
-        model.meshes.clear();
-        model.meshParts.clear();
-        for (final Node node : model.nodes)
+        model.getMaterials().clear();
+        model.getMeshes().clear();
+        model.getMeshParts().clear();
+        for (final Node node : model.getNodes())
             rebuildReferences(model, node);
     }
 
     private static void rebuildReferences(final Model model, final Node node) {
         for (final NodePart mpm : node.parts) {
-            if (!model.materials.contains(mpm.material)) model.materials.add(mpm.material);
-            if (!model.meshParts.contains(mpm.meshPart)) {
-                model.meshParts.add(mpm.meshPart);
-                if (!model.meshes.contains(mpm.meshPart.mesh)) model.meshes.add(mpm.meshPart.mesh);
+            if (!model.getMaterials().containsKey(mpm.material.id)) {
+                model.getMaterials().put(mpm.material.id, mpm.material);
+            }
+            if (!model.getMeshParts().containsKey(mpm.meshPart.id)) {
+                model.getMeshParts().put(mpm.meshPart.id, mpm.meshPart);
+                if (!model.getMeshes().contains(mpm.meshPart.mesh)) {
+                    model.getMeshes().add(mpm.meshPart.mesh);
+                }
                 model.manageDisposable(mpm.meshPart.mesh);
             }
         }

@@ -93,12 +93,16 @@ public class ModelAsset extends Asset<ModelMeta> implements RenderableProvider {
 
     @Override
     public void applyDependencies() {
-        if (model == null) return;
+        if (model == null) {
+            return;
+        }
 
         // materials
-        for (Material mat : model.materials) {
+        for (Material mat : model.getMaterials().values()) {
             MaterialAsset materialAsset = defaultMaterials.get(mat.id);
-            if (materialAsset == null) continue;
+            if (materialAsset == null) {
+                continue;
+            }
             materialAsset.applyToMaterial(mat);
         }
     }

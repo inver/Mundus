@@ -18,6 +18,7 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.*;
+import lombok.Getter;
 import net.nevinsky.mundus.core.Mesh;
 import net.nevinsky.mundus.core.MeshPart;
 import net.nevinsky.mundus.core.ModelInstance;
@@ -27,39 +28,21 @@ import net.nevinsky.mundus.core.node.NodeAnimation;
 import net.nevinsky.mundus.core.node.NodePart;
 
 import java.nio.Buffer;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-//todo merge with AppModel
 public class Model implements Disposable {
-    /**
-     * the materials of the model, used by nodes that have a graphical representation FIXME not sure if superfluous, allows
-     * modification of materials without having to traverse the nodes
-     **/
-    public final List<Material> materials = new ArrayList<>();
-    /**
-     * root nodes of the model
-     **/
-    public final List<Node> nodes = new ArrayList<>();
-    /**
-     * animations of the model, modifying node transformations
-     **/
-    public final List<Animation> animations = new ArrayList<>();
-    /**
-     * the meshes of the model
-     **/
-    public final List<Mesh> meshes = new ArrayList<>();
-    /**
-     * parts of meshes, used by nodes that have a graphical representation FIXME not sure if superfluous, stored in Nodes as well,
-     * could be useful to create bullet meshes
-     **/
-    public final List<MeshPart> meshParts = new ArrayList<>();
-    /**
-     * ArrayList<> of disposable resources like textures or meshes the Model is responsible for disposing
-     **/
+    @Getter
+    private final Map<String, Material> materials = new HashMap<>();
+    @Getter
+    private final List<Node> nodes = new ArrayList<>();
+    @Getter
+    private final List<Animation> animations = new ArrayList<>();
+    @Getter
+    private final List<Mesh> meshes = new ArrayList<>();
+    @Getter
+    private final Map<String, MeshPart> meshParts = new HashMap<>();
     protected final List<Disposable> disposables = new ArrayList<>();
 
     /**
@@ -112,38 +95,14 @@ public class Model implements Disposable {
 
                 if (nanim.translation != null) {
                     nodeAnim.translation = convertAndModifyDuration(nanim.translation, Vector3::new, animation, () -> node.translation);
-
-//                    new ArrayList<>(nanim.translation.size);
-//                    for (ModelNodeKeyframe<Vector3> kf : nanim.translation) {
-//                        if (kf.keytime > animation.duration) {
-//                            animation.duration = kf.keytime;
-//                        }
-//                        nodeAnim.translation
-//                                .add(new NodeKeyframe<>(kf.keytime, new Vector3(kf.value == null ? node.translation : kf.value)));
-//                    }
                 }
 
                 if (nanim.rotation != null) {
                     nodeAnim.rotation = convertAndModifyDuration(nanim.rotation, Quaternion::new, animation, () -> node.rotation);
-//                    nodeAnim.rotation = new ArrayList<>(nanim.rotation.size);
-//                    for (ModelNodeKeyframe<Quaternion> kf : nanim.rotation) {
-//                        if (kf.keytime > animation.duration) {
-//                            animation.duration = kf.keytime;
-//                        }
-//                        nodeAnim.rotation
-//                                .add(new NodeKeyframe<>(kf.keytime, new Quaternion(kf.value == null ? node.rotation : kf.value)));
-//                    }
                 }
 
                 if (nanim.scaling != null) {
                     nodeAnim.scaling = convertAndModifyDuration(nanim.scaling, Vector3::new, animation, () -> node.scale);
-//                    nodeAnim.scaling = new ArrayList<>(nanim.scaling.size);
-//                    for (ModelNodeKeyframe<Vector3> kf : nanim.scaling) {
-//                        if (kf.keytime > animation.duration) {
-//                            animation.duration = kf.keytime;
-//                        }
-//                        nodeAnim.scaling.add(new NodeKeyframe<>(kf.keytime, new Vector3(kf.value == null ? node.scale : kf.value)));
-//                    }
                 }
 
                 if ((nodeAnim.translation != null && nodeAnim.translation.size() > 0)
@@ -191,29 +150,10 @@ public class Model implements Disposable {
         if (modelNode.translation != null) node.translation.set(modelNode.translation);
         if (modelNode.rotation != null) node.rotation.set(modelNode.rotation);
         if (modelNode.scale != null) node.scale.set(modelNode.scale);
-        // FIXME create temporary maps for faster lookup?
         if (modelNode.parts != null) {
             for (ModelNodePart modelNodePart : modelNode.parts) {
-                MeshPart meshPart = null;
-                Material meshMaterial = null;
-
-                if (modelNodePart.meshPartId != null) {
-                    for (MeshPart part : meshParts) {
-                        if (modelNodePart.meshPartId.equals(part.id)) {
-                            meshPart = part;
-                            break;
-                        }
-                    }
-                }
-
-                if (modelNodePart.materialId != null) {
-                    for (Material material : materials) {
-                        if (modelNodePart.materialId.equals(material.id)) {
-                            meshMaterial = material;
-                            break;
-                        }
-                    }
-                }
+                MeshPart meshPart = meshParts.get(modelNodePart.meshPartId);
+                Material meshMaterial = materials.get(modelNodePart.materialId);
 
                 if (meshPart == null || meshMaterial == null) {
                     throw new GdxRuntimeException("Invalid node: " + node.id);
@@ -269,16 +209,15 @@ public class Model implements Disposable {
                 mesh.getIndicesBuffer().put(part.indices);
             }
             offset += meshPart.size;
-            meshParts.add(meshPart);
+            meshParts.put(meshPart.id, meshPart);
         }
-        ((Buffer) mesh.getIndicesBuffer()).position(0);
-        for (MeshPart part : meshParts)
-            part.update();
+        mesh.getIndicesBuffer().position(0);
+        meshParts.forEach((k, v) -> v.update());
     }
 
     protected void loadMaterials(Iterable<ModelMaterial> modelMaterials, TextureProvider textureProvider) {
         for (ModelMaterial mtl : modelMaterials) {
-            this.materials.add(convertMaterial(mtl, textureProvider));
+            materials.put(mtl.id, convertMaterial(mtl, textureProvider));
         }
     }
 

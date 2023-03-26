@@ -153,7 +153,7 @@ public class ModelInstance implements RenderableProvider {
             copy.scale.set(1, 1, 1);
         } else if (parentTransform && copy.hasParent()) this.transform.mul(node.getParent().globalTransform);
         invalidate();
-        copyAnimations(model.animations, shareKeyframes);
+        copyAnimations(model.getAnimations(), shareKeyframes);
         calculateTransforms();
     }
 
@@ -170,11 +170,11 @@ public class ModelInstance implements RenderableProvider {
     public ModelInstance(final Model model, final Matrix4 transform, final String... rootNodeIds) {
         this.model = model;
         this.transform = transform == null ? new Matrix4() : transform;
-        if (rootNodeIds == null)
-            copyNodes(model.nodes);
-        else
-            copyNodes(model.nodes, rootNodeIds);
-        copyAnimations(model.animations, defaultShareKeyframes);
+        if (rootNodeIds == null) {
+            copyNodes(model.getNodes());
+        } else
+            copyNodes(model.getNodes(), rootNodeIds);
+        copyAnimations(model.getAnimations(), defaultShareKeyframes);
         calculateTransforms();
     }
 
@@ -198,8 +198,8 @@ public class ModelInstance implements RenderableProvider {
     public ModelInstance(final Model model, final Matrix4 transform, final Array<String> rootNodeIds, boolean shareKeyframes) {
         this.model = model;
         this.transform = transform == null ? new Matrix4() : transform;
-        copyNodes(model.nodes, rootNodeIds);
-        copyAnimations(model.animations, shareKeyframes);
+        copyNodes(model.getNodes(), rootNodeIds);
+        copyAnimations(model.getAnimations(), shareKeyframes);
         calculateTransforms();
     }
 
