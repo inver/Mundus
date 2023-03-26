@@ -1,7 +1,8 @@
 package com.mbrlabs.mundus.editor.shader;
 
-import com.badlogic.gdx.graphics.g3d.Renderable;
-import com.badlogic.gdx.graphics.g3d.Shader;
+
+import net.nevinsky.mundus.core.Renderable;
+import net.nevinsky.mundus.core.shader.Shader;
 
 public class DefaultAppShader extends AppBaseShader {
     public DefaultAppShader(String vertexShader, String fragmentShader) {

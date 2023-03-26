@@ -4,8 +4,14 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttribute;
-import com.badlogic.gdx.graphics.g3d.model.data.*;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelMaterial;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelNode;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelNodePart;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelTexture;
 import com.badlogic.gdx.utils.Array;
+import net.nevinsky.mundus.core.model.ModelData;
+import net.nevinsky.mundus.core.model.ModelMesh;
+import net.nevinsky.mundus.core.model.ModelMeshPart;
 import org.lwjgl.assimp.*;
 import org.lwjgl.system.MemoryStack;
 
@@ -58,10 +64,10 @@ public class AssimpModelLoader {
         }
     }
 
-    private Array<ModelMaterial> loadMaterials(String modelDir, AIScene aiScene) {
+    private List<ModelMaterial> loadMaterials(String modelDir, AIScene aiScene) {
         int numMaterials = aiScene.mNumMaterials();
 
-        var materialList = new Array<ModelMaterial>();
+        var materialList = new ArrayList<ModelMaterial>();
         for (int i = 0; i < numMaterials; i++) {
             AIMaterial aiMaterial = AIMaterial.create(aiScene.mMaterials().get(i));
             materialList.add(processMaterial(aiMaterial, modelDir));
@@ -192,7 +198,7 @@ public class AssimpModelLoader {
 
         var part = new ModelMeshPart();
         part.id = UUID.randomUUID().toString();
-        part.indices = new short[resIndices.size()];
+        part.indices = new int[resIndices.size()];
         for (int i = 0; i < resIndices.size(); i++) {
             part.indices[i] = resIndices.get(i);
         }

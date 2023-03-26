@@ -4,23 +4,23 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowAdapter;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.mbrlabs.mundus.commons.loader.AppModel;
 import com.mbrlabs.mundus.commons.loader.AssimpModelLoader;
+import net.nevinsky.mundus.core.ModelBatch;
+import net.nevinsky.mundus.core.ModelInstance;
+import net.nevinsky.mundus.core.model.Model;
 
 public class TesterListener extends Lwjgl3WindowAdapter implements ApplicationListener {
 
     private Camera camera;
     private ModelBatch modelBatch;
-    private ModelInstance cubeInstance;
+    //    private ModelInstance cubeInstance;
     private ModelInstance modelInstance;
     public CameraInputController camController;
 
@@ -31,7 +31,7 @@ public class TesterListener extends Lwjgl3WindowAdapter implements ApplicationLi
     public void create() {
         loadModel();
         createCamera();
-        createCube();
+//        createCube();
 
         modelBatch = new ModelBatch();
 
@@ -51,17 +51,17 @@ public class TesterListener extends Lwjgl3WindowAdapter implements ApplicationLi
         camera.update();
     }
 
-    private void createCube() {
-        var modelBuilder = new ModelBuilder();
-        var model = modelBuilder.createBox(5f, 5f, 5f,
-                new Material(ColorAttribute.createDiffuse(Color.GREEN)),
-                VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
-        cubeInstance = new ModelInstance(model);
-    }
+//    private void createCube() {
+//        var modelBuilder = new ModelBuilder();
+//        var model = modelBuilder.createBox(5f, 5f, 5f,
+//                new Material(ColorAttribute.createDiffuse(Color.GREEN)),
+//                VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
+//        cubeInstance = new ModelInstance(model);
+//    }
 
     private void loadModel() {
         var res = loader.loadModel("ololo", new FileHandle("/home/inv3r/Development/gamedev/Mundus/commons/src/test/resources/obj/cessna172/cessna172.obj"));
-        modelInstance = new ModelInstance(new AppModel(res));
+        modelInstance = new ModelInstance(new Model(res));
     }
 
     @Override

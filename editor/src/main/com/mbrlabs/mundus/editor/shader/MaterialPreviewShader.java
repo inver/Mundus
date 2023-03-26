@@ -1,11 +1,11 @@
 package com.mbrlabs.mundus.editor.shader;
 
-import com.badlogic.gdx.graphics.g3d.Renderable;
-import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.math.Matrix4;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
+import net.nevinsky.mundus.core.Renderable;
+import net.nevinsky.mundus.core.shader.Shader;
 
 public class MaterialPreviewShader extends AppBaseShader {
 
@@ -19,15 +19,15 @@ public class MaterialPreviewShader extends AppBaseShader {
 
     @Override
     public void render(Renderable renderable) {
-        final SceneEnvironment env = (SceneEnvironment) renderable.environment;
+        final SceneEnvironment env = (SceneEnvironment) renderable.getEnvironment();
 
         setLights(env);
-        set(UNIFORM_TRANS_MATRIX, renderable.worldTransform);
+        set(UNIFORM_TRANS_MATRIX, renderable.getWorldTransform());
         set(UNIFORM_MODEL_MATRIX, modelPos);
 
         // texture uniform
-        var diffuseTexture = ((TextureAttribute) (renderable.material.get(TextureAttribute.Diffuse)));
-        var diffuseColor = ((ColorAttribute) (renderable.material.get(ColorAttribute.Diffuse)));
+        var diffuseTexture = ((TextureAttribute) (renderable.getMaterial().get(TextureAttribute.Diffuse)));
+        var diffuseColor = ((ColorAttribute) (renderable.getMaterial().get(ColorAttribute.Diffuse)));
 //
         if (diffuseTexture != null) {
             set(UNIFORM_MATERIAL_DIFFUSE_TEXTURE, diffuseTexture.textureDescription.texture);
@@ -44,7 +44,7 @@ public class MaterialPreviewShader extends AppBaseShader {
 //        }
 
         // bind attributes, bind mesh & render; then unbinds everything
-        renderable.meshPart.render(program);
+        renderable.getMeshPart().render(program);
     }
 
     @Override

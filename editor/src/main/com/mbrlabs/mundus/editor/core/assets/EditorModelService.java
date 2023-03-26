@@ -54,9 +54,9 @@ public class EditorModelService extends ModelService {
         meta.setFile(assetFolder);
         metaService.save(meta);
 
-        var model = modelImporter.loadModel(importedModel.getMain());
-        gltfExporter.export(model, assetFolder.child(modelFileName));
         //todo remove binary file if it needed
+//        var model = modelImporter.loadModel(importedModel.getMain());
+//        gltfExporter.export(model, assetFolder.child(modelFileName));
 
         var res = modelAssetLoader.load(meta);
         return res;

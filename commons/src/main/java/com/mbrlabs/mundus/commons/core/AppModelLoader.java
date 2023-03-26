@@ -1,7 +1,7 @@
 package com.mbrlabs.mundus.commons.core;
 
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.g3d.Model;
+import net.nevinsky.mundus.core.model.Model;
 import com.mbrlabs.mundus.commons.model.ImportedModel;
 
 public interface AppModelLoader {

@@ -20,12 +20,12 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.model.Node;
-import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.badlogic.gdx.graphics.g3d.utils.shapebuilders.BoxShapeBuilder;
+import net.nevinsky.mundus.core.BoxShapeBuilder;
+import net.nevinsky.mundus.core.MeshPartBuilder;
+import net.nevinsky.mundus.core.ModelBuilder;
+import net.nevinsky.mundus.core.model.Model;
 import com.badlogic.gdx.math.Vector3;
+import net.nevinsky.mundus.core.node.Node;
 
 /**
  * @author Marcus Brummer
@@ -90,7 +90,7 @@ public class UsefulMeshs {
         MeshPartBuilder.VertexInfo curr2 = v1.set(null, null, null, null);
         curr2.hasUV = curr2.hasNormal = false;
         curr2.hasPosition = true;
-        short i1, i2, i3 = 0, i4 = 0;
+        int i1, i2, i3 = 0, i4 = 0;
 
         int i, j, k;
         double s, t, twopi;

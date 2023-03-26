@@ -1,7 +1,6 @@
 package com.mbrlabs.mundus.editor.core.shader;
 
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.mbrlabs.mundus.commons.assets.shader.ShaderAsset;
 import com.mbrlabs.mundus.commons.shaders.DefaultBaseShader;
 import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
@@ -18,6 +17,7 @@ import com.mbrlabs.mundus.editor.shader.MaterialPreviewShader;
 import com.mbrlabs.mundus.editor.shader.WireframeShader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.nevinsky.mundus.core.shader.BaseShader;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;

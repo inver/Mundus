@@ -3,8 +3,8 @@ package com.mbrlabs.mundus.editor;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import net.nevinsky.mundus.core.ModelBatch;
+import net.nevinsky.mundus.core.ModelInstance;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.mbrlabs.mundus.commons.assets.AssetType;
@@ -92,7 +92,7 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
 
         // TODO dispose this
         var axes = UsefulMeshs.createAxes();
-        ModelInstance axesInstance = new ModelInstance(axes);
+//        ModelInstance axesInstance = new ModelInstance(axes);
 
         // open last edited project or create default project
         var context = projectManager.loadLastProject();

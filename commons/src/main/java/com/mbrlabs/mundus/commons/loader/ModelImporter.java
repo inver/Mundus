@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.loaders.ModelLoader;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g3d.Model;
+import net.nevinsky.mundus.core.model.Model;
 import com.badlogic.gdx.graphics.g3d.utils.TextureProvider;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.UBJsonReader;
@@ -29,10 +29,10 @@ public class ModelImporter {
     private final GLTFExporter gltfExporter = new GLTFExporter();
 
     public ModelImporter() {
-        loaders.put(FileFormatUtils.FORMAT_3D_AC3D, new Ac3dModelLoader(new Ac3dParser()));
-        loaders.put(FileFormatUtils.FORMAT_3D_WAVEFONT, new ObjModelLoader());
-        loaders.put(FileFormatUtils.FORMAT_3D_G3DB, new MG3dModelLoader(new UBJsonReader()));
-        loaders.put(FileFormatUtils.FORMAT_3D_GLTF, new GltfLoaderWrapper(new Json()));
+//        loaders.put(FileFormatUtils.FORMAT_3D_AC3D, new Ac3dModelLoader(new Ac3dParser()));
+//        loaders.put(FileFormatUtils.FORMAT_3D_WAVEFONT, new ObjModelLoader());
+//        loaders.put(FileFormatUtils.FORMAT_3D_G3DB, new MG3dModelLoader(new UBJsonReader()));
+//        loaders.put(FileFormatUtils.FORMAT_3D_GLTF, new GltfLoaderWrapper(new Json()));
     }
 
     public ImportedModel importAndConvertToTmpFolder(FileHandle tempFolder, FileHandle file) {
@@ -50,7 +50,8 @@ public class ModelImporter {
     }
 
     public Model loadModel(FileHandle file) {
-        return loaders.get(FileFormatUtils.getFileExtension(file)).loadModel(file, new ParentBasedTextureProvider(file));
+        return null;
+//        return loaders.get(FileFormatUtils.getFileExtension(file)).loadModel(file, new ParentBasedTextureProvider(file));
     }
 
     private static class ParentBasedTextureProvider implements TextureProvider {

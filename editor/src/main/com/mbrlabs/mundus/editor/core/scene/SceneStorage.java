@@ -135,7 +135,7 @@ public class SceneStorage {
         if (asset.getMeta().getFile().type() == Files.FileType.Classpath) {
             for (var path : FileUtils.getResourceFiles(getClass(), asset.getMeta().getFile().path(), "")) {
                 var file = new File(getClass().getClassLoader()
-                        .getResource(asset.getMeta().getFile().path() + "/" + path).toURI());
+                        .getResource( path).toURI());
                 org.apache.commons.io.FileUtils.copyFile(file, Paths.get(
                         projectPath + "/" + PROJECT_ASSETS_DIR + "/" + asset.getName() + "/" + path
                 ).toFile());

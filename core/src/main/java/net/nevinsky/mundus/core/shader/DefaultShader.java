@@ -1,13 +1,25 @@
 package net.nevinsky.mundus.core.shader;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.VertexAttribute;
+import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Attributes;
+import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.attributes.*;
+import com.badlogic.gdx.graphics.g3d.environment.AmbientCubemap;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.environment.PointLight;
+import com.badlogic.gdx.graphics.g3d.environment.SpotLight;
+import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import net.nevinsky.mundus.core.Renderable;
 
 public class DefaultShader extends BaseShader {
@@ -331,7 +343,7 @@ public class DefaultShader extends BaseShader {
 
             @Override
             public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
-                if (renderable.environment == null)
+                if (renderable.getEnvironment() == null)
                     shader.program.setUniform3fv(shader.loc(inputID), ones, 0, ones.length);
                 else {
                     renderable.getWorldTransform().getTranslation(tmpV1);
@@ -520,13 +532,13 @@ public class DefaultShader extends BaseShader {
         final Attributes attributes = combineAttributes(renderable);
         this.config = config;
         this.program = shaderProgram;
-        this.lighting = renderable.environment != null;
+        this.lighting = renderable.getEnvironment() != null;
         this.environmentCubemap = attributes.has(CubemapAttribute.EnvironmentMap)
                 || (lighting && attributes.has(CubemapAttribute.EnvironmentMap));
-        this.shadowMap = lighting && renderable.environment.shadowMap != null;
+        this.shadowMap = lighting && renderable.getEnvironment().shadowMap != null;
         this.renderable = renderable;
         attributesMask = attributes.getMask() | optionalAttributes;
-        vertexMask = renderable.meshPart.mesh.getVertexAttributes().getMaskWithSizePacked();
+        vertexMask = renderable.getMeshPart().mesh.getVertexAttributes().getMaskWithSizePacked();
 
         this.directionalLights = new DirectionalLight[lighting && config.numDirectionalLights > 0 ? config.numDirectionalLights
                 : 0];
@@ -542,8 +554,8 @@ public class DefaultShader extends BaseShader {
         if (!config.ignoreUnimplemented && (implementedFlags & attributesMask) != attributesMask)
             throw new GdxRuntimeException("Some attributes not implemented yet (" + attributesMask + ")");
 
-        if (renderable.bones != null && renderable.bones.length > config.numBones) {
-            throw new GdxRuntimeException("too many bones: " + renderable.bones.length + ", max configured: " + config.numBones);
+        if (renderable.getBones() != null && renderable.getBones().length > config.numBones) {
+            throw new GdxRuntimeException("too many bones: " + renderable.getBones().length + ", max configured: " + config.numBones);
         }
 
         // Global uniforms
@@ -560,7 +572,7 @@ public class DefaultShader extends BaseShader {
         u_viewWorldTrans = register(Inputs.viewWorldTrans, Setters.viewWorldTrans);
         u_projViewWorldTrans = register(Inputs.projViewWorldTrans, Setters.projViewWorldTrans);
         u_normalMatrix = register(Inputs.normalMatrix, Setters.normalMatrix);
-        u_bones = (renderable.bones != null && config.numBones > 0) ? register(Inputs.bones, new Setters.Bones(config.numBones))
+        u_bones = (renderable.getBones() != null && config.numBones > 0) ? register(Inputs.bones, new Setters.Bones(config.numBones))
                 : -1;
 
         u_shininess = register(Inputs.shininess, Setters.shininess);
@@ -633,15 +645,15 @@ public class DefaultShader extends BaseShader {
     // TODO: Perhaps move responsibility for combining attributes to RenderableProvider?
     private static final Attributes combineAttributes(final Renderable renderable) {
         tmpAttributes.clear();
-        if (renderable.environment != null) tmpAttributes.set(renderable.environment);
-        if (renderable.material != null) tmpAttributes.set(renderable.material);
+        if (renderable.getEnvironment() != null) tmpAttributes.set(renderable.getEnvironment());
+        if (renderable.getMaterial() != null) tmpAttributes.set(renderable.getMaterial());
         return tmpAttributes;
     }
 
     private static final long combineAttributeMasks(final Renderable renderable) {
         long mask = 0;
-        if (renderable.environment != null) mask |= renderable.environment.getMask();
-        if (renderable.material != null) mask |= renderable.material.getMask();
+        if (renderable.getEnvironment() != null) mask |= renderable.getEnvironment().getMask();
+        if (renderable.getMaterial() != null) mask |= renderable.getMaterial().getMask();
         return mask;
     }
 
@@ -649,14 +661,15 @@ public class DefaultShader extends BaseShader {
         final Attributes attributes = combineAttributes(renderable);
         String prefix = "";
         final long attributesMask = attributes.getMask();
-        final long vertexMask = renderable.meshPart.mesh.getVertexAttributes().getMask();
-        if (and(vertexMask, Usage.Position)) prefix += "#define positionFlag\n";
-        if (or(vertexMask, Usage.ColorUnpacked | Usage.ColorPacked)) prefix += "#define colorFlag\n";
-        if (and(vertexMask, Usage.BiNormal)) prefix += "#define binormalFlag\n";
-        if (and(vertexMask, Usage.Tangent)) prefix += "#define tangentFlag\n";
-        if (and(vertexMask, Usage.Normal)) prefix += "#define normalFlag\n";
-        if (and(vertexMask, Usage.Normal) || and(vertexMask, Usage.Tangent | Usage.BiNormal)) {
-            if (renderable.environment != null) {
+        final long vertexMask = renderable.getMeshPart().mesh.getVertexAttributes().getMask();
+        if (and(vertexMask, VertexAttributes.Usage.Position)) prefix += "#define positionFlag\n";
+        if (or(vertexMask, VertexAttributes.Usage.ColorUnpacked | VertexAttributes.Usage.ColorPacked))
+            prefix += "#define colorFlag\n";
+        if (and(vertexMask, VertexAttributes.Usage.BiNormal)) prefix += "#define binormalFlag\n";
+        if (and(vertexMask, VertexAttributes.Usage.Tangent)) prefix += "#define tangentFlag\n";
+        if (and(vertexMask, VertexAttributes.Usage.Normal)) prefix += "#define normalFlag\n";
+        if (and(vertexMask, VertexAttributes.Usage.Normal) || and(vertexMask, VertexAttributes.Usage.Tangent | VertexAttributes.Usage.BiNormal)) {
+            if (renderable.getEnvironment() != null) {
                 prefix += "#define lightingFlag\n";
                 prefix += "#define ambientCubemapFlag\n";
                 prefix += "#define numDirectionalLights " + config.numDirectionalLights + "\n";
@@ -665,16 +678,17 @@ public class DefaultShader extends BaseShader {
                 if (attributes.has(ColorAttribute.Fog)) {
                     prefix += "#define fogFlag\n";
                 }
-                if (renderable.environment.shadowMap != null) prefix += "#define shadowMapFlag\n";
+                if (renderable.getEnvironment().shadowMap != null) prefix += "#define shadowMapFlag\n";
                 if (attributes.has(CubemapAttribute.EnvironmentMap)) prefix += "#define environmentCubemapFlag\n";
             }
         }
-        final int n = renderable.meshPart.mesh.getVertexAttributes().size();
+        final int n = renderable.getMeshPart().mesh.getVertexAttributes().size();
         for (int i = 0; i < n; i++) {
-            final VertexAttribute attr = renderable.meshPart.mesh.getVertexAttributes().get(i);
-            if (attr.usage == Usage.BoneWeight)
+            final VertexAttribute attr = renderable.getMeshPart().mesh.getVertexAttributes().get(i);
+            if (attr.usage == VertexAttributes.Usage.BoneWeight)
                 prefix += "#define boneWeight" + attr.unit + "Flag\n";
-            else if (attr.usage == Usage.TextureCoordinates) prefix += "#define texCoord" + attr.unit + "Flag\n";
+            else if (attr.usage == VertexAttributes.Usage.TextureCoordinates)
+                prefix += "#define texCoord" + attr.unit + "Flag\n";
         }
         if ((attributesMask & BlendingAttribute.Type) == BlendingAttribute.Type)
             prefix += "#define " + BlendingAttribute.Alias + "Flag\n";
@@ -714,17 +728,18 @@ public class DefaultShader extends BaseShader {
             prefix += "#define " + FloatAttribute.ShininessAlias + "Flag\n";
         if ((attributesMask & FloatAttribute.AlphaTest) == FloatAttribute.AlphaTest)
             prefix += "#define " + FloatAttribute.AlphaTestAlias + "Flag\n";
-        if (renderable.bones != null && config.numBones > 0) prefix += "#define numBones " + config.numBones + "\n";
+        if (renderable.getBones() != null && config.numBones > 0)
+            prefix += "#define numBones " + config.numBones + "\n";
         return prefix;
     }
 
     @Override
     public boolean canRender(final Renderable renderable) {
-        if (renderable.bones != null && renderable.bones.length > config.numBones) return false;
+        if (renderable.getBones() != null && renderable.getBones().length > config.numBones) return false;
         final long renderableMask = combineAttributeMasks(renderable);
         return (attributesMask == (renderableMask | optionalAttributes))
-                && (vertexMask == renderable.meshPart.mesh.getVertexAttributes().getMaskWithSizePacked())
-                && (renderable.environment != null) == lighting;
+                && (vertexMask == renderable.getMeshPart().mesh.getVertexAttributes().getMaskWithSizePacked())
+                && (renderable.getEnvironment() != null) == lighting;
     }
 
     @Override
@@ -810,7 +825,7 @@ public class DefaultShader extends BaseShader {
     private final Vector3 tmpV1 = new Vector3();
 
     protected void bindLights(final Renderable renderable, final Attributes attributes) {
-        final Environment lights = renderable.environment;
+        final Environment lights = renderable.getEnvironment();
         final DirectionalLightsAttribute dla = attributes.get(DirectionalLightsAttribute.class, DirectionalLightsAttribute.Type);
         final Array<DirectionalLight> dirs = dla == null ? null : dla.lights;
         final PointLightsAttribute pla = attributes.get(PointLightsAttribute.class, PointLightsAttribute.Type);

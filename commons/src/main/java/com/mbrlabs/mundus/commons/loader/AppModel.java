@@ -1,17 +1,18 @@
 package com.mbrlabs.mundus.commons.loader;
 
 import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.model.MeshPart;
-import com.badlogic.gdx.graphics.g3d.model.Node;
-import com.badlogic.gdx.graphics.g3d.model.NodePart;
-import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
-import com.badlogic.gdx.graphics.g3d.model.data.ModelMesh;
+import net.nevinsky.mundus.core.MeshPart;
+import net.nevinsky.mundus.core.model.Model;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelNode;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelNodePart;
 import com.badlogic.gdx.graphics.g3d.utils.TextureProvider;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import net.nevinsky.mundus.core.model.ModelData;
+import net.nevinsky.mundus.core.model.ModelMesh;
+import net.nevinsky.mundus.core.node.Node;
+import net.nevinsky.mundus.core.node.NodePart;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,11 +32,11 @@ public class AppModel extends Model {
     }
 
     @Override
-    protected void loadMeshes(Iterable<ModelMesh> meshes) {
+    protected void loadMeshes(Collection<ModelMesh> meshes) {
         super.loadMeshes(meshes);
 
         meshMap = new HashMap<>();
-        for (int i = 0; i < meshParts.size; i++) {
+        for (int i = 0; i < meshParts.size(); i++) {
             meshMap.put(meshParts.get(i).id, meshParts.get(i));
         }
     }

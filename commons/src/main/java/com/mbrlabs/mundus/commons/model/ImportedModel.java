@@ -1,9 +1,9 @@
 package com.mbrlabs.mundus.commons.model;
 
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.g3d.Model;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import net.nevinsky.mundus.core.model.Model;
 
 import java.util.ArrayList;
 import java.util.List;

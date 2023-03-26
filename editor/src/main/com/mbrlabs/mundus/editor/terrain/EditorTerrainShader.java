@@ -17,13 +17,13 @@
 package com.mbrlabs.mundus.editor.terrain;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.mbrlabs.mundus.commons.env.Fog;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.shaders.TerrainShader;
+import net.nevinsky.mundus.core.Renderable;
 
 public class EditorTerrainShader extends TerrainShader {
 
@@ -49,11 +49,11 @@ public class EditorTerrainShader extends TerrainShader {
 
     @Override
     public void render(Renderable renderable) {
-        final SceneEnvironment env = (SceneEnvironment) renderable.environment;
+        final SceneEnvironment env = (SceneEnvironment) renderable.getEnvironment();
 
 //        setLights(env);
         setTerrainSplatTextures(renderable);
-        set(UNIFORM_TRANS_MATRIX, renderable.worldTransform);
+        set(UNIFORM_TRANS_MATRIX, renderable.getWorldTransform());
 
         // Fog
         final Fog fog = env.getFog();
@@ -76,7 +76,7 @@ public class EditorTerrainShader extends TerrainShader {
         }
 
         // bind attributes, bind mesh & render; then unbinds everything
-        renderable.meshPart.render(program);
+        renderable.getMeshPart().render(program);
     }
 
     public void activatePicker(boolean active) {

@@ -15,9 +15,9 @@ public class ModelService {
     public ModelObject createFromAsset(ModelAsset asset) {
         var modelFileName = asset.getMeta().getAdditional().getFile();
         var sceneAsset = gltfLoader.load(asset.getMeta().getFile().child(modelFileName), true);
-
-        var res = new ModelObject(asset.getName(), sceneAsset.scene.model);
-        return res;
+//todo
+//        var res = new ModelObject(asset.getName(), sceneAsset.scene.model);
+        return null;
     }
 
 }

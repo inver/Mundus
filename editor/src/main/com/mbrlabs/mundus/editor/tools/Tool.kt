@@ -17,7 +17,7 @@
 package com.mbrlabs.mundus.editor.tools
 
 import com.badlogic.gdx.InputAdapter
-import com.badlogic.gdx.graphics.g3d.ModelBatch
+import net.nevinsky.mundus.core.ModelBatch
 import com.badlogic.gdx.utils.Disposable
 import com.mbrlabs.mundus.commons.scene3d.components.Renderable
 import com.mbrlabs.mundus.editor.core.project.EditorCtx

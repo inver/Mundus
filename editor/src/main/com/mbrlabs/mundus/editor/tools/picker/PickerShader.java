@@ -18,11 +18,11 @@ package com.mbrlabs.mundus.editor.tools.picker;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g3d.Renderable;
-import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.math.Vector3;
 import com.mbrlabs.mundus.commons.shaders.DefaultBaseShader;
+import net.nevinsky.mundus.core.Renderable;
+import net.nevinsky.mundus.core.shader.Shader;
 
 /**
  * Used to render game objects in only one color.
@@ -73,14 +73,14 @@ public class PickerShader extends DefaultBaseShader {
 
     @Override
     public void render(Renderable renderable) {
-        set(UNIFORM_TRANS_MATRIX, renderable.worldTransform);
+        set(UNIFORM_TRANS_MATRIX, renderable.getWorldTransform());
 
-        PickerIDAttribute goID = (PickerIDAttribute) renderable.material.get(PickerIDAttribute.TYPE);
+        PickerIDAttribute goID = (PickerIDAttribute) renderable.getMaterial().get(PickerIDAttribute.TYPE);
         if (goID != null) {
             set(UNIFORM_COLOR, vec3.set(goID.r, goID.g, goID.b));
         }
 
-        renderable.meshPart.render(program);
+        renderable.getMeshPart().render(program);
     }
 
     @Override

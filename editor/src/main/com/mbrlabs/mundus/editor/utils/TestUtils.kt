@@ -16,11 +16,11 @@
 
 package com.mbrlabs.mundus.editor.utils
 
-import com.badlogic.gdx.graphics.g3d.Model
-import com.badlogic.gdx.graphics.g3d.ModelInstance
+import net.nevinsky.mundus.core.ModelInstance
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.utils.Array
 import com.mbrlabs.mundus.commons.terrain.TerrainObject
+import net.nevinsky.mundus.core.model.Model
 import java.util.*
 
 /**

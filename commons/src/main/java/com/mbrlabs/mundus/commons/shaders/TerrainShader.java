@@ -18,8 +18,6 @@ package com.mbrlabs.mundus.commons.shaders;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g3d.Renderable;
-import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.DirectionalLightsAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
@@ -31,6 +29,8 @@ import com.mbrlabs.mundus.commons.terrain.SplatTexture;
 import com.mbrlabs.mundus.commons.terrain.TerrainObject;
 import com.mbrlabs.mundus.commons.terrain.TerrainTexture;
 import com.mbrlabs.mundus.commons.terrain.TerrainTextureAttribute;
+import net.nevinsky.mundus.core.Renderable;
+import net.nevinsky.mundus.core.shader.Shader;
 
 /**
  * @author Marcus Brummer
@@ -102,11 +102,11 @@ public class TerrainShader extends DefaultBaseShader {
 
     @Override
     public void render(Renderable renderable) {
-        final SceneEnvironment env = (SceneEnvironment) renderable.environment;
+        final SceneEnvironment env = (SceneEnvironment) renderable.getEnvironment();
 
-        setLights(env, (TerrainObject.TerrainUserData) renderable.userData);
+        setLights(env, (TerrainObject.TerrainUserData) renderable.getUserData());
         setTerrainSplatTextures(renderable);
-        set(UNIFORM_TRANS_MATRIX, renderable.worldTransform);
+        set(UNIFORM_TRANS_MATRIX, renderable.getWorldTransform());
 
         // Fog
         final Fog fog = env.getFog();
@@ -120,7 +120,7 @@ public class TerrainShader extends DefaultBaseShader {
         }
 
         // bind attributes, bind mesh & render; then unbinds everything
-        renderable.meshPart.render(program);
+        renderable.getMeshPart().render(program);
     }
 
     protected void setLights(SceneEnvironment env, TerrainObject.TerrainUserData userData) {
@@ -151,7 +151,7 @@ public class TerrainShader extends DefaultBaseShader {
     }
 
     protected void setTerrainSplatTextures(Renderable renderable) {
-        final TerrainTextureAttribute splatAttrib = (TerrainTextureAttribute) renderable.material
+        final TerrainTextureAttribute splatAttrib = (TerrainTextureAttribute) renderable.getMaterial()
                 .get(TerrainTextureAttribute.ATTRIBUTE_SPLAT0);
         final TerrainTexture terrainTexture = splatAttrib.terrainTexture;
 
@@ -180,7 +180,7 @@ public class TerrainShader extends DefaultBaseShader {
             set(UNIFORM_TEXTURE_HAS_SPLATMAP, 0);
         }
 
-        TerrainObject.TerrainUserData userData = (TerrainObject.TerrainUserData) renderable.userData;
+        TerrainObject.TerrainUserData userData = (TerrainObject.TerrainUserData) renderable.getUserData();
         // set terrain world size
         //todo migrate to Vector2
         terrainSize.x = userData.getTerrainWidth();

@@ -17,7 +17,6 @@
 package com.mbrlabs.mundus.commons.loader.g3d;
 
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
-import com.badlogic.gdx.assets.loaders.ModelLoader;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -29,7 +28,13 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.*;
 import com.mbrlabs.mundus.commons.core.AppModelLoader;
+import com.mbrlabs.mundus.commons.loader.ModelLoader;
 import com.mbrlabs.mundus.commons.model.ImportedModel;
+import net.nevinsky.mundus.core.model.ModelData;
+import net.nevinsky.mundus.core.model.ModelMesh;
+import net.nevinsky.mundus.core.model.ModelMeshPart;
+
+import java.util.List;
 
 /**
  * This is a modified version of the libGDX MG3dModelLoader.
@@ -81,7 +86,7 @@ public class MG3dModelLoader extends ModelLoader<ModelLoader.ModelParameters> im
         JsonValue meshes = json.get("meshes");
         if (meshes != null) {
 
-            model.meshes.ensureCapacity(meshes.size);
+//            model.meshes.ensureCapacity(meshes.size);
             for (JsonValue mesh = meshes.child; mesh != null; mesh = mesh.next) {
                 ModelMesh jsonMesh = new ModelMesh();
 
@@ -113,7 +118,7 @@ public class MG3dModelLoader extends ModelLoader<ModelLoader.ModelParameters> im
                     }
                     jsonPart.primitiveType = parseType(type);
 
-                    jsonPart.indices = meshPart.require("indices").asShortArray();
+                    jsonPart.indices = meshPart.require("indices").asIntArray();
                     parts.add(jsonPart);
                 }
                 jsonMesh.parts = parts.toArray(ModelMeshPart.class);
@@ -176,7 +181,7 @@ public class MG3dModelLoader extends ModelLoader<ModelLoader.ModelParameters> im
         if (materials == null) {
             // we should probably create some default material in this case
         } else {
-            model.materials.ensureCapacity(materials.size);
+//            model.materials.ensureCapacity(materials.size);
             for (JsonValue material = materials.child; material != null; material = material.next) {
                 ModelMaterial jsonMaterial = new ModelMaterial();
 
@@ -281,10 +286,10 @@ public class MG3dModelLoader extends ModelLoader<ModelLoader.ModelParameters> im
             throw new GdxRuntimeException("Expected Vector2 values <> than two.");
     }
 
-    private Array<ModelNode> parseNodes(ModelData model, JsonValue json) {
+    private List<ModelNode> parseNodes(ModelData model, JsonValue json) {
         JsonValue nodes = json.get("nodes");
         if (nodes != null) {
-            model.nodes.ensureCapacity(nodes.size);
+//            model.nodes.ensureCapacity(nodes.size);
             for (JsonValue node = nodes.child; node != null; node = node.next) {
                 model.nodes.add(parseNodesRecursively(node));
             }
@@ -382,7 +387,7 @@ public class MG3dModelLoader extends ModelLoader<ModelLoader.ModelParameters> im
         JsonValue animations = json.get("animations");
         if (animations == null) return;
 
-        model.animations.ensureCapacity(animations.size);
+//        model.animations.ensureCapacity(animations.size);
 
         for (JsonValue anim = animations.child; anim != null; anim = anim.next) {
             JsonValue nodes = anim.get("bones");
@@ -480,6 +485,7 @@ public class MG3dModelLoader extends ModelLoader<ModelLoader.ModelParameters> im
 
     @Override
     public ImportedModel importModel(FileHandle handle) {
-        return new ImportedModel(loadModel(handle), handle);
+//        return new ImportedModel(loadModel(handle), handle);
+        return null;
     }
 }

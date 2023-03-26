@@ -17,22 +17,15 @@
 package com.mbrlabs.mundus.commons.terrain;
 
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.environment.BaseLight;
-import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool;
 import com.mbrlabs.mundus.commons.assets.AssetType;
@@ -42,6 +35,11 @@ import com.mbrlabs.mundus.commons.utils.MathUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
+import net.nevinsky.mundus.core.Mesh;
+import net.nevinsky.mundus.core.MeshPart;
+import net.nevinsky.mundus.core.ModelInstance;
+import net.nevinsky.mundus.core.Renderable;
+import net.nevinsky.mundus.core.model.Model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -133,13 +131,13 @@ public class TerrainObject implements RenderableObject, Disposable {
 
         var meshPart = new MeshPart(null, mesh, 0, numIndices, GL20.GL_TRIANGLES);
         meshPart.update();
-
-        var mb = new ModelBuilder();
-        mb.begin();
-        mb.part(meshPart, material);
-        model = mb.end();
-        modelInstance = new ModelInstance(model);
-        modelInstance.transform = transform;
+//todo
+//        var mb = new ModelBuilder();
+//        mb.begin();
+//        mb.part(meshPart, material);
+//        model = mb.end();
+//        modelInstance = new ModelInstance(model);
+//        modelInstance.transform = transform;
     }
 
     public Vector3 getVertexPosition(Vector3 out, int x, int z) {
@@ -200,10 +198,10 @@ public class TerrainObject implements RenderableObject, Disposable {
 
     }
 
-    private short[] buildIndices() {
+    private int[] buildIndices() {
         final int w = vertexResolution - 1;
         final int h = vertexResolution - 1;
-        short indices[] = new short[w * h * 6];
+        int indices[] = new int[w * h * 6];
         int i = -1;
         for (int y = 0; y < h; ++y) {
             for (int x = 0; x < w; ++x) {
@@ -364,7 +362,7 @@ public class TerrainObject implements RenderableObject, Disposable {
     }
 
     @Override
-    public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
+    public void getRenderables(List<Renderable> renderables, Pool<Renderable> pool) {
         modelInstance.userData = new TerrainUserData(terrainWidth, terrainDepth);
         modelInstance.getRenderables(renderables, pool);
     }
