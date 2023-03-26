@@ -130,7 +130,7 @@ public class IndexBufferObject implements IndexData {
     public void updateIndices(int targetOffset, int[] indices, int offset, int count) {
         isDirty = true;
         final int pos = byteBuffer.position();
-        ((Buffer) byteBuffer).position(targetOffset * 2);
+        ((Buffer) byteBuffer).position(targetOffset * 4);
         BufferUtils.copy(indices, offset, byteBuffer, count);
         ((Buffer) byteBuffer).position(pos);
         ((Buffer) buffer).position(0);
@@ -164,7 +164,7 @@ public class IndexBufferObject implements IndexData {
 
         Gdx.gl20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, bufferHandle);
         if (isDirty) {
-            ((Buffer) byteBuffer).limit(buffer.limit() * 2);
+            byteBuffer.limit(buffer.limit() * 4);
             Gdx.gl20.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
             isDirty = false;
         }

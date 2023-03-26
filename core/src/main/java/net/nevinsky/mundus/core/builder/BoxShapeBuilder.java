@@ -14,13 +14,14 @@
  * limitations under the License.
  ******************************************************************************/
 
-package net.nevinsky.mundus.core;
+package net.nevinsky.mundus.core.builder;
 
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import net.nevinsky.mundus.core.MeshPartBuilder;
 
 /** Helper class with static methods to build box shapes using {@link MeshPartBuilder}.
  * @author realitix, xoppa */

@@ -20,7 +20,7 @@ import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.graphics.g3d.Material
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.utils.Disposable
-import net.nevinsky.mundus.core.ArrowShapeBuilder
+import net.nevinsky.mundus.core.builder.ArrowShapeBuilder
 import net.nevinsky.mundus.core.ModelBatch
 import net.nevinsky.mundus.core.ModelBuilder
 import net.nevinsky.mundus.core.ModelInstance

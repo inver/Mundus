@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.components.Renderable;
 import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
-import net.nevinsky.mundus.core.ArrowShapeBuilder;
+import net.nevinsky.mundus.core.builder.ArrowShapeBuilder;
 import net.nevinsky.mundus.core.ModelBatch;
 import net.nevinsky.mundus.core.ModelBuilder;
 import net.nevinsky.mundus.core.ModelInstance;

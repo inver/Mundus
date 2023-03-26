@@ -668,7 +668,7 @@ public class Mesh implements Disposable {
                 int oldPosition = buffer.position();
                 int oldLimit = buffer.limit();
                 ((Buffer) buffer).position(offset);
-                Gdx.gl20.glDrawElements(primitiveType, count, GL20.GL_UNSIGNED_SHORT, buffer);
+                Gdx.gl20.glDrawElements(primitiveType, count, GL20.GL_UNSIGNED_INT, buffer);
                 ((Buffer) buffer).position(oldPosition);
             } else {
                 Gdx.gl20.glDrawArrays(primitiveType, offset, count);
@@ -684,9 +684,9 @@ public class Mesh implements Disposable {
                 }
 
                 if (isInstanced && numInstances > 0) {
-                    Gdx.gl30.glDrawElementsInstanced(primitiveType, count, GL20.GL_UNSIGNED_SHORT, offset * 2, numInstances);
+                    Gdx.gl30.glDrawElementsInstanced(primitiveType, count, GL20.GL_UNSIGNED_INT, offset * 2, numInstances);
                 } else {
-                    Gdx.gl20.glDrawElements(primitiveType, count, GL20.GL_UNSIGNED_SHORT, offset * 2);
+                    Gdx.gl20.glDrawElements(primitiveType, count, GL20.GL_UNSIGNED_INT, offset * 2);
                 }
             } else {
                 if (isInstanced && numInstances > 0) {

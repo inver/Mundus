@@ -14,9 +14,11 @@
  * limitations under the License.
  ******************************************************************************/
 
-package net.nevinsky.mundus.core;
+package net.nevinsky.mundus.core.builder;
 
 import com.badlogic.gdx.math.MathUtils;
+import net.nevinsky.mundus.core.EllipseShapeBuilder;
+import net.nevinsky.mundus.core.MeshPartBuilder;
 
 /**
  * Helper class with static methods to build cylinders shapes using {@link MeshPartBuilder}.

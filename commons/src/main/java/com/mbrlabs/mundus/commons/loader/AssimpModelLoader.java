@@ -187,12 +187,12 @@ public class AssimpModelLoader {
     private ModelMeshPart processParts(AIMesh aiMesh) {
         var faces = aiMesh.mFaces();
 
-        var resIndices = new ArrayList<Short>();
+        var resIndices = new ArrayList<Integer>();
         while (faces.remaining() > 0) {
             var face = faces.get();
             var indices = face.mIndices();
             while (indices.remaining() > 0) {
-                resIndices.add(Integer.valueOf(indices.get()).shortValue());
+                resIndices.add(indices.get());
             }
         }
 

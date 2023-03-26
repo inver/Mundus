@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import net.nevinsky.mundus.core.ModelBatch;
 import net.nevinsky.mundus.core.ModelInstance;
 import net.nevinsky.mundus.core.ModelBuilder;
-import net.nevinsky.mundus.core.ConeShapeBuilder;
+import net.nevinsky.mundus.core.builder.ConeShapeBuilder;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.mbrlabs.mundus.commons.core.ecs.base.RenderableDelegate;

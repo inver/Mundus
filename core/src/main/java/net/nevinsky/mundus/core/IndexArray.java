@@ -85,21 +85,21 @@ public class IndexArray implements IndexData {
 
     public void setIndices(IntBuffer indices) {
         int pos = indices.position();
-        ((Buffer) buffer).clear();
-        ((Buffer) buffer).limit(indices.remaining());
+        buffer.clear();
+        buffer.limit(indices.remaining());
         buffer.put(indices);
-        ((Buffer) buffer).flip();
-        ((Buffer) indices).position(pos);
-        ((Buffer) byteBuffer).position(0);
-        ((Buffer) byteBuffer).limit(buffer.limit() << 1);
+        buffer.flip();
+        indices.position(pos);
+        byteBuffer.position(0);
+        byteBuffer.limit(buffer.limit() << 1);
     }
 
     @Override
     public void updateIndices(int targetOffset, int[] indices, int offset, int count) {
         final int pos = byteBuffer.position();
-        ((Buffer) byteBuffer).position(targetOffset * 2);
+        byteBuffer.position(targetOffset * 4);
         BufferUtils.copy(indices, offset, byteBuffer, count);
-        ((Buffer) byteBuffer).position(pos);
+        byteBuffer.position(pos);
     }
 
     /**

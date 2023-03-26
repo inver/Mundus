@@ -1,7 +1,8 @@
-package net.nevinsky.mundus.core;
+package net.nevinsky.mundus.core.builder;
 
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import net.nevinsky.mundus.core.MeshPartBuilder;
 
 public class ArrowShapeBuilder extends BaseShapeBuilder {
     /**

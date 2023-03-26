@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.*;
+import net.nevinsky.mundus.core.builder.ArrowShapeBuilder;
+import net.nevinsky.mundus.core.builder.BoxShapeBuilder;
 import org.apache.commons.lang3.NotImplementedException;
 
 public class MeshBuilder implements MeshPartBuilder {

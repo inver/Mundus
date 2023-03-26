@@ -20,7 +20,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
-import net.nevinsky.mundus.core.BoxShapeBuilder;
+import net.nevinsky.mundus.core.builder.BoxShapeBuilder;
 import net.nevinsky.mundus.core.MeshPartBuilder;
 import net.nevinsky.mundus.core.ModelBuilder;
 import net.nevinsky.mundus.core.model.Model;
