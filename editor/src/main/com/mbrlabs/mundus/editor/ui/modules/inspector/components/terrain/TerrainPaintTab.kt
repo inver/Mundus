@@ -149,6 +149,6 @@ class TerrainPaintTab(private val parentWidget: TerrainComponentWidget) : Tab(fa
     }
 
     interface ChangeTextureListener {
-        fun change(channel: SplatTexture.Channel);
+        fun change(channel: SplatTexture.Channel)
     }
 }

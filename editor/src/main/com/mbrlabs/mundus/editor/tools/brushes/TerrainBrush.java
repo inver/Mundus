@@ -21,7 +21,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
-import net.nevinsky.mundus.core.ModelBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset;
@@ -33,6 +32,7 @@ import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.history.commands.TerrainHeightCommand;
 import com.mbrlabs.mundus.editor.history.commands.TerrainPaintCommand;
 import com.mbrlabs.mundus.editor.tools.Tool;
+import net.nevinsky.mundus.core.ModelBatch;
 
 /**
  * A Terrain Brush can modify the terrainAsset in various ways (BrushMode).
@@ -122,10 +122,10 @@ public abstract class TerrainBrush extends Tool {
     private final int pixmapCenter;
 
     // undo/redo system
-    private TerrainHeightCommand heightCommand = null;
-    private TerrainPaintCommand paintCommand = null;
-    private boolean terrainHeightModified = false;
-    private boolean splatmapModified = false;
+    private final TerrainHeightCommand heightCommand = null;
+    private final TerrainPaintCommand paintCommand = null;
+    private final boolean terrainHeightModified = false;
+    private final boolean splatmapModified = false;
 
     public TerrainBrush(EditorCtx ctx, String shaderKey, ModelBatch batch,
                         CommandHistory history, FileHandle pixmapBrush, String name) {

@@ -17,12 +17,13 @@ public interface IndexData extends Disposable {
 
     /**
      * <p>
-     * Sets the indices of this IndexBufferObject, discarding the old indices. The count must equal the number of indices to be
-     * copied to this IndexBufferObject.
+     * Sets the indices of this IndexBufferObject, discarding the old indices. The count must equal the number of
+     * indices to be copied to this IndexBufferObject.
      * </p>
      *
      * <p>
-     * This can be called in between calls to {@link #bind()} and {@link #unbind()}. The index data will be updated instantly.
+     * This can be called in between calls to {@link #bind()} and {@link #unbind()}. The index data will be updated
+     * instantly.
      * </p>
      *
      * @param indices the index data
@@ -32,10 +33,10 @@ public interface IndexData extends Disposable {
     void setIndices(int[] indices, int offset, int count);
 
     /**
-     * Copies the specified indices to the indices of this IndexBufferObject, discarding the old indices. Copying start at the
-     * current {@link IntBuffer#position()} of the specified buffer and copied the {@link IntBuffer#remaining()} amount of
-     * indices. This can be called in between calls to {@link #bind()} and {@link #unbind()}. The index data will be updated
-     * instantly.
+     * Copies the specified indices to the indices of this IndexBufferObject, discarding the old indices. Copying start
+     * at the current {@link IntBuffer#position()} of the specified buffer and copied the {@link IntBuffer#remaining()}
+     * amount of indices. This can be called in between calls to {@link #bind()} and {@link #unbind()}. The index data
+     * will be updated instantly.
      *
      * @param indices the index data to copy
      */
@@ -53,8 +54,8 @@ public interface IndexData extends Disposable {
 
     /**
      * <p>
-     * Returns the underlying intBuffer. If you modify the buffer contents they wil be uploaded on the call to {@link #bind()}.
-     * If you need immediate uploading use {@link #setIndices(int[], int, int)}.
+     * Returns the underlying intBuffer. If you modify the buffer contents they wil be uploaded on the call to
+     * {@link #bind()}. If you need immediate uploading use {@link #setIndices(int[], int, int)}.
      * </p>
      *
      * @return the underlying int buffer.

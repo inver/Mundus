@@ -54,11 +54,6 @@ public class MaterialAsset extends Asset<MaterialMeta> {
         super(meta);
     }
 
-    @Override
-    public void load() {
-        throw new UnsupportedOperationException("Load asset from asset is not supported! User Loader instead of");
-    }
-
     /**
      * Applies this material asset to the libGDX material.
      *

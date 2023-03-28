@@ -22,14 +22,14 @@ import java.util.List;
 
 public class ModelInstance implements RenderableProvider {
     /**
-     * Whether, by default, {@link NodeKeyframe}'s are shared amongst {@link Model} and ModelInstance. Can be overridden per
-     * ModelInstance using the constructor argument.
+     * Whether, by default, {@link NodeKeyframe}'s are shared amongst {@link Model} and ModelInstance. Can be overridden
+     * per ModelInstance using the constructor argument.
      */
     public static boolean defaultShareKeyframes = true;
 
     /**
-     * the materials of the model, used by nodes that have a graphical representation FIXME not sure if superfluous, allows
-     * modification of materials without having to traverse the nodes
+     * the materials of the model, used by nodes that have a graphical representation FIXME not sure if superfluous,
+     * allows modification of materials without having to traverse the nodes
      **/
     public final Array<Material> materials = new Array();
     /**
@@ -65,7 +65,8 @@ public class ModelInstance implements RenderableProvider {
     /**
      * @param model          The source {@link Model}
      * @param nodeId         The ID of the root {@link Node} of the {@link Model} for the instance to contain
-     * @param mergeTransform True to apply the source node transform to the instance transform, resetting the node transform.
+     * @param mergeTransform True to apply the source node transform to the instance transform, resetting the node
+     *                       transform.
      */
     public ModelInstance(final Model model, final String nodeId, boolean mergeTransform) {
         this(model, null, nodeId, false, false, mergeTransform);
@@ -73,9 +74,11 @@ public class ModelInstance implements RenderableProvider {
 
     /**
      * @param model          The source {@link Model}
-     * @param transform      The {@link Matrix4} instance for this ModelInstance to reference or null to create a new matrix.
+     * @param transform      The {@link Matrix4} instance for this ModelInstance to reference or null to create a new
+     *                       matrix.
      * @param nodeId         The ID of the root {@link Node} of the {@link Model} for the instance to contain
-     * @param mergeTransform True to apply the source node transform to the instance transform, resetting the node transform.
+     * @param mergeTransform True to apply the source node transform to the instance transform, resetting the node
+     *                       transform.
      */
     public ModelInstance(final Model model, final Matrix4 transform, final String nodeId, boolean mergeTransform) {
         this(model, transform, nodeId, false, false, mergeTransform);
@@ -86,8 +89,10 @@ public class ModelInstance implements RenderableProvider {
      *
      * @param model           The source {@link Model}
      * @param nodeId          The ID of the {@link Node} within the {@link Model} for the instance to contain
-     * @param parentTransform True to apply the parent's node transform to the instance (only applicable if recursive is true).
-     * @param mergeTransform  True to apply the source node transform to the instance transform, resetting the node transform.
+     * @param parentTransform True to apply the parent's node transform to the instance (only applicable if recursive is
+     *                        true).
+     * @param mergeTransform  True to apply the source node transform to the instance transform, resetting the node
+     *                        transform.
      */
     public ModelInstance(final Model model, final String nodeId, boolean parentTransform, boolean mergeTransform) {
         this(model, null, nodeId, true, parentTransform, mergeTransform);
@@ -97,10 +102,13 @@ public class ModelInstance implements RenderableProvider {
      * Recursively searches the mode for the specified node.
      *
      * @param model           The source {@link Model}
-     * @param transform       The {@link Matrix4} instance for this ModelInstance to reference or null to create a new matrix.
+     * @param transform       The {@link Matrix4} instance for this ModelInstance to reference or null to create a new
+     *                        matrix.
      * @param nodeId          The ID of the {@link Node} within the {@link Model} for the instance to contain
-     * @param parentTransform True to apply the parent's node transform to the instance (only applicable if recursive is true).
-     * @param mergeTransform  True to apply the source node transform to the instance transform, resetting the node transform.
+     * @param parentTransform True to apply the parent's node transform to the instance (only applicable if recursive is
+     *                        true).
+     * @param mergeTransform  True to apply the source node transform to the instance transform, resetting the node
+     *                        transform.
      */
     public ModelInstance(final Model model, final Matrix4 transform, final String nodeId, boolean parentTransform,
                          boolean mergeTransform) {
@@ -111,8 +119,10 @@ public class ModelInstance implements RenderableProvider {
      * @param model           The source {@link Model}
      * @param nodeId          The ID of the {@link Node} within the {@link Model} for the instance to contain
      * @param recursive       True to recursively search the Model's node tree, false to only search for a root node
-     * @param parentTransform True to apply the parent's node transform to the instance (only applicable if recursive is true).
-     * @param mergeTransform  True to apply the source node transform to the instance transform, resetting the node transform.
+     * @param parentTransform True to apply the parent's node transform to the instance (only applicable if recursive is
+     *                        true).
+     * @param mergeTransform  True to apply the source node transform to the instance transform, resetting the node
+     *                        transform.
      */
     public ModelInstance(final Model model, final String nodeId, boolean recursive, boolean parentTransform,
                          boolean mergeTransform) {
@@ -121,11 +131,14 @@ public class ModelInstance implements RenderableProvider {
 
     /**
      * @param model           The source {@link Model}
-     * @param transform       The {@link Matrix4} instance for this ModelInstance to reference or null to create a new matrix.
+     * @param transform       The {@link Matrix4} instance for this ModelInstance to reference or null to create a new
+     *                        matrix.
      * @param nodeId          The ID of the {@link Node} within the {@link Model} for the instance to contain
      * @param recursive       True to recursively search the Model's node tree, false to only search for a root node
-     * @param parentTransform True to apply the parent's node transform to the instance (only applicable if recursive is true).
-     * @param mergeTransform  True to apply the source node transform to the instance transform, resetting the node transform.
+     * @param parentTransform True to apply the parent's node transform to the instance (only applicable if recursive is
+     *                        true).
+     * @param mergeTransform  True to apply the source node transform to the instance transform, resetting the node
+     *                        transform.
      */
     public ModelInstance(final Model model, final Matrix4 transform, final String nodeId, boolean recursive,
                          boolean parentTransform, boolean mergeTransform) {
@@ -134,11 +147,14 @@ public class ModelInstance implements RenderableProvider {
 
     /**
      * @param model           The source {@link Model}
-     * @param transform       The {@link Matrix4} instance for this ModelInstance to reference or null to create a new matrix.
+     * @param transform       The {@link Matrix4} instance for this ModelInstance to reference or null to create a new
+     *                        matrix.
      * @param nodeId          The ID of the {@link Node} within the {@link Model} for the instance to contain
      * @param recursive       True to recursively search the Model's node tree, false to only search for a root node
-     * @param parentTransform True to apply the parent's node transform to the instance (only applicable if recursive is true).
-     * @param mergeTransform  True to apply the source node transform to the instance transform, resetting the node transform.
+     * @param parentTransform True to apply the parent's node transform to the instance (only applicable if recursive is
+     *                        true).
+     * @param mergeTransform  True to apply the source node transform to the instance transform, resetting the node
+     *                        transform.
      */
     public ModelInstance(final Model model, final Matrix4 transform, final String nodeId, boolean recursive,
                          boolean parentTransform, boolean mergeTransform, boolean shareKeyframes) {
@@ -195,7 +211,8 @@ public class ModelInstance implements RenderableProvider {
     /**
      * Constructs a new ModelInstance with only the specified nodes and materials of the given model.
      */
-    public ModelInstance(final Model model, final Matrix4 transform, final Array<String> rootNodeIds, boolean shareKeyframes) {
+    public ModelInstance(final Model model, final Matrix4 transform, final Array<String> rootNodeIds,
+                         boolean shareKeyframes) {
         this.model = model;
         this.transform = transform == null ? new Matrix4() : transform;
         copyNodes(model.getNodes(), rootNodeIds);
@@ -293,8 +310,8 @@ public class ModelInstance implements RenderableProvider {
     }
 
     /**
-     * Makes sure that each {@link NodePart} of the {@link Node} and its sub-nodes, doesn't reference a node outside this node
-     * tree and that all materials are listed in the {@link #materials} array.
+     * Makes sure that each {@link NodePart} of the {@link Node} and its sub-nodes, doesn't reference a node outside
+     * this node tree and that all materials are listed in the {@link #materials} array.
      */
     private void invalidate(Node node) {
         for (int i = 0, n = node.parts.size; i < n; ++i) {
@@ -319,8 +336,8 @@ public class ModelInstance implements RenderableProvider {
     }
 
     /**
-     * Makes sure that each {@link NodePart} of each {@link Node} doesn't reference a node outside this node tree and that all
-     * materials are listed in the {@link #materials} array.
+     * Makes sure that each {@link NodePart} of each {@link Node} doesn't reference a node outside this node tree and
+     * that all materials are listed in the {@link #materials} array.
      */
     private void invalidate() {
         for (int i = 0, n = nodes.size(); i < n; ++i) {
@@ -403,8 +420,9 @@ public class ModelInstance implements RenderableProvider {
     }
 
     /**
-     * Traverses the Node hierarchy and collects {@link Renderable} instances for every node with a graphical representation.
-     * Renderables are obtained from the provided pool. The resulting array can be rendered via a {@link ModelBatch}.
+     * Traverses the Node hierarchy and collects {@link Renderable} instances for every node with a graphical
+     * representation. Renderables are obtained from the provided pool. The resulting array can be rendered via a
+     * {@link ModelBatch}.
      *
      * @param renderables the output array
      * @param pool        the pool to obtain Renderables from
@@ -455,13 +473,13 @@ public class ModelInstance implements RenderableProvider {
 
     /**
      * Calculates the local and world transform of all {@link Node} instances in this model, recursively. First each
-     * {@link Node#localTransform} transform is calculated based on the translation, rotation and scale of each Node. Then each
-     * {@link Node#calculateWorldTransform()} is calculated, based on the parent's world transform and the local transform of each
-     * Node. Finally, the animation bone matrices are updated accordingly.
+     * {@link Node#localTransform} transform is calculated based on the translation, rotation and scale of each Node.
+     * Then each {@link Node#calculateWorldTransform()} is calculated, based on the parent's world transform and the
+     * local transform of each Node. Finally, the animation bone matrices are updated accordingly.
      * </p>
      * <p>
-     * This method can be used to recalculate all transforms if any of the Node's local properties (translation, rotation, scale)
-     * was modified.
+     * This method can be used to recalculate all transforms if any of the Node's local properties (translation,
+     * rotation, scale) was modified.
      */
     public void calculateTransforms() {
         final int n = nodes.size();
@@ -474,7 +492,8 @@ public class ModelInstance implements RenderableProvider {
     }
 
     /**
-     * Calculate the bounding box of this model instance. This is a potential slow operation, it is advised to cache the result.
+     * Calculate the bounding box of this model instance. This is a potential slow operation, it is advised to cache the
+     * result.
      *
      * @param out the {@link BoundingBox} that will be set with the bounds.
      * @return the out parameter for chaining
@@ -485,8 +504,8 @@ public class ModelInstance implements RenderableProvider {
     }
 
     /**
-     * Extends the bounding box with the bounds of this model instance. This is a potential slow operation, it is advised to cache
-     * the result.
+     * Extends the bounding box with the bounds of this model instance. This is a potential slow operation, it is
+     * advised to cache the result.
      *
      * @param out the {@link BoundingBox} that will be extended with the bounds.
      * @return the out parameter for chaining

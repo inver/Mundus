@@ -1,10 +1,10 @@
 package net.nevinsky.mundus.core.mesh;
 
 import com.badlogic.gdx.graphics.GL20;
-import net.nevinsky.mundus.core.model.Model;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import net.nevinsky.mundus.core.model.Model;
 
 public class MeshPart {
 
@@ -13,13 +13,13 @@ public class MeshPart {
      **/
     public String id;
     /**
-     * The primitive type, OpenGL constant e.g: {@link GL20#GL_TRIANGLES}, {@link GL20#GL_POINTS}, {@link GL20#GL_LINES},
-     * {@link GL20#GL_LINE_STRIP}, {@link GL20#GL_TRIANGLE_STRIP}
+     * The primitive type, OpenGL constant e.g: {@link GL20#GL_TRIANGLES}, {@link GL20#GL_POINTS},
+     * {@link GL20#GL_LINES}, {@link GL20#GL_LINE_STRIP}, {@link GL20#GL_TRIANGLE_STRIP}
      **/
     public int primitiveType;
     /**
-     * The offset in the {@link #mesh} to this part. If the mesh is indexed ({@link Mesh#getNumIndices()} > 0), this is the offset
-     * in the indices array, otherwise it is the offset in the vertices array.
+     * The offset in the {@link #mesh} to this part. If the mesh is indexed ({@link Mesh#getNumIndices()} > 0), this is
+     * the offset in the indices array, otherwise it is the offset in the vertices array.
      **/
     public int offset;
     /**
@@ -36,14 +36,15 @@ public class MeshPart {
      **/
     public final Vector3 center = new Vector3();
     /**
-     * The location, relative to {@link #center}, of the corner of the axis aligned bounding box of the shape. Or, in other words:
-     * half the dimensions of the bounding box of the shape, where {@link Vector3#x} is half the width, {@link Vector3#y} is half
-     * the height and {@link Vector3#z} is half the depth. Only valid after the call to {@link #update()}.
+     * The location, relative to {@link #center}, of the corner of the axis aligned bounding box of the shape. Or, in
+     * other words: half the dimensions of the bounding box of the shape, where {@link Vector3#x} is half the width,
+     * {@link Vector3#y} is half the height and {@link Vector3#z} is half the depth. Only valid after the call to
+     * {@link #update()}.
      **/
     public final Vector3 halfExtents = new Vector3();
     /**
-     * The radius relative to {@link #center} of the bounding sphere of the shape, or negative if not calculated yet. This is the
-     * same as the length of the {@link #halfExtents} member. See {@link #update()}.
+     * The radius relative to {@link #center} of the bounding sphere of the shape, or negative if not calculated yet.
+     * This is the same as the length of the {@link #halfExtents} member. See {@link #update()}.
      **/
     public float radius = -1;
     /**
@@ -115,10 +116,11 @@ public class MeshPart {
     }
 
     /**
-     * Calculates and updates the {@link #center}, {@link #halfExtents} and {@link #radius} values. This is considered a costly
-     * operation and should not be called frequently. All vertices (points) of the shape are traversed to calculate the maximum and
-     * minimum x, y and z coordinate of the shape. Note that MeshPart is not aware of any transformation that might be applied when
-     * rendering. It calculates the untransformed (not moved, not scaled, not rotated) values.
+     * Calculates and updates the {@link #center}, {@link #halfExtents} and {@link #radius} values. This is considered a
+     * costly operation and should not be called frequently. All vertices (points) of the shape are traversed to
+     * calculate the maximum and minimum x, y and z coordinate of the shape. Note that MeshPart is not aware of any
+     * transformation that might be applied when rendering. It calculates the untransformed (not moved, not scaled, not
+     * rotated) values.
      */
     public void update() {
         mesh.calculateBoundingBox(bounds, offset, size);
@@ -128,8 +130,9 @@ public class MeshPart {
     }
 
     /**
-     * Compares this MeshPart to the specified MeshPart and returns true if they both reference the same {@link Mesh} and the
-     * {@link #offset}, {@link #size} and {@link #primitiveType} members are equal. The {@link #id} member is ignored.
+     * Compares this MeshPart to the specified MeshPart and returns true if they both reference the same {@link Mesh}
+     * and the {@link #offset}, {@link #size} and {@link #primitiveType} members are equal. The {@link #id} member is
+     * ignored.
      *
      * @param other The other MeshPart to compare this MeshPart to.
      * @return True when this MeshPart equals the other MeshPart (ignoring the {@link #id} member), false otherwise.

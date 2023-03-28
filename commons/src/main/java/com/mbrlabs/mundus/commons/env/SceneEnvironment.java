@@ -100,11 +100,13 @@ public class SceneEnvironment extends Environment {
 
         SceneEnvironment that = (SceneEnvironment) o;
 
-        return new EqualsBuilder().appendSuper(super.equals(o)).append(fog, that.fog).append(ambientLight, that.ambientLight).append(skyboxName, that.skyboxName).isEquals();
+        return new EqualsBuilder().appendSuper(super.equals(o)).append(fog, that.fog)
+                .append(ambientLight, that.ambientLight).append(skyboxName, that.skyboxName).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).appendSuper(super.hashCode()).append(fog).append(ambientLight).append(skyboxName).toHashCode();
+        return new HashCodeBuilder(17, 37).appendSuper(super.hashCode())
+                .append(fog).append(ambientLight).append(skyboxName).toHashCode();
     }
 }

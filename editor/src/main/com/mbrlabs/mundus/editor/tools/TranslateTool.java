@@ -22,11 +22,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Material;
-import net.nevinsky.mundus.core.model.Model;
-import net.nevinsky.mundus.core.ModelBatch;
-import net.nevinsky.mundus.core.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import net.nevinsky.mundus.core.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
@@ -40,6 +36,10 @@ import com.mbrlabs.mundus.editor.history.commands.TranslateCommand;
 import com.mbrlabs.mundus.editor.tools.picker.EntityPicker;
 import com.mbrlabs.mundus.editor.tools.picker.ToolHandlePicker;
 import com.mbrlabs.mundus.editor.utils.Fa;
+import net.nevinsky.mundus.core.ModelBatch;
+import net.nevinsky.mundus.core.ModelBuilder;
+import net.nevinsky.mundus.core.ModelInstance;
+import net.nevinsky.mundus.core.model.Model;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -57,16 +57,16 @@ public class TranslateTool extends TransformTool {
     private TransformState state = TransformState.IDLE;
     private boolean initTranslate = true;
 
-    private TranslateHandle xHandle;
-    private TranslateHandle yHandle;
-    private TranslateHandle zHandle;
-    private TranslateHandle xzPlaneHandle;
-    private TranslateHandle[] handles;
+    private final TranslateHandle xHandle;
+    private final TranslateHandle yHandle;
+    private final TranslateHandle zHandle;
+    private final TranslateHandle xzPlaneHandle;
+    private final TranslateHandle[] handles;
 
-    private Vector3 lastPos = new Vector3();
+    private final Vector3 lastPos = new Vector3();
     private boolean globalSpace = true;
 
-    private Vector3 temp0 = new Vector3();
+    private final Vector3 temp0 = new Vector3();
 
     private TranslateCommand command;
 
@@ -225,7 +225,8 @@ public class TranslateTool extends TransformTool {
         }
 
 
-        final Vector3 pos = getCtx().getSelectedEntity().getComponent(PositionComponent.class).getTransform().getTranslation(temp0);
+        final Vector3 pos =
+                getCtx().getSelectedEntity().getComponent(PositionComponent.class).getTransform().getTranslation(temp0);
         xHandle.getPosition().set(pos);
         xHandle.applyTransform();
         yHandle.getPosition().set(pos);
@@ -300,8 +301,8 @@ public class TranslateTool extends TransformTool {
      */
     private class TranslateHandle extends ToolHandle {
 
-        private Model model;
-        private ModelInstance modelInstance;
+        private final Model model;
+        private final ModelInstance modelInstance;
 
         public TranslateHandle(int id, TransformState state, Model model) {
             super(id, state);

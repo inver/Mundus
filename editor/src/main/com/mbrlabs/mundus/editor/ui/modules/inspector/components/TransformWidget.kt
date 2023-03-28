@@ -24,7 +24,6 @@ import com.kotcrab.vis.ui.widget.Separator.SeparatorStyle
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
-import com.mbrlabs.mundus.editor.history.commands.TranslateCommand
 import com.mbrlabs.mundus.editor.ui.modules.inspector.BaseInspectorWidget
 import com.mbrlabs.mundus.editor.ui.widgets.FloatFieldWithLabel
 import com.mbrlabs.mundus.editor.utils.formatFloat
@@ -147,7 +146,7 @@ class TransformWidget(
         // rotation
         rotX.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                val go = ctx.selectedEntityId ?: return
+                val go = ctx.selectedEntityId
 //                val rot = go.getLocalRotation(tempQuat)
 //                val rotateCommand = RotateCommand(go)
 //                rotateCommand.setBefore(rot)
@@ -159,7 +158,7 @@ class TransformWidget(
         })
         rotY.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                val go = ctx.selectedEntityId ?: return
+                val go = ctx.selectedEntityId
 //                val rot = go.getLocalRotation(tempQuat)
 //                val rotateCommand = RotateCommand(go)
 //                rotateCommand.setBefore(rot)
@@ -171,7 +170,7 @@ class TransformWidget(
         })
         rotZ.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                val go = ctx.selectedEntityId ?: return
+                val go = ctx.selectedEntityId
 //                val rot = go.getLocalRotation(tempQuat)
 //                val rotateCommand = RotateCommand(go)
 //                rotateCommand.setBefore(rot)

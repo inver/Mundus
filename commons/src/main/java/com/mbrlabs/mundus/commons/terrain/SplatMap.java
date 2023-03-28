@@ -29,10 +29,10 @@ public class SplatMap {
 
     public static final int DEFAULT_SIZE = 512;
 
-    private int width;
-    private int height;
+    private final int width;
+    private final int height;
 
-    private PixmapTextureAsset pixmapAsset;
+    private final PixmapTextureAsset pixmapAsset;
 
     private final Color c0 = new Color();
 

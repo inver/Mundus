@@ -66,7 +66,7 @@ public class ModelShader extends BaseShader {
     protected final int UNIFORM_FOG_GRADIENT = register(new Uniform("u_fogGradient"));
     protected final int UNIFORM_FOG_COLOR = register(new Uniform("u_fogColor"));
 
-    private ShaderProgram program;
+    private final ShaderProgram program;
 
     public ModelShader() {
         super();

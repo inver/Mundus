@@ -75,7 +75,7 @@ class Outline(
 
         scrollPane = VisScrollPane(tree)
         scrollPane.setFlickScroll(false)
-        scrollPane.setFadeScrollBars(false)
+        scrollPane.fadeScrollBars = false
         content.add(scrollPane).fill().expand()
 
         add(VisLabel("Outline")).expandX().fillX().pad(3f).row()

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class UiWidgetsHolder {
-    private ColorPicker colorPicker = new ColorPicker();
+    private final ColorPicker colorPicker = new ColorPicker();
     private final Separator.SeparatorStyle separatorStyle =
             new Separator.SeparatorStyle(VisUI.getSkin().getDrawable("mundus-separator-green"), 1);
 

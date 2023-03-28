@@ -23,7 +23,7 @@ public class FileWatcher implements Runnable {
     @SuppressWarnings("unchecked")
     public void run() {
         try (
-                var watcher = FileSystems.getDefault().newWatchService();
+                var watcher = FileSystems.getDefault().newWatchService()
         ) {
 
             for (; ; ) {

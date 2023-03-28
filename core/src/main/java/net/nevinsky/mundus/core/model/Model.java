@@ -19,9 +19,9 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.*;
 import lombok.Getter;
+import net.nevinsky.mundus.core.ModelInstance;
 import net.nevinsky.mundus.core.mesh.Mesh;
 import net.nevinsky.mundus.core.mesh.MeshPart;
-import net.nevinsky.mundus.core.ModelInstance;
 import net.nevinsky.mundus.core.node.Animation;
 import net.nevinsky.mundus.core.node.Node;
 import net.nevinsky.mundus.core.node.NodeAnimation;
@@ -53,8 +53,8 @@ public class Model implements Disposable {
     }
 
     /**
-     * Constructs a new Model based on the {@link ModelData}. Texture files will be loaded from the internal file storage via an
-     * {@link TextureProvider.FileTextureProvider}.
+     * Constructs a new Model based on the {@link ModelData}. Texture files will be loaded from the internal file
+     * storage via an {@link TextureProvider.FileTextureProvider}.
      *
      * @param modelData the {@link ModelData} got from e.g. {@link ModelLoader}
      */
@@ -94,15 +94,18 @@ public class Model implements Disposable {
                 nodeAnim.node = node;
 
                 if (nanim.translation != null) {
-                    nodeAnim.translation = convertAndModifyDuration(nanim.translation, Vector3::new, animation, () -> node.translation);
+                    nodeAnim.translation = convertAndModifyDuration(nanim.translation, Vector3::new, animation,
+                            () -> node.translation);
                 }
 
                 if (nanim.rotation != null) {
-                    nodeAnim.rotation = convertAndModifyDuration(nanim.rotation, Quaternion::new, animation, () -> node.rotation);
+                    nodeAnim.rotation =
+                            convertAndModifyDuration(nanim.rotation, Quaternion::new, animation, () -> node.rotation);
                 }
 
                 if (nanim.scaling != null) {
-                    nodeAnim.scaling = convertAndModifyDuration(nanim.scaling, Vector3::new, animation, () -> node.scale);
+                    nodeAnim.scaling =
+                            convertAndModifyDuration(nanim.scaling, Vector3::new, animation, () -> node.scale);
                 }
 
                 if ((nodeAnim.translation != null && nodeAnim.translation.size() > 0)
@@ -122,12 +125,13 @@ public class Model implements Disposable {
             if (kf.keytime > animation.duration) {
                 animation.duration = kf.keytime;
             }
-            res.add(new NodeKeyframe<>(kf.keytime, converter.apply(kf.value == null ? nodeParamExtractor.get() : kf.value)));
+            res.add(new NodeKeyframe<>(kf.keytime,
+                    converter.apply(kf.value == null ? nodeParamExtractor.get() : kf.value)));
         }
         return res;
     }
 
-    private ObjectMap<NodePart, ArrayMap<String, Matrix4>> nodePartBones = new ObjectMap<>();
+    private final ObjectMap<NodePart, ArrayMap<String, Matrix4>> nodePartBones = new ObjectMap<>();
 
     protected void loadNodes(Iterable<ModelNode> modelNodes) {
         nodePartBones.clear();
@@ -260,25 +264,33 @@ public class Model implements Disposable {
 
                 switch (tex.usage) {
                     case ModelTexture.USAGE_DIFFUSE:
-                        result.set(new TextureAttribute(TextureAttribute.Diffuse, descriptor, offsetU, offsetV, scaleU, scaleV));
+                        result.set(new TextureAttribute(TextureAttribute.Diffuse, descriptor, offsetU, offsetV, scaleU,
+                                scaleV));
                         break;
                     case ModelTexture.USAGE_SPECULAR:
-                        result.set(new TextureAttribute(TextureAttribute.Specular, descriptor, offsetU, offsetV, scaleU, scaleV));
+                        result.set(new TextureAttribute(TextureAttribute.Specular, descriptor, offsetU, offsetV, scaleU,
+                                scaleV));
                         break;
                     case ModelTexture.USAGE_BUMP:
-                        result.set(new TextureAttribute(TextureAttribute.Bump, descriptor, offsetU, offsetV, scaleU, scaleV));
+                        result.set(new TextureAttribute(TextureAttribute.Bump, descriptor, offsetU, offsetV, scaleU,
+                                scaleV));
                         break;
                     case ModelTexture.USAGE_NORMAL:
-                        result.set(new TextureAttribute(TextureAttribute.Normal, descriptor, offsetU, offsetV, scaleU, scaleV));
+                        result.set(new TextureAttribute(TextureAttribute.Normal, descriptor, offsetU, offsetV, scaleU,
+                                scaleV));
                         break;
                     case ModelTexture.USAGE_AMBIENT:
-                        result.set(new TextureAttribute(TextureAttribute.Ambient, descriptor, offsetU, offsetV, scaleU, scaleV));
+                        result.set(new TextureAttribute(TextureAttribute.Ambient, descriptor, offsetU, offsetV, scaleU,
+                                scaleV));
                         break;
                     case ModelTexture.USAGE_EMISSIVE:
-                        result.set(new TextureAttribute(TextureAttribute.Emissive, descriptor, offsetU, offsetV, scaleU, scaleV));
+                        result.set(new TextureAttribute(TextureAttribute.Emissive, descriptor, offsetU, offsetV, scaleU,
+                                scaleV));
                         break;
                     case ModelTexture.USAGE_REFLECTION:
-                        result.set(new TextureAttribute(TextureAttribute.Reflection, descriptor, offsetU, offsetV, scaleU, scaleV));
+                        result.set(
+                                new TextureAttribute(TextureAttribute.Reflection, descriptor, offsetU, offsetV, scaleU,
+                                        scaleV));
                         break;
                 }
             }
@@ -288,8 +300,8 @@ public class Model implements Disposable {
     }
 
     /**
-     * Adds a {@link Disposable} to be managed and disposed by this Model. Can be used to keep track of manually loaded textures
-     * for {@link ModelInstance}.
+     * Adds a {@link Disposable} to be managed and disposed by this Model. Can be used to keep track of manually loaded
+     * textures for {@link ModelInstance}.
      *
      * @param disposable the Disposable
      */
@@ -315,13 +327,13 @@ public class Model implements Disposable {
 
     /**
      * Calculates the local and world transform of all {@link Node} instances in this model, recursively. First each
-     * {@link Node#localTransform} transform is calculated based on the translation, rotation and scale of each Node. Then each
-     * {@link Node#calculateWorldTransform()} is calculated, based on the parent's world transform and the local transform of each
-     * Node. Finally, the animation bone matrices are updated accordingly.
+     * {@link Node#localTransform} transform is calculated based on the translation, rotation and scale of each Node.
+     * Then each {@link Node#calculateWorldTransform()} is calculated, based on the parent's world transform and the
+     * local transform of each Node. Finally, the animation bone matrices are updated accordingly.
      * </p>
      * <p>
-     * This method can be used to recalculate all transforms if any of the Node's local properties (translation, rotation, scale)
-     * was modified.
+     * This method can be used to recalculate all transforms if any of the Node's local properties (translation,
+     * rotation, scale) was modified.
      */
     public void calculateTransforms() {
         final int n = nodes.size();
@@ -334,7 +346,8 @@ public class Model implements Disposable {
     }
 
     /**
-     * Calculate the bounding box of this model instance. This is a potential slow operation, it is advised to cache the result.
+     * Calculate the bounding box of this model instance. This is a potential slow operation, it is advised to cache the
+     * result.
      *
      * @param out the {@link BoundingBox} that will be set with the bounds.
      * @return the out parameter for chaining
@@ -345,8 +358,8 @@ public class Model implements Disposable {
     }
 
     /**
-     * Extends the bounding box with the bounds of this model instance. This is a potential slow operation, it is advised to cache
-     * the result.
+     * Extends the bounding box with the bounds of this model instance. This is a potential slow operation, it is
+     * advised to cache the result.
      *
      * @param out the {@link BoundingBox} that will be extended with the bounds.
      * @return the out parameter for chaining

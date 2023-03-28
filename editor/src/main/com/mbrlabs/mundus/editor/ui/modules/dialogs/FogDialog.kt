@@ -80,9 +80,9 @@ class FogDialog(
             override fun changed(event: ChangeEvent, actor: Actor) {
                 val projectContext = ctx.current
                 if (useFog.isChecked) {
-                    if (projectContext.getCurrentScene().environment.fog == null) {
+                    if (projectContext.currentScene.environment.fog == null) {
                         val fog = Fog()
-                        projectContext.getCurrentScene().environment.fog = fog
+                        projectContext.currentScene.environment.fog = fog
                         density.text = fog.density.toString()
                         gradient.text = fog.gradient.toString()
                     }
@@ -90,7 +90,7 @@ class FogDialog(
                     gradient.isDisabled = false
                     colorPickerField.disable(false)
                 } else {
-                    projectContext.getCurrentScene().environment.fog = null
+                    projectContext.currentScene.environment.fog = null
                     density.isDisabled = true
                     gradient.isDisabled = true
                     colorPickerField.disable(true)

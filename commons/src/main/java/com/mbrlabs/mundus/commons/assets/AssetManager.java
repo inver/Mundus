@@ -63,7 +63,6 @@ public class AssetManager {
     public void addAsset(Asset asset) {
         if (asset == null) {
             log.debug("Skip added null asset");
-            return;
         }
 //        if (assetIndex.get(asset.getID()) == null) {
 //            assets.add(asset);

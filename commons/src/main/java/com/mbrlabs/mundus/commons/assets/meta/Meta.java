@@ -90,15 +90,4 @@ public class Meta<M> {
                 '}';
     }
 
-
-    public static final String META_EXTENSION = "meta";
-    public static final int CURRENT_VERSION = 1;
-
-    public static final String JSON_VERSION = "v";
-    public static final String JSON_LAST_MOD = "mod";
-    public static final String JSON_UUID = "id";
-    public static final String JSON_TYPE = "t";
-    public static final String JSON_TERRAIN = "ter";
-    public static final String JSON_MODEL = "mdl";
-
 }

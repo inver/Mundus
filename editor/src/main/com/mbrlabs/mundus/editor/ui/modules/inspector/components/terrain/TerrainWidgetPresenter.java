@@ -79,7 +79,8 @@ public class TerrainWidgetPresenter {
                 assetManager.dirty(entityId);
 
                 var value = settingsTab.getUvSlider().getValue();
-                ctx.getCurrent().getRenderableObject(TerrainObject.class, entityId).updateUvScale(new Vector2(value, value));
+                ctx.getCurrent().getRenderableObject(TerrainObject.class, entityId)
+                        .updateUvScale(new Vector2(value, value));
             }
         });
     }
@@ -98,7 +99,8 @@ public class TerrainWidgetPresenter {
                     }
                 })));
         paintTab.getRightClickMenu().addRemoveListener(channel -> {
-            var assetName = ctx.getCurrent().getRenderableObject(TerrainObject.class, parent.getEntityId()).getAssetName();
+            var assetName =
+                    ctx.getCurrent().getRenderableObject(TerrainObject.class, parent.getEntityId()).getAssetName();
             var asset = assetManager.loadCurrentProjectAsset(TerrainAsset.class, assetName);
             if (channel == SplatTexture.Channel.R) {
                 asset.setSplatR(null);

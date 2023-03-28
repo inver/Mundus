@@ -70,8 +70,8 @@ class MundusToolbar(
     private val importTexture = MenuItem("Import texture")
     private val createMaterial = MenuItem("Create material")
 
-    private val sceneSelector = VisSelectBox<String>();
-    private val cameraSelector = VisSelectBox<Pair<String, Int>>();
+    private val sceneSelector = VisSelectBox<String>()
+    private val cameraSelector = VisSelectBox<Pair<String, Int>>()
 
     init {
         eventBus.register(this)
@@ -105,7 +105,7 @@ class MundusToolbar(
         scaleBtn.padRight(7f).padLeft(7f)
         Tooltip.Builder(toolManager.scaleTool.name).target(scaleBtn).build()
 
-        sceneSelector.setItems("Main");
+        sceneSelector.setItems("Main")
 
         cameraSelector.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {

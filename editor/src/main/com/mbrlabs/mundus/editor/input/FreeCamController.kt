@@ -49,7 +49,7 @@ class FreeCamController : InputAdapter() {
     private var zoomAmount = SPEED_01
     private var degreesPerPixel = 0.5f
     private val tmp = Vector3()
-    private var pan = true;
+    private var pan = true
 
     fun setCamera(camera: Camera) {
         this.camera = camera

@@ -61,11 +61,11 @@ public class MundusSplitPane extends WidgetGroup {
     float splitAmount = 0.5f, minAmount, maxAmount = 1;
     // private float oldSplitAmount;
 
-    private Rectangle firstWidgetBounds = new Rectangle();
-    private Rectangle secondWidgetBounds = new Rectangle();
+    private final Rectangle firstWidgetBounds = new Rectangle();
+    private final Rectangle secondWidgetBounds = new Rectangle();
     Rectangle handleBounds = new Rectangle();
-    private Rectangle firstScissors = new Rectangle();
-    private Rectangle secondScissors = new Rectangle();
+    private final Rectangle firstScissors = new Rectangle();
+    private final Rectangle secondScissors = new Rectangle();
 
     Vector2 lastPoint = new Vector2();
     Vector2 handlePosition = new Vector2();
@@ -159,7 +159,7 @@ public class MundusSplitPane extends WidgetGroup {
                 // TODO potential bug with libgdx scene2d?
                 // fixes issue when split bar could be still dragged even when
                 // touchable is set to childrenOnly, probably scene2d issue
-                if (isTouchable() == false) return false;
+                if (!isTouchable()) return false;
 
                 if (draggingPointer != -1) return false;
                 if (pointer == 0 && button != 0) return false;

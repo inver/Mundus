@@ -7,7 +7,7 @@ import org.junit.Test;
 
 public class EventBusTest {
 
-    private EventBus eventBus = new EventBus();
+    private final EventBus eventBus = new EventBus();
 
     private static int eventCount = 0;
 

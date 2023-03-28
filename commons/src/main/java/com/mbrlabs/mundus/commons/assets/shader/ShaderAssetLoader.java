@@ -21,7 +21,7 @@ public class ShaderAssetLoader implements AssetLoader<ShaderAsset, ShaderMeta> {
                     var vis = getClass().getClassLoader().getResourceAsStream(
                             meta.getFile().child(meta.getAdditional().getVertex()).path());
                     var fis = getClass().getClassLoader().getResourceAsStream(
-                            meta.getFile().child(meta.getAdditional().getFragment()).path());
+                            meta.getFile().child(meta.getAdditional().getFragment()).path())
             ) {
                 res.setVertexShader(String.join("\n", IOUtils.readLines(vis, Charset.defaultCharset())));
                 res.setFragmentShader(String.join("\n", IOUtils.readLines(fis, Charset.defaultCharset())));
@@ -31,7 +31,7 @@ public class ShaderAssetLoader implements AssetLoader<ShaderAsset, ShaderMeta> {
         } else {
             try (
                     var vfr = new FileReader(meta.getFile().child(meta.getAdditional().getVertex()).path());
-                    var ffr = new FileReader(meta.getFile().child(meta.getAdditional().getFragment()).path());
+                    var ffr = new FileReader(meta.getFile().child(meta.getAdditional().getFragment()).path())
             ) {
                 res.setVertexShader(String.join("\n", IOUtils.readLines(vfr)));
                 res.setFragmentShader(String.join("\n", IOUtils.readLines(ffr)));

@@ -17,9 +17,9 @@ public class Node {
      **/
     public String id;
     /**
-     * Whether this node should inherit the transformation of its parent node, defaults to true. When this flag is false the value
-     * of {@link #globalTransform} will be the same as the value of {@link #localTransform} causing the transform to be independent
-     * of its parent transform.
+     * Whether this node should inherit the transformation of its parent node, defaults to true. When this flag is false
+     * the value of {@link #globalTransform} will be the same as the value of {@link #localTransform} causing the
+     * transform to be independent of its parent transform.
      */
     public boolean inheritTransform = true;
     /**
@@ -39,7 +39,8 @@ public class Node {
      **/
     public final Vector3 scale = new Vector3(1, 1, 1);
     /**
-     * the local transform, based on translation/rotation/scale ({@link #calculateLocalTransform()}) or any applied animation
+     * the local transform, based on translation/rotation/scale ({@link #calculateLocalTransform()}) or any applied
+     * animation
      **/
     public final Matrix4 localTransform = new Matrix4();
     /**
@@ -94,11 +95,13 @@ public class Node {
 
     public void calculateBoneTransforms(boolean recursive) {
         for (final NodePart part : parts) {
-            if (part.invBoneBindTransforms == null || part.bones == null || part.invBoneBindTransforms.size != part.bones.length)
+            if (part.invBoneBindTransforms == null || part.bones == null ||
+                    part.invBoneBindTransforms.size != part.bones.length)
                 continue;
             final int n = part.invBoneBindTransforms.size;
             for (int i = 0; i < n; i++)
-                part.bones[i].set(part.invBoneBindTransforms.keys[i].globalTransform).mul(part.invBoneBindTransforms.values[i]);
+                part.bones[i].set(part.invBoneBindTransforms.keys[i].globalTransform)
+                        .mul(part.invBoneBindTransforms.values[i]);
         }
         if (recursive) {
             for (Node child : children) {
@@ -124,16 +127,16 @@ public class Node {
     }
 
     /**
-     * Extends the bounding box with the bounds of this Node. This is a potential slow operation, it is advised to cache the
-     * result.
+     * Extends the bounding box with the bounds of this Node. This is a potential slow operation, it is advised to cache
+     * the result.
      */
     public BoundingBox extendBoundingBox(final BoundingBox out) {
         return extendBoundingBox(out, true);
     }
 
     /**
-     * Extends the bounding box with the bounds of this Node. This is a potential slow operation, it is advised to cache the
-     * result.
+     * Extends the bounding box with the bounds of this Node. This is a potential slow operation, it is advised to cache
+     * the result.
      */
     public BoundingBox extendBoundingBox(final BoundingBox out, boolean transform) {
         final int partCount = parts.size;
@@ -204,8 +207,8 @@ public class Node {
     }
 
     /**
-     * Adds the specified node as the currently last child of this node. If the node is already a child of another node, then it
-     * is removed from its current parent.
+     * Adds the specified node as the currently last child of this node. If the node is already a child of another node,
+     * then it is removed from its current parent.
      *
      * @param child The Node to add as child of this Node
      * @return the zero-based index of the child
@@ -215,8 +218,8 @@ public class Node {
     }
 
     /**
-     * Adds the specified nodes as the currently last child of this node. If the node is already a child of another node, then it
-     * is removed from its current parent.
+     * Adds the specified nodes as the currently last child of this node. If the node is already a child of another
+     * node, then it is removed from its current parent.
      *
      * @param nodes The Node to add as child of this Node
      * @return the zero-based index of the first added child
@@ -226,9 +229,9 @@ public class Node {
     }
 
     /**
-     * Insert the specified node as child of this node at the specified index. If the node is already a child of another node,
-     * then it is removed from its current parent. If the specified index is less than zero or equal or greater than
-     * {@link #getChildCount()} then the Node is added as the currently last child.
+     * Insert the specified node as child of this node at the specified index. If the node is already a child of another
+     * node, then it is removed from its current parent. If the specified index is less than zero or equal or greater
+     * than {@link #getChildCount()} then the Node is added as the currently last child.
      *
      * @param index The zero-based index at which to add the child
      * @param child The Node to add as child of this Node
@@ -251,9 +254,9 @@ public class Node {
     }
 
     /**
-     * Insert the specified nodes as children of this node at the specified index. If the node is already a child of another node,
-     * then it is removed from its current parent. If the specified index is less than zero or equal or greater than
-     * {@link #getChildCount()} then the Node is added as the currently last child.
+     * Insert the specified nodes as children of this node at the specified index. If the node is already a child of
+     * another node, then it is removed from its current parent. If the specified index is less than zero or equal or
+     * greater than {@link #getChildCount()} then the Node is added as the currently last child.
      *
      * @param index The zero-based index at which to add the child
      * @param nodes The nodes to add as child of this Node
@@ -268,9 +271,9 @@ public class Node {
     }
 
     /**
-     * Removes the specified node as child of this node. On success, the child node will be not attached to any parent node (its
-     * {@link #getParent()} method will return null). If the specified node currently isn't a child of this node then the removal
-     * is considered to be unsuccessful and the method will return false.
+     * Removes the specified node as child of this node. On success, the child node will be not attached to any parent
+     * node (its {@link #getParent()} method will return null). If the specified node currently isn't a child of this
+     * node then the removal is considered to be unsuccessful and the method will return false.
      *
      * @param child The child node to remove.
      * @return Whether the removal was successful.
@@ -303,10 +306,10 @@ public class Node {
     }
 
     /**
-     * Creates a nested copy of this Node, any child nodes are copied using this method as well. The {@link #parts} are copied
-     * using the {@link NodePart#copy()} method. Note that that method copies the material and nodes (bones) by reference. If you
-     * intend to use the copy in a different node tree (e.g. a different Model or ModelInstance) then you will need to update these
-     * references afterwards.
+     * Creates a nested copy of this Node, any child nodes are copied using this method as well. The {@link #parts} are
+     * copied using the {@link NodePart#copy()} method. Note that that method copies the material and nodes (bones) by
+     * reference. If you intend to use the copy in a different node tree (e.g. a different Model or ModelInstance) then
+     * you will need to update these references afterwards.
      * <p>
      * Override this method in your custom Node class to instantiate that class, in that case you should override the
      * {@link #set(Node)} method as well.
@@ -316,11 +319,11 @@ public class Node {
     }
 
     /**
-     * Creates a nested copy of this Node, any child nodes are copied using the {@link #copy()} method. This will detach this node
-     * from its parent, but does not attach it to the parent of node being copied. The {@link #parts} are copied using the
-     * {@link NodePart#copy()} method. Note that that method copies the material and nodes (bones) by reference. If you intend to
-     * use this node in a different node tree (e.g. a different Model or ModelInstance) then you will need to update these
-     * references afterwards.
+     * Creates a nested copy of this Node, any child nodes are copied using the {@link #copy()} method. This will detach
+     * this node from its parent, but does not attach it to the parent of node being copied. The {@link #parts} are
+     * copied using the {@link NodePart#copy()} method. Note that that method copies the material and nodes (bones) by
+     * reference. If you intend to use this node in a different node tree (e.g. a different Model or ModelInstance) then
+     * you will need to update these references afterwards.
      * <p>
      * Override this method in your custom Node class to copy any additional fields you've added.
      *

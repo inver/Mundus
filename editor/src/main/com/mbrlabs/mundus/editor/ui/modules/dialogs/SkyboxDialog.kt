@@ -109,7 +109,7 @@ class SkyboxDialog(
         // default skybox btn
         defaultBtn.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                val scene = ctx.current.currentScene;
+                val scene = ctx.current.currentScene
 
 //                if (scene.skyboxName != null) {
 //                    scene.skyboxName.dispose()
@@ -122,7 +122,7 @@ class SkyboxDialog(
         // delete skybox btn
         deleteBtn.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                val scene = ctx.current.currentScene;
+                val scene = ctx.current.currentScene
 
 //                scene.skyboxName.dispose()
 //                scene.skybox = null

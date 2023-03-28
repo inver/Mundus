@@ -37,7 +37,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public class CollapseWidget extends WidgetGroup {
     private Table table;
 
-    private CollapseAction collapseAction = new CollapseAction();
+    private final CollapseAction collapseAction = new CollapseAction();
 
     private boolean collapsed;
     private boolean actionRunning;
@@ -115,7 +115,7 @@ public class CollapseWidget extends WidgetGroup {
 
         table.setBounds(0, 0, getWidth(), getHeight());
 
-        if (actionRunning == false) {
+        if (!actionRunning) {
             if (collapsed)
                 currentHeight = 0;
             else
@@ -132,7 +132,7 @@ public class CollapseWidget extends WidgetGroup {
     public float getPrefHeight() {
         if (table == null) return 0;
 
-        if (actionRunning == false) {
+        if (!actionRunning) {
             if (collapsed)
                 return 0;
             else

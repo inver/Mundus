@@ -26,8 +26,8 @@ class LogBar : Tab(false, false), LogEvent.LogEventListener {
     private val maxLogSize = 75
     private val dateFormat = SimpleDateFormat("HH:mm:ss")
 
-    private val logTextPadding = 4f;
-    private var errorColor = Color(222f / 255f, 67f / 255f, 67f / 255f, 1f);
+    private val logTextPadding = 4f
+    private var errorColor = Color(222f / 255f, 67f / 255f, 67f / 255f, 1f)
 
     // True when new entries are in the log and log is not the active tab
     var newEntries = false

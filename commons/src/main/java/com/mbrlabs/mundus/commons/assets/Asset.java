@@ -67,7 +67,9 @@ public abstract class Asset<M> implements Disposable, AssetUsage {
      */
     @Deprecated
     //todo remove this method
-    public abstract void load();
+    public void load() {
+        throw new UnsupportedOperationException("Load asset from asset is not supported! User Loader instead of");
+    }
 
     /**
      * Resolves all dependencies of this asset.

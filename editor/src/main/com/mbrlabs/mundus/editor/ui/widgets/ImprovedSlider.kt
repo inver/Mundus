@@ -39,7 +39,7 @@ class ImprovedSlider(min: Float, max: Float, step: Float) : VisTable() {
         add(currentValue).padLeft(10f).right()
 
         slider.addListener(object : ChangeListener() {
-            override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
+            override fun changed(event: ChangeEvent, actor: Actor) {
                 currentValue.setText(String.format(formatFloat(slider.value, 2)))
             }
         })

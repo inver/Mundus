@@ -86,7 +86,7 @@ class ModelAssetInspectorWidget(
             "Default model materials determine the initial materials a new model will get, if "
                     + "you use the model placement tool."
         )
-        label.setWrap(true)
+        label.wrap = true
         collapsibleContent.add(VisLabel("Default model materials")).growX().row()
         collapsibleContent.addSeparator().padBottom(5f).row()
         collapsibleContent.add(label).padTop(4f).padBottom(15f).grow().row()

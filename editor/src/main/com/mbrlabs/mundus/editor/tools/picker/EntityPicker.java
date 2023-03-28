@@ -2,12 +2,12 @@ package com.mbrlabs.mundus.editor.tools.picker;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
-import net.nevinsky.mundus.core.ModelBatch;
 import com.mbrlabs.mundus.commons.Scene;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.shader.ShaderStorage;
 import lombok.RequiredArgsConstructor;
+import net.nevinsky.mundus.core.ModelBatch;
 
 @org.springframework.stereotype.Component
 @RequiredArgsConstructor
@@ -24,7 +24,8 @@ public class EntityPicker extends BasePicker {
         Pixmap pm = getFrameBufferPixmap(ctx.getViewport());
 
         int x = screenX - ctx.getViewport().getScreenX();
-        int y = screenY - (Gdx.graphics.getHeight() - (ctx.getViewport().getScreenY() + ctx.getViewport().getScreenHeight()));
+        int y = screenY -
+                (Gdx.graphics.getHeight() - (ctx.getViewport().getScreenY() + ctx.getViewport().getScreenHeight()));
 
         int id = PickerColorEncoder.decode(pm.getPixel(x, y));
         try {

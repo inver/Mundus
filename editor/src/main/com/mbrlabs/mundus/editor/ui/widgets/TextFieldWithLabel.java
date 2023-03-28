@@ -29,7 +29,7 @@ public class TextFieldWithLabel extends VisTable {
     private int width = -1;
 
     protected VisTextField textField;
-    private VisLabel label;
+    private final VisLabel label;
 
     public TextFieldWithLabel(String labelText, int width) {
         super();

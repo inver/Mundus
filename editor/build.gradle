@@ -22,7 +22,7 @@ task run(dependsOn: classes, type: JavaExec) {
 }
 
 task distEditor(type: Jar) {
-    baseName = 'Mundus'
+    baseName = 'Abyssus'
 //    version = '0.3.0'
 
     manifest {

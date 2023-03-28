@@ -31,7 +31,7 @@ public class RadioButtonGroup<T> extends VisTable {
      */
     public static class RadioButton extends VisRadioButton {
 
-        private Object refObject;
+        private final Object refObject;
 
         public RadioButton(String text, Object refObject) {
             super(text);
@@ -44,7 +44,7 @@ public class RadioButtonGroup<T> extends VisTable {
 
     }
 
-    private ButtonGroup<RadioButton> buttonGroup;
+    private final ButtonGroup<RadioButton> buttonGroup;
 
     public RadioButtonGroup() {
         super();

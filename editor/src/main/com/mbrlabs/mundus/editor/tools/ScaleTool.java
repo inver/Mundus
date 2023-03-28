@@ -18,10 +18,6 @@ package com.mbrlabs.mundus.editor.tools;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Material;
-import net.nevinsky.mundus.core.ModelBuilder;
-import net.nevinsky.mundus.core.model.Model;
-import net.nevinsky.mundus.core.ModelBatch;
-import net.nevinsky.mundus.core.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
@@ -40,6 +36,10 @@ import com.mbrlabs.mundus.editor.tools.picker.ToolHandlePicker;
 import com.mbrlabs.mundus.editor.ui.AppUi;
 import com.mbrlabs.mundus.editor.utils.Fa;
 import com.mbrlabs.mundus.editor.utils.UsefulMeshs;
+import net.nevinsky.mundus.core.ModelBatch;
+import net.nevinsky.mundus.core.ModelBuilder;
+import net.nevinsky.mundus.core.ModelInstance;
+import net.nevinsky.mundus.core.model.Model;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -63,16 +63,16 @@ public class ScaleTool extends TransformTool {
     private final ScaleHandle[] handles;
 
     private final Matrix4 shapeRenderMat = new Matrix4();
-    private Viewport viewport3d = null;
+    private final Viewport viewport3d = null;
 
     private final Vector3 temp0 = new Vector3();
     private final Vector3 temp1 = new Vector3();
     private final Vector3 tempScale = new Vector3();
     private final Vector3 tempScaleDst = new Vector3();
 
-    private ShapeRenderer shapeRenderer;
+    private final ShapeRenderer shapeRenderer;
 
-    private TransformState state = TransformState.IDLE;
+    private final TransformState state = TransformState.IDLE;
     private ScaleCommand command;
 
     public ScaleTool(EditorCtx ctx, String shaderKey, EntityPicker picker, ToolHandlePicker handlePicker,
@@ -311,11 +311,7 @@ public class ScaleTool extends TransformTool {
     }
 
     private boolean isScalable(GameObject go) {
-        if (go != null && go.findComponentByType(Component.Type.TERRAIN) != null) {
-            return false;
-        }
-
-        return true;
+        return go == null || go.findComponentByType(Component.Type.TERRAIN) == null;
     }
 
     @Override
@@ -377,8 +373,8 @@ public class ScaleTool extends TransformTool {
 
     private class ScaleHandle extends ToolHandle {
 
-        private Model model;
-        private ModelInstance modelInstance;
+        private final Model model;
+        private final ModelInstance modelInstance;
 
         public ScaleHandle(int id, TransformState state, Model model) {
             super(id, state);

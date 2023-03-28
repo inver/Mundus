@@ -13,13 +13,12 @@ public class DirectCameraController extends InputAdapter {
     private static final float DEFAULT_ZOOM_SPEED = 10f;
     private static final float DEFAULT_ROTATION_SPEED = 0.5f;
     private static final float DEFAULT_MOVE_SPEED = 0.5f;
-    private float zoomAmount = DEFAULT_ZOOM_SPEED;
-    private float degreesPerPixel = DEFAULT_ROTATION_SPEED;
-    private float floatsPerPixel = DEFAULT_MOVE_SPEED;
+    private final float zoomAmount = DEFAULT_ZOOM_SPEED;
+    private final float degreesPerPixel = DEFAULT_ROTATION_SPEED;
+    private final float floatsPerPixel = DEFAULT_MOVE_SPEED;
 
     private final Vector3 pointOfDirection = new Vector3();
     private final Vector3 up = new Vector3(0, 1, 0);
-    ;
     private final Vector3 tmpVector = new Vector3();
     private Camera current;
 

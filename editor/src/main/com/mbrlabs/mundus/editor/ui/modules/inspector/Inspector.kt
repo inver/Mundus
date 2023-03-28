@@ -27,7 +27,10 @@ import com.kotcrab.vis.ui.widget.VisTable
 import com.mbrlabs.mundus.editor.config.UiWidgetsHolder
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
-import com.mbrlabs.mundus.editor.events.*
+import com.mbrlabs.mundus.editor.events.AssetSelectedEvent
+import com.mbrlabs.mundus.editor.events.EntitySelectedEvent
+import com.mbrlabs.mundus.editor.events.EventBus
+import com.mbrlabs.mundus.editor.events.GameObjectModifiedEvent
 import com.mbrlabs.mundus.editor.history.CommandHistory
 import com.mbrlabs.mundus.editor.tools.ToolManager
 import com.mbrlabs.mundus.editor.ui.AppUi
@@ -111,7 +114,7 @@ class Inspector(
         root.align(Align.top)
         scrollPane.setScrollingDisabled(true, false)
         scrollPane.setFlickScroll(false)
-        scrollPane.setFadeScrollBars(false)
+        scrollPane.fadeScrollBars = false
         scrollPane.addListener(object : InputListener() {
             override fun enter(event: InputEvent?, x: Float, y: Float, pointer: Int, fromActor: Actor?) {
                 appUi.scrollFocus = scrollPane

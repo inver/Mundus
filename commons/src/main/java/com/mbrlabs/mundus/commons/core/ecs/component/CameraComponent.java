@@ -6,7 +6,7 @@ import lombok.Getter;
 
 public class CameraComponent extends BaseComponent {
     @Getter
-    private PerspectiveCamera camera;
+    private final PerspectiveCamera camera;
 
     public CameraComponent() {
         camera = new PerspectiveCamera();

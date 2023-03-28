@@ -24,22 +24,24 @@ public class Renderable {
      **/
     private Material material;
     /**
-     * The {@link Environment} to be used to render this Renderable, may be null. When specified it will be combined by the shader
-     * with the {@link #material}. When both the material and environment contain an attribute of the same type, the attribute of
-     * the material will be used.
+     * The {@link Environment} to be used to render this Renderable, may be null. When specified it will be combined by
+     * the shader with the {@link #material}. When both the material and environment contain an attribute of the same
+     * type, the attribute of the material will be used.
      **/
     private Environment environment;
     /**
-     * The bone transformations used for skinning, or null if not applicable. When specified and the mesh contains one or more
-     * {@link com.badlogic.gdx.graphics.VertexAttributes.Usage#BoneWeight} vertex attributes, then the BoneWeight index is used as
-     * index in the array. If the array isn't large enough then the identity matrix is used. Each BoneWeight weight is used to
-     * combine multiple bones into a single transformation matrix, which is used to transform the vertex to model space. In other
-     * words: the bone transformation is applied prior to the {@link #worldTransform}.
+     * The bone transformations used for skinning, or null if not applicable. When specified and the mesh contains one
+     * or more {@link com.badlogic.gdx.graphics.VertexAttributes.Usage#BoneWeight} vertex attributes, then the
+     * BoneWeight index is used as index in the array. If the array isn't large enough then the identity matrix is used.
+     * Each BoneWeight weight is used to combine multiple bones into a single transformation matrix, which is used to
+     * transform the vertex to model space. In other words: the bone transformation is applied prior to the
+     * {@link #worldTransform}.
      */
     private Matrix4[] bones;
     /**
-     * The {@link Shader} to be used to render this Renderable using a {@link ModelBatch}, may be null. It is not guaranteed that
-     * the shader will be used, the used {@link ShaderProvider} is responsible for actually choosing the correct shader to use.
+     * The {@link Shader} to be used to render this Renderable using a {@link ModelBatch}, may be null. It is not
+     * guaranteed that the shader will be used, the used {@link ShaderProvider} is responsible for actually choosing the
+     * correct shader to use.
      **/
     private Shader shader;
     /**

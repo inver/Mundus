@@ -31,9 +31,10 @@ import java.nio.IntBuffer;
  * </p>
  *
  * <p>
- * You can also use this to store indices for vertex arrays. Do not call {@link #bind()} or {@link #unbind()} in this case but
- * rather use {@link #getBuffer()} to use the buffer directly with glDrawElements. You must also create the IndexBufferObject with
- * the second constructor and specify isDirect as true as glDrawElements in conjunction with vertex arrays needs direct buffers.
+ * You can also use this to store indices for vertex arrays. Do not call {@link #bind()} or {@link #unbind()} in this
+ * case but rather use {@link #getBuffer()} to use the buffer directly with glDrawElements. You must also create the
+ * IndexBufferObject with the second constructor and specify isDirect as true as glDrawElements in conjunction with
+ * vertex arrays needs direct buffers.
  * </p>
  *
  * <p>
@@ -108,12 +109,13 @@ public class IndexBufferObjectSubData implements IndexData {
 
     /**
      * <p>
-     * Sets the indices of this IndexBufferObject, discarding the old indices. The count must equal the number of indices to be
-     * copied to this IndexBufferObject.
+     * Sets the indices of this IndexBufferObject, discarding the old indices. The count must equal the number of
+     * indices to be copied to this IndexBufferObject.
      * </p>
      *
      * <p>
-     * This can be called in between calls to {@link #bind()} and {@link #unbind()}. The index data will be updated instantly.
+     * This can be called in between calls to {@link #bind()} and {@link #unbind()}. The index data will be updated
+     * instantly.
      * </p>
      *
      * @param indices the vertex data
@@ -167,8 +169,8 @@ public class IndexBufferObjectSubData implements IndexData {
 
     /**
      * <p>
-     * Returns the underlying IntBuffer. If you modify the buffer contents they wil be uploaded on the call to {@link #bind()}.
-     * If you need immediate uploading use {@link #setIndices(int[], int, int)}.
+     * Returns the underlying IntBuffer. If you modify the buffer contents they wil be uploaded on the call to
+     * {@link #bind()}. If you need immediate uploading use {@link #setIndices(int[], int, int)}.
      * </p>
      *
      * @return the underlying int buffer.
@@ -182,8 +184,9 @@ public class IndexBufferObjectSubData implements IndexData {
      * Binds this IndexBufferObject for rendering with glDrawElements.
      */
     public void bind() {
-        if (bufferHandle == 0)
+        if (bufferHandle == 0) {
             throw new GdxRuntimeException("IndexBufferObject cannot be used after it has been disposed.");
+        }
 
         Gdx.gl20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, bufferHandle);
         if (isDirty) {

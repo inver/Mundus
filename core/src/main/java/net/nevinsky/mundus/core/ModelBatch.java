@@ -57,8 +57,8 @@ public class ModelBatch implements Disposable {
     protected final RenderableSorter sorter;
 
     /**
-     * Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and context.end()
-     * yourself.
+     * Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and
+     * context.end() yourself.
      *
      * @param context        The {@link RenderContext} to use.
      * @param shaderProvider The {@link ShaderProvider} to use, will be disposed when this ModelBatch is disposed.
@@ -67,13 +67,15 @@ public class ModelBatch implements Disposable {
     public ModelBatch(final RenderContext context, final ShaderProvider shaderProvider, final RenderableSorter sorter) {
         this.sorter = (sorter == null) ? new DefaultRenderableSorter() : sorter;
         this.ownContext = (context == null);
-        this.context = (context == null) ? new RenderContext(new DefaultTextureBinder(DefaultTextureBinder.LRU, 1)) : context;
+        this.context = (context == null)
+                ? new RenderContext(new DefaultTextureBinder(DefaultTextureBinder.LRU, 1))
+                : context;
         this.shaderProvider = (shaderProvider == null) ? new DefaultShaderProvider() : shaderProvider;
     }
 
     /**
-     * Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and context.end()
-     * yourself.
+     * Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and
+     * context.end() yourself.
      *
      * @param context        The {@link RenderContext} to use.
      * @param shaderProvider The {@link ShaderProvider} to use, will be disposed when this ModelBatch is disposed.
@@ -83,8 +85,8 @@ public class ModelBatch implements Disposable {
     }
 
     /**
-     * Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and context.end()
-     * yourself.
+     * Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and
+     * context.end() yourself.
      *
      * @param context The {@link RenderContext} to use.
      * @param sorter  The {@link RenderableSorter} to use.
@@ -94,8 +96,8 @@ public class ModelBatch implements Disposable {
     }
 
     /**
-     * Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and context.end()
-     * yourself.
+     * Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and
+     * context.end() yourself.
      *
      * @param context The {@link RenderContext} to use.
      */
@@ -132,8 +134,8 @@ public class ModelBatch implements Disposable {
     }
 
     /**
-     * Construct a ModelBatch with the default implementation and the specified ubershader. See {@link DefaultShader} for more
-     * information about using a custom ubershader. Requires OpenGL ES 2.0.
+     * Construct a ModelBatch with the default implementation and the specified ubershader. See {@link DefaultShader}
+     * for more information about using a custom ubershader. Requires OpenGL ES 2.0.
      *
      * @param vertexShader   The {@link FileHandle} of the vertex shader to use.
      * @param fragmentShader The {@link FileHandle} of the fragment shader to use.
@@ -143,8 +145,8 @@ public class ModelBatch implements Disposable {
     }
 
     /**
-     * Construct a ModelBatch with the default implementation and the specified ubershader. See {@link DefaultShader} for more
-     * information about using a custom ubershader. Requires OpenGL ES 2.0.
+     * Construct a ModelBatch with the default implementation and the specified ubershader. See {@link DefaultShader}
+     * for more information about using a custom ubershader. Requires OpenGL ES 2.0.
      *
      * @param vertexShader   The vertex shader to use.
      * @param fragmentShader The fragment shader to use.
@@ -161,9 +163,9 @@ public class ModelBatch implements Disposable {
     }
 
     /**
-     * Start rendering one or more {@link Renderable}s. Use one of the render() methods to provide the renderables. Must be
-     * followed by a call to {@link #end()}. The OpenGL context must not be altered between {@link #begin(Camera)} and
-     * {@link #end()}.
+     * Start rendering one or more {@link Renderable}s. Use one of the render() methods to provide the renderables. Must
+     * be followed by a call to {@link #end()}. The OpenGL context must not be altered between {@link #begin(Camera)}
+     * and {@link #end()}.
      *
      * @param cam The {@link Camera} to be used when rendering and sorting.
      */
@@ -174,8 +176,8 @@ public class ModelBatch implements Disposable {
     }
 
     /**
-     * Change the camera in between {@link #begin(Camera)} and {@link #end()}. This causes the batch to be flushed. Can only be
-     * called after the call to {@link #begin(Camera)} and before the call to {@link #end()}.
+     * Change the camera in between {@link #begin(Camera)} and {@link #end()}. This causes the batch to be flushed. Can
+     * only be called after the call to {@link #begin(Camera)} and before the call to {@link #end()}.
      *
      * @param cam The new camera to use.
      */
@@ -190,8 +192,8 @@ public class ModelBatch implements Disposable {
     }
 
     /**
-     * Provides access to the current camera in between {@link #begin(Camera)} and {@link #end()}. Do not change the camera's
-     * values. Use {@link #setCamera(Camera)}, if you need to change the camera.
+     * Provides access to the current camera in between {@link #begin(Camera)} and {@link #end()}. Do not change the
+     * camera's values. Use {@link #setCamera(Camera)}, if you need to change the camera.
      *
      * @return The current camera being used or null if called outside {@link #begin(Camera)} and {@link #end()}.
      */
@@ -200,9 +202,10 @@ public class ModelBatch implements Disposable {
     }
 
     /**
-     * Checks whether the {@link RenderContext} returned by {@link #getRenderContext()} is owned and managed by this ModelBatch.
-     * When the RenderContext isn't owned by the ModelBatch, you are responsible for calling the {@link RenderContext#begin()} and
-     * {@link RenderContext#end()} methods yourself, as well as disposing the RenderContext.
+     * Checks whether the {@link RenderContext} returned by {@link #getRenderContext()} is owned and managed by this
+     * ModelBatch. When the RenderContext isn't owned by the ModelBatch, you are responsible for calling the
+     * {@link RenderContext#begin()} and {@link RenderContext#end()} methods yourself, as well as disposing the
+     * RenderContext.
      *
      * @return True if this ModelBatch owns the RenderContext, false otherwise.
      */
@@ -232,8 +235,8 @@ public class ModelBatch implements Disposable {
     }
 
     /**
-     * Flushes the batch, causing all {@link Renderable}s in the batch to be rendered. Can only be called after the call to
-     * {@link #begin(Camera)} and before the call to {@link #end()}.
+     * Flushes the batch, causing all {@link Renderable}s in the batch to be rendered. Can only be called after the call
+     * to {@link #begin(Camera)} and before the call to {@link #end()}.
      */
     public void flush() {
         sorter.sort(camera, renderables);
@@ -256,9 +259,9 @@ public class ModelBatch implements Disposable {
     }
 
     /**
-     * End rendering one or more {@link Renderable}s. Must be called after a call to {@link #begin(Camera)}. This will flush the
-     * batch, causing any renderables provided using one of the render() methods to be rendered. After a call to this method the
-     * OpenGL context can be altered again.
+     * End rendering one or more {@link Renderable}s. Must be called after a call to {@link #begin(Camera)}. This will
+     * flush the batch, causing any renderables provided using one of the render() methods to be rendered. After a call
+     * to this method the OpenGL context can be altered again.
      */
     public void end() {
         flush();
@@ -267,8 +270,8 @@ public class ModelBatch implements Disposable {
     }
 
     /**
-     * Add a single {@link Renderable} to the batch. The {@link ShaderProvider} will be used to fetch a suitable {@link Shader}.
-     * Can only be called after a call to {@link #begin(Camera)} and before a call to {@link #end()}.
+     * Add a single {@link Renderable} to the batch. The {@link ShaderProvider} will be used to fetch a suitable
+     * {@link Shader}. Can only be called after a call to {@link #begin(Camera)} and before a call to {@link #end()}.
      *
      * @param renderable The {@link Renderable} to be added.
      */
@@ -278,8 +281,9 @@ public class ModelBatch implements Disposable {
     }
 
     /**
-     * Calls {@link RenderableProvider#getRenderables(List, Pool)} and adds all returned {@link Renderable} instances to the
-     * current batch to be rendered. Can only be called after a call to {@link #begin(Camera)} and before a call to {@link #end()}.
+     * Calls {@link RenderableProvider#getRenderables(List, Pool)} and adds all returned {@link Renderable} instances to
+     * the current batch to be rendered. Can only be called after a call to {@link #begin(Camera)} and before a call to
+     * {@link #end()}.
      *
      * @param renderableProvider the renderable provider
      */
@@ -293,9 +297,9 @@ public class ModelBatch implements Disposable {
     }
 
     /**
-     * Calls {@link RenderableProvider#getRenderables(List, Pool)} and adds all returned {@link Renderable} instances
-     * to the current batch to be rendered. Can only be called after a call to {@link #begin(Camera)} and before a call
-     * to {@link #end()}.
+     * Calls {@link RenderableProvider#getRenderables(List, Pool)} and adds all returned {@link Renderable} instances to
+     * the current batch to be rendered. Can only be called after a call to {@link #begin(Camera)} and before a call to
+     * {@link #end()}.
      *
      * @param renderableProviders one or more renderable providers
      */
@@ -306,9 +310,9 @@ public class ModelBatch implements Disposable {
     }
 
     /**
-     * Calls {@link RenderableProvider#getRenderables(List, Pool)} and adds all returned {@link Renderable} instances to the
-     * current batch to be rendered. Any environment set on the returned renderables will be replaced with the given environment.
-     * Can only be called after a call to {@link #begin(Camera)} and before a call to {@link #end()}.
+     * Calls {@link RenderableProvider#getRenderables(List, Pool)} and adds all returned {@link Renderable} instances to
+     * the current batch to be rendered. Any environment set on the returned renderables will be replaced with the given
+     * environment. Can only be called after a call to {@link #begin(Camera)} and before a call to {@link #end()}.
      *
      * @param renderableProvider the renderable provider
      * @param environment        the {@link Environment} to use for the renderables
@@ -324,22 +328,23 @@ public class ModelBatch implements Disposable {
     }
 
     /**
-     * Calls {@link RenderableProvider#getRenderables(List, Pool)} and adds all returned {@link Renderable} instances to the
-     * current batch to be rendered. Any environment set on the returned renderables will be replaced with the given environment.
-     * Can only be called after a call to {@link #begin(Camera)} and before a call to {@link #end()}.
+     * Calls {@link RenderableProvider#getRenderables(List, Pool)} and adds all returned {@link Renderable} instances to
+     * the current batch to be rendered. Any environment set on the returned renderables will be replaced with the given
+     * environment. Can only be called after a call to {@link #begin(Camera)} and before a call to {@link #end()}.
      *
      * @param renderableProviders one or more renderable providers
      * @param environment         the {@link Environment} to use for the renderables
      */
-    public <T extends RenderableProvider> void render(final Iterable<T> renderableProviders, final Environment environment) {
+    public <T extends RenderableProvider> void render(final Iterable<T> renderableProviders,
+                                                      final Environment environment) {
         for (final RenderableProvider renderableProvider : renderableProviders)
             render(renderableProvider, environment);
     }
 
     /**
-     * Calls {@link RenderableProvider#getRenderables(List, Pool)} and adds all returned {@link Renderable} instances to the
-     * current batch to be rendered. Any shaders set on the returned renderables will be replaced with the given {@link Shader}.
-     * Can only be called after a call to {@link #begin(Camera)} and before a call to {@link #end()}.
+     * Calls {@link RenderableProvider#getRenderables(List, Pool)} and adds all returned {@link Renderable} instances to
+     * the current batch to be rendered. Any shaders set on the returned renderables will be replaced with the given
+     * {@link Shader}. Can only be called after a call to {@link #begin(Camera)} and before a call to {@link #end()}.
      *
      * @param renderableProvider the renderable provider
      * @param shader             the shader to use for the renderables
@@ -354,9 +359,9 @@ public class ModelBatch implements Disposable {
     }
 
     /**
-     * Calls {@link RenderableProvider#getRenderables(List, Pool)} and adds all returned {@link Renderable} instances to the
-     * current batch to be rendered. Any shaders set on the returned renderables will be replaced with the given {@link Shader}.
-     * Can only be called after a call to {@link #begin(Camera)} and before a call to {@link #end()}.
+     * Calls {@link RenderableProvider#getRenderables(List, Pool)} and adds all returned {@link Renderable} instances to
+     * the current batch to be rendered. Any shaders set on the returned renderables will be replaced with the given
+     * {@link Shader}. Can only be called after a call to {@link #begin(Camera)} and before a call to {@link #end()}.
      *
      * @param renderableProviders one or more renderable providers
      * @param shader              the shader to use for the renderables
@@ -367,37 +372,38 @@ public class ModelBatch implements Disposable {
     }
 
     /**
-     * Calls {@link RenderableProvider#getRenderables(List, Pool)} and adds all returned {@link Renderable} instances to the
-     * current batch to be rendered. Any environment set on the returned renderables will be replaced with the given environment.
-     * Any shaders set on the returned renderables will be replaced with the given {@link Shader}. Can only be called after a call
-     * to {@link #begin(Camera)} and before a call to {@link #end()}.
+     * Calls {@link RenderableProvider#getRenderables(List, Pool)} and adds all returned {@link Renderable} instances to
+     * the current batch to be rendered. Any environment set on the returned renderables will be replaced with the given
+     * environment. Any shaders set on the returned renderables will be replaced with the given {@link Shader}. Can only
+     * be called after a call to {@link #begin(Camera)} and before a call to {@link #end()}.
      *
      * @param renderableProvider the renderable provider
      * @param environment        the {@link Environment} to use for the renderables
      * @param shader             the shader to use for the renderables
      */
-    public void render(final RenderableProvider renderableProvider, final Environment environment, final Shader shader) {
+    public void render(final RenderableProvider renderableProvider, final Environment environment,
+                       final Shader shader) {
         final int offset = renderables.size();
         renderableProvider.getRenderables(renderables, renderablesPool);
         for (int i = offset; i < renderables.size(); i++) {
             Renderable renderable = renderables.get(i);
             renderable.setEnvironment(environment);
-            renderable.setShader(shaderProvider.getShader(renderable));
+            renderable.setShader(shader);
         }
     }
 
     /**
-     * Calls {@link RenderableProvider#getRenderables(List, Pool)} and adds all returned {@link Renderable} instances to the
-     * current batch to be rendered. Any environment set on the returned renderables will be replaced with the given environment.
-     * Any shaders set on the returned renderables will be replaced with the given {@link Shader}. Can only be called after a call
-     * to {@link #begin(Camera)} and before a call to {@link #end()}.
+     * Calls {@link RenderableProvider#getRenderables(List, Pool)} and adds all returned {@link Renderable} instances to
+     * the current batch to be rendered. Any environment set on the returned renderables will be replaced with the given
+     * environment. Any shaders set on the returned renderables will be replaced with the given {@link Shader}. Can only
+     * be called after a call to {@link #begin(Camera)} and before a call to {@link #end()}.
      *
      * @param renderableProviders one or more renderable providers
      * @param environment         the {@link Environment} to use for the renderables
      * @param shader              the shader to use for the renderables
      */
-    public <T extends RenderableProvider> void render(final Iterable<T> renderableProviders, final Environment environment,
-                                                      final Shader shader) {
+    public <T extends RenderableProvider> void render(final Iterable<T> renderableProviders,
+                                                      final Environment environment, final Shader shader) {
         for (final RenderableProvider renderableProvider : renderableProviders) {
             render(renderableProvider, environment, shader);
         }

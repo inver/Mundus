@@ -46,7 +46,7 @@ import com.kotcrab.vis.ui.widget.VisSplitPane;
  * Similar to {@link VisSplitPane} but supports multiple widgets with multiple
  * split bars at once. Use {@link #setWidgets(Actor...)} after creating to set
  * pane widgets.
- * 
+ *
  * @author Kotcrab, mbrlabs
  * @see VisSplitPane
  * @since 1.1.4
@@ -55,14 +55,14 @@ public class MundusMultiSplitPane extends WidgetGroup {
     private com.kotcrab.vis.ui.widget.MultiSplitPane.MultiSplitPaneStyle style;
     private boolean vertical;
 
-    private Array<Rectangle> widgetBounds = new Array<Rectangle>();
-    private Array<Rectangle> scissors = new Array<Rectangle>();
+    private final Array<Rectangle> widgetBounds = new Array<Rectangle>();
+    private final Array<Rectangle> scissors = new Array<Rectangle>();
 
-    private Array<Rectangle> handleBounds = new Array<Rectangle>();
-    private FloatArray splits = new FloatArray();
+    private final Array<Rectangle> handleBounds = new Array<Rectangle>();
+    private final FloatArray splits = new FloatArray();
 
-    private Vector2 handlePosition = new Vector2();
-    private Vector2 lastPoint = new Vector2();
+    private final Vector2 handlePosition = new Vector2();
+    private final Vector2 lastPoint = new Vector2();
 
     private Rectangle handleOver;
     private int handleOverIndex;
@@ -138,7 +138,7 @@ public class MundusMultiSplitPane extends WidgetGroup {
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                if (isTouchable() == false) return false;
+                if (!isTouchable()) return false;
 
                 if (draggingPointer != -1) return false;
                 if (pointer == 0 && button != 0) return false;

@@ -3,8 +3,6 @@ package com.mbrlabs.mundus.editor;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
-import net.nevinsky.mundus.core.ModelBatch;
-import net.nevinsky.mundus.core.ModelInstance;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.mbrlabs.mundus.commons.assets.AssetType;
@@ -41,6 +39,7 @@ import com.mbrlabs.mundus.editor.utils.GlUtils;
 import com.mbrlabs.mundus.editor.utils.UsefulMeshs;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.nevinsky.mundus.core.ModelBatch;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
@@ -172,7 +171,8 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
         appUi.getSceneWidget().setRenderer(camera -> {
             try {
                 scene.getAssets().stream()
-                        .filter(a -> a.getType() == AssetType.SKYBOX && a.getName().equals(scene.getEnvironment().getSkyboxName()))
+                        .filter(a -> a.getType() == AssetType.SKYBOX
+                                && a.getName().equals(scene.getEnvironment().getSkyboxName()))
                         .findFirst()
                         .ifPresent(asset -> {
                             try {

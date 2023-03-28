@@ -48,22 +48,22 @@ public class RotateTool extends TransformTool {
 
     public static final String NAME = "Rotate Tool";
 
-    private RotateHandle xHandle;
-    private RotateHandle yHandle;
-    private RotateHandle zHandle;
-    private RotateHandle[] handles;
+    private final RotateHandle xHandle;
+    private final RotateHandle yHandle;
+    private final RotateHandle zHandle;
+    private final RotateHandle[] handles;
 
-    private Matrix4 shapeRenderMat = new Matrix4();
+    private final Matrix4 shapeRenderMat = new Matrix4();
 
-    private Vector3 temp0 = new Vector3();
-    private Vector3 temp1 = new Vector3();
-    private Quaternion tempQuat = new Quaternion();
+    private final Vector3 temp0 = new Vector3();
+    private final Vector3 temp1 = new Vector3();
+    private final Quaternion tempQuat = new Quaternion();
 
-    private ShapeRenderer shapeRenderer;
+    private final ShapeRenderer shapeRenderer;
 
     private TransformState state = TransformState.IDLE;
     private RotateCommand currentRotateCommand;
-    private float lastRot = 0;
+    private final float lastRot = 0;
 
     public RotateTool(EditorCtx ctx, String shaderKey, EntityPicker picker, ToolHandlePicker handlePicker,
                       ShapeRenderer shapeRenderer, ModelBatch batch, CommandHistory history, EventBus eventBus) {
@@ -292,8 +292,8 @@ public class RotateTool extends TransformTool {
      */
     private class RotateHandle extends ToolHandle {
 
-        private Model model;
-        private ModelInstance modelInstance;
+        private final Model model;
+        private final ModelInstance modelInstance;
 
         public RotateHandle(int id, TransformState state, Color color) {
             super(id, state);

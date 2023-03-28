@@ -33,8 +33,8 @@ import java.util.List;
 
 /**
  * Base class for applying one or more {@link Animation}s to a {@link ModelInstance}. This class only applies the actual
- * {@link Node} transformations, it does not manage animations or keep track of animation states. See {@link AnimationController}
- * for an implementation of this class which does manage animations.
+ * {@link Node} transformations, it does not manage animations or keep track of animation states. See
+ * {@link AnimationController} for an implementation of this class which does manage animations.
  *
  * @author Xoppa
  */
@@ -69,7 +69,8 @@ public class BaseAnimationController {
             return lerp(target.translation, target.rotation, target.scale, alpha);
         }
 
-        public Transform lerp(final Vector3 targetT, final Quaternion targetR, final Vector3 targetS, final float alpha) {
+        public Transform lerp(final Vector3 targetT, final Quaternion targetR, final Vector3 targetS,
+                              final float alpha) {
             translation.lerp(targetT, alpha);
             rotation.slerp(targetR, alpha);
             scale.lerp(targetS, alpha);
@@ -87,7 +88,7 @@ public class BaseAnimationController {
 
         @Override
         public String toString() {
-            return translation.toString() + " - " + rotation.toString() + " - " + scale.toString();
+            return translation + " - " + rotation + " - " + scale;
         }
     }
 
@@ -208,7 +209,8 @@ public class BaseAnimationController {
         return minIndex;
     }
 
-    private final static Vector3 getTranslationAtTime(final NodeAnimation nodeAnim, final float time, final Vector3 out) {
+    private final static Vector3 getTranslationAtTime(final NodeAnimation nodeAnim, final float time,
+                                                      final Vector3 out) {
         if (nodeAnim.translation == null) return out.set(nodeAnim.node.translation);
         if (nodeAnim.translation.size() == 1) return out.set(nodeAnim.translation.get(0).value);
 
@@ -224,7 +226,8 @@ public class BaseAnimationController {
         return out;
     }
 
-    private final static Quaternion getRotationAtTime(final NodeAnimation nodeAnim, final float time, final Quaternion out) {
+    private static Quaternion getRotationAtTime(final NodeAnimation nodeAnim, final float time,
+                                                final Quaternion out) {
         if (nodeAnim.rotation == null) return out.set(nodeAnim.node.rotation);
         if (nodeAnim.rotation.size() == 1) return out.set(nodeAnim.rotation.get(0).value);
 
@@ -264,15 +267,17 @@ public class BaseAnimationController {
         return transform;
     }
 
-    private final static void applyNodeAnimationDirectly(final NodeAnimation nodeAnim, final float time) {
+    private static void applyNodeAnimationDirectly(final NodeAnimation nodeAnim, final float time) {
         final Node node = nodeAnim.node;
         node.isAnimated = true;
         final Transform transform = getNodeAnimationTransform(nodeAnim, time);
         transform.toMatrix4(node.localTransform);
     }
 
-    private final static void applyNodeAnimationBlending(final NodeAnimation nodeAnim, final ObjectMap<Node, Transform> out,
-                                                         final Pool<Transform> pool, final float alpha, final float time) {
+    private final static void applyNodeAnimationBlending(final NodeAnimation nodeAnim,
+                                                         final ObjectMap<Node, Transform> out,
+                                                         final Pool<Transform> pool, final float alpha,
+                                                         final float time) {
 
         final Node node = nodeAnim.node;
         node.isAnimated = true;
@@ -295,7 +300,8 @@ public class BaseAnimationController {
     /**
      * Helper method to apply one animation to either an objectmap for blending or directly to the bones.
      */
-    protected static void applyAnimation(final ObjectMap<Node, Transform> out, final Pool<Transform> pool, final float alpha,
+    protected static void applyAnimation(final ObjectMap<Node, Transform> out, final Pool<Transform> pool,
+                                         final float alpha,
                                          final Animation animation, final float time) {
 
         if (out == null) {
@@ -316,8 +322,8 @@ public class BaseAnimationController {
     }
 
     /**
-     * Remove the specified animation, by marking the affected nodes as not animated. When switching animation, this should be
-     * call prior to applyAnimation(s).
+     * Remove the specified animation, by marking the affected nodes as not animated. When switching animation, this
+     * should be call prior to applyAnimation(s).
      */
     protected void removeAnimation(final Animation animation) {
         for (final NodeAnimation nodeAnim : animation.nodeAnimations) {

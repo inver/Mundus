@@ -42,11 +42,11 @@ public class ImageChooserField extends VisTable {
     private static final Drawable PLACEHOLDER_IMG = new TextureRegionDrawable(
             new TextureRegion(new Texture(Gdx.files.internal("ui/img_placeholder.png"))));
 
-    private int width;
+    private final int width;
 
-    private VisTextButton fcBtn;
+    private final VisTextButton fcBtn;
 
-    private Image img;
+    private final Image img;
     private Texture texture;
     private FileHandle fileHandle;
 

@@ -35,10 +35,10 @@ import com.mbrlabs.mundus.commons.utils.MathUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
-import net.nevinsky.mundus.core.mesh.Mesh;
-import net.nevinsky.mundus.core.mesh.MeshPart;
 import net.nevinsky.mundus.core.ModelInstance;
 import net.nevinsky.mundus.core.Renderable;
+import net.nevinsky.mundus.core.mesh.Mesh;
+import net.nevinsky.mundus.core.mesh.MeshPart;
 import net.nevinsky.mundus.core.model.Model;
 
 import java.util.ArrayList;
@@ -67,13 +67,13 @@ public class TerrainObject implements RenderableObject, Disposable {
     public int vertexResolution;
 
     // used for building the mesh
-    private VertexAttributes attributes;
+    private final VertexAttributes attributes;
     private Vector2 uvScale = new Vector2(DEFAULT_UV_SCALE, DEFAULT_UV_SCALE);
-    private float vertices[];
-    private int stride;
-    private int posPos;
-    private int norPos;
-    private int uvPos;
+    private float[] vertices;
+    private final int stride;
+    private final int posPos;
+    private final int norPos;
+    private final int uvPos;
 
     @Getter
     private final String assetName;
@@ -201,7 +201,7 @@ public class TerrainObject implements RenderableObject, Disposable {
     private int[] buildIndices() {
         final int w = vertexResolution - 1;
         final int h = vertexResolution - 1;
-        int indices[] = new int[w * h * 6];
+        int[] indices = new int[w * h * 6];
         int i = -1;
         for (int y = 0; y < h; ++y) {
             for (int x = 0; x < w; ++x) {

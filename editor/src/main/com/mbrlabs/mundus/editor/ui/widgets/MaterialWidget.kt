@@ -104,7 +104,7 @@ class MaterialWidget(
 
     init {
         align(Align.topLeft)
-        matNameLabel.setWrap(true)
+        matNameLabel.wrap = true
 
         matPickerListener = AssetPickerListener { asset ->
             material = asset as? MaterialAsset

@@ -54,25 +54,6 @@ public class ModelAsset extends Asset<ModelMeta> implements RenderableProvider {
     }
 
     @Override
-    public void load() {
-        // TODO don't create a new loader each time
-//        if (FileFormatUtils.isG3DB(file)) {
-//            MG3dModelLoader loader = new MG3dModelLoader(new UBJsonReader());
-//            model = loader.loadModel(file);
-//        } else if (FileFormatUtils.isGLTF(file)) {
-//            GltfLoaderWrapper loader = new GltfLoaderWrapper(new Json());
-//            model = loader.loadModel(file);
-//        } else if (FileFormatUtils.isAC3D(file)) {
-//            Ac3dModelLoader loader = new Ac3dModelLoader(new Ac3dParser());
-//            model = loader.loadModel(file);
-//        } else if (FileFormatUtils.isOBJ(file)) {
-//            model = new ObjModelLoader().loadModel(file);
-//        } else {
-//            throw new GdxRuntimeException("Unsupported 3D model");
-//        }
-    }
-
-    @Override
     public void resolveDependencies(Map<String, Asset> assets) {
         try {
             // materials

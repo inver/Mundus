@@ -37,7 +37,8 @@ public class Fog {
 
         Fog fog = (Fog) o;
 
-        return new EqualsBuilder().append(density, fog.density).append(gradient, fog.gradient).append(color, fog.color).isEquals();
+        return new EqualsBuilder().append(density, fog.density).append(gradient, fog.gradient).append(color, fog.color)
+                .isEquals();
     }
 
     @Override

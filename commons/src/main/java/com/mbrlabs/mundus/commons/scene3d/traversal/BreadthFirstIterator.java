@@ -27,7 +27,7 @@ import java.util.Iterator;
  */
 public class BreadthFirstIterator implements Iterator<GameObject> {
 
-    private Queue<GameObject> queue;
+    private final Queue<GameObject> queue;
 
     public BreadthFirstIterator(GameObject root) {
         queue = new Queue<>();

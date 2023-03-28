@@ -21,7 +21,6 @@ import com.kotcrab.vis.ui.widget.Separator.SeparatorStyle
 import com.kotcrab.vis.ui.widget.VisImage
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset
-import com.mbrlabs.mundus.commons.scene3d.GameObject
 import com.mbrlabs.mundus.editor.ui.UiConstants.PREVIEW_SIZE
 import com.mbrlabs.mundus.editor.ui.modules.inspector.BaseInspectorWidget
 import org.apache.commons.io.FileUtils
@@ -62,15 +61,15 @@ class TextureAssetInspectorWidget(separatorStyle: SeparatorStyle?) :
         width.setText("Width: " + textureAsset?.texture?.width + " px")
         height.setText("Height: " + textureAsset?.texture?.height + " px")
 
-        val f = textureAsset?.meta?.file?.child(textureAsset?.meta?.additional?.file);
+        val f = textureAsset?.meta?.file?.child(textureAsset?.meta?.additional?.file)
         if (f == null) {
-            return;
+            return
         }
 
-        val type = f.type();
-        var size = 0f;
+        val type = f.type()
+        var size = 0f
         if (type != Files.FileType.Classpath) {
-            size = FileUtils.sizeOf(f.file()) / 1000000f;
+            size = FileUtils.sizeOf(f.file()) / 1000000f
         } else {
             try {
                 val uri = javaClass.classLoader.getResource(f.path())?.toURI()

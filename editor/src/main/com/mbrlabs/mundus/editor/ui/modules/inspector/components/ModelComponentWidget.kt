@@ -59,7 +59,7 @@ class ModelComponentWidget(
         collapsibleContent.addSeparator().row()
 
         val label = VisLabel()
-        label.setWrap(true)
+        label.wrap = true
         label.setText(
             "Here you change the materials of model components individually.\n"
                     + "Modifing the material will update all components, that use that material."

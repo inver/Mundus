@@ -12,8 +12,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.IntIntMap;
-import net.nevinsky.mundus.core.mesh.Mesh;
 import net.nevinsky.mundus.core.Renderable;
+import net.nevinsky.mundus.core.mesh.Mesh;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,12 +28,13 @@ public abstract class BaseShader implements Shader {
 
     public interface Setter {
         /**
-         * @return True if the uniform only has to be set once per render call, false if the uniform must be set for each
-         * renderable.
+         * @return True if the uniform only has to be set once per render call, false if the uniform must be set for
+         * each renderable.
          */
         boolean isGlobal(final BaseShader shader, final int inputID);
 
-        void set(final BaseShader shader, final int inputID, final Renderable renderable, final Attributes combinedAttributes);
+        void set(final BaseShader shader, final int inputID, final Renderable renderable,
+                 final Attributes combinedAttributes);
     }
 
     public abstract static class GlobalSetter implements Setter {
@@ -56,7 +57,8 @@ public abstract class BaseShader implements Shader {
         public final long environmentMask;
         public final long overallMask;
 
-        public Uniform(final String alias, final long materialMask, final long environmentMask, final long overallMask) {
+        public Uniform(final String alias, final long materialMask, final long environmentMask,
+                       final long overallMask) {
             this.alias = alias;
             this.materialMask = materialMask;
             this.environmentMask = environmentMask;
@@ -76,8 +78,10 @@ public abstract class BaseShader implements Shader {
         }
 
         public boolean validate(final BaseShader shader, final int inputID, final Renderable renderable) {
-            final long matFlags = (renderable != null && renderable.getMaterial() != null) ? renderable.getMaterial().getMask() : 0;
-            final long envFlags = (renderable != null && renderable.getEnvironment() != null) ? renderable.getEnvironment().getMask() : 0;
+            final long matFlags =
+                    (renderable != null && renderable.getMaterial() != null) ? renderable.getMaterial().getMask() : 0;
+            final long envFlags = (renderable != null && renderable.getEnvironment() != null) ?
+                    renderable.getEnvironment().getMask() : 0;
             return ((matFlags & materialMask) == materialMask) && ((envFlags & environmentMask) == environmentMask)
                     && (((matFlags | envFlags) & overallMask) == overallMask);
         }
@@ -86,7 +90,7 @@ public abstract class BaseShader implements Shader {
     private final List<String> uniforms = new ArrayList<>();
     private final List<Validator> validators = new ArrayList<Validator>();
     private final List<Setter> setters = new ArrayList<Setter>();
-    private int locations[];
+    private int[] locations;
     private final IntArray globalUniforms = new IntArray();
     private final IntArray localUniforms = new IntArray();
     private final IntIntMap attributes = new IntIntMap();
@@ -217,7 +221,7 @@ public abstract class BaseShader implements Shader {
         return tempArray.items;
     }
 
-    private Attributes combinedAttributes = new Attributes();
+    private final Attributes combinedAttributes = new Attributes();
 
     @Override
     public void render(Renderable renderable) {

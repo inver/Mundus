@@ -23,11 +23,13 @@ public class SkyboxMeta {
 
         SkyboxMeta that = (SkyboxMeta) o;
 
-        return new EqualsBuilder().append(top, that.top).append(bottom, that.bottom).append(left, that.left).append(right, that.right).append(front, that.front).append(back, that.back).isEquals();
+        return new EqualsBuilder().append(top, that.top).append(bottom, that.bottom).append(left, that.left)
+                .append(right, that.right).append(front, that.front).append(back, that.back).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(top).append(bottom).append(left).append(right).append(front).append(back).toHashCode();
+        return new HashCodeBuilder(17, 37).append(top).append(bottom).append(left)
+                .append(right).append(front).append(back).toHashCode();
     }
 }

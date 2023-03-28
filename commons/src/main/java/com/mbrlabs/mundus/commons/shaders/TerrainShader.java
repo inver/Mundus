@@ -69,7 +69,7 @@ public class TerrainShader extends DefaultBaseShader {
     protected final int UNIFORM_FOG_GRADIENT = register(new Uniform("u_fogGradient"));
     protected final int UNIFORM_FOG_COLOR = register(new Uniform("u_fogColor"));
 
-    private Vector2 terrainSize = new Vector2();
+    private final Vector2 terrainSize = new Vector2();
 
     public TerrainShader(String vertexShader, String fragmentShader) {
         super(vertexShader, fragmentShader);

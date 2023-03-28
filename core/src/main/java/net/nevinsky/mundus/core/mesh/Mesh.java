@@ -54,8 +54,8 @@ public class Mesh implements Disposable {
      * @param isStatic    whether this mesh is static or not. Allows for internal optimizations.
      * @param maxVertices the maximum number of vertices this mesh can hold
      * @param maxIndices  the maximum number of indices this mesh can hold
-     * @param attributes  the {@link VertexAttribute}s. Each vertex attribute defines one property of a vertex such as position,
-     *                    normal or texture coordinate
+     * @param attributes  the {@link VertexAttribute}s. Each vertex attribute defines one property of a vertex such as
+     *                    position, normal or texture coordinate
      */
     public Mesh(boolean isStatic, int maxVertices, int maxIndices, VertexAttribute... attributes) {
         vertices = makeVertexBuffer(isStatic, maxVertices, new VertexAttributes(attributes));
@@ -71,8 +71,8 @@ public class Mesh implements Disposable {
      * @param isStatic    whether this mesh is static or not. Allows for internal optimizations.
      * @param maxVertices the maximum number of vertices this mesh can hold
      * @param maxIndices  the maximum number of indices this mesh can hold
-     * @param attributes  the {@link VertexAttributes}. Each vertex attribute defines one property of a vertex such as position,
-     *                    normal or texture coordinate
+     * @param attributes  the {@link VertexAttributes}. Each vertex attribute defines one property of a vertex such as
+     *                    position, normal or texture coordinate
      */
     public Mesh(boolean isStatic, int maxVertices, int maxIndices, VertexAttributes attributes) {
         vertices = makeVertexBuffer(isStatic, maxVertices, attributes);
@@ -89,11 +89,12 @@ public class Mesh implements Disposable {
      * @param staticIndices  whether indices of this mesh are static or not. Allows for internal optimizations.
      * @param maxVertices    the maximum number of vertices this mesh can hold
      * @param maxIndices     the maximum number of indices this mesh can hold
-     * @param attributes     the {@link VertexAttributes}. Each vertex attribute defines one property of a vertex such as position,
-     *                       normal or texture coordinate
+     * @param attributes     the {@link VertexAttributes}. Each vertex attribute defines one property of a vertex such
+     *                       as position, normal or texture coordinate
      * @author Jaroslaw Wisniewski <j.wisniewski@appsisle.com>
      **/
-    public Mesh(boolean staticVertices, boolean staticIndices, int maxVertices, int maxIndices, VertexAttributes attributes) {
+    public Mesh(boolean staticVertices, boolean staticIndices, int maxVertices, int maxIndices,
+                VertexAttributes attributes) {
         vertices = makeVertexBuffer(staticVertices, maxVertices, attributes);
         indices = new net.nevinsky.mundus.core.IndexBufferObject(staticIndices, maxIndices);
         isVertexArray = false;
@@ -110,21 +111,24 @@ public class Mesh implements Disposable {
     }
 
     /**
-     * Creates a new Mesh with the given attributes. This is an expert method with no error checking. Use at your own risk.
+     * Creates a new Mesh with the given attributes. This is an expert method with no error checking. Use at your own
+     * risk.
      *
      * @param type        the {@link Mesh.VertexDataType} to be used, VBO or VA.
      * @param isStatic    whether this mesh is static or not. Allows for internal optimizations.
      * @param maxVertices the maximum number of vertices this mesh can hold
      * @param maxIndices  the maximum number of indices this mesh can hold
-     * @param attributes  the {@link VertexAttribute}s. Each vertex attribute defines one property of a vertex such as position,
-     *                    normal or texture coordinate
+     * @param attributes  the {@link VertexAttribute}s. Each vertex attribute defines one property of a vertex such as
+     *                    position, normal or texture coordinate
      */
-    public Mesh(Mesh.VertexDataType type, boolean isStatic, int maxVertices, int maxIndices, VertexAttribute... attributes) {
+    public Mesh(Mesh.VertexDataType type, boolean isStatic, int maxVertices, int maxIndices,
+                VertexAttribute... attributes) {
         this(type, isStatic, maxVertices, maxIndices, new VertexAttributes(attributes));
     }
 
     /**
-     * Creates a new Mesh with the given attributes. This is an expert method with no error checking. Use at your own risk.
+     * Creates a new Mesh with the given attributes. This is an expert method with no error checking. Use at your own
+     * risk.
      *
      * @param type        the {@link Mesh.VertexDataType} to be used, VBO or VA.
      * @param isStatic    whether this mesh is static or not. Allows for internal optimizations.
@@ -132,7 +136,8 @@ public class Mesh implements Disposable {
      * @param maxIndices  the maximum number of indices this mesh can hold
      * @param attributes  the {@link VertexAttributes}.
      */
-    public Mesh(Mesh.VertexDataType type, boolean isStatic, int maxVertices, int maxIndices, VertexAttributes attributes) {
+    public Mesh(Mesh.VertexDataType type, boolean isStatic, int maxVertices, int maxIndices,
+                VertexAttributes attributes) {
         switch (type) {
             case VertexBufferObject:
                 vertices = new VertexBufferObject(isStatic, maxVertices, attributes);
@@ -347,7 +352,8 @@ public class Mesh implements Disposable {
     }
 
     /**
-     * Copies the vertices from the Mesh to the float array. The float array must be large enough to hold all the Mesh's vertices.
+     * Copies the vertices from the Mesh to the float array. The float array must be large enough to hold all the Mesh's
+     * vertices.
      *
      * @param vertices the array to copy the vertices to
      */
@@ -356,8 +362,8 @@ public class Mesh implements Disposable {
     }
 
     /**
-     * Copies the the remaining vertices from the Mesh to the float array. The float array must be large enough to hold the
-     * remaining vertices.
+     * Copies the the remaining vertices from the Mesh to the float array. The float array must be large enough to hold
+     * the remaining vertices.
      *
      * @param srcOffset the offset (in number of floats) of the vertices in the mesh to copy
      * @param vertices  the array to copy the vertices to
@@ -367,8 +373,8 @@ public class Mesh implements Disposable {
     }
 
     /**
-     * Copies the specified vertices from the Mesh to the float array. The float array must be large enough to hold count
-     * vertices.
+     * Copies the specified vertices from the Mesh to the float array. The float array must be large enough to hold
+     * count vertices.
      *
      * @param srcOffset the offset (in number of floats) of the vertices in the mesh to copy
      * @param count     the amount of floats to copy
@@ -432,7 +438,8 @@ public class Mesh implements Disposable {
     }
 
     /**
-     * Copies the indices from the Mesh to the int array. The int array must be large enough to hold all the Mesh's indices.
+     * Copies the indices from the Mesh to the int array. The int array must be large enough to hold all the Mesh's
+     * indices.
      *
      * @param indices the array to copy the indices to
      */
@@ -441,8 +448,8 @@ public class Mesh implements Disposable {
     }
 
     /**
-     * Copies the indices from the Mesh to the int array. The int array must be large enough to hold destOffset + all the
-     * Mesh's indices.
+     * Copies the indices from the Mesh to the int array. The int array must be large enough to hold destOffset + all
+     * the Mesh's indices.
      *
      * @param indices    the array to copy the indices to
      * @param destOffset the offset in the indices array to start copying
@@ -452,8 +459,8 @@ public class Mesh implements Disposable {
     }
 
     /**
-     * Copies the remaining indices from the Mesh to the int array. The int array must be large enough to hold destOffset +
-     * all the remaining indices.
+     * Copies the remaining indices from the Mesh to the int array. The int array must be large enough to hold
+     * destOffset + all the remaining indices.
      *
      * @param srcOffset  the zero-based offset of the first index to fetch
      * @param indices    the array to copy the indices to
@@ -521,10 +528,10 @@ public class Mesh implements Disposable {
     }
 
     /**
-     * Sets whether to bind the underlying {@link VertexArray} or {@link VertexBufferObject} automatically on a call to one of the
-     * render methods. Usually you want to use autobind. Manual binding is an expert functionality. There is a driver bug on the
-     * MSM720xa chips that will fuck up memory if you manipulate the vertices and indices of a Mesh multiple times while it is
-     * bound. Keep this in mind.
+     * Sets whether to bind the underlying {@link VertexArray} or {@link VertexBufferObject} automatically on a call to
+     * one of the render methods. Usually you want to use autobind. Manual binding is an expert functionality. There is
+     * a driver bug on the MSM720xa chips that will fuck up memory if you manipulate the vertices and indices of a Mesh
+     * multiple times while it is bound. Keep this in mind.
      *
      * @param autoBind whether to autobind meshes.
      */
@@ -533,8 +540,8 @@ public class Mesh implements Disposable {
     }
 
     /**
-     * Binds the underlying {@link VertexBufferObject} and {@link net.nevinsky.mundus.core.IndexBufferObject} if indices where given. Use this with OpenGL
-     * ES 2.0 and when auto-bind is disabled.
+     * Binds the underlying {@link VertexBufferObject} and {@link net.nevinsky.mundus.core.IndexBufferObject} if indices
+     * where given. Use this with OpenGL ES 2.0 and when auto-bind is disabled.
      *
      * @param shader the shader (does not bind the shader)
      */
@@ -543,8 +550,8 @@ public class Mesh implements Disposable {
     }
 
     /**
-     * Binds the underlying {@link VertexBufferObject} and {@link net.nevinsky.mundus.core.IndexBufferObject} if indices where given. Use this with OpenGL
-     * ES 2.0 and when auto-bind is disabled.
+     * Binds the underlying {@link VertexBufferObject} and {@link net.nevinsky.mundus.core.IndexBufferObject} if indices
+     * where given. Use this with OpenGL ES 2.0 and when auto-bind is disabled.
      *
      * @param shader    the shader (does not bind the shader)
      * @param locations array containing the attribute locations.
@@ -556,8 +563,8 @@ public class Mesh implements Disposable {
     }
 
     /**
-     * Unbinds the underlying {@link VertexBufferObject} and {@link net.nevinsky.mundus.core.IndexBufferObject} is indices were given. Use this with OpenGL
-     * ES 1.x and when auto-bind is disabled.
+     * Unbinds the underlying {@link VertexBufferObject} and {@link net.nevinsky.mundus.core.IndexBufferObject} is
+     * indices were given. Use this with OpenGL ES 1.x and when auto-bind is disabled.
      *
      * @param shader the shader (does not unbind the shader)
      */
@@ -566,8 +573,8 @@ public class Mesh implements Disposable {
     }
 
     /**
-     * Unbinds the underlying {@link VertexBufferObject} and {@link IndexBufferObject} is indices were given. Use this with OpenGL
-     * ES 1.x and when auto-bind is disabled.
+     * Unbinds the underlying {@link VertexBufferObject} and {@link IndexBufferObject} is indices were given. Use this
+     * with OpenGL ES 1.x and when auto-bind is disabled.
      *
      * @param shader    the shader (does not unbind the shader)
      * @param locations array containing the attribute locations.
@@ -580,13 +587,15 @@ public class Mesh implements Disposable {
 
     /**
      * <p>
-     * Renders the mesh using the given primitive type. If indices are set for this mesh then getNumIndices() / #vertices per
-     * primitive primitives are rendered. If no indices are set then getNumVertices() / #vertices per primitive are rendered.
+     * Renders the mesh using the given primitive type. If indices are set for this mesh then getNumIndices() /
+     * #vertices per primitive primitives are rendered. If no indices are set then getNumVertices() / #vertices per
+     * primitive are rendered.
      * </p>
      *
      * <p>
-     * This method will automatically bind each vertex attribute as specified at construction time via {@link VertexAttributes} to
-     * the respective shader attributes. The binding is based on the alias defined for each VertexAttribute.
+     * This method will automatically bind each vertex attribute as specified at construction time via
+     * {@link VertexAttributes} to the respective shader attributes. The binding is based on the alias defined for each
+     * VertexAttribute.
      * </p>
      *
      * <p>
@@ -594,7 +603,8 @@ public class Mesh implements Disposable {
      * </p>
      *
      * <p>
-     * This method is intended for use with OpenGL ES 2.0 and will throw an IllegalStateException when OpenGL ES 1.x is used.
+     * This method is intended for use with OpenGL ES 2.0 and will throw an IllegalStateException when OpenGL ES 1.x is
+     * used.
      * </p>
      *
      * @param primitiveType the primitive type
@@ -605,14 +615,15 @@ public class Mesh implements Disposable {
 
     /**
      * <p>
-     * Renders the mesh using the given primitive type. offset specifies the offset into either the vertex buffer or the index
-     * buffer depending on whether indices are defined. count specifies the number of vertices or indices to use thus count /
-     * #vertices per primitive primitives are rendered.
+     * Renders the mesh using the given primitive type. offset specifies the offset into either the vertex buffer or the
+     * index buffer depending on whether indices are defined. count specifies the number of vertices or indices to use
+     * thus count / #vertices per primitive primitives are rendered.
      * </p>
      *
      * <p>
-     * This method will automatically bind each vertex attribute as specified at construction time via {@link VertexAttributes} to
-     * the respective shader attributes. The binding is based on the alias defined for each VertexAttribute.
+     * This method will automatically bind each vertex attribute as specified at construction time via
+     * {@link VertexAttributes} to the respective shader attributes. The binding is based on the alias defined for each
+     * VertexAttribute.
      * </p>
      *
      * <p>
@@ -620,7 +631,8 @@ public class Mesh implements Disposable {
      * </p>
      *
      * <p>
-     * This method is intended for use with OpenGL ES 2.0 and will throw an IllegalStateException when OpenGL ES 1.x is used.
+     * This method is intended for use with OpenGL ES 2.0 and will throw an IllegalStateException when OpenGL ES 1.x is
+     * used.
      * </p>
      *
      * @param shader        the shader to be used
@@ -634,14 +646,15 @@ public class Mesh implements Disposable {
 
     /**
      * <p>
-     * Renders the mesh using the given primitive type. offset specifies the offset into either the vertex buffer or the index
-     * buffer depending on whether indices are defined. count specifies the number of vertices or indices to use thus count /
-     * #vertices per primitive primitives are rendered.
+     * Renders the mesh using the given primitive type. offset specifies the offset into either the vertex buffer or the
+     * index buffer depending on whether indices are defined. count specifies the number of vertices or indices to use
+     * thus count / #vertices per primitive primitives are rendered.
      * </p>
      *
      * <p>
-     * This method will automatically bind each vertex attribute as specified at construction time via {@link VertexAttributes} to
-     * the respective shader attributes. The binding is based on the alias defined for each VertexAttribute.
+     * This method will automatically bind each vertex attribute as specified at construction time via
+     * {@link VertexAttributes} to the respective shader attributes. The binding is based on the alias defined for each
+     * VertexAttribute.
      * </p>
      *
      * <p>
@@ -649,7 +662,8 @@ public class Mesh implements Disposable {
      * </p>
      *
      * <p>
-     * This method is intended for use with OpenGL ES 2.0 and will throw an IllegalStateException when OpenGL ES 1.x is used.
+     * This method is intended for use with OpenGL ES 2.0 and will throw an IllegalStateException when OpenGL ES 1.x is
+     * used.
      * </p>
      *
      * @param shader        the shader to be used
@@ -680,12 +694,14 @@ public class Mesh implements Disposable {
 
             if (indices.getNumIndices() > 0) {
                 if (count + offset > indices.getNumMaxIndices()) {
-                    throw new GdxRuntimeException("Mesh attempting to access memory outside of the index buffer (count: " + count
-                            + ", offset: " + offset + ", max: " + indices.getNumMaxIndices() + ")");
+                    throw new GdxRuntimeException(
+                            "Mesh attempting to access memory outside of the index buffer (count: " + count
+                                    + ", offset: " + offset + ", max: " + indices.getNumMaxIndices() + ")");
                 }
 
                 if (isInstanced && numInstances > 0) {
-                    Gdx.gl30.glDrawElementsInstanced(primitiveType, count, GL20.GL_UNSIGNED_INT, offset * 2, numInstances);
+                    Gdx.gl30.glDrawElementsInstanced(primitiveType, count, GL20.GL_UNSIGNED_INT, offset * 2,
+                            numInstances);
                 } else {
                     Gdx.gl20.glDrawElements(primitiveType, count, GL20.GL_UNSIGNED_INT, offset * 2);
                 }
@@ -842,7 +858,8 @@ public class Mesh implements Disposable {
         final int numVertices = getNumVertices();
         final int max = numIndices == 0 ? numVertices : numIndices;
         if (offset < 0 || count < 1 || offset + count > max)
-            throw new GdxRuntimeException("Invalid part specified ( offset=" + offset + ", count=" + count + ", max=" + max + " )");
+            throw new GdxRuntimeException(
+                    "Invalid part specified ( offset=" + offset + ", count=" + count + ", max=" + max + " )");
 
         final FloatBuffer verts = vertices.getBuffer();
         final IntBuffer index = indices.getBuffer();
@@ -917,7 +934,8 @@ public class Mesh implements Disposable {
      * @param count   the amount of indices the part contains.
      * @return the squared radius of the bounding sphere.
      */
-    public float calculateRadiusSquared(final float centerX, final float centerY, final float centerZ, int offset, int count,
+    public float calculateRadiusSquared(final float centerX, final float centerY, final float centerZ, int offset,
+                                        int count,
                                         final Matrix4 transform) {
         int numIndices = getNumIndices();
         if (offset < 0 || count < 1 || offset + count > numIndices)
@@ -1087,8 +1105,8 @@ public class Mesh implements Disposable {
     }
 
     /**
-     * Method to scale the positions in the mesh. Normals will be kept as is. This is a potentially slow operation, use with care.
-     * It will also create a temporary float[] which will be garbage collected.
+     * Method to scale the positions in the mesh. Normals will be kept as is. This is a potentially slow operation, use
+     * with care. It will also create a temporary float[] which will be garbage collected.
      *
      * @param scaleX scale on x
      * @param scaleY scale on y
@@ -1133,8 +1151,8 @@ public class Mesh implements Disposable {
     }
 
     /**
-     * Method to transform the positions in the mesh. Normals will be kept as is. This is a potentially slow operation, use with
-     * care. It will also create a temporary float[] which will be garbage collected.
+     * Method to transform the positions in the mesh. Normals will be kept as is. This is a potentially slow operation,
+     * use with care. It will also create a temporary float[] which will be garbage collected.
      *
      * @param matrix the transformation matrix
      */
@@ -1159,8 +1177,8 @@ public class Mesh implements Disposable {
     }
 
     /**
-     * Method to transform the positions in the float array. Normals will be kept as is. This is a potentially slow operation, use
-     * with care.
+     * Method to transform the positions in the float array. Normals will be kept as is. This is a potentially slow
+     * operation, use with care.
      *
      * @param matrix     the transformation matrix
      * @param vertices   the float array
@@ -1170,13 +1188,15 @@ public class Mesh implements Disposable {
      * @param start      the vertex to start with
      * @param count      the amount of vertices to transform
      */
-    public static void transform(final Matrix4 matrix, final float[] vertices, int vertexSize, int offset, int dimensions,
+    public static void transform(final Matrix4 matrix, final float[] vertices, int vertexSize, int offset,
+                                 int dimensions,
                                  int start, int count) {
         if (offset < 0 || dimensions < 1 || (offset + dimensions) > vertexSize)
             throw new IndexOutOfBoundsException();
         if (start < 0 || count < 1 || ((start + count) * vertexSize) > vertices.length)
             throw new IndexOutOfBoundsException(
-                    "start = " + start + ", count = " + count + ", vertexSize = " + vertexSize + ", length = " + vertices.length);
+                    "start = " + start + ", count = " + count + ", vertexSize = " + vertexSize + ", length = " +
+                            vertices.length);
 
         final Vector3 tmp = new Vector3();
 
@@ -1210,8 +1230,8 @@ public class Mesh implements Disposable {
     }
 
     /**
-     * Method to transform the texture coordinates in the mesh. This is a potentially slow operation, use with care. It will also
-     * create a temporary float[] which will be garbage collected.
+     * Method to transform the texture coordinates in the mesh. This is a potentially slow operation, use with care. It
+     * will also create a temporary float[] which will be garbage collected.
      *
      * @param matrix the transformation matrix
      */
@@ -1235,7 +1255,8 @@ public class Mesh implements Disposable {
     }
 
     /**
-     * Method to transform the texture coordinates (UV) in the float array. This is a potentially slow operation, use with care.
+     * Method to transform the texture coordinates (UV) in the float array. This is a potentially slow operation, use
+     * with care.
      *
      * @param matrix     the transformation matrix
      * @param vertices   the float array
@@ -1248,7 +1269,8 @@ public class Mesh implements Disposable {
                                    int count) {
         if (start < 0 || count < 1 || ((start + count) * vertexSize) > vertices.length)
             throw new IndexOutOfBoundsException(
-                    "start = " + start + ", count = " + count + ", vertexSize = " + vertexSize + ", length = " + vertices.length);
+                    "start = " + start + ", count = " + count + ", vertexSize = " + vertexSize + ", length = " +
+                            vertices.length);
 
         final Vector2 tmp = new Vector2();
 
@@ -1265,7 +1287,8 @@ public class Mesh implements Disposable {
      * Copies this mesh optionally removing duplicate vertices and/or reducing the amount of attributes.
      *
      * @param isStatic         whether the new mesh is static or not. Allows for internal optimizations.
-     * @param removeDuplicates whether to remove duplicate vertices if possible. Only the vertices specified by usage are checked.
+     * @param removeDuplicates whether to remove duplicate vertices if possible. Only the vertices specified by usage
+     *                         are checked.
      * @param usage            which attributes (if available) to copy
      * @return the copy of this mesh
      */
@@ -1297,7 +1320,7 @@ public class Mesh implements Disposable {
                     VertexAttribute a = getVertexAttribute(usage[i]);
                     if (a == null) continue;
                     for (int j = 0; j < a.numComponents; j++)
-                        checks[++idx] = (int) (a.offset + j);
+                        checks[++idx] = a.offset + j;
                     attrs[++ai] = a.copy();
                     newVertexSize += a.numComponents;
                 }
@@ -1326,7 +1349,10 @@ public class Mesh implements Disposable {
                             final int idx2 = j * newVertexSize;
                             boolean found = true;
                             for (int k = 0; k < checks.length && found; k++) {
-                                if (tmp[idx2 + k] != vertices[idx1 + checks[k]]) found = false;
+                                if (tmp[idx2 + k] != vertices[idx1 + checks[k]]) {
+                                    found = false;
+                                    break;
+                                }
                             }
                             if (found) newIndex = j;
                         }
@@ -1337,7 +1363,7 @@ public class Mesh implements Disposable {
                         final int idx = size * newVertexSize;
                         for (int j = 0; j < checks.length; j++)
                             tmp[idx + j] = vertices[idx1 + checks[j]];
-                        indices[i] = (int) size;
+                        indices[i] = size;
                         size++;
                     }
                 }

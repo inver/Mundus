@@ -43,7 +43,7 @@ public class PickerShader extends DefaultBaseShader {
     protected final int UNIFORM_TRANS_MATRIX = register(new Uniform("u_transMatrix"));
     protected final int UNIFORM_COLOR = register(new Uniform("u_color"));
 
-    private static Vector3 vec3 = new Vector3();
+    private static final Vector3 vec3 = new Vector3();
 
     public PickerShader(String vertexShader, String fragmentShader) {
         super(vertexShader, fragmentShader);

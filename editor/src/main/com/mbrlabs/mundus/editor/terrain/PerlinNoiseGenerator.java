@@ -27,7 +27,7 @@ import java.util.Random;
  */
 public class PerlinNoiseGenerator extends Generator<PerlinNoiseGenerator> {
 
-    private Random rand = new Random();
+    private final Random rand = new Random();
     private long seed = 0;
     // number of noise functions
     private int octaves = 1;
@@ -80,7 +80,7 @@ public class PerlinNoiseGenerator extends Generator<PerlinNoiseGenerator> {
     }
 
     private float getNoise(int x, int z) {
-        rand.setSeed(x * 49632 + z * 325176 + seed);
+        rand.setSeed(x * 49632L + z * 325176L + seed);
         return rand.nextFloat();
     }
 

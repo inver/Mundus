@@ -85,7 +85,8 @@ public class ShaderStorage implements ShaderHolder {
 
     public Map<String, BaseShader> loadDefault() {
         var res = new HashMap<String, BaseShader>();
-        res.put(ProjectConstants.SHADER_MATERIAL_PREVIEW, new MaterialPreviewShader(SHADER_MATERIAL_PREVIEW_VERT, SHADER_MATERIAL_PREVIEW_FRAG));
+        res.put(ProjectConstants.SHADER_MATERIAL_PREVIEW,
+                new MaterialPreviewShader(SHADER_MATERIAL_PREVIEW_VERT, SHADER_MATERIAL_PREVIEW_FRAG));
         return res;
     }
 

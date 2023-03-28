@@ -35,8 +35,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * A project context represents a loaded and opened project.
  * <p>
- * A project context can have many scenes, not only one scene at a time can be
- * active.
+ * A project context can have many scenes, not only one scene at a time can be active.
  *
  * @author Marcus Brummer
  * @version 28-11-2015
@@ -62,11 +61,12 @@ public class ProjectContext implements Disposable {
     @Getter
     private String activeSceneName;
     @Getter
-    private PerspectiveCamera mainCamera;
+    private final PerspectiveCamera mainCamera;
     private int selectedCamera = MAIN_CAMERA_SELECTED;
 
     @JsonCreator
-    public ProjectContext(@JsonProperty("idProvider") int startId, @JsonProperty("mainCamera") PerspectiveCamera camera) {
+    public ProjectContext(@JsonProperty("idProvider") int startId,
+                          @JsonProperty("mainCamera") PerspectiveCamera camera) {
         settings = new ProjectSettings();
 //        currentScene = new Scene(world);
         idProvider = new AtomicInteger(startId);

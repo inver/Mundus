@@ -33,7 +33,7 @@ public class EditorTerrainShader extends TerrainShader {
     protected final int UNIFORM_MOUSE_ACTIVE = register(new Uniform("u_pickerActive"));
 
     private boolean pickerActive = false;
-    private Vector3 pickerPosition = new Vector3();
+    private final Vector3 pickerPosition = new Vector3();
     private float pickerRadius = 0;
 
     public EditorTerrainShader() {

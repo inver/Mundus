@@ -10,5 +10,5 @@ public interface RenderableSorter {
      *
      * @param renderables the array of renderables to be sorted
      */
-    public void sort(Camera camera, List<Renderable> renderables);
+    void sort(Camera camera, List<Renderable> renderables);
 }

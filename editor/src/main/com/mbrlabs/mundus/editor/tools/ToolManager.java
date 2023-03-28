@@ -18,7 +18,6 @@ package com.mbrlabs.mundus.editor.tools;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
-import net.nevinsky.mundus.core.ModelBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.SnapshotArray;
@@ -34,6 +33,7 @@ import com.mbrlabs.mundus.editor.tools.brushes.*;
 import com.mbrlabs.mundus.editor.tools.picker.EntityPicker;
 import com.mbrlabs.mundus.editor.tools.picker.ToolHandlePicker;
 import com.mbrlabs.mundus.editor.ui.AppUi;
+import net.nevinsky.mundus.core.ModelBatch;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -75,13 +75,17 @@ public class ToolManager extends InputAdapter implements Disposable, Renderable 
 
         modelPlacementTool = new ModelPlacementTool(ctx, ShaderConstants.MODEL, modelBatch, history, appUi, eventBus);
         selectionTool = new SelectionTool(ctx, ShaderConstants.WIREFRAME, picker, modelBatch, history, eventBus);
-        translateTool = new TranslateTool(ctx, ShaderConstants.WIREFRAME, picker, toolHandlePicker, modelBatch, history, eventBus);
-        rotateTool = new RotateTool(ctx, ShaderConstants.WIREFRAME, picker, toolHandlePicker, shapeRenderer, modelBatch, history, eventBus);
-        scaleTool = new ScaleTool(ctx, ShaderConstants.WIREFRAME, picker, toolHandlePicker, shapeRenderer, modelBatch, history, appUi, eventBus);
+        translateTool = new TranslateTool(ctx, ShaderConstants.WIREFRAME, picker, toolHandlePicker, modelBatch, history,
+                eventBus);
+        rotateTool = new RotateTool(ctx, ShaderConstants.WIREFRAME, picker, toolHandlePicker, shapeRenderer, modelBatch,
+                history, eventBus);
+        scaleTool = new ScaleTool(ctx, ShaderConstants.WIREFRAME, picker, toolHandlePicker, shapeRenderer, modelBatch,
+                history, appUi, eventBus);
     }
 
     public void activateTool(Tool tool) {
-        boolean shouldKeepSelection = activeTool != null && activeTool instanceof SelectionTool && tool instanceof SelectionTool;
+        boolean shouldKeepSelection =
+                activeTool != null && activeTool instanceof SelectionTool && tool instanceof SelectionTool;
         int selected = getSelectedEntity();
 
         deactivateTool();

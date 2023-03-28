@@ -11,6 +11,6 @@ public class ModelMeta {
     private boolean binary;
 
     public enum Format {
-        GLTF;
+        GLTF
     }
 }

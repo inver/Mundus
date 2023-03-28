@@ -4,11 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Material;
-import net.nevinsky.mundus.core.shader.DefaultShaderProvider;
-import net.nevinsky.mundus.core.ModelBatch;
-import net.nevinsky.mundus.core.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import net.nevinsky.mundus.core.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -21,7 +17,11 @@ import com.mbrlabs.mundus.commons.env.lights.SpotLight;
 import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
 import com.mbrlabs.mundus.editor.core.shader.ShaderStorage;
 import com.mbrlabs.mundus.editor.ui.widgets.RenderWidget;
+import net.nevinsky.mundus.core.ModelBatch;
+import net.nevinsky.mundus.core.ModelBuilder;
+import net.nevinsky.mundus.core.ModelInstance;
 import net.nevinsky.mundus.core.shader.DefaultShader;
+import net.nevinsky.mundus.core.shader.DefaultShaderProvider;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -76,7 +76,8 @@ public class PreviewGenerator {
         return preview;
     }
 
-    private <T> T renderPreview(MaterialAsset materialAsset, PreviewCreator<T> previewCreator, float height, float width) {
+    private <T> T renderPreview(MaterialAsset materialAsset, PreviewCreator<T> previewCreator, float height,
+                                float width) {
         var sphereInstance = new ModelInstance(new ModelBuilder().createSphere(
                 1.2f, 1.2f, 1.2f, 20, 20,
                 materialAsset.applyToMaterial(new Material()), VertexAttributes.Usage.Position

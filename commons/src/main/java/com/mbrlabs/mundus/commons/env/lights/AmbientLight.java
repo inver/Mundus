@@ -51,7 +51,8 @@ public class AmbientLight {
 
         AmbientLight AmbientLight = (AmbientLight) o;
 
-        return new EqualsBuilder().append(intensity, AmbientLight.intensity).append(color, AmbientLight.color).isEquals();
+        return new EqualsBuilder().append(intensity, AmbientLight.intensity).append(color, AmbientLight.color)
+                .isEquals();
     }
 
     @Override

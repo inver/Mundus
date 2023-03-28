@@ -9,6 +9,9 @@ import com.badlogic.gdx.graphics.g3d.model.data.ModelNode;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelNodePart;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelTexture;
 import com.badlogic.gdx.utils.Array;
+import com.mbrlabs.mundus.commons.core.AppModelLoader;
+import com.mbrlabs.mundus.commons.model.ImportedModel;
+import net.nevinsky.mundus.core.model.Model;
 import net.nevinsky.mundus.core.model.ModelData;
 import net.nevinsky.mundus.core.model.ModelMesh;
 import net.nevinsky.mundus.core.model.ModelMeshPart;
@@ -25,14 +28,27 @@ import static com.badlogic.gdx.graphics.g3d.model.data.ModelTexture.USAGE_DIFFUS
 import static org.lwjgl.assimp.Assimp.*;
 
 //todo add texture cache
-public class AssimpModelLoader {
+public class AssimpModelLoader implements AppModelLoader {
 
+    @Override
+    public Model loadModel(FileHandle fileHandle) {
+        ModelData data = loadModel(fileHandle.name(), fileHandle);
+        if (data == null) {
+            return null;
+        }
+        return new Model(data, new ParentBasedTextureProvider(fileHandle));
+    }
+
+    @Override
+    public ImportedModel importModel(FileHandle handle) {
+        var model = loadModel(handle);
+        return new ImportedModel(model, handle);
+    }
 
     public ModelData loadModel(String modelId, FileHandle modelPath) {
         return loadModel(modelId, modelPath, aiProcess_GenNormals | aiProcess_GenSmoothNormals |
                 aiProcess_JoinIdenticalVertices | aiProcess_Triangulate | aiProcess_FixInfacingNormals |
                 aiProcess_CalcTangentSpace | aiProcess_LimitBoneWeights | aiProcess_PreTransformVertices);
-
     }
 
     public ModelData loadModel(String modelId, FileHandle modelPath, int flags) {
@@ -249,4 +265,5 @@ public class AssimpModelLoader {
         }
         return data;
     }
+
 }
