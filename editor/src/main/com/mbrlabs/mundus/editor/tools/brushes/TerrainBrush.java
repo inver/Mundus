@@ -37,8 +37,7 @@ import net.nevinsky.mundus.core.ModelBatch;
 /**
  * A Terrain Brush can modify the terrainAsset in various ways (BrushMode).
  * <p>
- * This includes the height of every vertex in the terrainAsset grid & according
- * splatmap.
+ * This includes the height of every vertex in the terrainAsset grid & according splatmap.
  *
  * @author Marcus Brummer
  * @version 30-01-2016
@@ -68,12 +67,10 @@ public abstract class TerrainBrush extends Tool {
     }
 
     /**
-     * Defines two actions (and it's key codes) every brush and every mode can
-     * have.
+     * Defines two actions (and it's key codes) every brush and every mode can have.
      * <p>
-     * For instance the RAISE_LOWER mode has 'raise' has PRIMARY action and
-     * 'lower' as secondary. Pressing the keycode of the secondary & the primary
-     * key enables the secondary action.
+     * For instance the RAISE_LOWER mode has 'raise' has PRIMARY action and 'lower' as secondary. Pressing the keycode
+     * of the secondary & the primary key enables the secondary action.
      **/
     public enum BrushAction {
         PRIMARY(Input.Buttons.LEFT), SECONDARY(Input.Keys.SHIFT_LEFT);
@@ -87,8 +84,7 @@ public abstract class TerrainBrush extends Tool {
     }
 
     /**
-     * Thrown if a the brush is set to a mode, which it currently does not
-     * support.
+     * Thrown if a the brush is set to a mode, which it currently does not support.
      */
     public static class ModeNotSupportedException extends RuntimeException {
         public ModeNotSupportedException(String message) {
@@ -127,9 +123,8 @@ public abstract class TerrainBrush extends Tool {
     private final boolean terrainHeightModified = false;
     private final boolean splatmapModified = false;
 
-    public TerrainBrush(EditorCtx ctx, String shaderKey, ModelBatch batch,
-                        CommandHistory history, FileHandle pixmapBrush, String name) {
-        super(ctx, shaderKey, batch, history, name);
+    public TerrainBrush(EditorCtx ctx, String shaderKey, CommandHistory history, FileHandle pixmapBrush, String name) {
+        super(ctx, shaderKey, history, name);
 
         brushPixmap = new Pixmap(pixmapBrush);
         pixmapCenter = brushPixmap.getWidth() / 2;
@@ -251,22 +246,19 @@ public abstract class TerrainBrush extends Tool {
     }
 
     /**
-     * Interpolates the brush texture in the range of centerX - radius to
-     * centerX + radius and centerZ - radius to centerZ + radius. PointZ &
-     * pointX lies between these ranges.
+     * Interpolates the brush texture in the range of centerX - radius to centerX + radius and centerZ - radius to
+     * centerZ + radius. PointZ & pointX lies between these ranges.
      * <p>
-     * Interpolation is necessary, since the brush pixmap is fixed sized,
-     * whereas the input values can scale. (Input points can be vertices or
-     * splatmap texture coordinates)
+     * Interpolation is necessary, since the brush pixmap is fixed sized, whereas the input values can scale. (Input
+     * points can be vertices or splatmap texture coordinates)
      *
      * @param centerX
      * @param centerZ
      * @param pointX
      * @param pointZ
      * @param radius
-     * @return the interpolated r-channel value of brush pixmap at pointX,
-     * pointZ, which can be interpreted as terrainAsset height
-     * (raise/lower) or opacity (paint)
+     * @return the interpolated r-channel value of brush pixmap at pointX, pointZ, which can be interpreted as
+     * terrainAsset height (raise/lower) or opacity (paint)
      */
     private float getValueOfBrushPixmap(float centerX, float centerZ, float pointX, float pointZ, float radius) {
         c.set(centerX, centerZ);

@@ -3,7 +3,6 @@ package com.mbrlabs.mundus.editor.config;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowAdapter;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -22,14 +21,12 @@ public class InitListener extends Lwjgl3WindowAdapter implements ApplicationList
         var ctx = new AnnotationConfigApplicationContext(RootConfig.class);
         editor = ctx.getBean(Editor.class);
         editor.create();
-        var widgetsHolder = ctx.getBean(UiWidgetsHolder.class);
+        var widgetsHolder = ctx.getBean(UiComponentHolder.class);
         widgetsHolder.init();
     }
 
     private void initVisUI() {
-        var generator = new FreeTypeFontGenerator(
-                Gdx.files.internal("fonts/OpenSans/OpenSans-Regular.ttf")
-        );
+        var generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Roboto-Regular.ttf"));
         var params = new FreeTypeFontGenerator.FreeTypeFontParameter();
         params.kerning = true;
         params.borderStraight = false;

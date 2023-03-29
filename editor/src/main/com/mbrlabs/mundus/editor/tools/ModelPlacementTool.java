@@ -17,8 +17,6 @@
 package com.mbrlabs.mundus.editor.tools;
 
 import com.badlogic.gdx.Input;
-import net.nevinsky.mundus.core.ModelBatch;
-import net.nevinsky.mundus.core.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
@@ -34,6 +32,10 @@ import com.mbrlabs.mundus.editor.events.SceneGraphChangedEvent;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.scene3d.components.PickableModelComponent;
 import com.mbrlabs.mundus.editor.ui.AppUi;
+import com.mbrlabs.mundus.editor.ui.widgets.icon.SymbolIcon;
+import net.nevinsky.mundus.core.ModelBatch;
+import net.nevinsky.mundus.core.ModelInstance;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Marcus Brummer
@@ -53,9 +55,9 @@ public class ModelPlacementTool extends Tool {
     private final AppUi appUi;
     private final EventBus eventBus;
 
-    public ModelPlacementTool(EditorCtx ctx, String shaderKey, ModelBatch batch, CommandHistory history,
+    public ModelPlacementTool(EditorCtx ctx, String shaderKey, CommandHistory history,
                               AppUi appUi, EventBus eventBus) {
-        super(ctx, shaderKey, batch, history, NAME);
+        super(ctx, shaderKey, history, NAME);
         this.appUi = appUi;
         this.eventBus = eventBus;
         this.model = null;
@@ -69,7 +71,8 @@ public class ModelPlacementTool extends Tool {
     }
 
     @Override
-    public String getIconFont() {
+    @NotNull
+    public SymbolIcon getIcon() {
         throw new UnsupportedOperationException();
     }
 

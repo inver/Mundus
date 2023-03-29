@@ -20,9 +20,9 @@ import com.badlogic.gdx.math.Quaternion
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
-import com.kotcrab.vis.ui.widget.Separator.SeparatorStyle
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent
+import com.mbrlabs.mundus.editor.config.UiComponentHolder
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.ui.modules.inspector.BaseInspectorWidget
 import com.mbrlabs.mundus.editor.ui.widgets.FloatFieldWithLabel
@@ -33,9 +33,9 @@ import com.mbrlabs.mundus.editor.utils.formatFloat
  * @version 16-01-2016
  */
 class TransformWidget(
-    separator: SeparatorStyle?,
+    uiComponentHolder: UiComponentHolder,
     private val ctx: EditorCtx
-) : BaseInspectorWidget(separator, "Transformation") {
+) : BaseInspectorWidget(uiComponentHolder, "Transformation") {
 
     companion object {
         private val tempV3 = Vector3()

@@ -31,11 +31,12 @@ import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.history.commands.RotateCommand;
 import com.mbrlabs.mundus.editor.tools.picker.EntityPicker;
 import com.mbrlabs.mundus.editor.tools.picker.ToolHandlePicker;
-import com.mbrlabs.mundus.editor.utils.Fa;
+import com.mbrlabs.mundus.editor.ui.widgets.icon.SymbolIcon;
 import com.mbrlabs.mundus.editor.utils.UsefulMeshs;
 import net.nevinsky.mundus.core.ModelBatch;
 import net.nevinsky.mundus.core.ModelInstance;
 import net.nevinsky.mundus.core.model.Model;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -66,8 +67,8 @@ public class RotateTool extends TransformTool {
     private final float lastRot = 0;
 
     public RotateTool(EditorCtx ctx, String shaderKey, EntityPicker picker, ToolHandlePicker handlePicker,
-                      ShapeRenderer shapeRenderer, ModelBatch batch, CommandHistory history, EventBus eventBus) {
-        super(ctx, shaderKey, picker, handlePicker, batch, history, eventBus, NAME);
+                      ShapeRenderer shapeRenderer, CommandHistory history, EventBus eventBus) {
+        super(ctx, shaderKey, picker, handlePicker, history, eventBus, NAME);
         this.shapeRenderer = shapeRenderer;
         xHandle = new RotateHandle(X_HANDLE_ID, TransformState.TRANSFORM_X, COLOR_X);
         yHandle = new RotateHandle(Y_HANDLE_ID, TransformState.TRANSFORM_Y, COLOR_Y);
@@ -275,8 +276,9 @@ public class RotateTool extends TransformTool {
     }
 
     @Override
-    public String getIconFont() {
-        return Fa.Companion.getREFRESH();
+    @NotNull
+    public SymbolIcon getIcon() {
+        return SymbolIcon.REFRESH;
     }
 
     @Override
@@ -328,7 +330,7 @@ public class RotateTool extends TransformTool {
 
         @Override
         public void renderPick(ModelBatch modelBatch, ShaderHolder shaders) {
-            getBatch().render(modelInstance, shaders.get(getShaderKey()));
+            modelBatch.render(modelInstance, shaders.get(getShaderKey()));
         }
 
         @Override

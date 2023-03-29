@@ -16,9 +16,8 @@
 
 package com.mbrlabs.mundus.editor.ui.modules.inspector.assets
 
-import com.kotcrab.vis.ui.widget.Separator.SeparatorStyle
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset
-import com.mbrlabs.mundus.commons.scene3d.GameObject
+import com.mbrlabs.mundus.editor.config.UiComponentHolder
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.ui.AppUi
@@ -33,14 +32,14 @@ import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerPresenter
  * @version 13-10-2016
  */
 class MaterialAssetInspectorWidget(
-    separatorStyle: SeparatorStyle?,
     private val ctx: EditorCtx,
     private val appUi: AppUi,
     private val assetSelectionDialog: AssetPickerDialog,
     private val assetManager: EditorAssetManager,
     private val previewGenerator: PreviewGenerator,
+    private val uiComponentHolder: UiComponentHolder,
     colorPickerPresenter: ColorPickerPresenter
-) : BaseInspectorWidget(separatorStyle, "Material Asset") {
+) : BaseInspectorWidget(uiComponentHolder, "Material Asset") {
 
     private var material: MaterialAsset? = null
     private val materialWidget =

@@ -30,7 +30,7 @@ import com.mbrlabs.mundus.editor.tools.brushes.TerrainBrush
 class TerrainUpDownTab(parent: TerrainComponentWidget) : Tab(false, false) {
     private val table = VisTable()
 
-    val grid = TerrainBrushGrid(parent, TerrainBrush.BrushMode.RAISE_LOWER)
+    val grid = TerrainBrushGrid(TerrainBrush.BrushMode.RAISE_LOWER)
 
     init {
         table.align(Align.left)

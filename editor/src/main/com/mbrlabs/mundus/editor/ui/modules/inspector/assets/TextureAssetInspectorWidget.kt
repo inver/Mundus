@@ -17,10 +17,10 @@
 package com.mbrlabs.mundus.editor.ui.modules.inspector.assets
 
 import com.badlogic.gdx.Files
-import com.kotcrab.vis.ui.widget.Separator.SeparatorStyle
 import com.kotcrab.vis.ui.widget.VisImage
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset
+import com.mbrlabs.mundus.editor.config.UiComponentHolder
 import com.mbrlabs.mundus.editor.ui.UiConstants.PREVIEW_SIZE
 import com.mbrlabs.mundus.editor.ui.modules.inspector.BaseInspectorWidget
 import org.apache.commons.io.FileUtils
@@ -31,8 +31,8 @@ import kotlin.math.roundToLong
  * @author Marcus Brummer
  * @version 15-10-2016
  */
-class TextureAssetInspectorWidget(separatorStyle: SeparatorStyle?) :
-    BaseInspectorWidget(separatorStyle, "Texture Asset") {
+class TextureAssetInspectorWidget(uiComponentHolder: UiComponentHolder) :
+    BaseInspectorWidget(uiComponentHolder, "Texture Asset") {
 
     private val name = VisLabel()
     private val width = VisLabel()

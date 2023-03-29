@@ -20,26 +20,20 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.Cell
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.kotcrab.vis.ui.widget.Separator
-import com.kotcrab.vis.ui.widget.Separator.SeparatorStyle
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
+import com.mbrlabs.mundus.editor.config.UiComponentHolder
 import com.mbrlabs.mundus.editor.ui.widgets.CollapseWidget
-import com.mbrlabs.mundus.editor.ui.widgets.FaTextButton
-import com.mbrlabs.mundus.editor.utils.Fa
+import com.mbrlabs.mundus.editor.ui.widgets.icon.SymbolIcon
 
 /**
  * @author Marcus Brummer
  * @version 19-01-2016
  */
 abstract class BaseInspectorWidget(
-    private val separatorStyle: SeparatorStyle?,
+    private val uiComponentHolder: UiComponentHolder,
     title: String
 ) : VisTable() {
-
-    companion object {
-        private val COLLAPSE_BTN_DOWN = Fa.CARET_UP
-        private val COLLAPSE_BTN_UP = Fa.CARET_DOWN
-    }
 
     var title: String? = null
         set(title) {
@@ -47,8 +41,8 @@ abstract class BaseInspectorWidget(
             titleLabel.setText(title)
         }
 
-    private val collapseBtn = FaTextButton(COLLAPSE_BTN_UP)
-    private val deleteBtn = FaTextButton(Fa.TIMES)
+    private val collapseBtn = uiComponentHolder.buttonFactory.createButton(SymbolIcon.EXPAND_MORE)
+    private val deleteBtn = uiComponentHolder.buttonFactory.createButton(SymbolIcon.CLOSE)
     private var deletableBtnCell: Cell<*>? = null
 
     protected val collapsibleContent = VisTable()
@@ -94,7 +88,7 @@ abstract class BaseInspectorWidget(
         header.add(collapseBtn).right().top().width(20f).height(20f).expand().row()
 
         // add separator
-        header.add(Separator(separatorStyle)).fillX().expandX().colspan(3).row()
+        header.add(Separator(uiComponentHolder.separatorStyle)).fillX().expandX().colspan(3).row()
 
         // add everything to root
         add(header).expand().fill().padBottom(10f).row()
@@ -121,9 +115,9 @@ abstract class BaseInspectorWidget(
     fun collapse(collapse: Boolean) {
         collapsibleWidget.setCollapsed(collapse, false)
         if (collapse) {
-            collapseBtn.setText(COLLAPSE_BTN_DOWN)
+            collapseBtn.setText(SymbolIcon.EXPAND_LESS.symbol)
         } else {
-            collapseBtn.setText(COLLAPSE_BTN_UP)
+            collapseBtn.setText(SymbolIcon.EXPAND_MORE.symbol)
         }
     }
 

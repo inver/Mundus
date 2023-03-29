@@ -17,10 +17,10 @@
 package com.mbrlabs.mundus.editor.tools.brushes;
 
 import com.badlogic.gdx.Gdx;
-import net.nevinsky.mundus.core.ModelBatch;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
-import com.mbrlabs.mundus.editor.utils.Fa;
+import com.mbrlabs.mundus.editor.ui.widgets.icon.SymbolIcon;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Marcus Brummer
@@ -28,14 +28,15 @@ import com.mbrlabs.mundus.editor.utils.Fa;
  */
 public class SmoothCircleBrush extends TerrainBrush {
 
-    public SmoothCircleBrush(EditorCtx ctx, String shaderKey, ModelBatch batch, CommandHistory history) {
-        super(ctx, shaderKey, batch, history, Gdx.files.internal("brushes/circle_smooth.png"),
+    public SmoothCircleBrush(EditorCtx ctx, String shaderKey, CommandHistory history) {
+        super(ctx, shaderKey, history, Gdx.files.internal("brushes/circle_smooth.png"),
                 "Smooth circle brush");
     }
 
     @Override
-    public String getIconFont() {
-        return Fa.Companion.getCIRCLE_O();
+    @NotNull
+    public SymbolIcon getIcon() {
+        return SymbolIcon.SMOOTH_CIRCLE;
     }
 
 }

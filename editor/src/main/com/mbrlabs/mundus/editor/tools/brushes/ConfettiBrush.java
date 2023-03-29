@@ -17,10 +17,10 @@
 package com.mbrlabs.mundus.editor.tools.brushes;
 
 import com.badlogic.gdx.Gdx;
-import net.nevinsky.mundus.core.ModelBatch;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
-import com.mbrlabs.mundus.editor.utils.Fa;
+import com.mbrlabs.mundus.editor.ui.widgets.icon.SymbolIcon;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Marcus Brummer
@@ -28,13 +28,14 @@ import com.mbrlabs.mundus.editor.utils.Fa;
  */
 public class ConfettiBrush extends TerrainBrush {
 
-    public ConfettiBrush(EditorCtx ctx, String shaderKey, ModelBatch batch, CommandHistory history) {
-        super(ctx, shaderKey, batch, history, Gdx.files.internal("brushes/confetti.png"), "Confetti brush");
+    public ConfettiBrush(EditorCtx ctx, String shaderKey, CommandHistory history) {
+        super(ctx, shaderKey, history, Gdx.files.internal("brushes/confetti.png"), "Confetti brush");
     }
 
     @Override
-    public String getIconFont() {
-        return Fa.Companion.getHASHTAG();
+    @NotNull
+    public SymbolIcon getIcon() {
+        return SymbolIcon.TAG;
     }
 
 

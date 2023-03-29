@@ -40,7 +40,7 @@ class ColorPickerField : VisTable() {
     var selectedColor: Color = Color.WHITE.cpy()
         set(value) {
             field.set(value)
-            textField.text = "#" + value.toString()
+            textField.text = "#$value"
         }
 
     /**
@@ -77,7 +77,6 @@ class ColorPickerField : VisTable() {
 
         textField.isDisabled = true
         setupUI()
-//        setupListeners()
     }
 
     /**
@@ -96,18 +95,4 @@ class ColorPickerField : VisTable() {
         add(textField).padRight(5f).fillX().expandX()
         add(cpBtn).row()
     }
-
-//    private fun setupListeners() {
-//        // selectedColor chooser button
-//        cpBtn.addListener(object : ClickListener() {
-//            override fun clicked(event: InputEvent?, x: Float, y: Float) {
-//                super.clicked(event, x, y)
-//                colorPicker.color = selectedColor
-//                colorPicker.listener = colorPickerListenerInternal
-//                appUi.addActor(colorPicker.fadeIn())
-//            }
-//        })
-//
-//    }
-
 }

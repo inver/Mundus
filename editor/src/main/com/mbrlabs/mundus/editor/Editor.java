@@ -31,7 +31,7 @@ import com.mbrlabs.mundus.editor.ui.modules.inspector.Inspector;
 import com.mbrlabs.mundus.editor.ui.modules.menubar.MenuBarPresenter;
 import com.mbrlabs.mundus.editor.ui.modules.menubar.MundusMenuBar;
 import com.mbrlabs.mundus.editor.ui.modules.outline.Outline;
-import com.mbrlabs.mundus.editor.ui.modules.toolbar.MundusToolbar;
+import com.mbrlabs.mundus.editor.ui.modules.toolbar.AppToolbar;
 import com.mbrlabs.mundus.editor.ui.widgets.MundusMultiSplitPane;
 import com.mbrlabs.mundus.editor.ui.widgets.MundusSplitPane;
 import com.mbrlabs.mundus.editor.utils.Compass;
@@ -66,7 +66,7 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
     private final MenuBarPresenter menuBarPresenter;
     private final DockBarPresenter dockBarPresenter;
     private final Outline outline;
-    private final MundusToolbar toolbar;
+    private final AppToolbar toolbar;
     private final StatusBar statusBar;
     private final Inspector inspector;
     private final AppEnvironment appEnvironment;

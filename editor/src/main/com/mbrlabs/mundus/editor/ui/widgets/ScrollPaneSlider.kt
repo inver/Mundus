@@ -26,7 +26,8 @@ import com.kotcrab.vis.ui.widget.VisSlider
  * @author Marcus Brummer
  * @version 04-02-2016
  */
-class ScrollPaneSlider(min: Float, max: Float, stepSize: Float, vertical: Boolean) : VisSlider(min, max, stepSize, vertical) {
+class ScrollPaneSlider(min: Float, max: Float, stepSize: Float, vertical: Boolean) :
+    VisSlider(min, max, stepSize, vertical) {
 
     init {
         addListener(object : InputListener() {

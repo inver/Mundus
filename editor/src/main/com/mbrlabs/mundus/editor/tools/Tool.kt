@@ -17,11 +17,11 @@
 package com.mbrlabs.mundus.editor.tools
 
 import com.badlogic.gdx.InputAdapter
-import net.nevinsky.mundus.core.ModelBatch
 import com.badlogic.gdx.utils.Disposable
 import com.mbrlabs.mundus.commons.scene3d.components.Renderable
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.history.CommandHistory
+import com.mbrlabs.mundus.editor.ui.widgets.icon.SymbolIcon
 
 /**
  * @author Marcus Brummer
@@ -30,7 +30,6 @@ import com.mbrlabs.mundus.editor.history.CommandHistory
 abstract class Tool(
     protected var ctx: EditorCtx,
     protected var shaderKey: String,
-    protected var batch: ModelBatch,
     protected var history: CommandHistory,
     val name: String
 ) : Renderable, InputAdapter(), Disposable {
@@ -38,7 +37,7 @@ abstract class Tool(
 //    protected var shader: Shader = shaderStorage.get(ShaderConstants.WIREFRAME)
 
     //    abstract val name: String
-    abstract val iconFont: String
+    abstract val icon: SymbolIcon
 
     abstract fun act()
     abstract fun onActivated()

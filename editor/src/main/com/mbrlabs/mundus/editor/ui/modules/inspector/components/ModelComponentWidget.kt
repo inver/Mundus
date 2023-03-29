@@ -16,10 +16,10 @@
 
 package com.mbrlabs.mundus.editor.ui.modules.inspector.components
 
-import com.kotcrab.vis.ui.widget.Separator.SeparatorStyle
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.mbrlabs.mundus.commons.scene3d.components.ModelComponent
+import com.mbrlabs.mundus.editor.config.UiComponentHolder
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.ui.AppUi
@@ -31,7 +31,7 @@ import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
  * @version 21-01-2016
  */
 class ModelComponentWidget(
-    separatorStyle: SeparatorStyle,
+    uiComponentHolder: UiComponentHolder,
     modelComponent: ModelComponent,
     private val ctx: EditorCtx,
     private val appUi: AppUi,
@@ -39,7 +39,7 @@ class ModelComponentWidget(
     private val assetManager: EditorAssetManager,
     private val previewGenerator: PreviewGenerator,
     entityId: Int
-) : ComponentWidget(separatorStyle, "Model Component", entityId) {
+) : ComponentWidget(uiComponentHolder, "Model Component", entityId) {
 
     private val materialContainer = VisTable()
 

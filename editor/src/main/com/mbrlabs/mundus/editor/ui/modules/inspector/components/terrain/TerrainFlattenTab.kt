@@ -27,10 +27,10 @@ import com.mbrlabs.mundus.editor.tools.brushes.TerrainBrush
  * @author Marcus Brummer
  * @version 30-01-2016
  */
-class TerrainFlattenTab(parent: TerrainComponentWidget) : Tab(false, false) {
+class TerrainFlattenTab : Tab(false, false) {
 
     private val table = VisTable()
-    val grid = TerrainBrushGrid(parent, TerrainBrush.BrushMode.FLATTEN)
+    val grid = TerrainBrushGrid(TerrainBrush.BrushMode.FLATTEN)
 
     init {
         table.align(Align.left)

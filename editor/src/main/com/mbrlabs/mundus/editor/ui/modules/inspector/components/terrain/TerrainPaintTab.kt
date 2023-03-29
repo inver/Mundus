@@ -42,7 +42,7 @@ class TerrainPaintTab(private val parentWidget: TerrainComponentWidget) : Tab(fa
     val textureGrid = TextureGrid<SplatTexture>(40, 5)
     val rightClickMenu = TextureRightClickMenu()
 
-    val grid = TerrainBrushGrid(parentWidget, TerrainBrush.BrushMode.PAINT)
+    val grid = TerrainBrushGrid(TerrainBrush.BrushMode.PAINT)
 
     init {
         root.align(Align.left)

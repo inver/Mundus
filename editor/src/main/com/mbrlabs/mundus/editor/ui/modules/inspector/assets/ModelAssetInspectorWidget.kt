@@ -18,12 +18,12 @@ package com.mbrlabs.mundus.editor.ui.modules.inspector.assets
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
-import com.kotcrab.vis.ui.widget.Separator.SeparatorStyle
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset
+import com.mbrlabs.mundus.editor.config.UiComponentHolder
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.tools.ToolManager
@@ -38,15 +38,14 @@ import com.mbrlabs.mundus.editor.ui.widgets.MaterialWidget
  * @version 13-10-2016
  */
 class ModelAssetInspectorWidget(
-    separatorStyle: SeparatorStyle?,
     private val ctx: EditorCtx,
     private val appUi: AppUi,
     private val assetManager: EditorAssetManager,
     private val assetSelectionDialog: AssetPickerDialog,
     private val toolManager: ToolManager,
+    uiComponentHolder: UiComponentHolder,
     private val previewGenerator: PreviewGenerator
-) :
-    BaseInspectorWidget(separatorStyle, "Model Asset") {
+) : BaseInspectorWidget(uiComponentHolder, "Model Asset") {
 
     private var modelAsset: ModelAsset? = null
 

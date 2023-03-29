@@ -2,7 +2,7 @@ package com.mbrlabs.mundus.editor.ui.widgets.colorPicker;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.mbrlabs.mundus.editor.config.UiWidgetsHolder;
+import com.mbrlabs.mundus.editor.config.UiComponentHolder;
 import com.mbrlabs.mundus.editor.ui.AppUi;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class ColorPickerPresenter {
 
     private final AppUi appUi;
-    private final UiWidgetsHolder widgetsHolder;
+    private final UiComponentHolder widgetsHolder;
 
     public void init(ColorPickerField field) {
         var colorPicker = widgetsHolder.getColorPicker();
@@ -26,6 +26,5 @@ public class ColorPickerPresenter {
                 appUi.addActor(colorPicker.fadeIn());
             }
         });
-
     }
 }

@@ -7,14 +7,14 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.components.Renderable;
 import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
-import net.nevinsky.mundus.core.builder.ArrowShapeBuilder;
 import net.nevinsky.mundus.core.ModelBatch;
 import net.nevinsky.mundus.core.ModelBuilder;
 import net.nevinsky.mundus.core.ModelInstance;
+import net.nevinsky.mundus.core.builder.ArrowShapeBuilder;
 
 public class CoordinateSystemComponent implements Renderable {
-    private static final int START_CONST = 10;
-    private static final int LINE_COUNT = 20;
+    private static final int START_CONST = 1;
+    private static final int LINE_COUNT = 2;
     private static final float ARROW_THICKNESS = 0.1f;
     private static final float ARROW_CAP_SIZE = 0.03f;
     private static final int ARROW_DIVISIONS = 16;

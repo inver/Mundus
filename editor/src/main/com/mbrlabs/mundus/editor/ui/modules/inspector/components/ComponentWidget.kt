@@ -16,7 +16,7 @@
 
 package com.mbrlabs.mundus.editor.ui.modules.inspector.components
 
-import com.kotcrab.vis.ui.widget.Separator.SeparatorStyle
+import com.mbrlabs.mundus.editor.config.UiComponentHolder
 import com.mbrlabs.mundus.editor.ui.modules.inspector.BaseInspectorWidget
 
 /**
@@ -24,10 +24,10 @@ import com.mbrlabs.mundus.editor.ui.modules.inspector.BaseInspectorWidget
  * @version 22-01-2016
  */
 abstract class ComponentWidget(
-    separatorStyle: SeparatorStyle,
+    uiComponentHolder: UiComponentHolder,
     title: String,
     var entityId: Int
-) : BaseInspectorWidget(separatorStyle, title) {
+) : BaseInspectorWidget(uiComponentHolder, title) {
 
     init {
         isDeletable = true

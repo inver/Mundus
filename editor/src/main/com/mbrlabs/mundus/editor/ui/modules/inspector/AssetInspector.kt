@@ -17,13 +17,13 @@
 package com.mbrlabs.mundus.editor.ui.modules.inspector
 
 import com.badlogic.gdx.utils.Align
-import com.kotcrab.vis.ui.widget.Separator
 import com.kotcrab.vis.ui.widget.VisTable
 import com.mbrlabs.mundus.commons.assets.Asset
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset
+import com.mbrlabs.mundus.editor.config.UiComponentHolder
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.tools.ToolManager
@@ -41,36 +41,36 @@ import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerPresenter
  * @version 13-10-2016
  */
 class AssetInspector(
-    separatorStyle: Separator.SeparatorStyle?,
     private val ctx: EditorCtx,
     private val appUi: AppUi,
     private val assetManager: EditorAssetManager,
     private val assetSelectionDialog: AssetPickerDialog,
     private val toolManager: ToolManager,
     private val previewGenerator: PreviewGenerator,
-    private val colorPickerPresenter: ColorPickerPresenter
+    private val colorPickerPresenter: ColorPickerPresenter,
+    uiComponentHolder: UiComponentHolder
 ) : VisTable() {
 
     private val materialWidget = MaterialAssetInspectorWidget(
-        separatorStyle,
         ctx,
         appUi,
         assetSelectionDialog,
         assetManager,
         previewGenerator,
+        uiComponentHolder,
         colorPickerPresenter
     )
     private val modelWidget = ModelAssetInspectorWidget(
-        separatorStyle,
         ctx,
         appUi,
         assetManager,
         assetSelectionDialog,
         toolManager,
+        uiComponentHolder,
         previewGenerator
     )
-    private val textureWidget = TextureAssetInspectorWidget(separatorStyle)
-    private val terrainWidget = TerrainAssetInspectorWidget(separatorStyle)
+    private val textureWidget = TextureAssetInspectorWidget(uiComponentHolder)
+    private val terrainWidget = TerrainAssetInspectorWidget(uiComponentHolder)
 
     var asset: Asset<*>? = null
         set(value) {

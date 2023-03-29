@@ -24,7 +24,6 @@ import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.mbrlabs.mundus.editor.events.GlobalBrushSettingsChangedEvent
 import com.mbrlabs.mundus.editor.tools.brushes.TerrainBrush
-import com.mbrlabs.mundus.editor.ui.widgets.FaTextButton
 import com.mbrlabs.mundus.editor.ui.widgets.ImprovedSlider
 
 /**
@@ -34,7 +33,7 @@ import com.mbrlabs.mundus.editor.ui.widgets.ImprovedSlider
 class TerrainBrushGrid() : VisTable(),
     GlobalBrushSettingsChangedEvent.GlobalBrushSettingsChangedListener {
 
-    var brushMode: TerrainBrush.BrushMode? = null
+    private var brushMode: TerrainBrush.BrushMode? = null
 
     val grid = GridGroup(40f, 0f)
     val strengthSlider = ImprovedSlider(0f, 1f, 0.1f)
@@ -62,7 +61,7 @@ class TerrainBrushGrid() : VisTable(),
         add(settingsTable).expand().fill().padLeft(5f).padRight(5f).padTop(5f).row()
     }
 
-    constructor(parent: TerrainComponentWidget, mode: TerrainBrush.BrushMode) : this() {
+    constructor(mode: TerrainBrush.BrushMode) : this() {
         this.brushMode = mode
     }
 
@@ -75,18 +74,11 @@ class TerrainBrushGrid() : VisTable(),
         strengthSlider.value = TerrainBrush.getStrength()
     }
 
-    fun addBrush(brush: TerrainBrush): BrushItem {
-        val res = BrushItem(brush)
-        grid.addActor(res)
-        return res
+    fun addBrush(brush: TerrainBrush): VisTable {
+        val res = VisTable()
+        TODO("Add brush button by using buttonFactory")
+//        add(FaTextButton(brush.icon))
+//        grid.addActor(res)
+//        return res
     }
-
-    /**
-     */
-    inner class BrushItem(brush: TerrainBrush) : VisTable() {
-        init {
-            add(FaTextButton(brush.iconFont))
-        }
-    }
-
 }

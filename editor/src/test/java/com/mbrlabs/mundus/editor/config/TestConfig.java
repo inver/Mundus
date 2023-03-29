@@ -1,7 +1,6 @@
 package com.mbrlabs.mundus.editor.config;
 
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import net.nevinsky.mundus.core.ModelBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -21,6 +20,7 @@ import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.ui.AppUi;
 import com.mbrlabs.mundus.editor.ui.PreviewGenerator;
 import com.mbrlabs.mundus.editor.ui.components.camera.CameraService;
+import net.nevinsky.mundus.core.ModelBatch;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -154,7 +154,7 @@ public class TestConfig {
     }
 
     @Bean
-    public UiWidgetsHolder uiWidgetsHolder() {
-        return mock(UiWidgetsHolder.class);
+    public UiComponentHolder uiWidgetsHolder() {
+        return mock(UiComponentHolder.class);
     }
 }

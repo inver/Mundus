@@ -16,7 +16,6 @@
 package com.mbrlabs.mundus.editor.tools;
 
 import com.badlogic.gdx.graphics.Color;
-import net.nevinsky.mundus.core.ModelBatch;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.events.EntityModifiedEvent;
 import com.mbrlabs.mundus.editor.events.EventBus;
@@ -51,8 +50,8 @@ public abstract class TransformTool extends SelectionTool {
     protected EntityModifiedEvent entityModifiedEvent;
 
     public TransformTool(EditorCtx ctx, String shaderKey, EntityPicker picker, ToolHandlePicker handlePicker,
-                         ModelBatch batch, CommandHistory history, EventBus eventBus, String name) {
-        super(ctx, shaderKey, picker, batch, history, eventBus, name);
+                         CommandHistory history, EventBus eventBus, String name) {
+        super(ctx, shaderKey, picker, history, eventBus, name);
         this.handlePicker = handlePicker;
 
         entityModifiedEvent = new EntityModifiedEvent(-1);

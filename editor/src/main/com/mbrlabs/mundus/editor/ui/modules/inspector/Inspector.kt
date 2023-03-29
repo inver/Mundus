@@ -24,7 +24,7 @@ import com.badlogic.gdx.utils.Align
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisScrollPane
 import com.kotcrab.vis.ui.widget.VisTable
-import com.mbrlabs.mundus.editor.config.UiWidgetsHolder
+import com.mbrlabs.mundus.editor.config.UiComponentHolder
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.events.AssetSelectedEvent
@@ -51,7 +51,7 @@ class Inspector(
     private val ctx: EditorCtx,
     private val assetManager: EditorAssetManager,
     private val appUi: AppUi,
-    private val uiWidgetsHolder: UiWidgetsHolder,
+    private val uiComponentHolder: UiComponentHolder,
     private val assetPickerDialog: AssetPickerDialog,
     private val toolManager: ToolManager,
     private val terrainWidgetPresenter: TerrainWidgetPresenter,
@@ -85,7 +85,7 @@ class Inspector(
         goInspector = GameObjectInspector(
             ctx,
             appUi,
-            uiWidgetsHolder,
+            uiComponentHolder,
             assetPickerDialog,
             assetManager,
             history,
@@ -94,14 +94,14 @@ class Inspector(
             colorPickerPresenter
         )
         assetInspector = AssetInspector(
-            uiWidgetsHolder.separatorStyle,
             ctx,
             appUi,
             assetManager,
             assetPickerDialog,
             toolManager,
             previewGenerator,
-            colorPickerPresenter
+            colorPickerPresenter,
+            uiComponentHolder
         )
 
         init()

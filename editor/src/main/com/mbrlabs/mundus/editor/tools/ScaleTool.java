@@ -34,12 +34,13 @@ import com.mbrlabs.mundus.editor.history.commands.ScaleCommand;
 import com.mbrlabs.mundus.editor.tools.picker.EntityPicker;
 import com.mbrlabs.mundus.editor.tools.picker.ToolHandlePicker;
 import com.mbrlabs.mundus.editor.ui.AppUi;
-import com.mbrlabs.mundus.editor.utils.Fa;
+import com.mbrlabs.mundus.editor.ui.widgets.icon.SymbolIcon;
 import com.mbrlabs.mundus.editor.utils.UsefulMeshs;
 import net.nevinsky.mundus.core.ModelBatch;
 import net.nevinsky.mundus.core.ModelBuilder;
 import net.nevinsky.mundus.core.ModelInstance;
 import net.nevinsky.mundus.core.model.Model;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -76,9 +77,9 @@ public class ScaleTool extends TransformTool {
     private ScaleCommand command;
 
     public ScaleTool(EditorCtx ctx, String shaderKey, EntityPicker picker, ToolHandlePicker handlePicker,
-                     ShapeRenderer shapeRenderer, ModelBatch batch, CommandHistory history, AppUi appUi,
+                     ShapeRenderer shapeRenderer, CommandHistory history, AppUi appUi,
                      EventBus eventBus) {
-        super(ctx, shaderKey, picker, handlePicker, batch, history, eventBus, NAME);
+        super(ctx, shaderKey, picker, handlePicker, history, eventBus, NAME);
 
         this.shapeRenderer = shapeRenderer;
         this.appUi = appUi;
@@ -358,8 +359,9 @@ public class ScaleTool extends TransformTool {
     }
 
     @Override
-    public String getIconFont() {
-        return Fa.Companion.getEXPAND();
+    @NotNull
+    public SymbolIcon getIcon() {
+        return SymbolIcon.EXPAND;
     }
 
     @Override
@@ -396,7 +398,7 @@ public class ScaleTool extends TransformTool {
 
         @Override
         public void renderPick(ModelBatch modelBatch, ShaderHolder shaders) {
-            getBatch().render(modelInstance, shaders.get(getShaderKey()));
+            modelBatch.render(modelInstance, shaders.get(getShaderKey()));
         }
 
         @Override

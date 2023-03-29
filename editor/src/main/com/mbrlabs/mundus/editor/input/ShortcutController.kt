@@ -22,7 +22,7 @@ import com.mbrlabs.mundus.editor.core.registry.Registry
 import com.mbrlabs.mundus.editor.history.CommandHistory
 import com.mbrlabs.mundus.editor.tools.ToolManager
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.ExportDialog
-import com.mbrlabs.mundus.editor.ui.modules.toolbar.MundusToolbar
+import com.mbrlabs.mundus.editor.ui.modules.toolbar.AppToolbar
 import com.mbrlabs.mundus.editor.utils.Toaster
 import org.springframework.stereotype.Component
 
@@ -38,7 +38,7 @@ class ShortcutController(
     private val toolManager: ToolManager,
     private val exportDialog: ExportDialog,
     private val toaster: Toaster,
-    private val toolbar: MundusToolbar
+    private val toolbar: AppToolbar
 ) : KeyboardLayoutInputAdapter(registry) {
 
     private var isCtrlPressed = false

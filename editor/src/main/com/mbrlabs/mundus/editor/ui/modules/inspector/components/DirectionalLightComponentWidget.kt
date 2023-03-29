@@ -16,10 +16,10 @@
 
 package com.mbrlabs.mundus.editor.ui.modules.inspector.components
 
-import com.kotcrab.vis.ui.widget.Separator
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextField
+import com.mbrlabs.mundus.editor.config.UiComponentHolder
 import com.mbrlabs.mundus.editor.ui.widgets.FloatFieldWithLabel
 import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerField
 import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerPresenter
@@ -29,10 +29,10 @@ import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerPresenter
  * @version 07-07-2017
  */
 class DirectionalLightComponentWidget(
-    separatorStyle: Separator.SeparatorStyle,
+    uiComponentHolder: UiComponentHolder,
     entityId: Int,
     colorPickerPresenter: ColorPickerPresenter
-) : ComponentWidget(separatorStyle, "Directional Light Component", entityId) {
+) : ComponentWidget(uiComponentHolder, "Directional Light Component", entityId) {
 
     private val FIELD_SIZE = 65
     private val dirX = FloatFieldWithLabel("x", FIELD_SIZE)

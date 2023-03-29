@@ -16,18 +16,17 @@
 
 package com.mbrlabs.mundus.editor.ui.modules.inspector.assets
 
-import com.kotcrab.vis.ui.widget.Separator
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset
-import com.mbrlabs.mundus.commons.scene3d.GameObject
+import com.mbrlabs.mundus.editor.config.UiComponentHolder
 import com.mbrlabs.mundus.editor.ui.modules.inspector.BaseInspectorWidget
 
 /**
  * @author Marcus Brummer
  * @version 15-10-2016
  */
-class TerrainAssetInspectorWidget(separatorStyle: Separator.SeparatorStyle?) :
-    BaseInspectorWidget(separatorStyle, "Terrain Asset") {
+class TerrainAssetInspectorWidget(uiComponentHolder: UiComponentHolder) :
+    BaseInspectorWidget(uiComponentHolder, "Terrain Asset") {
 
     private val name = VisLabel()
     private var terrain: TerrainAsset? = null

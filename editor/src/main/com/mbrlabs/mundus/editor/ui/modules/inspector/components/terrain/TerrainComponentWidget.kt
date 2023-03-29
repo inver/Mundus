@@ -16,11 +16,11 @@
 
 package com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain
 
-import com.kotcrab.vis.ui.widget.Separator.SeparatorStyle
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.tabbedpane.Tab
 import com.kotcrab.vis.ui.widget.tabbedpane.TabbedPane
 import com.kotcrab.vis.ui.widget.tabbedpane.TabbedPaneListener
+import com.mbrlabs.mundus.editor.config.UiComponentHolder
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.ComponentWidget
 
 /**
@@ -28,16 +28,16 @@ import com.mbrlabs.mundus.editor.ui.modules.inspector.components.ComponentWidget
  * @version 29-01-2016
  */
 class TerrainComponentWidget(
-    separatorStyle: SeparatorStyle,
+    uiComponentHolder: UiComponentHolder,
     entityId: Int,
     private val terrainWidgetPresenter: TerrainWidgetPresenter
-) : ComponentWidget(separatorStyle, "Terrain Component", entityId), TabbedPaneListener {
+) : ComponentWidget(uiComponentHolder, "Terrain Component", entityId), TabbedPaneListener {
 
     private val tabbedPane = TabbedPane()
     private val tabContainer = VisTable()
 
     private val raiseLowerTab = TerrainUpDownTab(this)
-    private val flattenTab = TerrainFlattenTab(this)
+    private val flattenTab = TerrainFlattenTab()
     private val paintTab = TerrainPaintTab(this)
     private val genTab = TerrainGenTab(this)
     private val settingsTab = TerrainSettingsTab(this)

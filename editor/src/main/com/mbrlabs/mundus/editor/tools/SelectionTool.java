@@ -16,7 +16,6 @@
 package com.mbrlabs.mundus.editor.tools;
 
 import com.badlogic.gdx.Input;
-import net.nevinsky.mundus.core.ModelBatch;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
@@ -24,7 +23,9 @@ import com.mbrlabs.mundus.editor.events.EntitySelectedEvent;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.tools.picker.EntityPicker;
-import com.mbrlabs.mundus.editor.utils.Fa;
+import com.mbrlabs.mundus.editor.ui.widgets.icon.SymbolIcon;
+import net.nevinsky.mundus.core.ModelBatch;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Marcus Brummer
@@ -36,16 +37,16 @@ public class SelectionTool extends Tool {
     private final EntityPicker picker;
     protected final EventBus eventBus;
 
-    public SelectionTool(EditorCtx ctx, String shaderKey, EntityPicker picker, ModelBatch batch,
+    public SelectionTool(EditorCtx ctx, String shaderKey, EntityPicker picker,
                          CommandHistory history, EventBus eventBus, String name) {
-        super(ctx, shaderKey, batch, history, name);
+        super(ctx, shaderKey, history, name);
         this.picker = picker;
         this.eventBus = eventBus;
     }
 
-    public SelectionTool(EditorCtx ctx, String shaderKey, EntityPicker picker, ModelBatch batch,
-                         CommandHistory history, EventBus eventBus) {
-        this(ctx, shaderKey, picker, batch, history, eventBus, NAME);
+    public SelectionTool(EditorCtx ctx, String shaderKey, EntityPicker picker, CommandHistory history,
+                         EventBus eventBus) {
+        this(ctx, shaderKey, picker, history, eventBus, NAME);
     }
 
     public void entitySelected(int entityId) {
@@ -53,8 +54,9 @@ public class SelectionTool extends Tool {
     }
 
     @Override
-    public String getIconFont() {
-        return Fa.Companion.getMOUSE_POINTER();
+    @NotNull
+    public SymbolIcon getIcon() {
+        return SymbolIcon.POINTER;
     }
 
     @Override
@@ -62,23 +64,23 @@ public class SelectionTool extends Tool {
         if (getCtx().getSelectedEntity() == null) {
             return;
         }
-        getBatch().begin(getCtx().getCurrent().getCamera());
+        batch.begin(getCtx().getCurrent().getCamera());
 
         //todo
 //        for (GameObject go : getCtx().getSelectedEntityId()) {
 //            // model component
 //            ModelComponent mc = (ModelComponent) go.findComponentByType(Component.Type.MODEL);
 //            if (mc != null) {
-//                getBatch().render(mc.getModelInstance(), shaders.get(getShaderKey()));
+//                batch.render(mc.getModelInstance(), shaders.get(getShaderKey()));
 //            }
 //
 //            // terrainAsset component
 //            TerrainComponent tc = (TerrainComponent) go.findComponentByType(Component.Type.TERRAIN);
 //            if (tc != null) {
-//                getBatch().render(tc.getTerrain().getTerrain(), shaders.get(getShaderKey()));
+//                batch.render(tc.getTerrain().getTerrain(), shaders.get(getShaderKey()));
 //            }
 //        }
-        getBatch().end();
+        batch.end();
     }
 
     @Override

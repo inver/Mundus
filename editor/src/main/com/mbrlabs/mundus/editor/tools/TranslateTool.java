@@ -35,11 +35,12 @@ import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.history.commands.TranslateCommand;
 import com.mbrlabs.mundus.editor.tools.picker.EntityPicker;
 import com.mbrlabs.mundus.editor.tools.picker.ToolHandlePicker;
-import com.mbrlabs.mundus.editor.utils.Fa;
+import com.mbrlabs.mundus.editor.ui.widgets.icon.SymbolIcon;
 import net.nevinsky.mundus.core.ModelBatch;
 import net.nevinsky.mundus.core.ModelBuilder;
 import net.nevinsky.mundus.core.ModelInstance;
 import net.nevinsky.mundus.core.model.Model;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -71,9 +72,9 @@ public class TranslateTool extends TransformTool {
     private TranslateCommand command;
 
     public TranslateTool(EditorCtx ctx, String shaderKey, EntityPicker picker, ToolHandlePicker handlePicker,
-                         ModelBatch batch, CommandHistory history, EventBus eventBus) {
+                         CommandHistory history, EventBus eventBus) {
 
-        super(ctx, shaderKey, picker, handlePicker, batch, history, eventBus, NAME);
+        super(ctx, shaderKey, picker, handlePicker, history, eventBus, NAME);
 
         ModelBuilder modelBuilder = new ModelBuilder();
 
@@ -102,8 +103,9 @@ public class TranslateTool extends TransformTool {
     }
 
     @Override
-    public String getIconFont() {
-        return Fa.Companion.getARROWS();
+    @NotNull
+    public SymbolIcon getIcon() {
+        return SymbolIcon.TRANSLATE;
     }
 
     @Override
@@ -131,14 +133,14 @@ public class TranslateTool extends TransformTool {
         if (getCtx().getSelectedEntityId() < 0) {
             return;
         }
-        getBatch().begin(getCtx().getCurrent().getCamera());
+        batch.begin(getCtx().getCurrent().getCamera());
         GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
         xHandle.render(batch, environment, shaders, delta);
         yHandle.render(batch, environment, shaders, delta);
         zHandle.render(batch, environment, shaders, delta);
         xzPlaneHandle.render(batch, environment, shaders, delta);
 
-        getBatch().end();
+        batch.end();
     }
 
     @Override

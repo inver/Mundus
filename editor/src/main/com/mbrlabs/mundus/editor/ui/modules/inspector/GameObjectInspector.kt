@@ -20,7 +20,7 @@ import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Array
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
-import com.mbrlabs.mundus.editor.config.UiWidgetsHolder
+import com.mbrlabs.mundus.editor.config.UiComponentHolder
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.history.CommandHistory
@@ -40,7 +40,7 @@ import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerPresenter
 class GameObjectInspector(
     private val ctx: EditorCtx,
     private val appUi: AppUi,
-    private val uiWidgetsHolder: UiWidgetsHolder,
+    private val uiComponentHolder: UiComponentHolder,
     private val assetPickerDialog: AssetPickerDialog,
     private val assetManager: EditorAssetManager,
     private val history: CommandHistory,
@@ -50,7 +50,7 @@ class GameObjectInspector(
 ) : VisTable() {
 
     private val identifierWidget = IdentifierWidget(ctx)
-    private val transformWidget = TransformWidget(uiWidgetsHolder.separatorStyle, ctx)
+    private val transformWidget = TransformWidget(uiComponentHolder, ctx)
     private val componentWidgets: Array<ComponentWidget> = Array()
     private val addComponentBtn = VisTextButton("Add Component")
     private val componentTable = VisTable()

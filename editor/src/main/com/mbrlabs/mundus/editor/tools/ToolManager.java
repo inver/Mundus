@@ -61,26 +61,25 @@ public class ToolManager extends InputAdapter implements Disposable, Renderable 
     private final InputManager inputManager;
 
     public ToolManager(EditorCtx ctx, AppUi appUi, EventBus eventBus, InputManager inputManager,
-                       EntityPicker picker,
-                       ToolHandlePicker toolHandlePicker, ModelBatch modelBatch, ShapeRenderer shapeRenderer,
+                       EntityPicker picker, ToolHandlePicker toolHandlePicker, ShapeRenderer shapeRenderer,
                        CommandHistory history) {
         this.ctx = ctx;
         this.inputManager = inputManager;
 
         terrainBrushes = new ArrayList<>();
-        terrainBrushes.add(new SmoothCircleBrush(ctx, ShaderConstants.TERRAIN, modelBatch, history));
-        terrainBrushes.add(new CircleBrush(ctx, ShaderConstants.TERRAIN, modelBatch, history));
-        terrainBrushes.add(new StarBrush(ctx, ShaderConstants.TERRAIN, modelBatch, history));
-        terrainBrushes.add(new ConfettiBrush(ctx, ShaderConstants.TERRAIN, modelBatch, history));
+        terrainBrushes.add(new SmoothCircleBrush(ctx, ShaderConstants.TERRAIN, history));
+        terrainBrushes.add(new CircleBrush(ctx, ShaderConstants.TERRAIN, history));
+        terrainBrushes.add(new StarBrush(ctx, ShaderConstants.TERRAIN, history));
+        terrainBrushes.add(new ConfettiBrush(ctx, ShaderConstants.TERRAIN, history));
 
-        modelPlacementTool = new ModelPlacementTool(ctx, ShaderConstants.MODEL, modelBatch, history, appUi, eventBus);
-        selectionTool = new SelectionTool(ctx, ShaderConstants.WIREFRAME, picker, modelBatch, history, eventBus);
-        translateTool = new TranslateTool(ctx, ShaderConstants.WIREFRAME, picker, toolHandlePicker, modelBatch, history,
+        modelPlacementTool = new ModelPlacementTool(ctx, ShaderConstants.MODEL, history, appUi, eventBus);
+        selectionTool = new SelectionTool(ctx, ShaderConstants.WIREFRAME, picker, history, eventBus);
+        translateTool = new TranslateTool(ctx, ShaderConstants.WIREFRAME, picker, toolHandlePicker, history,
                 eventBus);
-        rotateTool = new RotateTool(ctx, ShaderConstants.WIREFRAME, picker, toolHandlePicker, shapeRenderer, modelBatch,
-                history, eventBus);
-        scaleTool = new ScaleTool(ctx, ShaderConstants.WIREFRAME, picker, toolHandlePicker, shapeRenderer, modelBatch,
-                history, appUi, eventBus);
+        rotateTool = new RotateTool(ctx, ShaderConstants.WIREFRAME, picker, toolHandlePicker, shapeRenderer, history,
+                eventBus);
+        scaleTool = new ScaleTool(ctx, ShaderConstants.WIREFRAME, picker, toolHandlePicker,
+                shapeRenderer, history, appUi, eventBus);
     }
 
     public void activateTool(Tool tool) {
