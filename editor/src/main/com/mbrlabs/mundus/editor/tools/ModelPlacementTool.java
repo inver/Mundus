@@ -135,7 +135,8 @@ public class ModelPlacementTool extends Tool {
 
         final Ray ray = getCtx().getViewport().getPickRay(screenX, screenY);
 //        if (context.getCurrentScene().terrains.size > 0 && modelInstance != null) {
-//            MeshPartBuilder.VertexInfo vi = TerrainUtils.getRayIntersectionAndUp(context.getCurrentScene().terrains, ray);
+//            MeshPartBuilder.VertexInfo vi = TerrainUtils.getRayIntersectionAndUp
+//            (context.getCurrentScene().terrains, ray);
 //            if (vi != null) {
 //                if (shouldRespectTerrainSlope) {
 //                    modelInstance.transform.setToLookAt(DEFAULT_ORIENTATION, vi.normal);

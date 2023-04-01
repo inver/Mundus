@@ -99,11 +99,13 @@
 //        //                    float posZ = Float.valueOf(positionZ.getText());
 //        //
 //        //                    final ProjectContext projectContext = projectManager.current;
-//        //                    Terrain terrainAsset = TerrainUtils.createTerrain(projectContext.obtainID(), nom, width, depth, res);
+//        //                    Terrain terrainAsset = TerrainUtils.createTerrain(projectContext.obtainID(), nom,
+//        width, depth, res);
 //        //                    terrainAsset.transform.setTranslation(posX, 0, posZ);
 //        //                    projectContext.terrains.add(terrainAsset);
 //        //                    projectContext.getCurrentScene().terrains.add(terrainAsset);
-//        //                    GameObject terrainGO = TerrainUtils.createTerrainGO(projectContext.getCurrentScene().sceneGraph,
+//        //                    GameObject terrainGO = TerrainUtils.createTerrainGO(projectContext.getCurrentScene()
+//        .sceneGraph,
 //        //                            shaders.terrainShader, projectContext.obtainID(), nom, terrainAsset);
 //        //                    projectContext.getCurrentScene().sceneGraph.addGameObject(terrainGO);
 //        //

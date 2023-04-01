@@ -41,7 +41,9 @@ import org.apache.commons.io.FilenameUtils;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-import static com.mbrlabs.mundus.editor.core.ProjectConstants.*;
+import static com.mbrlabs.mundus.editor.core.ProjectConstants.DEFAULT_SKYBOX_NAME;
+import static com.mbrlabs.mundus.editor.core.ProjectConstants.PROJECT_ASSETS_DIR;
+import static com.mbrlabs.mundus.editor.core.ProjectConstants.PROJECT_SCENES_DIR;
 
 /**
  * Manages Mundus projects and scenes.

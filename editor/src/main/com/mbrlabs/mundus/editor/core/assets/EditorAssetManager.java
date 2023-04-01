@@ -3,7 +3,11 @@ package com.mbrlabs.mundus.editor.core.assets;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.files.FileHandle;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mbrlabs.mundus.commons.assets.*;
+import com.mbrlabs.mundus.commons.assets.AppFileHandle;
+import com.mbrlabs.mundus.commons.assets.Asset;
+import com.mbrlabs.mundus.commons.assets.AssetConstants;
+import com.mbrlabs.mundus.commons.assets.AssetManager;
+import com.mbrlabs.mundus.commons.assets.AssetType;
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset;
 import com.mbrlabs.mundus.commons.assets.material.MaterialAssetLoader;
 import com.mbrlabs.mundus.commons.assets.meta.Meta;
@@ -29,7 +33,13 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 import static com.mbrlabs.mundus.editor.core.ProjectConstants.BUNDLED_FOLDER;
 

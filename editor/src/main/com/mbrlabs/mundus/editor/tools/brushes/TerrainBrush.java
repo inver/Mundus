@@ -198,7 +198,8 @@ public abstract class TerrainBrush extends Tool {
 //                    if (diff <= 1f) {
 //                        terrain.heightData[index] = heightSample;
 //                    } else if (diff > 1f) {
-//                        final float elevation = getValueOfBrushPixmap(brushPos.x, brushPos.z, vertexPos.x, vertexPos.z,
+//                        final float elevation = getValueOfBrushPixmap(brushPos.x, brushPos.z, vertexPos.x,
+//                        vertexPos.z,
 //                                radius);
 //                        // current height is lower than sample
 //                        if (heightSample > terrain.heightData[index]) {

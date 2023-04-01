@@ -132,7 +132,8 @@ public class ScaleTool extends TransformTool {
 //                    shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 //                    shapeRenderer.setColor(COLOR_X);
 //                    shapeRenderer.setProjectionMatrix(shapeRenderMat);
-//                    shapeRenderer.rectLine(pivot.x, pivot.y, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(),
+//                    shapeRenderer.rectLine(pivot.x, pivot.y, Gdx.input.getX(), Gdx.graphics.getHeight()
+//                    - Gdx.input.getY(),
 //                            2);
 //                    shapeRenderer.end();
 //                    break;
@@ -140,7 +141,8 @@ public class ScaleTool extends TransformTool {
 //                    shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 //                    shapeRenderer.setColor(COLOR_Y);
 //                    shapeRenderer.setProjectionMatrix(shapeRenderMat);
-//                    shapeRenderer.rectLine(pivot.x, pivot.y, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(),
+//                    shapeRenderer.rectLine(pivot.x, pivot.y, Gdx.input.getX(), Gdx.graphics.getHeight() -
+//                    Gdx.input.getY(),
 //                            2);
 //                    shapeRenderer.end();
 //                    break;
@@ -148,7 +150,8 @@ public class ScaleTool extends TransformTool {
 //                    shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 //                    shapeRenderer.setColor(COLOR_Z);
 //                    shapeRenderer.setProjectionMatrix(shapeRenderMat);
-//                    shapeRenderer.rectLine(pivot.x, pivot.y, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(),
+//                    shapeRenderer.rectLine(pivot.x, pivot.y, Gdx.input.getX(), Gdx.graphics.getHeight() -
+//                    Gdx.input.getY(),
 //                            2);
 //                    shapeRenderer.end();
 //                    break;
@@ -156,7 +159,8 @@ public class ScaleTool extends TransformTool {
 //                    shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 //                    shapeRenderer.setColor(COLOR_XYZ);
 //                    shapeRenderer.setProjectionMatrix(shapeRenderMat);
-//                    shapeRenderer.rectLine(pivot.x, pivot.y, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(),
+//                    shapeRenderer.rectLine(pivot.x, pivot.y, Gdx.input.getX(), Gdx.graphics.getHeight() -
+//                    Gdx.input.getY(),
 //                            2);
 //                    shapeRenderer.end();
 //                    break;

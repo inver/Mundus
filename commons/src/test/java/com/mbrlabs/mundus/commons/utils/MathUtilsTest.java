@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class MathUtilsTest {
     @Test
@@ -24,7 +24,7 @@ public class MathUtilsTest {
 
     @Test
     public void angle() throws Exception {
-        assertEquals(45.0f, MathUtils.angle(0.0f,0.0f,1.0f,1.0f), 0.0f);
+        assertEquals(45.0f, MathUtils.angle(0.0f, 0.0f, 1.0f, 1.0f), 0.0f);
     }
 
 }

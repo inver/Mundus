@@ -66,7 +66,8 @@ public final class Image {
 //    public static void main(String[] args) {
 //        String imagePath;
 //        if (args.length == 0) {
-//            System.out.println("Use 'ant demo -Dclass=org.lwjgl.demo.stb.Image -Dargs=<path>' to load a different image.\n");
+//            System.out.println("Use 'ant demo -Dclass=org.lwjgl.demo.stb.Image -Dargs=<path>'
+//            to load a different image.\n");
 //            imagePath = "lwjgl32.png";
 //        } else {
 //            imagePath = args[0];
@@ -252,7 +253,8 @@ public final class Image {
 //                memFree(input_pixels);
 //            }
 //
-//            glTexImage2D(GL_TEXTURE_2D, ++mipmapLevel, format, output_w, output_h, 0, format, GL_UNSIGNED_BYTE, output_pixels);
+//            glTexImage2D(GL_TEXTURE_2D, ++mipmapLevel, format, output_w, output_h, 0, format,
+//            GL_UNSIGNED_BYTE, output_pixels);
 //
 //            input_pixels = output_pixels;
 //            input_w = output_w;

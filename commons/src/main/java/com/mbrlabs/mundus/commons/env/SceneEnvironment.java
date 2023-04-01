@@ -17,7 +17,11 @@
 package com.mbrlabs.mundus.commons.env;
 
 import com.badlogic.gdx.graphics.g3d.Environment;
-import com.mbrlabs.mundus.commons.env.lights.*;
+import com.mbrlabs.mundus.commons.env.lights.AmbientLight;
+import com.mbrlabs.mundus.commons.env.lights.DirectionalLight;
+import com.mbrlabs.mundus.commons.env.lights.DirectionalLightsAttribute;
+import com.mbrlabs.mundus.commons.env.lights.SpotLight;
+import com.mbrlabs.mundus.commons.env.lights.SunLightsAttribute;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 

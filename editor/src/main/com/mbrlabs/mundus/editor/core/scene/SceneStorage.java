@@ -43,7 +43,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.nio.file.Paths;
 
-import static com.mbrlabs.mundus.editor.core.ProjectConstants.*;
+import static com.mbrlabs.mundus.editor.core.ProjectConstants.DEFAULT_SCENE_NAME;
+import static com.mbrlabs.mundus.editor.core.ProjectConstants.DEFAULT_SKYBOX_NAME;
+import static com.mbrlabs.mundus.editor.core.ProjectConstants.PROJECT_ASSETS_DIR;
+import static com.mbrlabs.mundus.editor.core.ProjectConstants.PROJECT_SCENES_DIR;
+import static com.mbrlabs.mundus.editor.core.ProjectConstants.PROJECT_SCENE_EXTENSION;
 
 @Slf4j
 @RequiredArgsConstructor
