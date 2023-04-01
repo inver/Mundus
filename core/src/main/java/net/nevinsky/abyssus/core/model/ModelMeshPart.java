@@ -18,6 +18,6 @@ package net.nevinsky.abyssus.core.model;
 
 public class ModelMeshPart {
     public String id;
-    public short[] indices;
+    public int[] indices;
     public int primitiveType;
 }

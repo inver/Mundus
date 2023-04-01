@@ -233,9 +233,9 @@ public class AssimpModelLoader implements AppModelLoader {
 
         var part = new ModelMeshPart();
         part.id = UUID.randomUUID().toString();
-        part.indices = new short[resIndices.size()];
+        part.indices = new int[resIndices.size()];
         for (int i = 0; i < resIndices.size(); i++) {
-            part.indices[i] = Integer.valueOf(resIndices.get(i)).shortValue();
+            part.indices[i] = resIndices.get(i);
         }
         part.primitiveType = GL20.GL_TRIANGLES;
 

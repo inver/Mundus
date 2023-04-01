@@ -51,14 +51,14 @@ public class BoxShapeBuilder extends BaseShapeBuilder {
                              VertexInfo corner110, VertexInfo corner001, VertexInfo corner011, VertexInfo corner101,
                              VertexInfo corner111) {
         builder.ensureVertices(8);
-        final short i000 = builder.vertex(corner000);
-        final short i100 = builder.vertex(corner100);
-        final short i110 = builder.vertex(corner110);
-        final short i010 = builder.vertex(corner010);
-        final short i001 = builder.vertex(corner001);
-        final short i101 = builder.vertex(corner101);
-        final short i111 = builder.vertex(corner111);
-        final short i011 = builder.vertex(corner011);
+        final int i000 = builder.vertex(corner000);
+        final int i100 = builder.vertex(corner100);
+        final int i110 = builder.vertex(corner110);
+        final int i010 = builder.vertex(corner010);
+        final int i001 = builder.vertex(corner001);
+        final int i101 = builder.vertex(corner101);
+        final int i111 = builder.vertex(corner111);
+        final int i011 = builder.vertex(corner011);
 
         final int primitiveType = builder.getPrimitiveType();
         if (primitiveType == GL20.GL_LINES) {

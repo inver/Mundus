@@ -274,11 +274,11 @@ public class EllipseShapeBuilder extends BaseShapeBuilder {
         currEx.uv.set(.5f, .5f);
         currEx.position.set(centerX, centerY, centerZ);
         currEx.normal.set(normalX, normalY, normalZ);
-        final short center = builder.vertex(currEx);
+        final int center = builder.vertex(currEx);
         float angle = 0f;
         final float us = 0.5f * (innerWidth / width);
         final float vs = 0.5f * (innerHeight / height);
-        short i1, i2 = 0, i3 = 0, i4 = 0;
+        int i1, i2 = 0, i3 = 0, i4 = 0;
         for (int i = 0; i <= divisions; i++) {
             angle = ao + step * i;
             final float x = MathUtils.cos(angle);

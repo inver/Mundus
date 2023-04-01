@@ -32,8 +32,8 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.IntIntMap;
-import com.badlogic.gdx.utils.ShortArray;
 import net.nevinsky.abyssus.core.builder.ArrowShapeBuilder;
 import net.nevinsky.abyssus.core.builder.BoxShapeBuilder;
 import net.nevinsky.abyssus.core.builder.CapsuleShapeBuilder;
@@ -61,7 +61,7 @@ public class MeshBuilder implements MeshPartBuilder {
      */
     public static final int MAX_INDEX = MAX_VERTICES - 1;
 
-    private final static ShortArray tmpIndices = new ShortArray();
+    private final static IntArray tmpIndices = new IntArray();
     private final static FloatArray tmpVertices = new FloatArray();
 
     private final VertexInfo vertTmp1 = new VertexInfo();
@@ -82,7 +82,7 @@ public class MeshBuilder implements MeshPartBuilder {
     /**
      * The indices to construct, no size checking is done
      */
-    private final ShortArray indices = new ShortArray();
+    private final IntArray indices = new IntArray();
     /**
      * The size (in number of floats) of each vertex
      */
@@ -396,11 +396,11 @@ public class MeshBuilder implements MeshPartBuilder {
     /**
      * Get a copy of the indices built so far.
      *
-     * @param out        The short array to receive the copy of the indices, must be at least `destOffset` +
+     * @param out        The int array to receive the copy of the indices, must be at least `destOffset` +
      *                   {@link #getNumIndices()} in size.
      * @param destOffset The offset (number of shorts) in the out array where to start copying
      */
-    public void getIndices(short[] out, int destOffset) {
+    public void getIndices(int[] out, int destOffset) {
         if (attributes == null) throw new GdxRuntimeException("Must be called in between #begin and #end");
         if ((destOffset < 0) || (destOffset > out.length - indices.size))
             throw new GdxRuntimeException("Array too small or offset out of range");
@@ -412,7 +412,7 @@ public class MeshBuilder implements MeshPartBuilder {
      * not rely on the length of the array. Instead use {@link #getNumIndices()} to calculate the usable size of the
      * array. Must be called in between the call to #begin and #end.
      */
-    protected short[] getIndices() {
+    protected int[] getIndices() {
         return indices.items;
     }
 
@@ -567,8 +567,8 @@ public class MeshBuilder implements MeshPartBuilder {
     private int lastIndex = -1;
 
     @Override
-    public short lastIndex() {
-        return (short) lastIndex;
+    public int lastIndex() {
+        return (int) lastIndex;
     }
 
     private final static Vector3 vTmp = new Vector3();
@@ -641,7 +641,7 @@ public class MeshBuilder implements MeshPartBuilder {
     private final Vector3 tmpNormal = new Vector3();
 
     @Override
-    public short vertex(Vector3 pos, Vector3 nor, Color col, Vector2 uv) {
+    public int vertex(Vector3 pos, Vector3 nor, Color col, Vector2 uv) {
         if (vindex > MAX_INDEX) throw new GdxRuntimeException("Too many vertices used");
 
         vertex[posOffset] = pos.x;
@@ -672,37 +672,37 @@ public class MeshBuilder implements MeshPartBuilder {
         }
 
         addVertex(vertex, 0);
-        return (short) lastIndex;
+        return (int) lastIndex;
     }
 
     @Override
-    public short vertex(final float... values) {
+    public int vertex(final float... values) {
         final int n = values.length - stride;
         for (int i = 0; i <= n; i += stride)
             addVertex(values, i);
-        return (short) lastIndex;
+        return (int) lastIndex;
     }
 
     @Override
-    public short vertex(final VertexInfo info) {
+    public int vertex(final VertexInfo info) {
         return vertex(info.hasPosition ? info.position : null, info.hasNormal ? info.normal : null,
                 info.hasColor ? info.color : null, info.hasUV ? info.uv : null);
     }
 
     @Override
-    public void index(final short value) {
+    public void index(final int value) {
         indices.add(value);
     }
 
     @Override
-    public void index(final short value1, final short value2) {
+    public void index(final int value1, final int value2) {
         ensureIndices(2);
         indices.add(value1);
         indices.add(value2);
     }
 
     @Override
-    public void index(final short value1, final short value2, final short value3) {
+    public void index(final int value1, final int value2, final int value3) {
         ensureIndices(3);
         indices.add(value1);
         indices.add(value2);
@@ -710,7 +710,7 @@ public class MeshBuilder implements MeshPartBuilder {
     }
 
     @Override
-    public void index(final short value1, final short value2, final short value3, final short value4) {
+    public void index(final int value1, final int value2, final int value3, final int value4) {
         ensureIndices(4);
         indices.add(value1);
         indices.add(value2);
@@ -719,7 +719,7 @@ public class MeshBuilder implements MeshPartBuilder {
     }
 
     @Override
-    public void index(short value1, short value2, short value3, short value4, short value5, short value6) {
+    public void index(int value1, int value2, int value3, int value4, int value5, int value6) {
         ensureIndices(6);
         indices.add(value1);
         indices.add(value2);
@@ -730,8 +730,8 @@ public class MeshBuilder implements MeshPartBuilder {
     }
 
     @Override
-    public void index(short value1, short value2, short value3, short value4, short value5, short value6, short value7,
-                      short value8) {
+    public void index(int value1, int value2, int value3, int value4, int value5, int value6, int value7,
+                      int value8) {
         ensureIndices(8);
         indices.add(value1);
         indices.add(value2);
@@ -744,7 +744,7 @@ public class MeshBuilder implements MeshPartBuilder {
     }
 
     @Override
-    public void line(short index1, short index2) {
+    public void line(int index1, int index2) {
         if (primitiveType != GL20.GL_LINES) throw new GdxRuntimeException("Incorrect primitive type");
         index(index1, index2);
     }
@@ -772,7 +772,7 @@ public class MeshBuilder implements MeshPartBuilder {
     }
 
     @Override
-    public void triangle(short index1, short index2, short index3) {
+    public void triangle(int index1, int index2, int index3) {
         if (primitiveType == GL20.GL_TRIANGLES || primitiveType == GL20.GL_POINTS) {
             index(index1, index2, index3);
         } else if (primitiveType == GL20.GL_LINES) {
@@ -799,7 +799,7 @@ public class MeshBuilder implements MeshPartBuilder {
     }
 
     @Override
-    public void rect(short corner00, short corner10, short corner11, short corner01) {
+    public void rect(int corner00, int corner10, int corner11, int corner01) {
         if (primitiveType == GL20.GL_TRIANGLES) {
             index(corner00, corner10, corner11, corner11, corner01, corner00);
         } else if (primitiveType == GL20.GL_LINES) {
@@ -872,7 +872,7 @@ public class MeshBuilder implements MeshPartBuilder {
     private static IntIntMap indicesMap = null;
 
     @Override
-    public void addMesh(float[] vertices, short[] indices, int indexOffset, int numIndices) {
+    public void addMesh(float[] vertices, int[] indices, int indexOffset, int numIndices) {
         if (indicesMap == null)
             indicesMap = new IntIntMap(numIndices);
         else {
@@ -889,12 +889,12 @@ public class MeshBuilder implements MeshPartBuilder {
                 addVertex(vertices, sidx * stride);
                 indicesMap.put(sidx, didx = lastIndex);
             }
-            index((short) didx);
+            index((int) didx);
         }
     }
 
     @Override
-    public void addMesh(float[] vertices, short[] indices) {
+    public void addMesh(float[] vertices, int[] indices) {
         final int offset = lastIndex + 1;
 
         final int numVertices = vertices.length / stride;
@@ -904,7 +904,7 @@ public class MeshBuilder implements MeshPartBuilder {
 
         ensureIndices(indices.length);
         for (int i = 0; i < indices.length; ++i)
-            index((short) (indices[i] + offset));
+            index((int) (indices[i] + offset));
     }
 
     // TODO: The following methods are deprecated and will be removed in a future release

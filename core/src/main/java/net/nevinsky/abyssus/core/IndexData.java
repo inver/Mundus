@@ -18,10 +18,11 @@ package net.nevinsky.abyssus.core;
 
 import com.badlogic.gdx.utils.Disposable;
 
+import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 
 /**
- * An IndexData instance holds index data. Can be either a plain short buffer or an OpenGL buffer object.
+ * An IndexData instance holds index data. Can be either a plain int buffer or an OpenGL buffer object.
  *
  * @author mzechner
  */
@@ -51,7 +52,7 @@ public interface IndexData extends Disposable {
      * @param offset  the offset to start copying the data from
      * @param count   the number of shorts to copy
      */
-    void setIndices(short[] indices, int offset, int count);
+    void setIndices(int[] indices, int offset, int count);
 
     /**
      * Copies the specified indices to the indices of this IndexBufferObject, discarding the old indices. Copying start
@@ -61,7 +62,7 @@ public interface IndexData extends Disposable {
      *
      * @param indices the index data to copy
      */
-    void setIndices(ShortBuffer indices);
+    void setIndices(IntBuffer indices);
 
     /**
      * Update (a portion of) the indices.
@@ -71,17 +72,17 @@ public interface IndexData extends Disposable {
      * @param offset       the offset to start copying the data from
      * @param count        the number of shorts to copy
      */
-    void updateIndices(int targetOffset, short[] indices, int offset, int count);
+    void updateIndices(int targetOffset, int[] indices, int offset, int count);
 
     /**
      * <p>
      * Returns the underlying ShortBuffer. If you modify the buffer contents they wil be uploaded on the call to
-     * {@link #bind()}. If you need immediate uploading use {@link #setIndices(short[], int, int)}.
+     * {@link #bind()}. If you need immediate uploading use {@link #setIndices(int[], int, int)}.
      * </p>
      *
-     * @return the underlying short buffer.
+     * @return the underlying int buffer.
      */
-    ShortBuffer getBuffer();
+    IntBuffer getBuffer();
 
     /**
      * Binds this IndexBufferObject for rendering with glDrawElements.

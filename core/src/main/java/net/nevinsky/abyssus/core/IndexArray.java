@@ -16,15 +16,15 @@
 
 package net.nevinsky.abyssus.core;
 
-import com.badlogic.gdx.graphics.glutils.IndexData;
 import com.badlogic.gdx.utils.BufferUtils;
 
-import java.nio.Buffer;
 import java.nio.ByteBuffer;
-import java.nio.ShortBuffer;
+import java.nio.IntBuffer;
+
+import static net.nevinsky.abyssus.core.CoreConst.BYTES_IN_VERTEX_COORD;
 
 public class IndexArray implements IndexData {
-    final ShortBuffer buffer;
+    final IntBuffer buffer;
     final ByteBuffer byteBuffer;
 
     // used to work around bug: https://android-review.googlesource.com/#/c/73175/
@@ -42,10 +42,10 @@ public class IndexArray implements IndexData {
             maxIndices = 1; // avoid allocating a zero-sized buffer because of bug in Android's ART < Android 5.0
         }
 
-        byteBuffer = BufferUtils.newUnsafeByteBuffer(maxIndices * 2);
-        buffer = byteBuffer.asShortBuffer();
-        ((Buffer) buffer).flip();
-        ((Buffer) byteBuffer).flip();
+        byteBuffer = BufferUtils.newUnsafeByteBuffer(maxIndices * BYTES_IN_VERTEX_COORD);
+        buffer = byteBuffer.asIntBuffer();
+        buffer.flip();
+        byteBuffer.flip();
     }
 
     /**
@@ -77,66 +77,72 @@ public class IndexArray implements IndexData {
      * @param offset  the offset to start copying the data from
      * @param count   the number of shorts to copy
      */
-    public void setIndices(short[] indices, int offset, int count) {
-        ((Buffer) buffer).clear();
+    public void setIndices(int[] indices, int offset, int count) {
+        buffer.clear();
         buffer.put(indices, offset, count);
-        ((Buffer) buffer).flip();
-        ((Buffer) byteBuffer).position(0);
-        ((Buffer) byteBuffer).limit(count << 1);
+        buffer.flip();
+        byteBuffer.position(0);
+        byteBuffer.limit(count << 1);
     }
 
-    public void setIndices(ShortBuffer indices) {
+    public void setIndices(IntBuffer indices) {
         int pos = indices.position();
-        ((Buffer) buffer).clear();
-        ((Buffer) buffer).limit(indices.remaining());
+        buffer.clear();
+        buffer.limit(indices.remaining());
         buffer.put(indices);
-        ((Buffer) buffer).flip();
-        ((Buffer) indices).position(pos);
-        ((Buffer) byteBuffer).position(0);
-        ((Buffer) byteBuffer).limit(buffer.limit() << 1);
+        buffer.flip();
+        indices.position(pos);
+        byteBuffer.position(0);
+        byteBuffer.limit(buffer.limit() << 1);
     }
 
     @Override
-    public void updateIndices(int targetOffset, short[] indices, int offset, int count) {
+    public void updateIndices(int targetOffset, int[] indices, int offset, int count) {
         final int pos = byteBuffer.position();
-        ((Buffer) byteBuffer).position(targetOffset * 2);
+        byteBuffer.position(targetOffset * BYTES_IN_VERTEX_COORD);
         BufferUtils.copy(indices, offset, byteBuffer, count);
-        ((Buffer) byteBuffer).position(pos);
+        byteBuffer.position(pos);
     }
+
 
     /**
      * <p>
      * Returns the underlying ShortBuffer. If you modify the buffer contents they wil be uploaded on the call to
-     * {@link #bind()}. If you need immediate uploading use {@link #setIndices(short[], int, int)}.
+     * {@link #bind()}. If you need immediate uploading use {@link #setIndices(int[], int, int)}.
      * </p>
      *
      * @return the underlying short buffer.
      */
-    public ShortBuffer getBuffer() {
+    @Override
+    public IntBuffer getBuffer() {
         return buffer;
     }
 
     /**
      * Binds this IndexArray for rendering with glDrawElements.
      */
+    @Override
     public void bind() {
     }
 
     /**
      * Unbinds this IndexArray.
      */
+    @Override
     public void unbind() {
     }
 
     /**
      * Invalidates the IndexArray so a new OpenGL buffer handle is created. Use this in case of a context loss.
      */
+    @Override
     public void invalidate() {
     }
 
     /**
      * Disposes this IndexArray and all its associated OpenGL resources.
      */
+    @Override
     public void dispose() {
         BufferUtils.disposeUnsafeByteBuffer(byteBuffer);
     }

@@ -18,13 +18,11 @@ package net.nevinsky.abyssus.core;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.glutils.IndexData;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-import java.nio.Buffer;
 import java.nio.ByteBuffer;
-import java.nio.ShortBuffer;
+import java.nio.IntBuffer;
 
 /**
  * <p>
@@ -45,7 +43,7 @@ import java.nio.ShortBuffer;
  * @author mzechner
  */
 public class IndexBufferObjectSubData implements IndexData {
-    final ShortBuffer buffer;
+    final IntBuffer buffer;
     final ByteBuffer byteBuffer;
     int bufferHandle;
     final boolean isDirect;
@@ -60,13 +58,13 @@ public class IndexBufferObjectSubData implements IndexData {
      * @param maxIndices the maximum number of indices this buffer can hold
      */
     public IndexBufferObjectSubData(boolean isStatic, int maxIndices) {
-        byteBuffer = BufferUtils.newByteBuffer(maxIndices * 2);
+        byteBuffer = BufferUtils.newByteBuffer(maxIndices * CoreConst.BYTES_IN_VERTEX_COORD);
         isDirect = true;
 
         usage = isStatic ? GL20.GL_STATIC_DRAW : GL20.GL_DYNAMIC_DRAW;
-        buffer = byteBuffer.asShortBuffer();
-        ((Buffer) buffer).flip();
-        ((Buffer) byteBuffer).flip();
+        buffer = byteBuffer.asIntBuffer();
+        buffer.flip();
+        byteBuffer.flip();
         bufferHandle = createBufferObject();
     }
 
@@ -76,13 +74,13 @@ public class IndexBufferObjectSubData implements IndexData {
      * @param maxIndices the maximum number of indices this buffer can hold
      */
     public IndexBufferObjectSubData(int maxIndices) {
-        byteBuffer = BufferUtils.newByteBuffer(maxIndices * 2);
+        byteBuffer = BufferUtils.newByteBuffer(maxIndices * CoreConst.BYTES_IN_VERTEX_COORD);
         this.isDirect = true;
 
         usage = GL20.GL_STATIC_DRAW;
-        buffer = byteBuffer.asShortBuffer();
-        ((Buffer) buffer).flip();
-        ((Buffer) byteBuffer).flip();
+        buffer = byteBuffer.asIntBuffer();
+        buffer.flip();
+        byteBuffer.flip();
         bufferHandle = createBufferObject();
     }
 
@@ -123,13 +121,13 @@ public class IndexBufferObjectSubData implements IndexData {
      * @param offset  the offset to start copying the data from
      * @param count   the number of floats to copy
      */
-    public void setIndices(short[] indices, int offset, int count) {
+    public void setIndices(int[] indices, int offset, int count) {
         isDirty = true;
-        ((Buffer) buffer).clear();
+        buffer.clear();
         buffer.put(indices, offset, count);
-        ((Buffer) buffer).flip();
-        ((Buffer) byteBuffer).position(0);
-        ((Buffer) byteBuffer).limit(count << 1);
+        buffer.flip();
+        byteBuffer.position(0);
+        byteBuffer.limit(count << 1);
 
         if (isBound) {
             Gdx.gl20.glBufferSubData(GL20.GL_ELEMENT_ARRAY_BUFFER, 0, byteBuffer.limit(), byteBuffer);
@@ -137,15 +135,15 @@ public class IndexBufferObjectSubData implements IndexData {
         }
     }
 
-    public void setIndices(ShortBuffer indices) {
+    public void setIndices(IntBuffer indices) {
         int pos = indices.position();
         isDirty = true;
-        ((Buffer) buffer).clear();
+        buffer.clear();
         buffer.put(indices);
-        ((Buffer) buffer).flip();
-        ((Buffer) indices).position(pos);
-        ((Buffer) byteBuffer).position(0);
-        ((Buffer) byteBuffer).limit(buffer.limit() << 1);
+        buffer.flip();
+        indices.position(pos);
+        byteBuffer.position(0);
+        byteBuffer.limit(buffer.limit() << 1);
 
         if (isBound) {
             Gdx.gl20.glBufferSubData(GL20.GL_ELEMENT_ARRAY_BUFFER, 0, byteBuffer.limit(), byteBuffer);
@@ -154,13 +152,13 @@ public class IndexBufferObjectSubData implements IndexData {
     }
 
     @Override
-    public void updateIndices(int targetOffset, short[] indices, int offset, int count) {
+    public void updateIndices(int targetOffset, int[] indices, int offset, int count) {
         isDirty = true;
         final int pos = byteBuffer.position();
-        ((Buffer) byteBuffer).position(targetOffset * 2);
+        byteBuffer.position(targetOffset * CoreConst.BYTES_IN_VERTEX_COORD);
         BufferUtils.copy(indices, offset, byteBuffer, count);
-        ((Buffer) byteBuffer).position(pos);
-        ((Buffer) buffer).position(0);
+        byteBuffer.position(pos);
+        buffer.position(0);
 
         if (isBound) {
             Gdx.gl20.glBufferSubData(GL20.GL_ELEMENT_ARRAY_BUFFER, 0, byteBuffer.limit(), byteBuffer);
@@ -171,12 +169,12 @@ public class IndexBufferObjectSubData implements IndexData {
     /**
      * <p>
      * Returns the underlying ShortBuffer. If you modify the buffer contents they wil be uploaded on the call to
-     * {@link #bind()}. If you need immediate uploading use {@link #setIndices(short[], int, int)}.
+     * {@link #bind()}. If you need immediate uploading use {@link #setIndices(int[], int, int)}.
      * </p>
      *
      * @return the underlying short buffer.
      */
-    public ShortBuffer getBuffer() {
+    public IntBuffer getBuffer() {
         isDirty = true;
         return buffer;
     }
@@ -190,7 +188,7 @@ public class IndexBufferObjectSubData implements IndexData {
 
         Gdx.gl20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, bufferHandle);
         if (isDirty) {
-            ((Buffer) byteBuffer).limit(buffer.limit() * 2);
+            byteBuffer.limit(buffer.limit() * CoreConst.BYTES_IN_VERTEX_COORD);
             Gdx.gl20.glBufferSubData(GL20.GL_ELEMENT_ARRAY_BUFFER, 0, byteBuffer.limit(), byteBuffer);
             isDirty = false;
         }

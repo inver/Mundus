@@ -199,10 +199,10 @@ public class TerrainObject implements RenderableObject, Disposable {
 
     }
 
-    private short[] buildIndices() {
+    private int[] buildIndices() {
         final int w = vertexResolution - 1;
         final int h = vertexResolution - 1;
-        short[] indices = new short[w * h * 6];
+        int[] indices = new int[w * h * 6];
         int i = -1;
         for (int y = 0; y < h; ++y) {
             for (int x = 0; x < w; ++x) {
@@ -210,12 +210,12 @@ public class TerrainObject implements RenderableObject, Disposable {
                 final int c10 = c00 + 1;
                 final int c01 = c00 + vertexResolution;
                 final int c11 = c10 + vertexResolution;
-//                indices[++i] = c11;
-//                indices[++i] = c10;
-//                indices[++i] = c00;
-//                indices[++i] = c00;
-//                indices[++i] = c01;
-//                indices[++i] = c11;
+                indices[++i] = c11;
+                indices[++i] = c10;
+                indices[++i] = c00;
+                indices[++i] = c00;
+                indices[++i] = c01;
+                indices[++i] = c11;
             }
         }
         return indices;

@@ -22,10 +22,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.glutils.IndexArray;
-import com.badlogic.gdx.graphics.glutils.IndexBufferObject;
-import com.badlogic.gdx.graphics.glutils.IndexBufferObjectSubData;
-import com.badlogic.gdx.graphics.glutils.IndexData;
 import com.badlogic.gdx.graphics.glutils.InstanceBufferObject;
 import com.badlogic.gdx.graphics.glutils.InstanceData;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -42,10 +38,15 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import net.nevinsky.abyssus.core.CoreConst;
+import net.nevinsky.abyssus.core.IndexArray;
+import net.nevinsky.abyssus.core.IndexBufferObject;
+import net.nevinsky.abyssus.core.IndexBufferObjectSubData;
+import net.nevinsky.abyssus.core.IndexData;
 
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
-import java.nio.ShortBuffer;
+import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -465,7 +466,7 @@ public class Mesh implements Disposable {
      * @param indices the indices
      * @return the mesh for invocation chaining.
      */
-    public Mesh setIndices(short[] indices) {
+    public Mesh setIndices(int[] indices) {
         this.indices.setIndices(indices, 0, indices.length);
 
         return this;
@@ -479,55 +480,55 @@ public class Mesh implements Disposable {
      * @param count   the number of indices to copy
      * @return the mesh for invocation chaining.
      */
-    public Mesh setIndices(short[] indices, int offset, int count) {
+    public Mesh setIndices(int[] indices, int offset, int count) {
         this.indices.setIndices(indices, offset, count);
 
         return this;
     }
 
     /**
-     * Copies the indices from the Mesh to the short array. The short array must be large enough to hold all the Mesh's
+     * Copies the indices from the Mesh to the int array. The int array must be large enough to hold all the Mesh's
      * indices.
      *
      * @param indices the array to copy the indices to
      */
-    public void getIndices(short[] indices) {
+    public void getIndices(int[] indices) {
         getIndices(indices, 0);
     }
 
     /**
-     * Copies the indices from the Mesh to the short array. The short array must be large enough to hold destOffset +
-     * all the Mesh's indices.
+     * Copies the indices from the Mesh to the int array. The int array must be large enough to hold destOffset + all
+     * the Mesh's indices.
      *
      * @param indices    the array to copy the indices to
      * @param destOffset the offset in the indices array to start copying
      */
-    public void getIndices(short[] indices, int destOffset) {
+    public void getIndices(int[] indices, int destOffset) {
         getIndices(0, indices, destOffset);
     }
 
     /**
-     * Copies the remaining indices from the Mesh to the short array. The short array must be large enough to hold
+     * Copies the remaining indices from the Mesh to the int array. The int array must be large enough to hold
      * destOffset + all the remaining indices.
      *
      * @param srcOffset  the zero-based offset of the first index to fetch
      * @param indices    the array to copy the indices to
      * @param destOffset the offset in the indices array to start copying
      */
-    public void getIndices(int srcOffset, short[] indices, int destOffset) {
+    public void getIndices(int srcOffset, int[] indices, int destOffset) {
         getIndices(srcOffset, -1, indices, destOffset);
     }
 
     /**
-     * Copies the indices from the Mesh to the short array. The short array must be large enough to hold destOffset +
-     * count indices.
+     * Copies the indices from the Mesh to the int array. The int array must be large enough to hold destOffset + count
+     * indices.
      *
      * @param srcOffset  the zero-based offset of the first index to fetch
      * @param count      the total amount of indices to copy
      * @param indices    the array to copy the indices to
      * @param destOffset the offset in the indices array to start copying
      */
-    public void getIndices(int srcOffset, int count, short[] indices, int destOffset) {
+    public void getIndices(int srcOffset, int count, int[] indices, int destOffset) {
         int max = getNumIndices();
         if (count < 0) count = max - srcOffset;
         if (srcOffset < 0 || srcOffset >= max || srcOffset + count > max) throw new IllegalArgumentException(
@@ -727,11 +728,11 @@ public class Mesh implements Disposable {
 
         if (isVertexArray) {
             if (indices.getNumIndices() > 0) {
-                ShortBuffer buffer = indices.getBuffer();
+                IntBuffer buffer = indices.getBuffer();
                 int oldPosition = buffer.position();
                 int oldLimit = buffer.limit();
                 ((Buffer) buffer).position(offset);
-                Gdx.gl20.glDrawElements(primitiveType, count, GL20.GL_UNSIGNED_SHORT, buffer);
+                Gdx.gl20.glDrawElements(primitiveType, count, GL20.GL_UNSIGNED_INT, buffer);
                 ((Buffer) buffer).position(oldPosition);
             } else {
                 Gdx.gl20.glDrawArrays(primitiveType, offset, count);
@@ -748,10 +749,11 @@ public class Mesh implements Disposable {
                 }
 
                 if (isInstanced && numInstances > 0) {
-                    Gdx.gl30.glDrawElementsInstanced(primitiveType, count, GL20.GL_UNSIGNED_SHORT, offset * 2,
-                            numInstances);
+                    Gdx.gl30.glDrawElementsInstanced(primitiveType, count, GL20.GL_UNSIGNED_INT,
+                            offset * CoreConst.BYTES_IN_VERTEX_COORD, numInstances);
                 } else {
-                    Gdx.gl20.glDrawElements(primitiveType, count, GL20.GL_UNSIGNED_SHORT, offset * 2);
+                    Gdx.gl20.glDrawElements(primitiveType, count, GL20.GL_UNSIGNED_INT,
+                            offset * CoreConst.BYTES_IN_VERTEX_COORD);
                 }
             } else {
                 if (isInstanced && numInstances > 0) {
@@ -910,7 +912,7 @@ public class Mesh implements Disposable {
                     "Invalid part specified ( offset=" + offset + ", count=" + count + ", max=" + max + " )");
 
         final FloatBuffer verts = vertices.getBuffer();
-        final ShortBuffer index = indices.getBuffer();
+        final IntBuffer index = indices.getBuffer();
         final VertexAttribute posAttrib = getVertexAttribute(Usage.Position);
         final int posoff = posAttrib.offset / 4;
         final int vertexSize = vertices.getAttributes().vertexSize / 4;
@@ -989,7 +991,7 @@ public class Mesh implements Disposable {
         if (offset < 0 || count < 1 || offset + count > numIndices) throw new GdxRuntimeException("Not enough indices");
 
         final FloatBuffer verts = vertices.getBuffer();
-        final ShortBuffer index = indices.getBuffer();
+        final IntBuffer index = indices.getBuffer();
         final VertexAttribute posAttrib = getVertexAttribute(Usage.Position);
         final int posoff = posAttrib.offset / 4;
         final int vertexSize = vertices.getAttributes().vertexSize / 4;
@@ -1107,7 +1109,7 @@ public class Mesh implements Disposable {
     /**
      * @return the backing shortbuffer holding the indices. Does not have to be a direct buffer on Android!
      */
-    public ShortBuffer getIndicesBuffer() {
+    public IntBuffer getIndicesBuffer() {
         return indices.getBuffer();
     }
 
@@ -1346,7 +1348,7 @@ public class Mesh implements Disposable {
         int numVertices = getNumVertices();
         float[] vertices = new float[numVertices * vertexSize];
         getVertices(0, vertices.length, vertices);
-        short[] checks = null;
+        int[] checks = null;
         VertexAttribute[] attrs = null;
         int newVertexSize = 0;
         if (usage != null) {
@@ -1359,39 +1361,39 @@ public class Mesh implements Disposable {
                 }
             if (size > 0) {
                 attrs = new VertexAttribute[as];
-                checks = new short[size];
+                checks = new int[size];
                 int idx = -1;
                 int ai = -1;
                 for (int i = 0; i < usage.length; i++) {
                     VertexAttribute a = getVertexAttribute(usage[i]);
                     if (a == null) continue;
                     for (int j = 0; j < a.numComponents; j++)
-                        checks[++idx] = (short) (a.offset + j);
+                        checks[++idx] = a.offset + j;
                     attrs[++ai] = a.copy();
                     newVertexSize += a.numComponents;
                 }
             }
         }
         if (checks == null) {
-            checks = new short[vertexSize];
-            for (short i = 0; i < vertexSize; i++)
+            checks = new int[vertexSize];
+            for (int i = 0; i < vertexSize; i++)
                 checks[i] = i;
             newVertexSize = vertexSize;
         }
 
         int numIndices = getNumIndices();
-        short[] indices = null;
+        int[] indices = null;
         if (numIndices > 0) {
-            indices = new short[numIndices];
+            indices = new int[numIndices];
             getIndices(indices);
             if (removeDuplicates || newVertexSize != vertexSize) {
                 float[] tmp = new float[vertices.length];
                 int size = 0;
                 for (int i = 0; i < numIndices; i++) {
                     final int idx1 = indices[i] * vertexSize;
-                    short newIndex = -1;
+                    int newIndex = -1;
                     if (removeDuplicates) {
-                        for (short j = 0; j < size && newIndex < 0; j++) {
+                        for (int j = 0; j < size && newIndex < 0; j++) {
                             final int idx2 = j * newVertexSize;
                             boolean found = true;
                             for (int k = 0; k < checks.length && found; k++) {
@@ -1409,7 +1411,7 @@ public class Mesh implements Disposable {
                         final int idx = size * newVertexSize;
                         for (int j = 0; j < checks.length; j++)
                             tmp[idx + j] = vertices[idx1 + checks[j]];
-                        indices[i] = (short) size;
+                        indices[i] = size;
                         size++;
                     }
                 }

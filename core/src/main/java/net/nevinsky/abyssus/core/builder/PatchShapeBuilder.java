@@ -43,9 +43,9 @@ public class PatchShapeBuilder extends BaseShapeBuilder {
             vertTmp5.set(corner00).lerp(corner10, alphaU);
             vertTmp6.set(corner01).lerp(corner11, alphaU);
             for (int v = 0; v <= divisionsV; v++) {
-                final short idx = builder.vertex(vertTmp7.set(vertTmp5).lerp(vertTmp6, (float) v / (float) divisionsV));
-                if (u > 0 && v > 0) builder.rect((short) (idx - divisionsV - 2), (short) (idx - 1), idx,
-                        (short) (idx - divisionsV - 1));
+                final int idx = builder.vertex(vertTmp7.set(vertTmp5).lerp(vertTmp6, (float) v / (float) divisionsV));
+                if (u > 0 && v > 0) builder.rect((int) (idx - divisionsV - 2), (int) (idx - 1), idx,
+                        (int) (idx - divisionsV - 1));
             }
         }
     }

@@ -90,7 +90,7 @@ public class UsefulMeshs {
         MeshPartBuilder.VertexInfo curr2 = v1.set(null, null, null, null);
         curr2.hasUV = curr2.hasNormal = false;
         curr2.hasPosition = true;
-        short i1, i2, i3 = 0, i4 = 0;
+        int i1, i2, i3 = 0, i4 = 0;
 
         int i, j, k;
         double s, t, twopi;
@@ -102,19 +102,21 @@ public class UsefulMeshs {
                     s = (i + k) % divisionsV + 0.5;
                     t = j % divisionsU;
 
+                    double cos = Math.cos(t * twopi / divisionsU);
+                    double sin = Math.sin(t * twopi / divisionsU);
                     curr1.position.set(
                             (float) ((width + height * Math.cos(s * twopi / divisionsV))
-                                    * Math.cos(t * twopi / divisionsU)),
+                                    * cos),
                             (float) ((width + height * Math.cos(s * twopi / divisionsV))
-                                    * Math.sin(t * twopi / divisionsU)),
+                                    * sin),
                             (float) (height * Math.sin(s * twopi / divisionsV)));
                     k--;
                     s = (i + k) % divisionsV + 0.5;
                     curr2.position.set(
                             (float) ((width + height * Math.cos(s * twopi / divisionsV))
-                                    * Math.cos(t * twopi / divisionsU)),
+                                    * cos),
                             (float) ((width + height * Math.cos(s * twopi / divisionsV))
-                                    * Math.sin(t * twopi / divisionsU)),
+                                    * sin),
                             (float) (height * Math.sin(s * twopi / divisionsV)));
                     // curr2.uv.set((float) s, 0);
                     i1 = builder.vertex(curr1);

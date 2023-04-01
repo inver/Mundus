@@ -111,7 +111,7 @@ public interface MeshPartBuilder {
 
     /**
      * Increases the size of the backing indices array to accommodate the specified number of additional triangles.
-     * Useful before adding many triangles using {@link #triangle(short, short, short)} to avoid multiple backing array
+     * Useful before adding many triangles using {@link #triangle(int, int, int)} to avoid multiple backing array
      * resizes. The actual number of indices accounted for depends on the primitive type (see
      * {@link #getPrimitiveType()}).
      *
@@ -121,8 +121,8 @@ public interface MeshPartBuilder {
 
     /**
      * Increases the size of the backing indices array to accommodate the specified number of additional rectangles.
-     * Useful before adding many rectangles using {@link #rect(short, short, short, short)} to avoid multiple backing
-     * array resizes.
+     * Useful before adding many rectangles using {@link #rect(int, int, int, int)} to avoid multiple backing array
+     * resizes.
      *
      * @param numRectangles The number of rectangles you are about to add
      */
@@ -132,59 +132,59 @@ public interface MeshPartBuilder {
      * Add one or more vertices, returns the index of the last vertex added. The length of values must a power of the
      * vertex size.
      */
-    short vertex(final float... values);
+    int vertex(final float... values);
 
     /**
      * Add a vertex, returns the index. Null values are allowed. Use {@link #getAttributes} to check which values are
      * available.
      */
-    short vertex(Vector3 pos, Vector3 nor, Color col, Vector2 uv);
+    int vertex(Vector3 pos, Vector3 nor, Color col, Vector2 uv);
 
     /**
      * Add a vertex, returns the index. Use {@link #getAttributes} to check which values are available.
      */
-    short vertex(final VertexInfo info);
+    int vertex(final VertexInfo info);
 
     /**
      * @return The index of the last added vertex.
      */
-    short lastIndex();
+    int lastIndex();
 
     /**
      * Add an index, MeshPartBuilder expects all meshes to be indexed.
      */
-    void index(final short value);
+    void index(final int value);
 
     /**
      * Add multiple indices, MeshPartBuilder expects all meshes to be indexed.
      */
-    void index(short value1, short value2);
+    void index(int value1, int value2);
 
     /**
      * Add multiple indices, MeshPartBuilder expects all meshes to be indexed.
      */
-    void index(short value1, short value2, short value3);
+    void index(int value1, int value2, int value3);
 
     /**
      * Add multiple indices, MeshPartBuilder expects all meshes to be indexed.
      */
-    void index(short value1, short value2, short value3, short value4);
+    void index(int value1, int value2, int value3, int value4);
 
     /**
      * Add multiple indices, MeshPartBuilder expects all meshes to be indexed.
      */
-    void index(short value1, short value2, short value3, short value4, short value5, short value6);
+    void index(int value1, int value2, int value3, int value4, int value5, int value6);
 
     /**
      * Add multiple indices, MeshPartBuilder expects all meshes to be indexed.
      */
-    void index(short value1, short value2, short value3, short value4, short value5, short value6, short value7,
-               short value8);
+    void index(int value1, int value2, int value3, int value4, int value5, int value6, int value7,
+               int value8);
 
     /**
      * Add a line by indices. Requires GL_LINES primitive type.
      */
-    void line(short index1, short index2);
+    void line(int index1, int index2);
 
     /**
      * Add a line. Requires GL_LINES primitive type.
@@ -209,7 +209,7 @@ public interface MeshPartBuilder {
     /**
      * Add a triangle by indices. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type.
      */
-    void triangle(short index1, short index2, short index3);
+    void triangle(int index1, int index2, int index3);
 
     /**
      * Add a triangle. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type.
@@ -229,7 +229,7 @@ public interface MeshPartBuilder {
     /**
      * Add a rectangle by indices. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type.
      */
-    void rect(short corner00, short corner10, short corner11, short corner01);
+    void rect(int corner00, int corner10, int corner11, int corner01);
 
     /**
      * Add a rectangle. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type.
@@ -274,12 +274,12 @@ public interface MeshPartBuilder {
     /**
      * Copies a mesh to the mesh (part) currently being build. The entire vertices array is added, even if some of the
      * vertices are not indexed by the indices array. If you want to add only the vertices that are actually indexed,
-     * then use the {@link #addMesh(float[], short[], int, int)} method instead.
+     * then use the {@link #addMesh(float[], int[], int, int)} method instead.
      *
      * @param vertices The vertices to copy, must be in the same vertex layout as the mesh being build.
      * @param indices  Array containing the indices to copy, each index should be valid in the vertices array.
      */
-    void addMesh(float[] vertices, short[] indices);
+    void addMesh(float[] vertices, int[] indices);
 
     /**
      * Copies a (part of a) mesh to the mesh (part) currently being build.
@@ -290,7 +290,7 @@ public interface MeshPartBuilder {
      * @param indexOffset The zero-based offset of the first index of the part of indices array to copy.
      * @param numIndices  The number of indices of the part of the indices array to copy.
      */
-    void addMesh(float[] vertices, short[] indices, int indexOffset, int numIndices);
+    void addMesh(float[] vertices, int[] indices, int indexOffset, int numIndices);
 
     /**
      * Class that contains all vertex information the builder can use.

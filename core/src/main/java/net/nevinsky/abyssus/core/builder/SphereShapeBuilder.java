@@ -19,7 +19,7 @@ package net.nevinsky.abyssus.core.builder;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.utils.ShortArray;
+import com.badlogic.gdx.utils.IntArray;
 import net.nevinsky.abyssus.core.mesh.MeshPartBuilder;
 import net.nevinsky.abyssus.core.mesh.MeshPartBuilder.VertexInfo;
 
@@ -29,7 +29,7 @@ import net.nevinsky.abyssus.core.mesh.MeshPartBuilder.VertexInfo;
  * @author xoppa
  */
 public class SphereShapeBuilder extends BaseShapeBuilder {
-    private final static ShortArray tmpIndices = new ShortArray();
+    private final static IntArray tmpIndices = new IntArray();
     private final static Matrix3 normalTransform = new Matrix3();
 
     public static void build(MeshPartBuilder builder, float width, float height, float depth, int divisionsU,

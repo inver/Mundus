@@ -54,7 +54,7 @@ public class RenderableShapeBuilder extends BaseShapeBuilder {
         }
     }
 
-    private static short[] indices;
+    private static int[] indices;
     private static float[] vertices;
     private final static RenderablePool renderablesPool = new RenderablePool();
     private final static Array<Renderable> renderables = new Array<Renderable>();
@@ -139,8 +139,8 @@ public class RenderableShapeBuilder extends BaseShapeBuilder {
             ensureIndicesCapacity(mesh.getNumIndices());
             mesh.getIndices(renderable.meshPart.offset, renderable.meshPart.size, indices, 0);
 
-            short minVertice = minVerticeInIndices();
-            short maxVertice = maxVerticeInIndices();
+            int minVertice = minVerticeInIndices();
+            int maxVertice = maxVerticeInIndices();
 
             verticesOffset = minVertice;
             verticesQuantity = maxVertice - minVertice;
@@ -207,18 +207,18 @@ public class RenderableShapeBuilder extends BaseShapeBuilder {
     }
 
     private static void ensureIndicesCapacity(int capacity) {
-        if (indices == null || indices.length < capacity) indices = new short[capacity];
+        if (indices == null || indices.length < capacity) indices = new int[capacity];
     }
 
-    private static short minVerticeInIndices() {
-        short min = (short) 32767;
+    private static int minVerticeInIndices() {
+        int min = (int) 32767;
         for (int i = 0; i < indices.length; i++)
             if (indices[i] < min) min = indices[i];
         return min;
     }
 
-    private static short maxVerticeInIndices() {
-        short max = (short) -32768;
+    private static int maxVerticeInIndices() {
+        int max = (int) -32768;
         for (int i = 0; i < indices.length; i++)
             if (indices[i] > max) max = indices[i];
         return max;
