@@ -1,7 +1,30 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package net.nevinsky.abyssus.core.shader;
 
-import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GLTexture;
+import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.VertexAttribute;
+import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Attributes;
+import com.badlogic.gdx.graphics.g3d.Renderable;
+import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -9,15 +32,15 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.IntIntMap;
-import net.nevinsky.abyssus.core.Renderable;
-import net.nevinsky.abyssus.core.mesh.Mesh;
 
-import java.util.ArrayList;
-import java.util.List;
-
+/**
+ * @author Xoppa A BaseShader is a wrapper around a ShaderProgram that keeps track of the uniform and attribute
+ * locations. It does not manage the ShaderPogram, you are still responsible for disposing the ShaderProgram.
+ */
 public abstract class BaseShader implements Shader {
     public interface Validator {
         /**
@@ -79,17 +102,17 @@ public abstract class BaseShader implements Shader {
 
         public boolean validate(final BaseShader shader, final int inputID, final Renderable renderable) {
             final long matFlags =
-                    (renderable != null && renderable.getMaterial() != null) ? renderable.getMaterial().getMask() : 0;
-            final long envFlags = (renderable != null && renderable.getEnvironment() != null) ?
-                    renderable.getEnvironment().getMask() : 0;
+                    (renderable != null && renderable.material != null) ? renderable.material.getMask() : 0;
+            final long envFlags =
+                    (renderable != null && renderable.environment != null) ? renderable.environment.getMask() : 0;
             return ((matFlags & materialMask) == materialMask) && ((envFlags & environmentMask) == environmentMask)
                     && (((matFlags | envFlags) & overallMask) == overallMask);
         }
     }
 
-    private final List<String> uniforms = new ArrayList<>();
-    private final List<Validator> validators = new ArrayList<Validator>();
-    private final List<Setter> setters = new ArrayList<Setter>();
+    private final Array<String> uniforms = new Array<String>();
+    private final Array<Validator> validators = new Array<Validator>();
+    private final Array<Setter> setters = new Array<Setter>();
     private int[] locations;
     private final IntArray globalUniforms = new IntArray();
     private final IntArray localUniforms = new IntArray();
@@ -106,9 +129,7 @@ public abstract class BaseShader implements Shader {
      * @return The ID of the uniform to use in this shader.
      */
     public int register(final String alias, final Validator validator, final Setter setter) {
-        if (locations != null) {
-            throw new GdxRuntimeException("Cannot register an uniform after initialization");
-        }
+        if (locations != null) throw new GdxRuntimeException("Cannot register an uniform after initialization");
         final int existing = getUniformID(alias);
         if (existing >= 0) {
             validators.set(existing, validator);
@@ -118,7 +139,7 @@ public abstract class BaseShader implements Shader {
         uniforms.add(alias);
         validators.add(validator);
         setters.add(setter);
-        return uniforms.size() - 1;
+        return uniforms.size - 1;
     }
 
     public int register(final String alias, final Validator validator) {
@@ -145,7 +166,7 @@ public abstract class BaseShader implements Shader {
      * @return the ID of the input or negative if not available.
      */
     public int getUniformID(final String alias) {
-        final int n = uniforms.size();
+        final int n = uniforms.size;
         for (int i = 0; i < n; i++)
             if (uniforms.get(i).equals(alias)) return i;
         return -1;
@@ -166,7 +187,7 @@ public abstract class BaseShader implements Shader {
         if (!program.isCompiled()) throw new GdxRuntimeException(program.getLog());
         this.program = program;
 
-        final int n = uniforms.size();
+        final int n = uniforms.size;
         locations = new int[n];
         for (int i = 0; i < n; i++) {
             final String input = uniforms.get(i);
@@ -189,7 +210,7 @@ public abstract class BaseShader implements Shader {
             }
         }
         if (renderable != null) {
-            final VertexAttributes attrs = renderable.getMeshPart().mesh.getVertexAttributes();
+            final VertexAttributes attrs = renderable.meshPart.mesh.getVertexAttributes();
             final int c = attrs.size();
             for (int i = 0; i < c; i++) {
                 final VertexAttribute attr = attrs.get(i);
@@ -225,14 +246,10 @@ public abstract class BaseShader implements Shader {
 
     @Override
     public void render(Renderable renderable) {
-        if (renderable.getWorldTransform().det3x3() == 0) return;
+        if (renderable.worldTransform.det3x3() == 0) return;
         combinedAttributes.clear();
-        if (renderable.getEnvironment() != null) {
-            combinedAttributes.set(renderable.getEnvironment());
-        }
-        if (renderable.getMaterial() != null) {
-            combinedAttributes.set(renderable.getMaterial());
-        }
+        if (renderable.environment != null) combinedAttributes.set(renderable.environment);
+        if (renderable.material != null) combinedAttributes.set(renderable.material);
         render(renderable, combinedAttributes);
     }
 
@@ -240,12 +257,12 @@ public abstract class BaseShader implements Shader {
         for (int u, i = 0; i < localUniforms.size; ++i)
             if (setters.get(u = localUniforms.get(i)) != null)
                 setters.get(u).set(this, u, renderable, combinedAttributes);
-        if (currentMesh != renderable.getMeshPart().mesh) {
+        if (currentMesh != renderable.meshPart.mesh) {
             if (currentMesh != null) currentMesh.unbind(program, tempArray.items);
-            currentMesh = renderable.getMeshPart().mesh;
-            currentMesh.bind(program, getAttributeLocations(renderable.getMeshPart().mesh.getVertexAttributes()));
+            currentMesh = renderable.meshPart.mesh;
+            currentMesh.bind(program, getAttributeLocations(renderable.meshPart.mesh.getVertexAttributes()));
         }
-        renderable.getMeshPart().render(program, false);
+        renderable.meshPart.render(program, false);
     }
 
     @Override

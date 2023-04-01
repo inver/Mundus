@@ -60,7 +60,7 @@ public class CylinderShapeBuilder extends BaseShapeBuilder {
         curr1.hasUV = curr1.hasPosition = curr1.hasNormal = true;
         MeshPartBuilder.VertexInfo curr2 = vertTmp4.set(null, null, null, null);
         curr2.hasUV = curr2.hasPosition = curr2.hasNormal = true;
-        int i1, i2, i3 = 0, i4 = 0;
+        short i1, i2, i3 = 0, i4 = 0;
 
         builder.ensureVertices(2 * (divisions + 1));
         builder.ensureRectangleIndices(divisions);
@@ -77,19 +77,17 @@ public class CylinderShapeBuilder extends BaseShapeBuilder {
             curr2.uv.set(u, 0);
             i2 = builder.vertex(curr1);
             i1 = builder.vertex(curr2);
-            if (i != 0) {
-                builder.rect(i3, i1, i2, i4); // FIXME don't duplicate lines and points
-            }
+            if (i != 0) builder.rect(i3, i1, i2, i4); // FIXME don't duplicate lines and points
             i4 = i2;
             i3 = i1;
         }
-//        if (close) {
-//            EllipseShapeBuilder.build(builder, width, depth, 0, 0, divisions, 0, hh, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1,
-//                    angleFrom,
-//                    angleTo);
-//            EllipseShapeBuilder.build(builder, width, depth, 0, 0, divisions, 0, -hh, 0, 0, -1, 0, -1, 0, 0, 0, 0, 1,
-//                    180f - angleTo,
-//                    180f - angleFrom);
-//        }
+        if (close) {
+            EllipseShapeBuilder.build(builder, width, depth, 0, 0, divisions, 0, hh, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1,
+                    angleFrom,
+                    angleTo);
+            EllipseShapeBuilder.build(builder, width, depth, 0, 0, divisions, 0, -hh, 0, 0, -1, 0, -1, 0, 0, 0, 0, 1,
+                    180f - angleTo,
+                    180f - angleFrom);
+        }
     }
 }

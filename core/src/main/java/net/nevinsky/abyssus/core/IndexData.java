@@ -1,9 +1,30 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package net.nevinsky.abyssus.core;
 
 import com.badlogic.gdx.utils.Disposable;
 
-import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 
+/**
+ * An IndexData instance holds index data. Can be either a plain short buffer or an OpenGL buffer object.
+ *
+ * @author mzechner
+ */
 public interface IndexData extends Disposable {
     /**
      * @return the number of indices currently stored in this buffer
@@ -28,19 +49,19 @@ public interface IndexData extends Disposable {
      *
      * @param indices the index data
      * @param offset  the offset to start copying the data from
-     * @param count   the number of ints to copy
+     * @param count   the number of shorts to copy
      */
-    void setIndices(int[] indices, int offset, int count);
+    void setIndices(short[] indices, int offset, int count);
 
     /**
      * Copies the specified indices to the indices of this IndexBufferObject, discarding the old indices. Copying start
-     * at the current {@link IntBuffer#position()} of the specified buffer and copied the {@link IntBuffer#remaining()}
-     * amount of indices. This can be called in between calls to {@link #bind()} and {@link #unbind()}. The index data
-     * will be updated instantly.
+     * at the current {@link ShortBuffer#position()} of the specified buffer and copied the
+     * {@link ShortBuffer#remaining()} amount of indices. This can be called in between calls to {@link #bind()} and
+     * {@link #unbind()}. The index data will be updated instantly.
      *
      * @param indices the index data to copy
      */
-    void setIndices(IntBuffer indices);
+    void setIndices(ShortBuffer indices);
 
     /**
      * Update (a portion of) the indices.
@@ -48,19 +69,19 @@ public interface IndexData extends Disposable {
      * @param targetOffset offset in indices buffer
      * @param indices      the index data
      * @param offset       the offset to start copying the data from
-     * @param count        the number of ints to copy
+     * @param count        the number of shorts to copy
      */
-    void updateIndices(int targetOffset, int[] indices, int offset, int count);
+    void updateIndices(int targetOffset, short[] indices, int offset, int count);
 
     /**
      * <p>
-     * Returns the underlying intBuffer. If you modify the buffer contents they wil be uploaded on the call to
-     * {@link #bind()}. If you need immediate uploading use {@link #setIndices(int[], int, int)}.
+     * Returns the underlying ShortBuffer. If you modify the buffer contents they wil be uploaded on the call to
+     * {@link #bind()}. If you need immediate uploading use {@link #setIndices(short[], int, int)}.
      * </p>
      *
-     * @return the underlying int buffer.
+     * @return the underlying short buffer.
      */
-    IntBuffer getBuffer();
+    ShortBuffer getBuffer();
 
     /**
      * Binds this IndexBufferObject for rendering with glDrawElements.

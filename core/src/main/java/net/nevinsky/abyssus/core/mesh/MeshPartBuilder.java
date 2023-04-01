@@ -1,13 +1,30 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package net.nevinsky.abyssus.core.mesh;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Pool.Poolable;
 
 public interface MeshPartBuilder {
     /**
@@ -26,14 +43,14 @@ public interface MeshPartBuilder {
     VertexAttributes getAttributes();
 
     /**
-     * Set the color used to tint the vertex color, defaults to white. Only applicable for
-     * {@link VertexAttributes.Usage#ColorPacked} or {@link VertexAttributes.Usage#ColorUnpacked}.
+     * Set the color used to tint the vertex color, defaults to white. Only applicable for {@link Usage#ColorPacked} or
+     * {@link Usage#ColorUnpacked}.
      */
     void setColor(final Color color);
 
     /**
-     * Set the color used to tint the vertex color, defaults to white. Only applicable for
-     * {@link VertexAttributes.Usage#ColorPacked} or {@link VertexAttributes.Usage#ColorUnpacked}.
+     * Set the color used to tint the vertex color, defaults to white. Only applicable for {@link Usage#ColorPacked} or
+     * {@link Usage#ColorUnpacked}.
      */
     void setColor(float r, float g, float b, float a);
 
@@ -94,7 +111,7 @@ public interface MeshPartBuilder {
 
     /**
      * Increases the size of the backing indices array to accommodate the specified number of additional triangles.
-     * Useful before adding many triangles using {@link #triangle(int, int, int)} to avoid multiple backing array
+     * Useful before adding many triangles using {@link #triangle(short, short, short)} to avoid multiple backing array
      * resizes. The actual number of indices accounted for depends on the primitive type (see
      * {@link #getPrimitiveType()}).
      *
@@ -104,8 +121,8 @@ public interface MeshPartBuilder {
 
     /**
      * Increases the size of the backing indices array to accommodate the specified number of additional rectangles.
-     * Useful before adding many rectangles using {@link #rect(int, int, int, int)} to avoid multiple backing array
-     * resizes.
+     * Useful before adding many rectangles using {@link #rect(short, short, short, short)} to avoid multiple backing
+     * array resizes.
      *
      * @param numRectangles The number of rectangles you are about to add
      */
@@ -115,65 +132,64 @@ public interface MeshPartBuilder {
      * Add one or more vertices, returns the index of the last vertex added. The length of values must a power of the
      * vertex size.
      */
-    int vertex(final float... values);
+    short vertex(final float... values);
 
     /**
      * Add a vertex, returns the index. Null values are allowed. Use {@link #getAttributes} to check which values are
      * available.
      */
-    int vertex(Vector3 pos, Vector3 nor, Color col, Vector2 uv);
+    short vertex(Vector3 pos, Vector3 nor, Color col, Vector2 uv);
 
     /**
      * Add a vertex, returns the index. Use {@link #getAttributes} to check which values are available.
      */
-    int vertex(final MeshPartBuilder.VertexInfo info);
+    short vertex(final VertexInfo info);
 
     /**
      * @return The index of the last added vertex.
      */
-    int lastIndex();
+    short lastIndex();
 
     /**
      * Add an index, MeshPartBuilder expects all meshes to be indexed.
      */
-    void index(final int value);
+    void index(final short value);
 
     /**
      * Add multiple indices, MeshPartBuilder expects all meshes to be indexed.
      */
-    void index(int value1, int value2);
+    void index(short value1, short value2);
 
     /**
      * Add multiple indices, MeshPartBuilder expects all meshes to be indexed.
      */
-    void index(int value1, int value2, int value3);
+    void index(short value1, short value2, short value3);
 
     /**
      * Add multiple indices, MeshPartBuilder expects all meshes to be indexed.
      */
-    void index(int value1, int value2, int value3, int value4);
+    void index(short value1, short value2, short value3, short value4);
 
     /**
      * Add multiple indices, MeshPartBuilder expects all meshes to be indexed.
      */
-    void index(int value1, int value2, int value3, int value4, int value5, int value6);
+    void index(short value1, short value2, short value3, short value4, short value5, short value6);
 
     /**
      * Add multiple indices, MeshPartBuilder expects all meshes to be indexed.
      */
-    void index(int value1, int value2, int value3, int value4, int value5, int value6, int value7,
-               int value8);
+    void index(short value1, short value2, short value3, short value4, short value5, short value6, short value7,
+               short value8);
 
     /**
      * Add a line by indices. Requires GL_LINES primitive type.
      */
-    void line(int index1, int index2);
+    void line(short index1, short index2);
 
     /**
      * Add a line. Requires GL_LINES primitive type.
      */
-    void line(MeshPartBuilder.VertexInfo p1,
-              MeshPartBuilder.VertexInfo p2);
+    void line(VertexInfo p1, VertexInfo p2);
 
     /**
      * Add a line. Requires GL_LINES primitive type.
@@ -193,14 +209,12 @@ public interface MeshPartBuilder {
     /**
      * Add a triangle by indices. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type.
      */
-    void triangle(int index1, int index2, int index3);
+    void triangle(short index1, short index2, short index3);
 
     /**
      * Add a triangle. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type.
      */
-    void triangle(MeshPartBuilder.VertexInfo p1,
-                  MeshPartBuilder.VertexInfo p2,
-                  MeshPartBuilder.VertexInfo p3);
+    void triangle(VertexInfo p1, VertexInfo p2, VertexInfo p3);
 
     /**
      * Add a triangle. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type.
@@ -215,15 +229,12 @@ public interface MeshPartBuilder {
     /**
      * Add a rectangle by indices. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type.
      */
-    void rect(int corner00, int corner10, int corner11, int corner01);
+    void rect(short corner00, short corner10, short corner11, short corner01);
 
     /**
      * Add a rectangle. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type.
      */
-    void rect(MeshPartBuilder.VertexInfo corner00,
-              MeshPartBuilder.VertexInfo corner10,
-              MeshPartBuilder.VertexInfo corner11,
-              MeshPartBuilder.VertexInfo corner01);
+    void rect(VertexInfo corner00, VertexInfo corner10, VertexInfo corner11, VertexInfo corner01);
 
     /**
      * Add a rectangle. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type.
@@ -263,12 +274,12 @@ public interface MeshPartBuilder {
     /**
      * Copies a mesh to the mesh (part) currently being build. The entire vertices array is added, even if some of the
      * vertices are not indexed by the indices array. If you want to add only the vertices that are actually indexed,
-     * then use the {@link #addMesh(float[], int[], int, int)} method instead.
+     * then use the {@link #addMesh(float[], short[], int, int)} method instead.
      *
      * @param vertices The vertices to copy, must be in the same vertex layout as the mesh being build.
      * @param indices  Array containing the indices to copy, each index should be valid in the vertices array.
      */
-    void addMesh(float[] vertices, int[] indices);
+    void addMesh(float[] vertices, short[] indices);
 
     /**
      * Copies a (part of a) mesh to the mesh (part) currently being build.
@@ -279,14 +290,14 @@ public interface MeshPartBuilder {
      * @param indexOffset The zero-based offset of the first index of the part of indices array to copy.
      * @param numIndices  The number of indices of the part of the indices array to copy.
      */
-    void addMesh(float[] vertices, int[] indices, int indexOffset, int numIndices);
+    void addMesh(float[] vertices, short[] indices, int indexOffset, int numIndices);
 
     /**
      * Class that contains all vertex information the builder can use.
      *
      * @author Xoppa
      */
-    class VertexInfo implements Pool.Poolable {
+    class VertexInfo implements Poolable {
         public final Vector3 position = new Vector3();
         public boolean hasPosition;
         public final Vector3 normal = new Vector3(0, 1, 0);
@@ -304,8 +315,7 @@ public interface MeshPartBuilder {
             uv.set(0, 0);
         }
 
-        public MeshPartBuilder.VertexInfo set(Vector3 pos, Vector3 nor, Color col,
-                                              Vector2 uv) {
+        public VertexInfo set(Vector3 pos, Vector3 nor, Color col, Vector2 uv) {
             reset();
             hasPosition = pos != null;
             if (hasPosition) position.set(pos);
@@ -318,8 +328,7 @@ public interface MeshPartBuilder {
             return this;
         }
 
-        public MeshPartBuilder.VertexInfo set(
-                final MeshPartBuilder.VertexInfo other) {
+        public VertexInfo set(final VertexInfo other) {
             if (other == null) return set(null, null, null, null);
             hasPosition = other.hasPosition;
             position.set(other.position);
@@ -332,57 +341,55 @@ public interface MeshPartBuilder {
             return this;
         }
 
-        public MeshPartBuilder.VertexInfo setPos(float x, float y, float z) {
+        public VertexInfo setPos(float x, float y, float z) {
             position.set(x, y, z);
             hasPosition = true;
             return this;
         }
 
-        public MeshPartBuilder.VertexInfo setPos(Vector3 pos) {
+        public VertexInfo setPos(Vector3 pos) {
             hasPosition = pos != null;
             if (hasPosition) position.set(pos);
             return this;
         }
 
-        public MeshPartBuilder.VertexInfo setNor(float x, float y, float z) {
+        public VertexInfo setNor(float x, float y, float z) {
             normal.set(x, y, z);
             hasNormal = true;
             return this;
         }
 
-        public MeshPartBuilder.VertexInfo setNor(Vector3 nor) {
+        public VertexInfo setNor(Vector3 nor) {
             hasNormal = nor != null;
             if (hasNormal) normal.set(nor);
             return this;
         }
 
-        public MeshPartBuilder.VertexInfo setCol(float r, float g, float b,
-                                                 float a) {
+        public VertexInfo setCol(float r, float g, float b, float a) {
             color.set(r, g, b, a);
             hasColor = true;
             return this;
         }
 
-        public MeshPartBuilder.VertexInfo setCol(Color col) {
+        public VertexInfo setCol(Color col) {
             hasColor = col != null;
             if (hasColor) color.set(col);
             return this;
         }
 
-        public MeshPartBuilder.VertexInfo setUV(float u, float v) {
+        public VertexInfo setUV(float u, float v) {
             uv.set(u, v);
             hasUV = true;
             return this;
         }
 
-        public MeshPartBuilder.VertexInfo setUV(Vector2 uv) {
+        public VertexInfo setUV(Vector2 uv) {
             hasUV = uv != null;
             if (hasUV) this.uv.set(uv);
             return this;
         }
 
-        public MeshPartBuilder.VertexInfo lerp(
-                final MeshPartBuilder.VertexInfo target, float alpha) {
+        public VertexInfo lerp(final VertexInfo target, float alpha) {
             if (hasPosition && target.hasPosition) position.lerp(target.position, alpha);
             if (hasNormal && target.hasNormal) normal.lerp(target.normal, alpha);
             if (hasColor && target.hasColor) color.lerp(target.color, alpha);
@@ -397,10 +404,8 @@ public interface MeshPartBuilder {
      * @deprecated use PatchShapeBuilder.build instead.
      */
     @Deprecated
-    void patch(MeshPartBuilder.VertexInfo corner00,
-               MeshPartBuilder.VertexInfo corner10,
-               MeshPartBuilder.VertexInfo corner11,
-               MeshPartBuilder.VertexInfo corner01, int divisionsU,
+    void patch(VertexInfo corner00, VertexInfo corner10, VertexInfo corner11, VertexInfo corner01,
+               int divisionsU,
                int divisionsV);
 
     /**
@@ -423,14 +428,9 @@ public interface MeshPartBuilder {
      * @deprecated use BoxShapeBuilder.build instead.
      */
     @Deprecated
-    void box(MeshPartBuilder.VertexInfo corner000,
-             MeshPartBuilder.VertexInfo corner010,
-             MeshPartBuilder.VertexInfo corner100,
-             MeshPartBuilder.VertexInfo corner110,
-             MeshPartBuilder.VertexInfo corner001,
-             MeshPartBuilder.VertexInfo corner011,
-             MeshPartBuilder.VertexInfo corner101,
-             MeshPartBuilder.VertexInfo corner111);
+    void box(VertexInfo corner000, VertexInfo corner010, VertexInfo corner100, VertexInfo corner110,
+             VertexInfo corner001,
+             VertexInfo corner011, VertexInfo corner101, VertexInfo corner111);
 
     /**
      * @deprecated use BoxShapeBuilder.build instead.
@@ -685,4 +685,3 @@ public interface MeshPartBuilder {
     void arrow(float x1, float y1, float z1, float x2, float y2, float z2, float capLength, float stemThickness,
                int divisions);
 }
-

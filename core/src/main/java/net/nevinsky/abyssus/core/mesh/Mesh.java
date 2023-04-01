@@ -1,3 +1,19 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package net.nevinsky.abyssus.core.mesh;
 
 import com.badlogic.gdx.Application;
@@ -5,7 +21,19 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.glutils.*;
+import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.glutils.IndexArray;
+import com.badlogic.gdx.graphics.glutils.IndexBufferObject;
+import com.badlogic.gdx.graphics.glutils.IndexBufferObjectSubData;
+import com.badlogic.gdx.graphics.glutils.IndexData;
+import com.badlogic.gdx.graphics.glutils.InstanceBufferObject;
+import com.badlogic.gdx.graphics.glutils.InstanceData;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.graphics.glutils.VertexArray;
+import com.badlogic.gdx.graphics.glutils.VertexBufferObject;
+import com.badlogic.gdx.graphics.glutils.VertexBufferObjectSubData;
+import com.badlogic.gdx.graphics.glutils.VertexBufferObjectWithVAO;
+import com.badlogic.gdx.graphics.glutils.VertexData;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
@@ -14,14 +42,36 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import net.nevinsky.abyssus.core.IndexData;
 
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * <p>
+ * A Mesh holds vertices composed of attributes specified by a {@link VertexAttributes} instance. The vertices are held
+ * either in VRAM in form of vertex buffer objects or in RAM in form of vertex arrays. The former variant is more
+ * performant and is preferred over vertex arrays if hardware supports it.
+ * </p>
+ *
+ * <p>
+ * Meshes are automatically managed. If the OpenGL context is lost all vertex buffer objects get invalidated and must be
+ * reloaded when the context is recreated. This only happens on Android when a user switches to another application or
+ * receives an incoming call. A managed Mesh will be reloaded automagically so you don't have to do this manually.
+ * </p>
+ *
+ * <p>
+ * A Mesh consists of vertices and optionally indices which specify which vertices define a triangle. Each vertex is
+ * composed of attributes such as position, normal, color or texture coordinate. Note that not all of this attributes
+ * must be given, except for position which is non-optional. Each attribute has an alias which is used when rendering a
+ * Mesh in OpenGL ES 2.0. The alias is used to bind a specific vertex attribute to a shader attribute. The shader source
+ * and the alias of the attribute must match exactly for this to work.
+ * </p>
+ *
+ * @author mzechner, Dave Clayton <contact@redskyforge.com>, Xoppa
+ */
 public class Mesh implements Disposable {
     public enum VertexDataType {
         VertexArray, VertexBufferObject, VertexBufferObjectSubData, VertexBufferObjectWithVAO
@@ -30,15 +80,15 @@ public class Mesh implements Disposable {
     /**
      * list of all meshes
      **/
-    private static final Map<Application, Array<Mesh>> meshes = new HashMap<Application, Array<Mesh>>();
+    static final Map<Application, Array<Mesh>> meshes = new HashMap<Application, Array<Mesh>>();
 
-    private final VertexData vertices;
-    private final IndexData indices;
-    private boolean autoBind = true;
-    private final boolean isVertexArray;
+    final VertexData vertices;
+    final IndexData indices;
+    boolean autoBind = true;
+    final boolean isVertexArray;
 
-    private InstanceData instances;
-    private boolean isInstanced = false;
+    InstanceData instances;
+    boolean isInstanced = false;
 
     protected Mesh(VertexData vertices, IndexData indices, boolean isVertexArray) {
         this.vertices = vertices;
@@ -59,7 +109,7 @@ public class Mesh implements Disposable {
      */
     public Mesh(boolean isStatic, int maxVertices, int maxIndices, VertexAttribute... attributes) {
         vertices = makeVertexBuffer(isStatic, maxVertices, new VertexAttributes(attributes));
-        indices = new net.nevinsky.abyssus.core.IndexBufferObject(isStatic, maxIndices);
+        indices = new IndexBufferObject(isStatic, maxIndices);
         isVertexArray = false;
 
         addManagedMesh(Gdx.app, this);
@@ -76,7 +126,7 @@ public class Mesh implements Disposable {
      */
     public Mesh(boolean isStatic, int maxVertices, int maxIndices, VertexAttributes attributes) {
         vertices = makeVertexBuffer(isStatic, maxVertices, attributes);
-        indices = new net.nevinsky.abyssus.core.IndexBufferObject(isStatic, maxIndices);
+        indices = new IndexBufferObject(isStatic, maxIndices);
         isVertexArray = false;
 
         addManagedMesh(Gdx.app, this);
@@ -96,7 +146,7 @@ public class Mesh implements Disposable {
     public Mesh(boolean staticVertices, boolean staticIndices, int maxVertices, int maxIndices,
                 VertexAttributes attributes) {
         vertices = makeVertexBuffer(staticVertices, maxVertices, attributes);
-        indices = new net.nevinsky.abyssus.core.IndexBufferObject(staticIndices, maxIndices);
+        indices = new IndexBufferObject(staticIndices, maxIndices);
         isVertexArray = false;
 
         addManagedMesh(Gdx.app, this);
@@ -114,15 +164,14 @@ public class Mesh implements Disposable {
      * Creates a new Mesh with the given attributes. This is an expert method with no error checking. Use at your own
      * risk.
      *
-     * @param type        the {@link Mesh.VertexDataType} to be used, VBO or VA.
+     * @param type        the {@link VertexDataType} to be used, VBO or VA.
      * @param isStatic    whether this mesh is static or not. Allows for internal optimizations.
      * @param maxVertices the maximum number of vertices this mesh can hold
      * @param maxIndices  the maximum number of indices this mesh can hold
      * @param attributes  the {@link VertexAttribute}s. Each vertex attribute defines one property of a vertex such as
      *                    position, normal or texture coordinate
      */
-    public Mesh(Mesh.VertexDataType type, boolean isStatic, int maxVertices, int maxIndices,
-                VertexAttribute... attributes) {
+    public Mesh(VertexDataType type, boolean isStatic, int maxVertices, int maxIndices, VertexAttribute... attributes) {
         this(type, isStatic, maxVertices, maxIndices, new VertexAttributes(attributes));
     }
 
@@ -130,34 +179,33 @@ public class Mesh implements Disposable {
      * Creates a new Mesh with the given attributes. This is an expert method with no error checking. Use at your own
      * risk.
      *
-     * @param type        the {@link Mesh.VertexDataType} to be used, VBO or VA.
+     * @param type        the {@link VertexDataType} to be used, VBO or VA.
      * @param isStatic    whether this mesh is static or not. Allows for internal optimizations.
      * @param maxVertices the maximum number of vertices this mesh can hold
      * @param maxIndices  the maximum number of indices this mesh can hold
      * @param attributes  the {@link VertexAttributes}.
      */
-    public Mesh(Mesh.VertexDataType type, boolean isStatic, int maxVertices, int maxIndices,
-                VertexAttributes attributes) {
+    public Mesh(VertexDataType type, boolean isStatic, int maxVertices, int maxIndices, VertexAttributes attributes) {
         switch (type) {
             case VertexBufferObject:
                 vertices = new VertexBufferObject(isStatic, maxVertices, attributes);
-                indices = new net.nevinsky.abyssus.core.IndexBufferObject(isStatic, maxIndices);
+                indices = new IndexBufferObject(isStatic, maxIndices);
                 isVertexArray = false;
                 break;
             case VertexBufferObjectSubData:
                 vertices = new VertexBufferObjectSubData(isStatic, maxVertices, attributes);
-                indices = new net.nevinsky.abyssus.core.IndexBufferObjectSubData(isStatic, maxIndices);
+                indices = new IndexBufferObjectSubData(isStatic, maxIndices);
                 isVertexArray = false;
                 break;
             case VertexBufferObjectWithVAO:
                 vertices = new VertexBufferObjectWithVAO(isStatic, maxVertices, attributes);
-                indices = new net.nevinsky.abyssus.core.IndexBufferObjectSubData(isStatic, maxIndices);
+                indices = new IndexBufferObjectSubData(isStatic, maxIndices);
                 isVertexArray = false;
                 break;
             case VertexArray:
             default:
                 vertices = new VertexArray(maxVertices, attributes);
-                indices = new net.nevinsky.abyssus.core.IndexArray(maxIndices);
+                indices = new IndexArray(maxIndices);
                 isVertexArray = true;
                 break;
         }
@@ -417,7 +465,7 @@ public class Mesh implements Disposable {
      * @param indices the indices
      * @return the mesh for invocation chaining.
      */
-    public Mesh setIndices(int[] indices) {
+    public Mesh setIndices(short[] indices) {
         this.indices.setIndices(indices, 0, indices.length);
 
         return this;
@@ -431,61 +479,61 @@ public class Mesh implements Disposable {
      * @param count   the number of indices to copy
      * @return the mesh for invocation chaining.
      */
-    public Mesh setIndices(int[] indices, int offset, int count) {
+    public Mesh setIndices(short[] indices, int offset, int count) {
         this.indices.setIndices(indices, offset, count);
 
         return this;
     }
 
     /**
-     * Copies the indices from the Mesh to the int array. The int array must be large enough to hold all the Mesh's
+     * Copies the indices from the Mesh to the short array. The short array must be large enough to hold all the Mesh's
      * indices.
      *
      * @param indices the array to copy the indices to
      */
-    public void getIndices(int[] indices) {
+    public void getIndices(short[] indices) {
         getIndices(indices, 0);
     }
 
     /**
-     * Copies the indices from the Mesh to the int array. The int array must be large enough to hold destOffset + all
-     * the Mesh's indices.
+     * Copies the indices from the Mesh to the short array. The short array must be large enough to hold destOffset +
+     * all the Mesh's indices.
      *
      * @param indices    the array to copy the indices to
      * @param destOffset the offset in the indices array to start copying
      */
-    public void getIndices(int[] indices, int destOffset) {
+    public void getIndices(short[] indices, int destOffset) {
         getIndices(0, indices, destOffset);
     }
 
     /**
-     * Copies the remaining indices from the Mesh to the int array. The int array must be large enough to hold
+     * Copies the remaining indices from the Mesh to the short array. The short array must be large enough to hold
      * destOffset + all the remaining indices.
      *
      * @param srcOffset  the zero-based offset of the first index to fetch
      * @param indices    the array to copy the indices to
      * @param destOffset the offset in the indices array to start copying
      */
-    public void getIndices(int srcOffset, int[] indices, int destOffset) {
+    public void getIndices(int srcOffset, short[] indices, int destOffset) {
         getIndices(srcOffset, -1, indices, destOffset);
     }
 
     /**
-     * Copies the indices from the Mesh to the int array. The int array must be large enough to hold destOffset + count
-     * indices.
+     * Copies the indices from the Mesh to the short array. The short array must be large enough to hold destOffset +
+     * count indices.
      *
      * @param srcOffset  the zero-based offset of the first index to fetch
      * @param count      the total amount of indices to copy
      * @param indices    the array to copy the indices to
      * @param destOffset the offset in the indices array to start copying
      */
-    public void getIndices(int srcOffset, int count, int[] indices, int destOffset) {
+    public void getIndices(int srcOffset, int count, short[] indices, int destOffset) {
         int max = getNumIndices();
         if (count < 0) count = max - srcOffset;
         if (srcOffset < 0 || srcOffset >= max || srcOffset + count > max) throw new IllegalArgumentException(
                 "Invalid range specified, offset: " + srcOffset + ", count: " + count + ", max: " + max);
         if ((indices.length - destOffset) < count) throw new IllegalArgumentException(
-                "not enough room in indices array, has " + indices.length + " ints, needs " + count);
+                "not enough room in indices array, has " + indices.length + " shorts, needs " + count);
         int pos = getIndicesBuffer().position();
         ((Buffer) getIndicesBuffer()).position(srcOffset);
         getIndicesBuffer().get(indices, destOffset, count);
@@ -540,8 +588,8 @@ public class Mesh implements Disposable {
     }
 
     /**
-     * Binds the underlying {@link VertexBufferObject} and {@link net.nevinsky.abyssus.core.IndexBufferObject} if
-     * indices where given. Use this with OpenGL ES 2.0 and when auto-bind is disabled.
+     * Binds the underlying {@link VertexBufferObject} and {@link IndexBufferObject} if indices where given. Use this
+     * with OpenGL ES 2.0 and when auto-bind is disabled.
      *
      * @param shader the shader (does not bind the shader)
      */
@@ -550,8 +598,8 @@ public class Mesh implements Disposable {
     }
 
     /**
-     * Binds the underlying {@link VertexBufferObject} and {@link net.nevinsky.abyssus.core.IndexBufferObject} if
-     * indices where given. Use this with OpenGL ES 2.0 and when auto-bind is disabled.
+     * Binds the underlying {@link VertexBufferObject} and {@link IndexBufferObject} if indices where given. Use this
+     * with OpenGL ES 2.0 and when auto-bind is disabled.
      *
      * @param shader    the shader (does not bind the shader)
      * @param locations array containing the attribute locations.
@@ -563,8 +611,8 @@ public class Mesh implements Disposable {
     }
 
     /**
-     * Unbinds the underlying {@link VertexBufferObject} and {@link net.nevinsky.abyssus.core.IndexBufferObject} is
-     * indices were given. Use this with OpenGL ES 1.x and when auto-bind is disabled.
+     * Unbinds the underlying {@link VertexBufferObject} and {@link IndexBufferObject} is indices were given. Use this
+     * with OpenGL ES 1.x and when auto-bind is disabled.
      *
      * @param shader the shader (does not unbind the shader)
      */
@@ -573,8 +621,8 @@ public class Mesh implements Disposable {
     }
 
     /**
-     * Unbinds the underlying {@link VertexBufferObject} and {@link net.nevinsky.abyssus.core.IndexBufferObject} is
-     * indices were given. Use this with OpenGL ES 1.x and when auto-bind is disabled.
+     * Unbinds the underlying {@link VertexBufferObject} and {@link IndexBufferObject} is indices were given. Use this
+     * with OpenGL ES 1.x and when auto-bind is disabled.
      *
      * @param shader    the shader (does not unbind the shader)
      * @param locations array containing the attribute locations.
@@ -679,11 +727,11 @@ public class Mesh implements Disposable {
 
         if (isVertexArray) {
             if (indices.getNumIndices() > 0) {
-                IntBuffer buffer = indices.getBuffer();
+                ShortBuffer buffer = indices.getBuffer();
                 int oldPosition = buffer.position();
                 int oldLimit = buffer.limit();
                 ((Buffer) buffer).position(offset);
-                Gdx.gl20.glDrawElements(primitiveType, count, GL20.GL_UNSIGNED_INT, buffer);
+                Gdx.gl20.glDrawElements(primitiveType, count, GL20.GL_UNSIGNED_SHORT, buffer);
                 ((Buffer) buffer).position(oldPosition);
             } else {
                 Gdx.gl20.glDrawArrays(primitiveType, offset, count);
@@ -700,10 +748,10 @@ public class Mesh implements Disposable {
                 }
 
                 if (isInstanced && numInstances > 0) {
-                    Gdx.gl30.glDrawElementsInstanced(primitiveType, count, GL20.GL_UNSIGNED_INT, offset * 2,
+                    Gdx.gl30.glDrawElementsInstanced(primitiveType, count, GL20.GL_UNSIGNED_SHORT, offset * 2,
                             numInstances);
                 } else {
-                    Gdx.gl20.glDrawElements(primitiveType, count, GL20.GL_UNSIGNED_INT, offset * 2);
+                    Gdx.gl20.glDrawElements(primitiveType, count, GL20.GL_UNSIGNED_SHORT, offset * 2);
                 }
             } else {
                 if (isInstanced && numInstances > 0) {
@@ -728,7 +776,7 @@ public class Mesh implements Disposable {
     }
 
     /**
-     * Returns the first {@link VertexAttribute} having the given {@link VertexAttributes.Usage}.
+     * Returns the first {@link VertexAttribute} having the given {@link Usage}.
      *
      * @param usage the Usage.
      * @return the VertexAttribute or null if no attribute with that usage was found.
@@ -780,7 +828,7 @@ public class Mesh implements Disposable {
 
         final FloatBuffer verts = vertices.getBuffer();
         bbox.inf();
-        final VertexAttribute posAttrib = getVertexAttribute(VertexAttributes.Usage.Position);
+        final VertexAttribute posAttrib = getVertexAttribute(Usage.Position);
         final int offset = posAttrib.offset / 4;
         final int vertexSize = vertices.getAttributes().vertexSize / 4;
         int idx = offset;
@@ -862,8 +910,8 @@ public class Mesh implements Disposable {
                     "Invalid part specified ( offset=" + offset + ", count=" + count + ", max=" + max + " )");
 
         final FloatBuffer verts = vertices.getBuffer();
-        final IntBuffer index = indices.getBuffer();
-        final VertexAttribute posAttrib = getVertexAttribute(VertexAttributes.Usage.Position);
+        final ShortBuffer index = indices.getBuffer();
+        final VertexAttribute posAttrib = getVertexAttribute(Usage.Position);
         final int posoff = posAttrib.offset / 4;
         final int vertexSize = vertices.getAttributes().vertexSize / 4;
         final int end = offset + count;
@@ -938,12 +986,11 @@ public class Mesh implements Disposable {
                                         int count,
                                         final Matrix4 transform) {
         int numIndices = getNumIndices();
-        if (offset < 0 || count < 1 || offset + count > numIndices)
-            throw new GdxRuntimeException("Not enough indices");
+        if (offset < 0 || count < 1 || offset + count > numIndices) throw new GdxRuntimeException("Not enough indices");
 
         final FloatBuffer verts = vertices.getBuffer();
-        final IntBuffer index = indices.getBuffer();
-        final VertexAttribute posAttrib = getVertexAttribute(VertexAttributes.Usage.Position);
+        final ShortBuffer index = indices.getBuffer();
+        final VertexAttribute posAttrib = getVertexAttribute(Usage.Position);
         final int posoff = posAttrib.offset / 4;
         final int vertexSize = vertices.getAttributes().vertexSize / 4;
         final int end = offset + count;
@@ -1058,9 +1105,9 @@ public class Mesh implements Disposable {
     }
 
     /**
-     * @return the backing intbuffer holding the indices. Does not have to be a direct buffer on Android!
+     * @return the backing shortbuffer holding the indices. Does not have to be a direct buffer on Android!
      */
-    public IntBuffer getIndicesBuffer() {
+    public ShortBuffer getIndicesBuffer() {
         return indices.getBuffer();
     }
 
@@ -1113,7 +1160,7 @@ public class Mesh implements Disposable {
      * @param scaleZ scale on z
      */
     public void scale(float scaleX, float scaleY, float scaleZ) {
-        final VertexAttribute posAttr = getVertexAttribute(VertexAttributes.Usage.Position);
+        final VertexAttribute posAttr = getVertexAttribute(Usage.Position);
         final int offset = posAttr.offset / 4;
         final int numComponents = posAttr.numComponents;
         final int numVertices = getNumVertices();
@@ -1162,7 +1209,7 @@ public class Mesh implements Disposable {
 
     // TODO: Protected for now, because transforming a portion works but still copies all vertices
     public void transform(final Matrix4 matrix, final int start, final int count) {
-        final VertexAttribute posAttr = getVertexAttribute(VertexAttributes.Usage.Position);
+        final VertexAttribute posAttr = getVertexAttribute(Usage.Position);
         final int posOffset = posAttr.offset / 4;
         final int stride = getVertexSize() / 4;
         final int numComponents = posAttr.numComponents;
@@ -1191,8 +1238,7 @@ public class Mesh implements Disposable {
     public static void transform(final Matrix4 matrix, final float[] vertices, int vertexSize, int offset,
                                  int dimensions,
                                  int start, int count) {
-        if (offset < 0 || dimensions < 1 || (offset + dimensions) > vertexSize)
-            throw new IndexOutOfBoundsException();
+        if (offset < 0 || dimensions < 1 || (offset + dimensions) > vertexSize) throw new IndexOutOfBoundsException();
         if (start < 0 || count < 1 || ((start + count) * vertexSize) > vertices.length)
             throw new IndexOutOfBoundsException(
                     "start = " + start + ", count = " + count + ", vertexSize = " + vertexSize + ", length = " +
@@ -1241,7 +1287,7 @@ public class Mesh implements Disposable {
 
     // TODO: Protected for now, because transforming a portion works but still copies all vertices
     protected void transformUV(final Matrix3 matrix, final int start, final int count) {
-        final VertexAttribute posAttr = getVertexAttribute(VertexAttributes.Usage.TextureCoordinates);
+        final VertexAttribute posAttr = getVertexAttribute(Usage.TextureCoordinates);
         final int offset = posAttr.offset / 4;
         final int vertexSize = getVertexSize() / 4;
         final int numVertices = getNumVertices();
@@ -1300,7 +1346,7 @@ public class Mesh implements Disposable {
         int numVertices = getNumVertices();
         float[] vertices = new float[numVertices * vertexSize];
         getVertices(0, vertices.length, vertices);
-        int[] checks = null;
+        short[] checks = null;
         VertexAttribute[] attrs = null;
         int newVertexSize = 0;
         if (usage != null) {
@@ -1313,39 +1359,39 @@ public class Mesh implements Disposable {
                 }
             if (size > 0) {
                 attrs = new VertexAttribute[as];
-                checks = new int[size];
+                checks = new short[size];
                 int idx = -1;
                 int ai = -1;
                 for (int i = 0; i < usage.length; i++) {
                     VertexAttribute a = getVertexAttribute(usage[i]);
                     if (a == null) continue;
                     for (int j = 0; j < a.numComponents; j++)
-                        checks[++idx] = a.offset + j;
+                        checks[++idx] = (short) (a.offset + j);
                     attrs[++ai] = a.copy();
                     newVertexSize += a.numComponents;
                 }
             }
         }
         if (checks == null) {
-            checks = new int[vertexSize];
-            for (int i = 0; i < vertexSize; i++)
+            checks = new short[vertexSize];
+            for (short i = 0; i < vertexSize; i++)
                 checks[i] = i;
             newVertexSize = vertexSize;
         }
 
         int numIndices = getNumIndices();
-        int[] indices = null;
+        short[] indices = null;
         if (numIndices > 0) {
-            indices = new int[numIndices];
+            indices = new short[numIndices];
             getIndices(indices);
             if (removeDuplicates || newVertexSize != vertexSize) {
                 float[] tmp = new float[vertices.length];
                 int size = 0;
                 for (int i = 0; i < numIndices; i++) {
                     final int idx1 = indices[i] * vertexSize;
-                    int newIndex = -1;
+                    short newIndex = -1;
                     if (removeDuplicates) {
-                        for (int j = 0; j < size && newIndex < 0; j++) {
+                        for (short j = 0; j < size && newIndex < 0; j++) {
                             final int idx2 = j * newVertexSize;
                             boolean found = true;
                             for (int k = 0; k < checks.length && found; k++) {
@@ -1363,7 +1409,7 @@ public class Mesh implements Disposable {
                         final int idx = size * newVertexSize;
                         for (int j = 0; j < checks.length; j++)
                             tmp[idx + j] = vertices[idx1 + checks[j]];
-                        indices[i] = size;
+                        indices[i] = (short) size;
                         size++;
                     }
                 }

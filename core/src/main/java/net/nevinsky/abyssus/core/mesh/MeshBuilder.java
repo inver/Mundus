@@ -1,16 +1,56 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package net.nevinsky.abyssus.core.mesh;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.*;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Matrix3;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
-import com.badlogic.gdx.utils.*;
-import net.nevinsky.abyssus.core.builder.*;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.FloatArray;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.IntIntMap;
+import com.badlogic.gdx.utils.ShortArray;
+import net.nevinsky.abyssus.core.builder.ArrowShapeBuilder;
+import net.nevinsky.abyssus.core.builder.BoxShapeBuilder;
+import net.nevinsky.abyssus.core.builder.CapsuleShapeBuilder;
+import net.nevinsky.abyssus.core.builder.ConeShapeBuilder;
+import net.nevinsky.abyssus.core.builder.CylinderShapeBuilder;
+import net.nevinsky.abyssus.core.builder.EllipseShapeBuilder;
+import net.nevinsky.abyssus.core.builder.PatchShapeBuilder;
+import net.nevinsky.abyssus.core.builder.SphereShapeBuilder;
 
+/**
+ * Class to construct a mesh, optionally splitting it into one or more mesh parts. Before you can call any other method
+ * you must call {@link #begin(VertexAttributes)} or {@link #begin(VertexAttributes, int)}. To use mesh parts you must
+ * call {@link #part(String, int)} before you start building the part. The MeshPart itself is only valid after the call
+ * to {@link #end()}.
+ *
+ * @author Xoppa
+ */
 public class MeshBuilder implements MeshPartBuilder {
     /**
      * maximum number of vertices mesh builder can hold (64k)
@@ -21,7 +61,7 @@ public class MeshBuilder implements MeshPartBuilder {
      */
     public static final int MAX_INDEX = MAX_VERTICES - 1;
 
-    private final static IntArray tmpIndices = new IntArray();
+    private final static ShortArray tmpIndices = new ShortArray();
     private final static FloatArray tmpVertices = new FloatArray();
 
     private final VertexInfo vertTmp1 = new VertexInfo();
@@ -38,11 +78,11 @@ public class MeshBuilder implements MeshPartBuilder {
     /**
      * The vertices to construct, no size checking is done
      */
-    private FloatArray vertices = new FloatArray();
+    private final FloatArray vertices = new FloatArray();
     /**
      * The indices to construct, no size checking is done
      */
-    private IntArray indices = new IntArray();
+    private final ShortArray indices = new ShortArray();
     /**
      * The size (in number of floats) of each vertex
      */
@@ -98,7 +138,7 @@ public class MeshBuilder implements MeshPartBuilder {
     /**
      * The parts created between begin and end
      */
-    private Array<MeshPart> parts = new Array<MeshPart>();
+    private final Array<MeshPart> parts = new Array<MeshPart>();
     /**
      * The color used if no vertex color is specified.
      */
@@ -121,23 +161,22 @@ public class MeshBuilder implements MeshPartBuilder {
     private final BoundingBox bounds = new BoundingBox();
 
     /**
-     * @param usage bitwise mask of the {@link VertexAttributes.Usage}, only Position, Color, Normal and
-     *              TextureCoordinates is supported.
+     * @param usage bitwise mask of the {@link Usage}, only Position, Color, Normal and TextureCoordinates is
+     *              supported.
      */
     public static VertexAttributes createAttributes(long usage) {
         final Array<VertexAttribute> attrs = new Array<VertexAttribute>();
-        if ((usage & VertexAttributes.Usage.Position) == VertexAttributes.Usage.Position)
-            attrs.add(new VertexAttribute(VertexAttributes.Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE));
-        if ((usage & VertexAttributes.Usage.ColorUnpacked) == VertexAttributes.Usage.ColorUnpacked)
-            attrs.add(new VertexAttribute(VertexAttributes.Usage.ColorUnpacked, 4, ShaderProgram.COLOR_ATTRIBUTE));
-        if ((usage & VertexAttributes.Usage.ColorPacked) == VertexAttributes.Usage.ColorPacked)
-            attrs.add(new VertexAttribute(VertexAttributes.Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE));
-        if ((usage & VertexAttributes.Usage.Normal) == VertexAttributes.Usage.Normal) attrs.add(new VertexAttribute(
-                VertexAttributes.Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE));
-        if ((usage & VertexAttributes.Usage.TextureCoordinates) == VertexAttributes.Usage.TextureCoordinates)
-            attrs.add(new VertexAttribute(
-                    VertexAttributes.Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
-        final VertexAttribute attributes[] = new VertexAttribute[attrs.size];
+        if ((usage & Usage.Position) == Usage.Position)
+            attrs.add(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE));
+        if ((usage & Usage.ColorUnpacked) == Usage.ColorUnpacked)
+            attrs.add(new VertexAttribute(Usage.ColorUnpacked, 4, ShaderProgram.COLOR_ATTRIBUTE));
+        if ((usage & Usage.ColorPacked) == Usage.ColorPacked)
+            attrs.add(new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE));
+        if ((usage & Usage.Normal) == Usage.Normal)
+            attrs.add(new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE));
+        if ((usage & Usage.TextureCoordinates) == Usage.TextureCoordinates)
+            attrs.add(new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
+        final VertexAttribute[] attributes = new VertexAttribute[attrs.size];
         for (int i = 0; i < attributes.length; i++)
             attributes[i] = attrs.get(i);
         return new VertexAttributes(attributes);
@@ -146,8 +185,8 @@ public class MeshBuilder implements MeshPartBuilder {
     /**
      * Begin building a mesh. Call {@link #part(String, int)} to start a {@link MeshPart}.
      *
-     * @param attributes bitwise mask of the {@link VertexAttributes.Usage}, only Position, Color, Normal and
-     *                   TextureCoordinates is supported.
+     * @param attributes bitwise mask of the {@link Usage}, only Position, Color, Normal and TextureCoordinates is
+     *                   supported.
      */
     public void begin(final long attributes) {
         begin(createAttributes(attributes), -1);
@@ -163,8 +202,8 @@ public class MeshBuilder implements MeshPartBuilder {
     /**
      * Begin building a mesh.
      *
-     * @param attributes bitwise mask of the {@link VertexAttributes.Usage}, only Position, Color, Normal and
-     *                   TextureCoordinates is supported.
+     * @param attributes bitwise mask of the {@link Usage}, only Position, Color, Normal and TextureCoordinates is
+     *                   supported.
      */
     public void begin(final long attributes, int primitiveType) {
         begin(createAttributes(attributes), primitiveType);
@@ -185,22 +224,22 @@ public class MeshBuilder implements MeshPartBuilder {
         this.part = null;
         this.stride = attributes.vertexSize / 4;
         if (this.vertex == null || this.vertex.length < stride) this.vertex = new float[stride];
-        VertexAttribute a = attributes.findByUsage(VertexAttributes.Usage.Position);
+        VertexAttribute a = attributes.findByUsage(Usage.Position);
         if (a == null) throw new GdxRuntimeException("Cannot build mesh without position attribute");
         posOffset = a.offset / 4;
         posSize = a.numComponents;
-        a = attributes.findByUsage(VertexAttributes.Usage.Normal);
+        a = attributes.findByUsage(Usage.Normal);
         norOffset = a == null ? -1 : a.offset / 4;
-        a = attributes.findByUsage(VertexAttributes.Usage.BiNormal);
+        a = attributes.findByUsage(Usage.BiNormal);
         biNorOffset = a == null ? -1 : a.offset / 4;
-        a = attributes.findByUsage(VertexAttributes.Usage.Tangent);
+        a = attributes.findByUsage(Usage.Tangent);
         tangentOffset = a == null ? -1 : a.offset / 4;
-        a = attributes.findByUsage(VertexAttributes.Usage.ColorUnpacked);
+        a = attributes.findByUsage(Usage.ColorUnpacked);
         colOffset = a == null ? -1 : a.offset / 4;
         colSize = a == null ? 0 : a.numComponents;
-        a = attributes.findByUsage(VertexAttributes.Usage.ColorPacked);
+        a = attributes.findByUsage(Usage.ColorPacked);
         cpOffset = a == null ? -1 : a.offset / 4;
-        a = attributes.findByUsage(VertexAttributes.Usage.TextureCoordinates);
+        a = attributes.findByUsage(Usage.TextureCoordinates);
         uvOffset = a == null ? -1 : a.offset / 4;
         setColor(null);
         setVertexTransform(null);
@@ -357,11 +396,11 @@ public class MeshBuilder implements MeshPartBuilder {
     /**
      * Get a copy of the indices built so far.
      *
-     * @param out        The int array to receive the copy of the indices, must be at least `destOffset` +
+     * @param out        The short array to receive the copy of the indices, must be at least `destOffset` +
      *                   {@link #getNumIndices()} in size.
      * @param destOffset The offset (number of shorts) in the out array where to start copying
      */
-    public void getIndices(int[] out, int destOffset) {
+    public void getIndices(short[] out, int destOffset) {
         if (attributes == null) throw new GdxRuntimeException("Must be called in between #begin and #end");
         if ((destOffset < 0) || (destOffset > out.length - indices.size))
             throw new GdxRuntimeException("Array too small or offset out of range");
@@ -373,7 +412,7 @@ public class MeshBuilder implements MeshPartBuilder {
      * not rely on the length of the array. Instead use {@link #getNumIndices()} to calculate the usable size of the
      * array. Must be called in between the call to #begin and #end.
      */
-    protected int[] getIndices() {
+    protected short[] getIndices() {
         return indices.items;
     }
 
@@ -528,8 +567,8 @@ public class MeshBuilder implements MeshPartBuilder {
     private int lastIndex = -1;
 
     @Override
-    public int lastIndex() {
-        return (int) lastIndex;
+    public short lastIndex() {
+        return (short) lastIndex;
     }
 
     private final static Vector3 vTmp = new Vector3();
@@ -564,7 +603,7 @@ public class MeshBuilder implements MeshPartBuilder {
             values[offset] = vTmp.set(values[offset], 0, 0).mul(transform).nor().x;
     }
 
-    private void addVertex(final float[] values, final int offset) {
+    private final void addVertex(final float[] values, final int offset) {
         final int o = vertices.size;
         vertices.addAll(values, offset, stride);
         lastIndex = vindex++;
@@ -602,7 +641,7 @@ public class MeshBuilder implements MeshPartBuilder {
     private final Vector3 tmpNormal = new Vector3();
 
     @Override
-    public int vertex(Vector3 pos, Vector3 nor, Color col, Vector2 uv) {
+    public short vertex(Vector3 pos, Vector3 nor, Color col, Vector2 uv) {
         if (vindex > MAX_INDEX) throw new GdxRuntimeException("Too many vertices used");
 
         vertex[posOffset] = pos.x;
@@ -633,37 +672,37 @@ public class MeshBuilder implements MeshPartBuilder {
         }
 
         addVertex(vertex, 0);
-        return lastIndex;
+        return (short) lastIndex;
     }
 
     @Override
-    public int vertex(final float... values) {
+    public short vertex(final float... values) {
         final int n = values.length - stride;
         for (int i = 0; i <= n; i += stride)
             addVertex(values, i);
-        return (int) lastIndex;
+        return (short) lastIndex;
     }
 
     @Override
-    public int vertex(final VertexInfo info) {
+    public short vertex(final VertexInfo info) {
         return vertex(info.hasPosition ? info.position : null, info.hasNormal ? info.normal : null,
                 info.hasColor ? info.color : null, info.hasUV ? info.uv : null);
     }
 
     @Override
-    public void index(final int value) {
+    public void index(final short value) {
         indices.add(value);
     }
 
     @Override
-    public void index(final int value1, final int value2) {
+    public void index(final short value1, final short value2) {
         ensureIndices(2);
         indices.add(value1);
         indices.add(value2);
     }
 
     @Override
-    public void index(final int value1, final int value2, final int value3) {
+    public void index(final short value1, final short value2, final short value3) {
         ensureIndices(3);
         indices.add(value1);
         indices.add(value2);
@@ -671,7 +710,7 @@ public class MeshBuilder implements MeshPartBuilder {
     }
 
     @Override
-    public void index(final int value1, final int value2, final int value3, final int value4) {
+    public void index(final short value1, final short value2, final short value3, final short value4) {
         ensureIndices(4);
         indices.add(value1);
         indices.add(value2);
@@ -680,7 +719,7 @@ public class MeshBuilder implements MeshPartBuilder {
     }
 
     @Override
-    public void index(int value1, int value2, int value3, int value4, int value5, int value6) {
+    public void index(short value1, short value2, short value3, short value4, short value5, short value6) {
         ensureIndices(6);
         indices.add(value1);
         indices.add(value2);
@@ -691,8 +730,8 @@ public class MeshBuilder implements MeshPartBuilder {
     }
 
     @Override
-    public void index(int value1, int value2, int value3, int value4, int value5, int value6, int value7,
-                      int value8) {
+    public void index(short value1, short value2, short value3, short value4, short value5, short value6, short value7,
+                      short value8) {
         ensureIndices(8);
         indices.add(value1);
         indices.add(value2);
@@ -705,7 +744,7 @@ public class MeshBuilder implements MeshPartBuilder {
     }
 
     @Override
-    public void line(int index1, int index2) {
+    public void line(short index1, short index2) {
         if (primitiveType != GL20.GL_LINES) throw new GdxRuntimeException("Incorrect primitive type");
         index(index1, index2);
     }
@@ -733,7 +772,7 @@ public class MeshBuilder implements MeshPartBuilder {
     }
 
     @Override
-    public void triangle(int index1, int index2, int index3) {
+    public void triangle(short index1, short index2, short index3) {
         if (primitiveType == GL20.GL_TRIANGLES || primitiveType == GL20.GL_POINTS) {
             index(index1, index2, index3);
         } else if (primitiveType == GL20.GL_LINES) {
@@ -760,7 +799,7 @@ public class MeshBuilder implements MeshPartBuilder {
     }
 
     @Override
-    public void rect(int corner00, int corner10, int corner11, int corner01) {
+    public void rect(short corner00, short corner10, short corner11, short corner01) {
         if (primitiveType == GL20.GL_TRIANGLES) {
             index(corner00, corner10, corner11, corner11, corner01, corner00);
         } else if (primitiveType == GL20.GL_LINES) {
@@ -833,7 +872,7 @@ public class MeshBuilder implements MeshPartBuilder {
     private static IntIntMap indicesMap = null;
 
     @Override
-    public void addMesh(float[] vertices, int[] indices, int indexOffset, int numIndices) {
+    public void addMesh(float[] vertices, short[] indices, int indexOffset, int numIndices) {
         if (indicesMap == null)
             indicesMap = new IntIntMap(numIndices);
         else {
@@ -850,12 +889,12 @@ public class MeshBuilder implements MeshPartBuilder {
                 addVertex(vertices, sidx * stride);
                 indicesMap.put(sidx, didx = lastIndex);
             }
-            index((int) didx);
+            index((short) didx);
         }
     }
 
     @Override
-    public void addMesh(float[] vertices, int[] indices) {
+    public void addMesh(float[] vertices, short[] indices) {
         final int offset = lastIndex + 1;
 
         final int numVertices = vertices.length / stride;
@@ -865,7 +904,7 @@ public class MeshBuilder implements MeshPartBuilder {
 
         ensureIndices(indices.length);
         for (int i = 0; i < indices.length; ++i)
-            index((int) (indices[i] + offset));
+            index((short) (indices[i] + offset));
     }
 
     // TODO: The following methods are deprecated and will be removed in a future release

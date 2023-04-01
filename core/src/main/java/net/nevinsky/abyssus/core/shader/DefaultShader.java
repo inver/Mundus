@@ -1,18 +1,46 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package net.nevinsky.abyssus.core.shader;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttribute;
-import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Attributes;
 import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.g3d.attributes.*;
+import com.badlogic.gdx.graphics.g3d.Renderable;
+import com.badlogic.gdx.graphics.g3d.Shader;
+import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.CubemapAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.DepthTestAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.DirectionalLightsAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.IntAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.PointLightsAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.SpotLightsAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.AmbientCubemap;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.g3d.environment.SpotLight;
+import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix3;
@@ -20,9 +48,8 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import net.nevinsky.abyssus.core.Renderable;
 
-public class DefaultShader extends BaseShader {
+public class DefaultShader extends com.badlogic.gdx.graphics.g3d.shaders.BaseShader {
     public static class Config {
         /**
          * The uber vertex shader to use, null to use the default vertex shader.
@@ -118,75 +145,86 @@ public class DefaultShader extends BaseShader {
     public static class Setters {
         public final static Setter projTrans = new GlobalSetter() {
             @Override
-            public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+                            Attributes combinedAttributes) {
                 shader.set(inputID, shader.camera.projection);
             }
         };
         public final static Setter viewTrans = new GlobalSetter() {
             @Override
-            public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+                            Attributes combinedAttributes) {
                 shader.set(inputID, shader.camera.view);
             }
         };
         public final static Setter projViewTrans = new GlobalSetter() {
             @Override
-            public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+                            Attributes combinedAttributes) {
                 shader.set(inputID, shader.camera.combined);
             }
         };
         public final static Setter cameraPosition = new GlobalSetter() {
             @Override
-            public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+                            Attributes combinedAttributes) {
                 shader.set(inputID, shader.camera.position.x, shader.camera.position.y, shader.camera.position.z,
                         1.1881f / (shader.camera.far * shader.camera.far));
             }
         };
         public final static Setter cameraDirection = new GlobalSetter() {
             @Override
-            public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+                            Attributes combinedAttributes) {
                 shader.set(inputID, shader.camera.direction);
             }
         };
         public final static Setter cameraUp = new GlobalSetter() {
             @Override
-            public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+                            Attributes combinedAttributes) {
                 shader.set(inputID, shader.camera.up);
             }
         };
         public final static Setter cameraNearFar = new GlobalSetter() {
             @Override
-            public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+                            Attributes combinedAttributes) {
                 shader.set(inputID, shader.camera.near, shader.camera.far);
             }
         };
         public final static Setter worldTrans = new LocalSetter() {
             @Override
-            public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
-                shader.set(inputID, renderable.getWorldTransform());
+            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+                            Attributes combinedAttributes) {
+                shader.set(inputID, renderable.worldTransform);
             }
         };
         public final static Setter viewWorldTrans = new LocalSetter() {
             final Matrix4 temp = new Matrix4();
 
             @Override
-            public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
-                shader.set(inputID, temp.set(shader.camera.view).mul(renderable.getWorldTransform()));
+            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+                            Attributes combinedAttributes) {
+                shader.set(inputID, temp.set(shader.camera.view).mul(renderable.worldTransform));
             }
         };
         public final static Setter projViewWorldTrans = new LocalSetter() {
             final Matrix4 temp = new Matrix4();
 
             @Override
-            public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
-                shader.set(inputID, temp.set(shader.camera.combined).mul(renderable.getWorldTransform()));
+            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+                            Attributes combinedAttributes) {
+                shader.set(inputID, temp.set(shader.camera.combined).mul(renderable.worldTransform));
             }
         };
         public final static Setter normalMatrix = new LocalSetter() {
             private final Matrix3 tmpM = new Matrix3();
 
             @Override
-            public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
-                shader.set(inputID, tmpM.set(renderable.getWorldTransform()).inv().transpose());
+            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+                            Attributes combinedAttributes) {
+                shader.set(inputID, tmpM.set(renderable.worldTransform).inv().transpose());
             }
         };
 
@@ -199,14 +237,14 @@ public class DefaultShader extends BaseShader {
             }
 
             @Override
-            public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+                            Attributes combinedAttributes) {
                 for (int i = 0; i < bones.length; i += 16) {
                     final int idx = i / 16;
-                    if (renderable.getBones() == null || idx >= renderable.getBones().length ||
-                            renderable.getBones()[idx] == null)
+                    if (renderable.bones == null || idx >= renderable.bones.length || renderable.bones[idx] == null)
                         System.arraycopy(idtMatrix.val, 0, bones, i, 16);
                     else
-                        System.arraycopy(renderable.getBones()[idx].val, 0, bones, i, 16);
+                        System.arraycopy(renderable.bones[idx].val, 0, bones, i, 16);
                 }
                 shader.program.setUniformMatrix4fv(shader.loc(inputID), bones, 0, bones.length);
             }
@@ -214,19 +252,22 @@ public class DefaultShader extends BaseShader {
 
         public final static Setter shininess = new LocalSetter() {
             @Override
-            public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+                            Attributes combinedAttributes) {
                 shader.set(inputID, ((FloatAttribute) (combinedAttributes.get(FloatAttribute.Shininess))).value);
             }
         };
         public final static Setter diffuseColor = new LocalSetter() {
             @Override
-            public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+                            Attributes combinedAttributes) {
                 shader.set(inputID, ((ColorAttribute) (combinedAttributes.get(ColorAttribute.Diffuse))).color);
             }
         };
         public final static Setter diffuseTexture = new LocalSetter() {
             @Override
-            public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+                            Attributes combinedAttributes) {
                 final int unit = shader.context.textureBinder
                         .bind(((TextureAttribute) (combinedAttributes.get(
                                 TextureAttribute.Diffuse))).textureDescription);
@@ -235,20 +276,23 @@ public class DefaultShader extends BaseShader {
         };
         public final static Setter diffuseUVTransform = new LocalSetter() {
             @Override
-            public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+                            Attributes combinedAttributes) {
                 final TextureAttribute ta = (TextureAttribute) (combinedAttributes.get(TextureAttribute.Diffuse));
                 shader.set(inputID, ta.offsetU, ta.offsetV, ta.scaleU, ta.scaleV);
             }
         };
         public final static Setter specularColor = new LocalSetter() {
             @Override
-            public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+                            Attributes combinedAttributes) {
                 shader.set(inputID, ((ColorAttribute) (combinedAttributes.get(ColorAttribute.Specular))).color);
             }
         };
         public final static Setter specularTexture = new LocalSetter() {
             @Override
-            public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+                            Attributes combinedAttributes) {
                 final int unit = shader.context.textureBinder
                         .bind(((TextureAttribute) (combinedAttributes.get(
                                 TextureAttribute.Specular))).textureDescription);
@@ -257,20 +301,23 @@ public class DefaultShader extends BaseShader {
         };
         public final static Setter specularUVTransform = new LocalSetter() {
             @Override
-            public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+                            Attributes combinedAttributes) {
                 final TextureAttribute ta = (TextureAttribute) (combinedAttributes.get(TextureAttribute.Specular));
                 shader.set(inputID, ta.offsetU, ta.offsetV, ta.scaleU, ta.scaleV);
             }
         };
         public final static Setter emissiveColor = new LocalSetter() {
             @Override
-            public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+                            Attributes combinedAttributes) {
                 shader.set(inputID, ((ColorAttribute) (combinedAttributes.get(ColorAttribute.Emissive))).color);
             }
         };
         public final static Setter emissiveTexture = new LocalSetter() {
             @Override
-            public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+                            Attributes combinedAttributes) {
                 final int unit = shader.context.textureBinder
                         .bind(((TextureAttribute) (combinedAttributes.get(
                                 TextureAttribute.Emissive))).textureDescription);
@@ -279,20 +326,23 @@ public class DefaultShader extends BaseShader {
         };
         public final static Setter emissiveUVTransform = new LocalSetter() {
             @Override
-            public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+                            Attributes combinedAttributes) {
                 final TextureAttribute ta = (TextureAttribute) (combinedAttributes.get(TextureAttribute.Emissive));
                 shader.set(inputID, ta.offsetU, ta.offsetV, ta.scaleU, ta.scaleV);
             }
         };
         public final static Setter reflectionColor = new LocalSetter() {
             @Override
-            public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+                            Attributes combinedAttributes) {
                 shader.set(inputID, ((ColorAttribute) (combinedAttributes.get(ColorAttribute.Reflection))).color);
             }
         };
         public final static Setter reflectionTexture = new LocalSetter() {
             @Override
-            public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+                            Attributes combinedAttributes) {
                 final int unit = shader.context.textureBinder
                         .bind(((TextureAttribute) (combinedAttributes.get(
                                 TextureAttribute.Reflection))).textureDescription);
@@ -301,14 +351,16 @@ public class DefaultShader extends BaseShader {
         };
         public final static Setter reflectionUVTransform = new LocalSetter() {
             @Override
-            public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+                            Attributes combinedAttributes) {
                 final TextureAttribute ta = (TextureAttribute) (combinedAttributes.get(TextureAttribute.Reflection));
                 shader.set(inputID, ta.offsetU, ta.offsetV, ta.scaleU, ta.scaleV);
             }
         };
         public final static Setter normalTexture = new LocalSetter() {
             @Override
-            public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+                            Attributes combinedAttributes) {
                 final int unit = shader.context.textureBinder
                         .bind(((TextureAttribute) (combinedAttributes.get(
                                 TextureAttribute.Normal))).textureDescription);
@@ -317,14 +369,16 @@ public class DefaultShader extends BaseShader {
         };
         public final static Setter normalUVTransform = new LocalSetter() {
             @Override
-            public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+                            Attributes combinedAttributes) {
                 final TextureAttribute ta = (TextureAttribute) (combinedAttributes.get(TextureAttribute.Normal));
                 shader.set(inputID, ta.offsetU, ta.offsetV, ta.scaleU, ta.scaleV);
             }
         };
         public final static Setter ambientTexture = new LocalSetter() {
             @Override
-            public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+                            Attributes combinedAttributes) {
                 final int unit = shader.context.textureBinder
                         .bind(((TextureAttribute) (combinedAttributes.get(
                                 TextureAttribute.Ambient))).textureDescription);
@@ -333,7 +387,8 @@ public class DefaultShader extends BaseShader {
         };
         public final static Setter ambientUVTransform = new LocalSetter() {
             @Override
-            public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+                            Attributes combinedAttributes) {
                 final TextureAttribute ta = (TextureAttribute) (combinedAttributes.get(TextureAttribute.Ambient));
                 shader.set(inputID, ta.offsetU, ta.offsetV, ta.scaleU, ta.scaleV);
             }
@@ -352,11 +407,12 @@ public class DefaultShader extends BaseShader {
             }
 
             @Override
-            public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
-                if (renderable.getEnvironment() == null)
+            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+                            Attributes combinedAttributes) {
+                if (renderable.environment == null)
                     shader.program.setUniform3fv(shader.loc(inputID), ones, 0, ones.length);
                 else {
-                    renderable.getWorldTransform().getTranslation(tmpV1);
+                    renderable.worldTransform.getTranslation(tmpV1);
                     if (combinedAttributes.has(ColorAttribute.AmbientLight))
                         cacheAmbientCubemap.set(
                                 ((ColorAttribute) combinedAttributes.get(ColorAttribute.AmbientLight)).color);
@@ -371,10 +427,9 @@ public class DefaultShader extends BaseShader {
                     if (combinedAttributes.has(PointLightsAttribute.Type)) {
                         Array<PointLight> lights =
                                 ((PointLightsAttribute) combinedAttributes.get(PointLightsAttribute.Type)).lights;
-                        for (int i = pointLightsOffset; i < lights.size; i++) {
+                        for (int i = pointLightsOffset; i < lights.size; i++)
                             cacheAmbientCubemap.add(lights.get(i).color, lights.get(i).position, tmpV1,
                                     lights.get(i).intensity);
-                        }
                     }
 
                     cacheAmbientCubemap.clamp();
@@ -550,13 +605,13 @@ public class DefaultShader extends BaseShader {
         final Attributes attributes = combineAttributes(renderable);
         this.config = config;
         this.program = shaderProgram;
-        this.lighting = renderable.getEnvironment() != null;
+        this.lighting = renderable.environment != null;
         this.environmentCubemap = attributes.has(CubemapAttribute.EnvironmentMap)
                 || (lighting && attributes.has(CubemapAttribute.EnvironmentMap));
-        this.shadowMap = lighting && renderable.getEnvironment().shadowMap != null;
+        this.shadowMap = lighting && renderable.environment.shadowMap != null;
         this.renderable = renderable;
         attributesMask = attributes.getMask() | optionalAttributes;
-        vertexMask = renderable.getMeshPart().mesh.getVertexAttributes().getMaskWithSizePacked();
+        vertexMask = renderable.meshPart.mesh.getVertexAttributes().getMaskWithSizePacked();
 
         this.directionalLights =
                 new DirectionalLight[lighting && config.numDirectionalLights > 0 ? config.numDirectionalLights
@@ -573,9 +628,9 @@ public class DefaultShader extends BaseShader {
         if (!config.ignoreUnimplemented && (implementedFlags & attributesMask) != attributesMask)
             throw new GdxRuntimeException("Some attributes not implemented yet (" + attributesMask + ")");
 
-        if (renderable.getBones() != null && renderable.getBones().length > config.numBones) {
+        if (renderable.bones != null && renderable.bones.length > config.numBones) {
             throw new GdxRuntimeException(
-                    "too many bones: " + renderable.getBones().length + ", max configured: " + config.numBones);
+                    "too many bones: " + renderable.bones.length + ", max configured: " + config.numBones);
         }
 
         // Global uniforms
@@ -592,7 +647,7 @@ public class DefaultShader extends BaseShader {
         u_viewWorldTrans = register(Inputs.viewWorldTrans, Setters.viewWorldTrans);
         u_projViewWorldTrans = register(Inputs.projViewWorldTrans, Setters.projViewWorldTrans);
         u_normalMatrix = register(Inputs.normalMatrix, Setters.normalMatrix);
-        u_bones = (renderable.getBones() != null && config.numBones > 0) ?
+        u_bones = (renderable.bones != null && config.numBones > 0) ?
                 register(Inputs.bones, new Setters.Bones(config.numBones))
                 : -1;
 
@@ -667,15 +722,15 @@ public class DefaultShader extends BaseShader {
     // TODO: Perhaps move responsibility for combining attributes to RenderableProvider?
     private static final Attributes combineAttributes(final Renderable renderable) {
         tmpAttributes.clear();
-        if (renderable.getEnvironment() != null) tmpAttributes.set(renderable.getEnvironment());
-        if (renderable.getMaterial() != null) tmpAttributes.set(renderable.getMaterial());
+        if (renderable.environment != null) tmpAttributes.set(renderable.environment);
+        if (renderable.material != null) tmpAttributes.set(renderable.material);
         return tmpAttributes;
     }
 
     private static final long combineAttributeMasks(final Renderable renderable) {
         long mask = 0;
-        if (renderable.getEnvironment() != null) mask |= renderable.getEnvironment().getMask();
-        if (renderable.getMaterial() != null) mask |= renderable.getMaterial().getMask();
+        if (renderable.environment != null) mask |= renderable.environment.getMask();
+        if (renderable.material != null) mask |= renderable.material.getMask();
         return mask;
     }
 
@@ -683,16 +738,14 @@ public class DefaultShader extends BaseShader {
         final Attributes attributes = combineAttributes(renderable);
         String prefix = "";
         final long attributesMask = attributes.getMask();
-        final long vertexMask = renderable.getMeshPart().mesh.getVertexAttributes().getMask();
-        if (and(vertexMask, VertexAttributes.Usage.Position)) prefix += "#define positionFlag\n";
-        if (or(vertexMask, VertexAttributes.Usage.ColorUnpacked | VertexAttributes.Usage.ColorPacked))
-            prefix += "#define colorFlag\n";
-        if (and(vertexMask, VertexAttributes.Usage.BiNormal)) prefix += "#define binormalFlag\n";
-        if (and(vertexMask, VertexAttributes.Usage.Tangent)) prefix += "#define tangentFlag\n";
-        if (and(vertexMask, VertexAttributes.Usage.Normal)) prefix += "#define normalFlag\n";
-        if (and(vertexMask, VertexAttributes.Usage.Normal) ||
-                and(vertexMask, VertexAttributes.Usage.Tangent | VertexAttributes.Usage.BiNormal)) {
-            if (renderable.getEnvironment() != null) {
+        final long vertexMask = renderable.meshPart.mesh.getVertexAttributes().getMask();
+        if (and(vertexMask, Usage.Position)) prefix += "#define positionFlag\n";
+        if (or(vertexMask, Usage.ColorUnpacked | Usage.ColorPacked)) prefix += "#define colorFlag\n";
+        if (and(vertexMask, Usage.BiNormal)) prefix += "#define binormalFlag\n";
+        if (and(vertexMask, Usage.Tangent)) prefix += "#define tangentFlag\n";
+        if (and(vertexMask, Usage.Normal)) prefix += "#define normalFlag\n";
+        if (and(vertexMask, Usage.Normal) || and(vertexMask, Usage.Tangent | Usage.BiNormal)) {
+            if (renderable.environment != null) {
                 prefix += "#define lightingFlag\n";
                 prefix += "#define ambientCubemapFlag\n";
                 prefix += "#define numDirectionalLights " + config.numDirectionalLights + "\n";
@@ -701,17 +754,16 @@ public class DefaultShader extends BaseShader {
                 if (attributes.has(ColorAttribute.Fog)) {
                     prefix += "#define fogFlag\n";
                 }
-                if (renderable.getEnvironment().shadowMap != null) prefix += "#define shadowMapFlag\n";
+                if (renderable.environment.shadowMap != null) prefix += "#define shadowMapFlag\n";
                 if (attributes.has(CubemapAttribute.EnvironmentMap)) prefix += "#define environmentCubemapFlag\n";
             }
         }
-        final int n = renderable.getMeshPart().mesh.getVertexAttributes().size();
+        final int n = renderable.meshPart.mesh.getVertexAttributes().size();
         for (int i = 0; i < n; i++) {
-            final VertexAttribute attr = renderable.getMeshPart().mesh.getVertexAttributes().get(i);
-            if (attr.usage == VertexAttributes.Usage.BoneWeight)
+            final VertexAttribute attr = renderable.meshPart.mesh.getVertexAttributes().get(i);
+            if (attr.usage == Usage.BoneWeight)
                 prefix += "#define boneWeight" + attr.unit + "Flag\n";
-            else if (attr.usage == VertexAttributes.Usage.TextureCoordinates)
-                prefix += "#define texCoord" + attr.unit + "Flag\n";
+            else if (attr.usage == Usage.TextureCoordinates) prefix += "#define texCoord" + attr.unit + "Flag\n";
         }
         if ((attributesMask & BlendingAttribute.Type) == BlendingAttribute.Type)
             prefix += "#define " + BlendingAttribute.Alias + "Flag\n";
@@ -751,18 +803,17 @@ public class DefaultShader extends BaseShader {
             prefix += "#define " + FloatAttribute.ShininessAlias + "Flag\n";
         if ((attributesMask & FloatAttribute.AlphaTest) == FloatAttribute.AlphaTest)
             prefix += "#define " + FloatAttribute.AlphaTestAlias + "Flag\n";
-        if (renderable.getBones() != null && config.numBones > 0)
-            prefix += "#define numBones " + config.numBones + "\n";
+        if (renderable.bones != null && config.numBones > 0) prefix += "#define numBones " + config.numBones + "\n";
         return prefix;
     }
 
     @Override
     public boolean canRender(final Renderable renderable) {
-        if (renderable.getBones() != null && renderable.getBones().length > config.numBones) return false;
+        if (renderable.bones != null && renderable.bones.length > config.numBones) return false;
         final long renderableMask = combineAttributeMasks(renderable);
         return (attributesMask == (renderableMask | optionalAttributes))
-                && (vertexMask == renderable.getMeshPart().mesh.getVertexAttributes().getMaskWithSizePacked())
-                && (renderable.getEnvironment() != null) == lighting;
+                && (vertexMask == renderable.meshPart.mesh.getVertexAttributes().getMaskWithSizePacked())
+                && (renderable.environment != null) == lighting;
     }
 
     @Override
@@ -802,9 +853,8 @@ public class DefaultShader extends BaseShader {
 
     @Override
     public void render(Renderable renderable, Attributes combinedAttributes) {
-        if (!combinedAttributes.has(BlendingAttribute.Type)) {
+        if (!combinedAttributes.has(BlendingAttribute.Type))
             context.setBlending(false, GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        }
         bindMaterial(combinedAttributes);
         if (lighting) bindLights(renderable, combinedAttributes);
         super.render(renderable, combinedAttributes);
@@ -850,7 +900,7 @@ public class DefaultShader extends BaseShader {
     private final Vector3 tmpV1 = new Vector3();
 
     protected void bindLights(final Renderable renderable, final Attributes attributes) {
-        final Environment lights = renderable.getEnvironment();
+        final Environment lights = renderable.environment;
         final DirectionalLightsAttribute dla =
                 attributes.get(DirectionalLightsAttribute.class, DirectionalLightsAttribute.Type);
         final Array<DirectionalLight> dirs = dla == null ? null : dla.lights;

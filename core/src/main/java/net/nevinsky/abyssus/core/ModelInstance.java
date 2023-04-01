@@ -1,3 +1,19 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package net.nevinsky.abyssus.core;
 
 import com.badlogic.gdx.graphics.g3d.Material;
@@ -14,11 +30,18 @@ import net.nevinsky.abyssus.core.node.Animation;
 import net.nevinsky.abyssus.core.node.Node;
 import net.nevinsky.abyssus.core.node.NodeAnimation;
 import net.nevinsky.abyssus.core.node.NodePart;
-import net.nevinsky.abyssus.core.shader.Shader;
 
-import java.util.ArrayList;
-import java.util.List;
-
+/**
+ * An instance of a {@link Model}, allows to specify global transform and modify the materials, as it has a copy of the
+ * model's materials. Multiple instances can be created from the same Model, all sharing the meshes and textures of the
+ * Model. The Model owns the meshes and textures, to dispose of these, the Model has to be disposed. Therefor, the Model
+ * must outlive all its ModelInstances
+ * </p>
+ * <p>
+ * The ModelInstance creates a full copy of all materials, nodes and animations.
+ *
+ * @author badlogic, xoppa
+ */
 public class ModelInstance implements RenderableProvider {
     /**
      * Whether, by default, {@link NodeKeyframe}'s are shared amongst {@link Model} and ModelInstance. Can be overridden
@@ -34,11 +57,11 @@ public class ModelInstance implements RenderableProvider {
     /**
      * root nodes of the model
      **/
-    public final List<Node> nodes = new ArrayList<>();
+    public final Array<Node> nodes = new Array();
     /**
      * animations of the model, modifying node transformations
      **/
-    public final Array<Animation> animations = new Array<>();
+    public final Array<Animation> animations = new Array();
     /**
      * the {@link Model} this instances derives from
      **/
@@ -185,9 +208,9 @@ public class ModelInstance implements RenderableProvider {
     public ModelInstance(final Model model, final Matrix4 transform, final String... rootNodeIds) {
         this.model = model;
         this.transform = transform == null ? new Matrix4() : transform;
-        if (rootNodeIds == null) {
+        if (rootNodeIds == null)
             copyNodes(model.nodes);
-        } else
+        else
             copyNodes(model.nodes, rootNodeIds);
         copyAnimations(model.animations, defaultShareKeyframes);
         calculateTransforms();
@@ -274,16 +297,16 @@ public class ModelInstance implements RenderableProvider {
         return new ModelInstance(this);
     }
 
-    private void copyNodes(List<Node> nodes) {
-        for (int i = 0, n = nodes.size(); i < n; ++i) {
+    private void copyNodes(Array<Node> nodes) {
+        for (int i = 0, n = nodes.size; i < n; ++i) {
             final Node node = nodes.get(i);
             this.nodes.add(node.copy());
         }
         invalidate();
     }
 
-    private void copyNodes(List<Node> nodes, final String... nodeIds) {
-        for (int i = 0, n = nodes.size(); i < n; ++i) {
+    private void copyNodes(Array<Node> nodes, final String... nodeIds) {
+        for (int i = 0, n = nodes.size; i < n; ++i) {
             final Node node = nodes.get(i);
             for (final String nodeId : nodeIds) {
                 if (nodeId.equals(node.id)) {
@@ -295,8 +318,8 @@ public class ModelInstance implements RenderableProvider {
         invalidate();
     }
 
-    private void copyNodes(List<Node> nodes, final Array<String> nodeIds) {
-        for (int i = 0, n = nodes.size(); i < n; ++i) {
+    private void copyNodes(Array<Node> nodes, final Array<String> nodeIds) {
+        for (int i = 0, n = nodes.size; i < n; ++i) {
             final Node node = nodes.get(i);
             for (final String nodeId : nodeIds) {
                 if (nodeId.equals(node.id)) {
@@ -339,7 +362,7 @@ public class ModelInstance implements RenderableProvider {
      * that all materials are listed in the {@link #materials} array.
      */
     private void invalidate() {
-        for (int i = 0, n = nodes.size(); i < n; ++i) {
+        for (int i = 0, n = nodes.size; i < n; ++i) {
             invalidate(nodes.get(i));
         }
     }
@@ -361,7 +384,7 @@ public class ModelInstance implements RenderableProvider {
      * @param source         Iterable collection of source animations {@link Animation}
      * @param shareKeyframes Shallow copy of {@link NodeKeyframe}'s if it's true, otherwise make a deep copy.
      */
-    public void copyAnimations(final Array<Animation> source, boolean shareKeyframes) {
+    public void copyAnimations(final Iterable<Animation> source, boolean shareKeyframes) {
         for (final Animation anim : source) {
             copyAnimation(anim, shareKeyframes);
         }
@@ -397,19 +420,19 @@ public class ModelInstance implements RenderableProvider {
                 nodeAnim.scaling = nanim.scaling;
             } else {
                 if (nanim.translation != null) {
-                    nodeAnim.translation = new ArrayList<>();
+                    nodeAnim.translation = new Array<NodeKeyframe<Vector3>>();
                     for (final NodeKeyframe<Vector3> kf : nanim.translation)
-                        nodeAnim.translation.add(new NodeKeyframe<>(kf.keytime, kf.value));
+                        nodeAnim.translation.add(new NodeKeyframe<Vector3>(kf.keytime, kf.value));
                 }
                 if (nanim.rotation != null) {
-                    nodeAnim.rotation = new ArrayList<>();
+                    nodeAnim.rotation = new Array<NodeKeyframe<Quaternion>>();
                     for (final NodeKeyframe<Quaternion> kf : nanim.rotation)
-                        nodeAnim.rotation.add(new NodeKeyframe<>(kf.keytime, kf.value));
+                        nodeAnim.rotation.add(new NodeKeyframe<Quaternion>(kf.keytime, kf.value));
                 }
                 if (nanim.scaling != null) {
-                    nodeAnim.scaling = new ArrayList<>();
+                    nodeAnim.scaling = new Array<NodeKeyframe<Vector3>>();
                     for (final NodeKeyframe<Vector3> kf : nanim.scaling)
-                        nodeAnim.scaling.add(new NodeKeyframe<>(kf.keytime, kf.value));
+                        nodeAnim.scaling.add(new NodeKeyframe<Vector3>(kf.keytime, kf.value));
                 }
             }
             if (nodeAnim.translation != null || nodeAnim.rotation != null || nodeAnim.scaling != null)
@@ -426,7 +449,7 @@ public class ModelInstance implements RenderableProvider {
      * @param renderables the output array
      * @param pool        the pool to obtain Renderables from
      */
-    public void getRenderables(List<Renderable> renderables, Pool<Renderable> pool) {
+    public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
         for (Node node : nodes) {
             getRenderables(node, renderables, pool);
         }
@@ -449,16 +472,16 @@ public class ModelInstance implements RenderableProvider {
     public Renderable getRenderable(final Renderable out, final Node node, final NodePart nodePart) {
         nodePart.setRenderable(out);
         if (nodePart.bones == null && transform != null)
-            out.getWorldTransform().set(transform).mul(node.globalTransform);
+            out.worldTransform.set(transform).mul(node.globalTransform);
         else if (transform != null)
-            out.getWorldTransform().set(transform);
+            out.worldTransform.set(transform);
         else
-            out.getWorldTransform().idt();
-        out.setUserData(userData);
+            out.worldTransform.idt();
+        out.userData = userData;
         return out;
     }
 
-    protected void getRenderables(Node node, List<Renderable> renderables, Pool<Renderable> pool) {
+    protected void getRenderables(Node node, Array<Renderable> renderables, Pool<Renderable> pool) {
         if (node.parts.size > 0) {
             for (NodePart nodePart : node.parts) {
                 if (nodePart.enabled) renderables.add(getRenderable(pool.obtain(), node, nodePart));
@@ -481,7 +504,7 @@ public class ModelInstance implements RenderableProvider {
      * rotation, scale) was modified.
      */
     public void calculateTransforms() {
-        final int n = nodes.size();
+        final int n = nodes.size;
         for (int i = 0; i < n; i++) {
             nodes.get(i).calculateTransforms(true);
         }
@@ -510,7 +533,7 @@ public class ModelInstance implements RenderableProvider {
      * @return the out parameter for chaining
      */
     public BoundingBox extendBoundingBox(final BoundingBox out) {
-        final int n = nodes.size();
+        final int n = nodes.size;
         for (int i = 0; i < n; i++)
             nodes.get(i).extendBoundingBox(out);
         return out;

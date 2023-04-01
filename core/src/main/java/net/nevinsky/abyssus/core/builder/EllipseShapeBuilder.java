@@ -21,6 +21,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import net.nevinsky.abyssus.core.mesh.MeshPartBuilder;
+import net.nevinsky.abyssus.core.mesh.MeshPartBuilder.VertexInfo;
 
 /**
  * Helper class with static methods to build ellipse shapes using {@link MeshPartBuilder}.
@@ -263,21 +264,21 @@ public class EllipseShapeBuilder extends BaseShapeBuilder {
         final Vector3 syEx = tmpV2.set(binormalX, binormalY, binormalZ).scl(height * 0.5f);
         final Vector3 sxIn = tmpV3.set(tangentX, tangentY, tangentZ).scl(innerWidth * 0.5f);
         final Vector3 syIn = tmpV4.set(binormalX, binormalY, binormalZ).scl(innerHeight * 0.5f);
-        MeshPartBuilder.VertexInfo currIn = vertTmp3.set(null, null, null, null);
+        VertexInfo currIn = vertTmp3.set(null, null, null, null);
         currIn.hasUV = currIn.hasPosition = currIn.hasNormal = true;
         currIn.uv.set(.5f, .5f);
         currIn.position.set(centerX, centerY, centerZ);
         currIn.normal.set(normalX, normalY, normalZ);
-        MeshPartBuilder.VertexInfo currEx = vertTmp4.set(null, null, null, null);
+        VertexInfo currEx = vertTmp4.set(null, null, null, null);
         currEx.hasUV = currEx.hasPosition = currEx.hasNormal = true;
         currEx.uv.set(.5f, .5f);
         currEx.position.set(centerX, centerY, centerZ);
         currEx.normal.set(normalX, normalY, normalZ);
-        final int center = builder.vertex(currEx);
+        final short center = builder.vertex(currEx);
         float angle = 0f;
         final float us = 0.5f * (innerWidth / width);
         final float vs = 0.5f * (innerHeight / height);
-        int i1, i2 = 0, i3 = 0, i4 = 0;
+        short i1, i2 = 0, i3 = 0, i4 = 0;
         for (int i = 0; i <= divisions; i++) {
             angle = ao + step * i;
             final float x = MathUtils.cos(angle);

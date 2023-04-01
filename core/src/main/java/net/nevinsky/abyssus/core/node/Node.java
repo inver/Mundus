@@ -1,5 +1,23 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package net.nevinsky.abyssus.core.node;
 
+import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
@@ -8,9 +26,13 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import net.nevinsky.abyssus.core.mesh.MeshPart;
 
-import java.util.ArrayList;
-import java.util.List;
-
+/**
+ * A node is part of a hierarchy of Nodes in a {@link Model}. A Node encodes a transform relative to its parents. A Node
+ * can have child nodes. Optionally a node can specify a {@link MeshPart} and a {@link Material} to be applied to the
+ * mesh part.
+ *
+ * @author badlogic
+ */
 public class Node {
     /**
      * the id, may be null, FIXME is this unique?
@@ -52,7 +74,7 @@ public class Node {
     public Array<NodePart> parts = new Array<NodePart>(2);
 
     protected Node parent;
-    private final List<Node> children = new ArrayList<>(2);
+    private final Array<Node> children = new Array<Node>(2);
 
     /**
      * Calculates the local transform based on the translation, scale and rotation
@@ -150,7 +172,7 @@ public class Node {
                     meshPart.mesh.extendBoundingBox(out, meshPart.offset, meshPart.size);
             }
         }
-        final int childCount = children.size();
+        final int childCount = children.size;
         for (int i = 0; i < childCount; i++)
             children.get(i).extendBoundingBox(out);
         return out;
@@ -179,7 +201,7 @@ public class Node {
      * @return whether this Node has one or more children (true) or not (false)
      */
     public boolean hasChildren() {
-        return children != null && children.size() > 0;
+        return children != null && children.size > 0;
     }
 
     /**
@@ -187,7 +209,7 @@ public class Node {
      * @see #getChild(int)
      */
     public int getChildCount() {
-        return children.size();
+        return children.size;
     }
 
     /**
@@ -244,11 +266,11 @@ public class Node {
         Node p = child.getParent();
         if (p != null && !p.removeChild(child))
             throw new GdxRuntimeException("Could not remove child from its current parent");
-        if (index < 0 || index >= children.size()) {
-            index = children.size();
+        if (index < 0 || index >= children.size) {
+            index = children.size;
             children.add(child);
         } else
-            children.add(index, child);
+            children.insert(index, child);
         child.parent = this;
         return index;
     }
@@ -263,7 +285,7 @@ public class Node {
      * @return the zero-based index of the first inserted child
      */
     public <T extends Node> int insertChildren(int index, final Iterable<T> nodes) {
-        if (index < 0 || index > children.size()) index = children.size();
+        if (index < 0 || index > children.size) index = children.size;
         int i = index;
         for (T child : nodes)
             insertChild(i++, child);
@@ -279,7 +301,7 @@ public class Node {
      * @return Whether the removal was successful.
      */
     public <T extends Node> boolean removeChild(final T child) {
-        if (!children.remove(child)) return false;
+        if (!children.removeValue(child, true)) return false;
         child.parent = null;
         return true;
     }
@@ -356,8 +378,8 @@ public class Node {
      * @param recursive false to fetch a root node only, true to search the entire node tree for the specified node.
      * @return The node with the specified id, or null if not found.
      */
-    public static Node getNode(final List<Node> nodes, final String id, boolean recursive, boolean ignoreCase) {
-        final int n = nodes.size();
+    public static Node getNode(final Array<Node> nodes, final String id, boolean recursive, boolean ignoreCase) {
+        final int n = nodes.size;
         Node node;
         if (ignoreCase) {
             for (int i = 0; i < n; i++)

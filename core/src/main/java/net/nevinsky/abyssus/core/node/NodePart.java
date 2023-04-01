@@ -1,12 +1,34 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package net.nevinsky.abyssus.core.node;
 
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.ArrayMap;
-import net.nevinsky.abyssus.core.ModelInstance;
 import net.nevinsky.abyssus.core.Renderable;
 import net.nevinsky.abyssus.core.mesh.MeshPart;
+import net.nevinsky.abyssus.core.model.Model;
 
+/**
+ * A combination of {@link MeshPart} and {@link Material}, used to represent a {@link Node}'s graphical properties. A
+ * NodePart is the smallest visible part of a {@link Model}, each NodePart implies a render call.
+ *
+ * @author badlogic, Xoppa
+ */
 public class NodePart {
     /**
      * The MeshPart (shape) to render. Must not be null.
@@ -61,9 +83,9 @@ public class NodePart {
      * @param out The Renderable of which to set the members to the values of this NodePart.
      */
     public Renderable setRenderable(final Renderable out) {
-        out.setMaterial(material);
-        out.getMeshPart().set(meshPart);
-        out.setBones(bones);
+        out.material = material;
+        out.meshPart.set(meshPart);
+        out.bones = bones;
         return out;
     }
 
@@ -79,22 +101,19 @@ public class NodePart {
             invBoneBindTransforms = null;
             bones = null;
         } else {
-            if (invBoneBindTransforms == null) {
-                invBoneBindTransforms = new ArrayMap<>(true, other.invBoneBindTransforms.size, Node.class,
+            if (invBoneBindTransforms == null)
+                invBoneBindTransforms = new ArrayMap<Node, Matrix4>(true,
+                        other.invBoneBindTransforms.size, Node.class,
                         Matrix4.class);
-            } else {
+            else
                 invBoneBindTransforms.clear();
-            }
             invBoneBindTransforms.putAll(other.invBoneBindTransforms);
 
-            if (bones == null || bones.length != invBoneBindTransforms.size) {
+            if (bones == null || bones.length != invBoneBindTransforms.size)
                 bones = new Matrix4[invBoneBindTransforms.size];
-            }
 
             for (int i = 0; i < bones.length; i++) {
-                if (bones[i] == null) {
-                    bones[i] = new Matrix4();
-                }
+                if (bones[i] == null) bones[i] = new Matrix4();
             }
         }
         return this;

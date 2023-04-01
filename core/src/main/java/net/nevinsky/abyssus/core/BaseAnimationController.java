@@ -16,20 +16,21 @@
 
 package net.nevinsky.abyssus.core;
 
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.model.Animation;
+import com.badlogic.gdx.graphics.g3d.model.Node;
+import com.badlogic.gdx.graphics.g3d.model.NodeAnimation;
 import com.badlogic.gdx.graphics.g3d.model.NodeKeyframe;
+import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pool.Poolable;
-import net.nevinsky.abyssus.core.node.Animation;
-import net.nevinsky.abyssus.core.node.Node;
-import net.nevinsky.abyssus.core.node.NodeAnimation;
-
-import java.util.List;
 
 /**
  * Base class for applying one or more {@link Animation}s to a {@link ModelInstance}. This class only applies the actual
@@ -184,8 +185,8 @@ public class BaseAnimationController {
      * @param time Time to search
      * @return key frame index, 0 if time is out of key frames time range
      */
-    final static <T> int getFirstKeyframeIndexAtTime(final List<NodeKeyframe<T>> arr, final float time) {
-        final int lastIndex = arr.size() - 1;
+    final static <T> int getFirstKeyframeIndexAtTime(final Array<NodeKeyframe<T>> arr, final float time) {
+        final int lastIndex = arr.size - 1;
 
         // edges cases : time out of range always return first index
         if (lastIndex <= 0 || time < arr.get(0).keytime || time > arr.get(lastIndex).keytime) {
@@ -212,13 +213,13 @@ public class BaseAnimationController {
     private final static Vector3 getTranslationAtTime(final NodeAnimation nodeAnim, final float time,
                                                       final Vector3 out) {
         if (nodeAnim.translation == null) return out.set(nodeAnim.node.translation);
-        if (nodeAnim.translation.size() == 1) return out.set(nodeAnim.translation.get(0).value);
+        if (nodeAnim.translation.size == 1) return out.set(nodeAnim.translation.get(0).value);
 
         int index = getFirstKeyframeIndexAtTime(nodeAnim.translation, time);
         final NodeKeyframe firstKeyframe = nodeAnim.translation.get(index);
         out.set((Vector3) firstKeyframe.value);
 
-        if (++index < nodeAnim.translation.size()) {
+        if (++index < nodeAnim.translation.size) {
             final NodeKeyframe<Vector3> secondKeyframe = nodeAnim.translation.get(index);
             final float t = (time - firstKeyframe.keytime) / (secondKeyframe.keytime - firstKeyframe.keytime);
             out.lerp(secondKeyframe.value, t);
@@ -226,16 +227,16 @@ public class BaseAnimationController {
         return out;
     }
 
-    private static Quaternion getRotationAtTime(final NodeAnimation nodeAnim, final float time,
-                                                final Quaternion out) {
+    private final static Quaternion getRotationAtTime(final NodeAnimation nodeAnim, final float time,
+                                                      final Quaternion out) {
         if (nodeAnim.rotation == null) return out.set(nodeAnim.node.rotation);
-        if (nodeAnim.rotation.size() == 1) return out.set(nodeAnim.rotation.get(0).value);
+        if (nodeAnim.rotation.size == 1) return out.set(nodeAnim.rotation.get(0).value);
 
         int index = getFirstKeyframeIndexAtTime(nodeAnim.rotation, time);
         final NodeKeyframe firstKeyframe = nodeAnim.rotation.get(index);
         out.set((Quaternion) firstKeyframe.value);
 
-        if (++index < nodeAnim.rotation.size()) {
+        if (++index < nodeAnim.rotation.size) {
             final NodeKeyframe<Quaternion> secondKeyframe = nodeAnim.rotation.get(index);
             final float t = (time - firstKeyframe.keytime) / (secondKeyframe.keytime - firstKeyframe.keytime);
             out.slerp(secondKeyframe.value, t);
@@ -245,13 +246,13 @@ public class BaseAnimationController {
 
     private final static Vector3 getScalingAtTime(final NodeAnimation nodeAnim, final float time, final Vector3 out) {
         if (nodeAnim.scaling == null) return out.set(nodeAnim.node.scale);
-        if (nodeAnim.scaling.size() == 1) return out.set(nodeAnim.scaling.get(0).value);
+        if (nodeAnim.scaling.size == 1) return out.set(nodeAnim.scaling.get(0).value);
 
         int index = getFirstKeyframeIndexAtTime(nodeAnim.scaling, time);
         final NodeKeyframe firstKeyframe = nodeAnim.scaling.get(index);
         out.set((Vector3) firstKeyframe.value);
 
-        if (++index < nodeAnim.scaling.size()) {
+        if (++index < nodeAnim.scaling.size) {
             final NodeKeyframe<Vector3> secondKeyframe = nodeAnim.scaling.get(index);
             final float t = (time - firstKeyframe.keytime) / (secondKeyframe.keytime - firstKeyframe.keytime);
             out.lerp(secondKeyframe.value, t);
@@ -267,7 +268,7 @@ public class BaseAnimationController {
         return transform;
     }
 
-    private static void applyNodeAnimationDirectly(final NodeAnimation nodeAnim, final float time) {
+    private final static void applyNodeAnimationDirectly(final NodeAnimation nodeAnim, final float time) {
         final Node node = nodeAnim.node;
         node.isAnimated = true;
         final Transform transform = getNodeAnimationTransform(nodeAnim, time);

@@ -18,6 +18,8 @@ package net.nevinsky.abyssus.core.builder;
 
 import com.badlogic.gdx.math.MathUtils;
 import net.nevinsky.abyssus.core.mesh.MeshPartBuilder;
+import net.nevinsky.abyssus.core.mesh.MeshPartBuilder.VertexInfo;
+
 
 /**
  * Helper class with static methods to build cone shapes using {@link MeshPartBuilder}.
@@ -48,13 +50,13 @@ public class ConeShapeBuilder extends BaseShapeBuilder {
         final float ao = MathUtils.degreesToRadians * angleFrom;
         final float step = (MathUtils.degreesToRadians * (angleTo - angleFrom)) / divisions;
         final float us = 1f / divisions;
-        float u, angle;
-        MeshPartBuilder.VertexInfo curr1 = vertTmp3.set(null, null, null, null);
+        float u = 0f;
+        float angle = 0f;
+        VertexInfo curr1 = vertTmp3.set(null, null, null, null);
         curr1.hasUV = curr1.hasPosition = curr1.hasNormal = true;
-        MeshPartBuilder.VertexInfo curr2 =
-                vertTmp4.set(null, null, null, null).setPos(0, hh, 0).setNor(0, 1, 0).setUV(0.5f, 0);
-        final int base = builder.vertex(curr2);
-        int i1, i2 = 0;
+        VertexInfo curr2 = vertTmp4.set(null, null, null, null).setPos(0, hh, 0).setNor(0, 1, 0).setUV(0.5f, 0);
+        final short base = builder.vertex(curr2);
+        short i1, i2 = 0;
         for (int i = 0; i <= divisions; i++) {
             angle = ao + step * i;
             u = 1f - us * i;

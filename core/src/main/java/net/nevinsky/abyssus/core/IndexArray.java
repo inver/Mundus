@@ -16,14 +16,15 @@
 
 package net.nevinsky.abyssus.core;
 
+import com.badlogic.gdx.graphics.glutils.IndexData;
 import com.badlogic.gdx.utils.BufferUtils;
 
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 
 public class IndexArray implements IndexData {
-    final IntBuffer buffer;
+    final ShortBuffer buffer;
     final ByteBuffer byteBuffer;
 
     // used to work around bug: https://android-review.googlesource.com/#/c/73175/
@@ -41,8 +42,8 @@ public class IndexArray implements IndexData {
             maxIndices = 1; // avoid allocating a zero-sized buffer because of bug in Android's ART < Android 5.0
         }
 
-        byteBuffer = BufferUtils.newUnsafeByteBuffer(maxIndices * 4);
-        buffer = byteBuffer.asIntBuffer();
+        byteBuffer = BufferUtils.newUnsafeByteBuffer(maxIndices * 2);
+        buffer = byteBuffer.asShortBuffer();
         ((Buffer) buffer).flip();
         ((Buffer) byteBuffer).flip();
     }
@@ -76,7 +77,7 @@ public class IndexArray implements IndexData {
      * @param offset  the offset to start copying the data from
      * @param count   the number of shorts to copy
      */
-    public void setIndices(int[] indices, int offset, int count) {
+    public void setIndices(short[] indices, int offset, int count) {
         ((Buffer) buffer).clear();
         buffer.put(indices, offset, count);
         ((Buffer) buffer).flip();
@@ -84,34 +85,34 @@ public class IndexArray implements IndexData {
         ((Buffer) byteBuffer).limit(count << 1);
     }
 
-    public void setIndices(IntBuffer indices) {
+    public void setIndices(ShortBuffer indices) {
         int pos = indices.position();
-        buffer.clear();
-        buffer.limit(indices.remaining());
+        ((Buffer) buffer).clear();
+        ((Buffer) buffer).limit(indices.remaining());
         buffer.put(indices);
-        buffer.flip();
-        indices.position(pos);
-        byteBuffer.position(0);
-        byteBuffer.limit(buffer.limit() << 1);
+        ((Buffer) buffer).flip();
+        ((Buffer) indices).position(pos);
+        ((Buffer) byteBuffer).position(0);
+        ((Buffer) byteBuffer).limit(buffer.limit() << 1);
     }
 
     @Override
-    public void updateIndices(int targetOffset, int[] indices, int offset, int count) {
+    public void updateIndices(int targetOffset, short[] indices, int offset, int count) {
         final int pos = byteBuffer.position();
-        byteBuffer.position(targetOffset * 4);
+        ((Buffer) byteBuffer).position(targetOffset * 2);
         BufferUtils.copy(indices, offset, byteBuffer, count);
-        byteBuffer.position(pos);
+        ((Buffer) byteBuffer).position(pos);
     }
 
     /**
      * <p>
-     * Returns the underlying IntBuffer. If you modify the buffer contents they wil be uploaded on the call to
-     * {@link #bind()}. If you need immediate uploading use {@link #setIndices(int[], int, int)}.
+     * Returns the underlying ShortBuffer. If you modify the buffer contents they wil be uploaded on the call to
+     * {@link #bind()}. If you need immediate uploading use {@link #setIndices(short[], int, int)}.
      * </p>
      *
-     * @return the underlying int buffer.
+     * @return the underlying short buffer.
      */
-    public IntBuffer getBuffer() {
+    public ShortBuffer getBuffer() {
         return buffer;
     }
 

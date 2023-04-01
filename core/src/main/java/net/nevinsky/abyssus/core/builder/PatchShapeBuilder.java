@@ -1,16 +1,37 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package net.nevinsky.abyssus.core.builder;
 
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import net.nevinsky.abyssus.core.mesh.MeshPartBuilder;
+import net.nevinsky.abyssus.core.mesh.MeshPartBuilder.VertexInfo;
 
+/**
+ * Helper class with static methods to build patch shapes using {@link MeshPartBuilder}.
+ *
+ * @author xoppa
+ */
 public class PatchShapeBuilder extends BaseShapeBuilder {
     /**
      * Build a patch shape. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type.
      */
-    public static void build(MeshPartBuilder builder, MeshPartBuilder.VertexInfo corner00,
-                             MeshPartBuilder.VertexInfo corner10, MeshPartBuilder.VertexInfo corner11,
-                             MeshPartBuilder.VertexInfo corner01, int divisionsU, int divisionsV) {
+    public static void build(MeshPartBuilder builder, VertexInfo corner00, VertexInfo corner10, VertexInfo corner11,
+                             VertexInfo corner01, int divisionsU, int divisionsV) {
         if (divisionsU < 1 || divisionsV < 1) {
             throw new GdxRuntimeException(
                     "divisionsU and divisionV must be > 0, u,v: " + divisionsU + ", " + divisionsV);
@@ -22,7 +43,7 @@ public class PatchShapeBuilder extends BaseShapeBuilder {
             vertTmp5.set(corner00).lerp(corner10, alphaU);
             vertTmp6.set(corner01).lerp(corner11, alphaU);
             for (int v = 0; v <= divisionsV; v++) {
-                final int idx = builder.vertex(vertTmp7.set(vertTmp5).lerp(vertTmp6, (float) v / (float) divisionsV));
+                final short idx = builder.vertex(vertTmp7.set(vertTmp5).lerp(vertTmp6, (float) v / (float) divisionsV));
                 if (u > 0 && v > 0) builder.rect((short) (idx - divisionsV - 2), (short) (idx - 1), idx,
                         (short) (idx - divisionsV - 1));
             }

@@ -11,14 +11,25 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.model.NodeKeyframe;
-import com.badlogic.gdx.graphics.g3d.model.data.*;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelAnimation;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelMaterial;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelNode;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelNodeAnimation;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelNodeKeyframe;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelNodePart;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelTexture;
 import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.graphics.g3d.utils.TextureProvider;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
-import com.badlogic.gdx.utils.*;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ArrayMap;
+import com.badlogic.gdx.utils.BufferUtils;
+import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.ObjectMap;
 import net.nevinsky.abyssus.core.mesh.Mesh;
 import net.nevinsky.abyssus.core.mesh.MeshPart;
 import net.nevinsky.abyssus.core.node.Animation;
@@ -27,9 +38,24 @@ import net.nevinsky.abyssus.core.node.NodeAnimation;
 import net.nevinsky.abyssus.core.node.NodePart;
 
 import java.nio.Buffer;
-import java.util.ArrayList;
-import java.util.List;
 
+/**
+ * A model represents a 3D assets. It stores a hierarchy of nodes. A node has a transform and optionally a graphical
+ * part in form of a {@link MeshPart} and {@link Material}. Mesh parts reference subsets of vertices in one of the
+ * meshes of the model. Animations can be applied to nodes, to modify their transform (translation, rotation, scale)
+ * over time.
+ * </p>
+ * <p>
+ * A model can be rendered by creating a {@link ModelInstance} from it. That instance has an additional transform to
+ * position the model in the world, and allows modification of materials and nodes without destroying the original
+ * model. The original model is the owner of any meshes and textures, all instances created from the model share these
+ * resources. Disposing the model will automatically make all instances invalid!
+ * </p>
+ * <p>
+ * A model is created from {@link ModelData}, which in turn is loaded by a {@link ModelLoader}.
+ *
+ * @author badlogic, xoppa
+ */
 public class Model implements Disposable {
     /**
      * the materials of the model, used by nodes that have a graphical representation FIXME not sure if superfluous,
@@ -39,7 +65,7 @@ public class Model implements Disposable {
     /**
      * root nodes of the model
      **/
-    public final List<Node> nodes = new ArrayList<>();
+    public final Array<Node> nodes = new Array();
     /**
      * animations of the model, modifying node transformations
      **/
@@ -87,7 +113,7 @@ public class Model implements Disposable {
 
     protected void load(ModelData modelData, TextureProvider textureProvider) {
         loadMeshes(modelData.meshes);
-        loadMaterials(modelData.getMaterials(), textureProvider);
+        loadMaterials(modelData.materials, textureProvider);
         loadNodes(modelData.nodes);
         loadAnimations(modelData.animations);
         calculateTransforms();
@@ -95,7 +121,8 @@ public class Model implements Disposable {
 
     protected void loadAnimations(Iterable<ModelAnimation> modelAnimations) {
         for (final ModelAnimation anim : modelAnimations) {
-            Animation animation = new Animation();
+            Animation animation =
+                    new Animation();
             animation.id = anim.id;
             for (ModelNodeAnimation nanim : anim.nodeAnimations) {
                 final Node node = getNode(nanim.nodeId);
@@ -104,8 +131,8 @@ public class Model implements Disposable {
                 nodeAnim.node = node;
 
                 if (nanim.translation != null) {
-                    nodeAnim.translation = new ArrayList<NodeKeyframe<Vector3>>();
-//                    nodeAnim.translation.ensureCapacity(nanim.translation.size);
+                    nodeAnim.translation = new Array<NodeKeyframe<Vector3>>();
+                    nodeAnim.translation.ensureCapacity(nanim.translation.size);
                     for (ModelNodeKeyframe<Vector3> kf : nanim.translation) {
                         if (kf.keytime > animation.duration) animation.duration = kf.keytime;
                         nodeAnim.translation
@@ -115,8 +142,8 @@ public class Model implements Disposable {
                 }
 
                 if (nanim.rotation != null) {
-                    nodeAnim.rotation = new ArrayList<NodeKeyframe<Quaternion>>();
-//                    nodeAnim.rotation.ensureCapacity(nanim.rotation.size);
+                    nodeAnim.rotation = new Array<NodeKeyframe<Quaternion>>();
+                    nodeAnim.rotation.ensureCapacity(nanim.rotation.size);
                     for (ModelNodeKeyframe<Quaternion> kf : nanim.rotation) {
                         if (kf.keytime > animation.duration) animation.duration = kf.keytime;
                         nodeAnim.rotation
@@ -126,8 +153,8 @@ public class Model implements Disposable {
                 }
 
                 if (nanim.scaling != null) {
-                    nodeAnim.scaling = new ArrayList<>();
-//                    nodeAnim.scaling.ensureCapacity(nanim.scaling.size);
+                    nodeAnim.scaling = new Array<NodeKeyframe<Vector3>>();
+                    nodeAnim.scaling.ensureCapacity(nanim.scaling.size);
                     for (ModelNodeKeyframe<Vector3> kf : nanim.scaling) {
                         if (kf.keytime > animation.duration) animation.duration = kf.keytime;
                         nodeAnim.scaling
@@ -136,16 +163,16 @@ public class Model implements Disposable {
                     }
                 }
 
-                if ((nodeAnim.translation != null && nodeAnim.translation.size() > 0)
-                        || (nodeAnim.rotation != null && nodeAnim.rotation.size() > 0)
-                        || (nodeAnim.scaling != null && nodeAnim.scaling.size() > 0))
+                if ((nodeAnim.translation != null && nodeAnim.translation.size > 0)
+                        || (nodeAnim.rotation != null && nodeAnim.rotation.size > 0)
+                        || (nodeAnim.scaling != null && nodeAnim.scaling.size > 0))
                     animation.nodeAnimations.add(nodeAnim);
             }
             if (animation.nodeAnimations.size > 0) animations.add(animation);
         }
     }
 
-    private ObjectMap<NodePart, ArrayMap<String, Matrix4>> nodePartBones = new ObjectMap<>();
+    private final ObjectMap<NodePart, ArrayMap<String, Matrix4>> nodePartBones = new ObjectMap<>();
 
     protected void loadNodes(Iterable<ModelNode> modelNodes) {
         nodePartBones.clear();
@@ -154,8 +181,7 @@ public class Model implements Disposable {
         }
         for (ObjectMap.Entry<NodePart, ArrayMap<String, Matrix4>> e : nodePartBones.entries()) {
             if (e.key.invBoneBindTransforms == null)
-                e.key.invBoneBindTransforms = new ArrayMap<Node, Matrix4>(
-                        Node.class, Matrix4.class);
+                e.key.invBoneBindTransforms = new ArrayMap<Node, Matrix4>(Node.class, Matrix4.class);
             e.key.invBoneBindTransforms.clear();
             for (ObjectMap.Entry<String, Matrix4> b : e.value.entries())
                 e.key.invBoneBindTransforms.put(getNode(b.key), new Matrix4(b.value).inv());
@@ -270,7 +296,7 @@ public class Model implements Disposable {
         if (mtl.opacity != 1.f)
             result.set(new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA, mtl.opacity));
 
-        ObjectMap<String, Texture> textures = new ObjectMap<>();
+        ObjectMap<String, Texture> textures = new ObjectMap<String, Texture>();
 
         // FIXME uvScaling/uvTranslation totally ignored
         if (mtl.textures != null) {
@@ -284,7 +310,7 @@ public class Model implements Disposable {
                     disposables.add(texture);
                 }
 
-                TextureDescriptor<? extends Texture> descriptor = new TextureDescriptor<>(texture);
+                TextureDescriptor descriptor = new TextureDescriptor(texture);
                 descriptor.minFilter = texture.getMinFilter();
                 descriptor.magFilter = texture.getMagFilter();
                 descriptor.uWrap = texture.getUWrap();
@@ -339,9 +365,7 @@ public class Model implements Disposable {
      * @param disposable the Disposable
      */
     public void manageDisposable(Disposable disposable) {
-        if (!disposables.contains(disposable, true)) {
-            disposables.add(disposable);
-        }
+        if (!disposables.contains(disposable, true)) disposables.add(disposable);
     }
 
     /**
@@ -369,7 +393,7 @@ public class Model implements Disposable {
      * rotation, scale) was modified.
      */
     public void calculateTransforms() {
-        final int n = nodes.size();
+        final int n = nodes.size;
         for (int i = 0; i < n; i++) {
             nodes.get(i).calculateTransforms(true);
         }
@@ -398,7 +422,7 @@ public class Model implements Disposable {
      * @return the out parameter for chaining
      */
     public BoundingBox extendBoundingBox(final BoundingBox out) {
-        final int n = nodes.size();
+        final int n = nodes.size;
         for (int i = 0; i < n; i++)
             nodes.get(i).extendBoundingBox(out);
         return out;

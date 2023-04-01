@@ -22,6 +22,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import net.nevinsky.abyssus.core.mesh.MeshPartBuilder;
+import net.nevinsky.abyssus.core.mesh.MeshPartBuilder.VertexInfo;
 
 /**
  * Helper class with static methods to build box shapes using {@link MeshPartBuilder}.
@@ -36,29 +37,28 @@ public class BoxShapeBuilder extends BaseShapeBuilder {
      * @param box
      */
     public static void build(MeshPartBuilder builder, BoundingBox box) {
-        build(builder, box.getCorner000(obtainV3()), box.getCorner010(obtainV3()), box.getCorner100(obtainV3()),
+        builder.box(box.getCorner000(obtainV3()), box.getCorner010(obtainV3()), box.getCorner100(obtainV3()),
                 box.getCorner110(obtainV3()), box.getCorner001(obtainV3()), box.getCorner011(obtainV3()),
-                box.getCorner101(obtainV3()), box.getCorner111(obtainV3()));
+                box.getCorner101(obtainV3()),
+                box.getCorner111(obtainV3()));
         freeAll();
     }
 
     /**
      * Add a box. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type.
      */
-    public static void build(MeshPartBuilder builder, MeshPartBuilder.VertexInfo corner000,
-                             MeshPartBuilder.VertexInfo corner010, MeshPartBuilder.VertexInfo corner100,
-                             MeshPartBuilder.VertexInfo corner110, MeshPartBuilder.VertexInfo corner001,
-                             MeshPartBuilder.VertexInfo corner011, MeshPartBuilder.VertexInfo corner101,
-                             MeshPartBuilder.VertexInfo corner111) {
+    public static void build(MeshPartBuilder builder, VertexInfo corner000, VertexInfo corner010, VertexInfo corner100,
+                             VertexInfo corner110, VertexInfo corner001, VertexInfo corner011, VertexInfo corner101,
+                             VertexInfo corner111) {
         builder.ensureVertices(8);
-        final int i000 = builder.vertex(corner000);
-        final int i100 = builder.vertex(corner100);
-        final int i110 = builder.vertex(corner110);
-        final int i010 = builder.vertex(corner010);
-        final int i001 = builder.vertex(corner001);
-        final int i101 = builder.vertex(corner101);
-        final int i111 = builder.vertex(corner111);
-        final int i011 = builder.vertex(corner011);
+        final short i000 = builder.vertex(corner000);
+        final short i100 = builder.vertex(corner100);
+        final short i110 = builder.vertex(corner110);
+        final short i010 = builder.vertex(corner010);
+        final short i001 = builder.vertex(corner001);
+        final short i101 = builder.vertex(corner101);
+        final short i111 = builder.vertex(corner111);
+        final short i011 = builder.vertex(corner011);
 
         final int primitiveType = builder.getPrimitiveType();
         if (primitiveType == GL20.GL_LINES) {
