@@ -29,6 +29,7 @@ import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
+import lombok.Getter;
 import net.nevinsky.abyssus.core.ModelInstance;
 import net.nevinsky.abyssus.core.mesh.Mesh;
 import net.nevinsky.abyssus.core.mesh.MeshPart;
@@ -38,6 +39,8 @@ import net.nevinsky.abyssus.core.node.NodeAnimation;
 import net.nevinsky.abyssus.core.node.NodePart;
 
 import java.nio.Buffer;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A model represents a 3D assets. It stores a hierarchy of nodes. A node has a transform and optionally a graphical
@@ -56,6 +59,7 @@ import java.nio.Buffer;
  *
  * @author badlogic, xoppa
  */
+@Getter
 public class Model implements Disposable {
     /**
      * the materials of the model, used by nodes that have a graphical representation TODO not sure if superfluous,
@@ -78,7 +82,7 @@ public class Model implements Disposable {
      * parts of meshes, used by nodes that have a graphical representation TODO not sure if superfluous, stored in Nodes
      * as well, could be useful to create bullet meshes
      **/
-    public final Array<MeshPart> meshParts = new Array();
+    private final Map<String, MeshPart> meshParts = new HashMap<>();
     /**
      * Array of disposable resources like textures or meshes the Model is responsible for disposing
      **/
@@ -121,17 +125,18 @@ public class Model implements Disposable {
 
     protected void loadAnimations(Iterable<ModelAnimation> modelAnimations) {
         for (final ModelAnimation anim : modelAnimations) {
-            Animation animation =
-                    new Animation();
+            Animation animation = new Animation();
             animation.id = anim.id;
             for (ModelNodeAnimation nanim : anim.nodeAnimations) {
                 final Node node = getNode(nanim.nodeId);
-                if (node == null) continue;
+                if (node == null) {
+                    continue;
+                }
                 NodeAnimation nodeAnim = new NodeAnimation();
                 nodeAnim.node = node;
 
                 if (nanim.translation != null) {
-                    nodeAnim.translation = new Array<NodeKeyframe<Vector3>>();
+                    nodeAnim.translation = new Array<>();
                     nodeAnim.translation.ensureCapacity(nanim.translation.size);
                     for (ModelNodeKeyframe<Vector3> kf : nanim.translation) {
                         if (kf.keytime > animation.duration) animation.duration = kf.keytime;
@@ -142,7 +147,7 @@ public class Model implements Disposable {
                 }
 
                 if (nanim.rotation != null) {
-                    nodeAnim.rotation = new Array<NodeKeyframe<Quaternion>>();
+                    nodeAnim.rotation = new Array<>();
                     nodeAnim.rotation.ensureCapacity(nanim.rotation.size);
                     for (ModelNodeKeyframe<Quaternion> kf : nanim.rotation) {
                         if (kf.keytime > animation.duration) animation.duration = kf.keytime;
@@ -153,7 +158,7 @@ public class Model implements Disposable {
                 }
 
                 if (nanim.scaling != null) {
-                    nodeAnim.scaling = new Array<NodeKeyframe<Vector3>>();
+                    nodeAnim.scaling = new Array<>();
                     nodeAnim.scaling.ensureCapacity(nanim.scaling.size);
                     for (ModelNodeKeyframe<Vector3> kf : nanim.scaling) {
                         if (kf.keytime > animation.duration) animation.duration = kf.keytime;
@@ -202,12 +207,7 @@ public class Model implements Disposable {
                 Material meshMaterial = null;
 
                 if (modelNodePart.meshPartId != null) {
-                    for (MeshPart part : meshParts) {
-                        if (modelNodePart.meshPartId.equals(part.id)) {
-                            meshPart = part;
-                            break;
-                        }
-                    }
+                    meshPart = meshParts.get(modelNodePart.meshPartId);
                 }
 
                 if (modelNodePart.materialId != null) {
@@ -271,11 +271,12 @@ public class Model implements Disposable {
                 mesh.getIndicesBuffer().put(part.indices);
             }
             offset += meshPart.size;
-            meshParts.add(meshPart);
+            meshParts.put(meshPart.id, meshPart);
         }
-        ((Buffer) mesh.getIndicesBuffer()).position(0);
-        for (MeshPart part : meshParts)
+        mesh.getIndicesBuffer().position(0);
+        for (MeshPart part : meshParts.values()) {
             part.update();
+        }
     }
 
     protected void loadMaterials(Iterable<ModelMaterial> modelMaterials, TextureProvider textureProvider) {

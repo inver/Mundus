@@ -483,7 +483,7 @@ public class ModelBuilder {
     public static void rebuildReferences(final Model model) {
         model.materials.clear();
         model.meshes.clear();
-        model.meshParts.clear();
+        model.getMeshParts().clear();
         for (final Node node : model.nodes)
             rebuildReferences(model, node);
     }
@@ -491,8 +491,8 @@ public class ModelBuilder {
     private static void rebuildReferences(final Model model, final Node node) {
         for (final NodePart mpm : node.parts) {
             if (!model.materials.contains(mpm.material, true)) model.materials.add(mpm.material);
-            if (!model.meshParts.contains(mpm.meshPart, true)) {
-                model.meshParts.add(mpm.meshPart);
+            if (!model.getMeshParts().containsKey(mpm.meshPart.id)) {
+                model.getMeshParts().put(mpm.meshPart.id, mpm.meshPart);
                 if (!model.meshes.contains(mpm.meshPart.mesh, true)) model.meshes.add(mpm.meshPart.mesh);
                 model.manageDisposable(mpm.meshPart.mesh);
             }
