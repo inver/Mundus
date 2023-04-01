@@ -18,21 +18,19 @@ package com.mbrlabs.mundus.editor.tools.picker;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g3d.Renderable;
-import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.math.Vector3;
 import com.mbrlabs.mundus.commons.shaders.DefaultBaseShader;
+import net.nevinsky.abyssus.core.Renderable;
+import net.nevinsky.abyssus.core.shader.Shader;
 
 /**
  * Used to render game objects in only one color.
- *
- * This color represents the encoded id of the game object. By rendering with
- * this shader on a framebuffer object one can implement raypicking. The class
- * GameObjectPicker does exactly that.
- *
- * See also:
- * http://www.opengl-tutorial.org/miscellaneous/clicking-on-objects/picking-with-an-opengl-hack/
+ * <p>
+ * This color represents the encoded id of the game object. By rendering with this shader on a framebuffer object one
+ * can implement raypicking. The class GameObjectPicker does exactly that.
+ * <p>
+ * See also: http://www.opengl-tutorial.org/miscellaneous/clicking-on-objects/picking-with-an-opengl-hack/
  *
  * @author Marcus Brummer
  * @version 20-02-2016

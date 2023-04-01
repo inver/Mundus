@@ -19,47 +19,40 @@ package net.nevinsky.abyssus.core;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.Renderable;
-import com.badlogic.gdx.graphics.g3d.RenderableProvider;
-import com.badlogic.gdx.graphics.g3d.Shader;
-import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
-import com.badlogic.gdx.graphics.g3d.utils.DefaultRenderableSorter;
-import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultTextureBinder;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
-import com.badlogic.gdx.graphics.g3d.utils.RenderableSorter;
-import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.FlushablePool;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool;
+import net.nevinsky.abyssus.core.shader.DefaultShaderProvider;
+import net.nevinsky.abyssus.core.shader.Shader;
+import net.nevinsky.abyssus.core.shader.ShaderProvider;
 
 /**
- * Batches {@link com.badlogic.gdx.graphics.g3d.Renderable} instances, fetches {@link Shader}s for them, sorts them and
- * then renders them. Fetching the shaders is done using a {@link ShaderProvider}, which defaults to
- * {@link DefaultShaderProvider}. Sorting the renderables is done using a {@link RenderableSorter}, which default to
- * {@link DefaultRenderableSorter}.
+ * Batches {@link Renderable} instances, fetches {@link Shader}s for them, sorts them and then renders them. Fetching
+ * the shaders is done using a {@link ShaderProvider}, which defaults to {@link DefaultShaderProvider}. Sorting the
+ * renderables is done using a {@link RenderableSorter}, which default to {@link DefaultRenderableSorter}.
  * <p>
  * The OpenGL context between the {@link #begin(Camera)} and {@link #end()} call is maintained by the
  * {@link RenderContext}.
  * <p>
- * To provide multiple {@link com.badlogic.gdx.graphics.g3d.Renderable}s at once a
- * {@link com.badlogic.gdx.graphics.g3d.RenderableProvider} can be used, e.g. a {@link ModelInstance}.
+ * To provide multiple {@link Renderable}s at once a {@link RenderableProvider} can be used, e.g. a
+ * {@link ModelInstance}.
  *
  * @author xoppa, badlogic
  */
 public class ModelBatch implements Disposable {
-    protected static class RenderablePool extends FlushablePool<com.badlogic.gdx.graphics.g3d.Renderable> {
+    protected static class RenderablePool extends FlushablePool<Renderable> {
         @Override
-        protected com.badlogic.gdx.graphics.g3d.Renderable newObject() {
-            return new com.badlogic.gdx.graphics.g3d.Renderable();
+        protected Renderable newObject() {
+            return new Renderable();
         }
 
         @Override
-        public com.badlogic.gdx.graphics.g3d.Renderable obtain() {
-            com.badlogic.gdx.graphics.g3d.Renderable renderable = super.obtain();
+        public Renderable obtain() {
+            Renderable renderable = super.obtain();
             renderable.environment = null;
             renderable.material = null;
             renderable.meshPart.set("", null, 0, 0, 0);
@@ -74,8 +67,8 @@ public class ModelBatch implements Disposable {
     /**
      * list of Renderables to be rendered in the current batch
      **/
-    protected final Array<com.badlogic.gdx.graphics.g3d.Renderable> renderables =
-            new Array<com.badlogic.gdx.graphics.g3d.Renderable>();
+    protected final Array<Renderable> renderables =
+            new Array<Renderable>();
     /**
      * the {@link RenderContext}
      **/
@@ -196,9 +189,9 @@ public class ModelBatch implements Disposable {
     }
 
     /**
-     * Start rendering one or more {@link com.badlogic.gdx.graphics.g3d.Renderable}s. Use one of the render() methods to
-     * provide the renderables. Must be followed by a call to {@link #end()}. The OpenGL context must not be altered
-     * between {@link #begin(Camera)} and {@link #end()}.
+     * Start rendering one or more {@link Renderable}s. Use one of the render() methods to provide the renderables. Must
+     * be followed by a call to {@link #end()}. The OpenGL context must not be altered between {@link #begin(Camera)}
+     * and {@link #end()}.
      *
      * @param cam The {@link Camera} to be used when rendering and sorting.
      */
@@ -264,14 +257,14 @@ public class ModelBatch implements Disposable {
     }
 
     /**
-     * Flushes the batch, causing all {@link com.badlogic.gdx.graphics.g3d.Renderable}s in the batch to be rendered. Can
-     * only be called after the call to {@link #begin(Camera)} and before the call to {@link #end()}.
+     * Flushes the batch, causing all {@link Renderable}s in the batch to be rendered. Can only be called after the call
+     * to {@link #begin(Camera)} and before the call to {@link #end()}.
      */
     public void flush() {
         sorter.sort(camera, renderables);
         Shader currentShader = null;
         for (int i = 0; i < renderables.size; i++) {
-            final com.badlogic.gdx.graphics.g3d.Renderable renderable = renderables.get(i);
+            final Renderable renderable = renderables.get(i);
             if (currentShader != renderable.shader) {
                 if (currentShader != null) currentShader.end();
                 currentShader = renderable.shader;
@@ -285,9 +278,9 @@ public class ModelBatch implements Disposable {
     }
 
     /**
-     * End rendering one or more {@link com.badlogic.gdx.graphics.g3d.Renderable}s. Must be called after a call to
-     * {@link #begin(Camera)}. This will flush the batch, causing any renderables provided using one of the render()
-     * methods to be rendered. After a call to this method the OpenGL context can be altered again.
+     * End rendering one or more {@link Renderable}s. Must be called after a call to {@link #begin(Camera)}. This will
+     * flush the batch, causing any renderables provided using one of the render() methods to be rendered. After a call
+     * to this method the OpenGL context can be altered again.
      */
     public void end() {
         flush();
@@ -296,132 +289,128 @@ public class ModelBatch implements Disposable {
     }
 
     /**
-     * Add a single {@link com.badlogic.gdx.graphics.g3d.Renderable} to the batch. The {@link ShaderProvider} will be
-     * used to fetch a suitable {@link Shader}. Can only be called after a call to {@link #begin(Camera)} and before a
-     * call to {@link #end()}.
+     * Add a single {@link Renderable} to the batch. The {@link ShaderProvider} will be used to fetch a suitable
+     * {@link Shader}. Can only be called after a call to {@link #begin(Camera)} and before a call to {@link #end()}.
      *
-     * @param renderable The {@link com.badlogic.gdx.graphics.g3d.Renderable} to be added.
+     * @param renderable The {@link Renderable} to be added.
      */
-    public void render(final com.badlogic.gdx.graphics.g3d.Renderable renderable) {
+    public void render(final Renderable renderable) {
         renderable.shader = shaderProvider.getShader(renderable);
         renderables.add(renderable);
     }
 
     /**
-     * Calls {@link com.badlogic.gdx.graphics.g3d.RenderableProvider#getRenderables(Array, Pool)} and adds all returned
-     * {@link com.badlogic.gdx.graphics.g3d.Renderable} instances to the current batch to be rendered. Can only be
-     * called after a call to {@link #begin(Camera)} and before a call to {@link #end()}.
+     * Calls {@link RenderableProvider#getRenderables(Array, Pool)} and adds all returned {@link Renderable} instances
+     * to the current batch to be rendered. Can only be called after a call to {@link #begin(Camera)} and before a call
+     * to {@link #end()}.
      *
      * @param renderableProvider the renderable provider
      */
-    public void render(final com.badlogic.gdx.graphics.g3d.RenderableProvider renderableProvider) {
+    public void render(final RenderableProvider renderableProvider) {
         final int offset = renderables.size;
         renderableProvider.getRenderables(renderables, renderablesPool);
         for (int i = offset; i < renderables.size; i++) {
-            com.badlogic.gdx.graphics.g3d.Renderable renderable = renderables.get(i);
+            Renderable renderable = renderables.get(i);
             renderable.shader = shaderProvider.getShader(renderable);
         }
     }
 
     /**
-     * Calls {@link com.badlogic.gdx.graphics.g3d.RenderableProvider#getRenderables(Array, Pool)} and adds all returned
-     * {@link com.badlogic.gdx.graphics.g3d.Renderable} instances to the current batch to be rendered. Can only be
-     * called after a call to {@link #begin(Camera)} and before a call to {@link #end()}.
+     * Calls {@link RenderableProvider#getRenderables(Array, Pool)} and adds all returned {@link Renderable} instances
+     * to the current batch to be rendered. Can only be called after a call to {@link #begin(Camera)} and before a call
+     * to {@link #end()}.
      *
      * @param renderableProviders one or more renderable providers
      */
-    public <T extends com.badlogic.gdx.graphics.g3d.RenderableProvider> void render(
+    public <T extends RenderableProvider> void render(
             final Iterable<T> renderableProviders) {
-        for (final com.badlogic.gdx.graphics.g3d.RenderableProvider renderableProvider : renderableProviders)
+        for (final RenderableProvider renderableProvider : renderableProviders)
             render(renderableProvider);
     }
 
     /**
-     * Calls {@link com.badlogic.gdx.graphics.g3d.RenderableProvider#getRenderables(Array, Pool)} and adds all returned
-     * {@link com.badlogic.gdx.graphics.g3d.Renderable} instances to the current batch to be rendered. Any environment
-     * set on the returned renderables will be replaced with the given environment. Can only be called after a call to
-     * {@link #begin(Camera)} and before a call to {@link #end()}.
+     * Calls {@link RenderableProvider#getRenderables(Array, Pool)} and adds all returned {@link Renderable} instances
+     * to the current batch to be rendered. Any environment set on the returned renderables will be replaced with the
+     * given environment. Can only be called after a call to {@link #begin(Camera)} and before a call to
+     * {@link #end()}.
      *
      * @param renderableProvider the renderable provider
      * @param environment        the {@link Environment} to use for the renderables
      */
-    public void render(final com.badlogic.gdx.graphics.g3d.RenderableProvider renderableProvider,
+    public void render(final RenderableProvider renderableProvider,
                        final Environment environment) {
         final int offset = renderables.size;
         renderableProvider.getRenderables(renderables, renderablesPool);
         for (int i = offset; i < renderables.size; i++) {
-            com.badlogic.gdx.graphics.g3d.Renderable renderable = renderables.get(i);
+            Renderable renderable = renderables.get(i);
             renderable.environment = environment;
             renderable.shader = shaderProvider.getShader(renderable);
         }
     }
 
     /**
-     * Calls {@link com.badlogic.gdx.graphics.g3d.RenderableProvider#getRenderables(Array, Pool)} and adds all returned
-     * {@link com.badlogic.gdx.graphics.g3d.Renderable} instances to the current batch to be rendered. Any environment
-     * set on the returned renderables will be replaced with the given environment. Can only be called after a call to
-     * {@link #begin(Camera)} and before a call to {@link #end()}.
+     * Calls {@link RenderableProvider#getRenderables(Array, Pool)} and adds all returned {@link Renderable} instances
+     * to the current batch to be rendered. Any environment set on the returned renderables will be replaced with the
+     * given environment. Can only be called after a call to {@link #begin(Camera)} and before a call to
+     * {@link #end()}.
      *
      * @param renderableProviders one or more renderable providers
      * @param environment         the {@link Environment} to use for the renderables
      */
-    public <T extends com.badlogic.gdx.graphics.g3d.RenderableProvider> void render(
+    public <T extends RenderableProvider> void render(
             final Iterable<T> renderableProviders, final Environment environment) {
-        for (final com.badlogic.gdx.graphics.g3d.RenderableProvider renderableProvider : renderableProviders)
+        for (final RenderableProvider renderableProvider : renderableProviders)
             render(renderableProvider, environment);
     }
 
     /**
-     * Calls {@link com.badlogic.gdx.graphics.g3d.RenderableProvider#getRenderables(Array, Pool)} and adds all returned
-     * {@link com.badlogic.gdx.graphics.g3d.Renderable} instances to the current batch to be rendered. Any shaders set
-     * on the returned renderables will be replaced with the given {@link Shader}. Can only be called after a call to
-     * {@link #begin(Camera)} and before a call to {@link #end()}.
+     * Calls {@link RenderableProvider#getRenderables(Array, Pool)} and adds all returned {@link Renderable} instances
+     * to the current batch to be rendered. Any shaders set on the returned renderables will be replaced with the given
+     * {@link Shader}. Can only be called after a call to {@link #begin(Camera)} and before a call to {@link #end()}.
      *
      * @param renderableProvider the renderable provider
      * @param shader             the shader to use for the renderables
      */
-    public void render(final com.badlogic.gdx.graphics.g3d.RenderableProvider renderableProvider, final Shader shader) {
+    public void render(final RenderableProvider renderableProvider, final Shader shader) {
         final int offset = renderables.size;
         renderableProvider.getRenderables(renderables, renderablesPool);
         for (int i = offset; i < renderables.size; i++) {
-            com.badlogic.gdx.graphics.g3d.Renderable renderable = renderables.get(i);
+            Renderable renderable = renderables.get(i);
             renderable.shader = shader;
             renderable.shader = shaderProvider.getShader(renderable);
         }
     }
 
     /**
-     * Calls {@link com.badlogic.gdx.graphics.g3d.RenderableProvider#getRenderables(Array, Pool)} and adds all returned
-     * {@link com.badlogic.gdx.graphics.g3d.Renderable} instances to the current batch to be rendered. Any shaders set
-     * on the returned renderables will be replaced with the given {@link Shader}. Can only be called after a call to
-     * {@link #begin(Camera)} and before a call to {@link #end()}.
+     * Calls {@link RenderableProvider#getRenderables(Array, Pool)} and adds all returned {@link Renderable} instances
+     * to the current batch to be rendered. Any shaders set on the returned renderables will be replaced with the given
+     * {@link Shader}. Can only be called after a call to {@link #begin(Camera)} and before a call to {@link #end()}.
      *
      * @param renderableProviders one or more renderable providers
      * @param shader              the shader to use for the renderables
      */
-    public <T extends com.badlogic.gdx.graphics.g3d.RenderableProvider> void render(
+    public <T extends RenderableProvider> void render(
             final Iterable<T> renderableProviders, final Shader shader) {
-        for (final com.badlogic.gdx.graphics.g3d.RenderableProvider renderableProvider : renderableProviders)
+        for (final RenderableProvider renderableProvider : renderableProviders)
             render(renderableProvider, shader);
     }
 
     /**
-     * Calls {@link com.badlogic.gdx.graphics.g3d.RenderableProvider#getRenderables(Array, Pool)} and adds all returned
-     * {@link com.badlogic.gdx.graphics.g3d.Renderable} instances to the current batch to be rendered. Any environment
-     * set on the returned renderables will be replaced with the given environment. Any shaders set on the returned
-     * renderables will be replaced with the given {@link Shader}. Can only be called after a call to
-     * {@link #begin(Camera)} and before a call to {@link #end()}.
+     * Calls {@link RenderableProvider#getRenderables(Array, Pool)} and adds all returned {@link Renderable} instances
+     * to the current batch to be rendered. Any environment set on the returned renderables will be replaced with the
+     * given environment. Any shaders set on the returned renderables will be replaced with the given {@link Shader}.
+     * Can only be called after a call to {@link #begin(Camera)} and before a call to {@link #end()}.
      *
      * @param renderableProvider the renderable provider
      * @param environment        the {@link Environment} to use for the renderables
      * @param shader             the shader to use for the renderables
      */
-    public void render(final com.badlogic.gdx.graphics.g3d.RenderableProvider renderableProvider,
+    public void render(final RenderableProvider renderableProvider,
                        final Environment environment, final Shader shader) {
         final int offset = renderables.size;
         renderableProvider.getRenderables(renderables, renderablesPool);
         for (int i = offset; i < renderables.size; i++) {
-            com.badlogic.gdx.graphics.g3d.Renderable renderable = renderables.get(i);
+            Renderable renderable = renderables.get(i);
             renderable.environment = environment;
             renderable.shader = shader;
             renderable.shader = shaderProvider.getShader(renderable);
@@ -429,17 +418,16 @@ public class ModelBatch implements Disposable {
     }
 
     /**
-     * Calls {@link com.badlogic.gdx.graphics.g3d.RenderableProvider#getRenderables(Array, Pool)} and adds all returned
-     * {@link Renderable} instances to the current batch to be rendered. Any environment set on the returned renderables
-     * will be replaced with the given environment. Any shaders set on the returned renderables will be replaced with
-     * the given {@link Shader}. Can only be called after a call to {@link #begin(Camera)} and before a call to
-     * {@link #end()}.
+     * Calls {@link RenderableProvider#getRenderables(Array, Pool)} and adds all returned {@link Renderable} instances
+     * to the current batch to be rendered. Any environment set on the returned renderables will be replaced with the
+     * given environment. Any shaders set on the returned renderables will be replaced with the given {@link Shader}.
+     * Can only be called after a call to {@link #begin(Camera)} and before a call to {@link #end()}.
      *
      * @param renderableProviders one or more renderable providers
      * @param environment         the {@link Environment} to use for the renderables
      * @param shader              the shader to use for the renderables
      */
-    public <T extends com.badlogic.gdx.graphics.g3d.RenderableProvider> void render(
+    public <T extends RenderableProvider> void render(
             final Iterable<T> renderableProviders, final Environment environment,
             final Shader shader) {
         for (final RenderableProvider renderableProvider : renderableProviders)

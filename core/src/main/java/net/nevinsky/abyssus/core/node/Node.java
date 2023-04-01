@@ -17,7 +17,6 @@
 package net.nevinsky.abyssus.core.node;
 
 import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
@@ -25,6 +24,7 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import net.nevinsky.abyssus.core.mesh.MeshPart;
+import net.nevinsky.abyssus.core.model.Model;
 
 /**
  * A node is part of a hierarchy of Nodes in a {@link Model}. A Node encodes a transform relative to its parents. A Node
@@ -35,7 +35,7 @@ import net.nevinsky.abyssus.core.mesh.MeshPart;
  */
 public class Node {
     /**
-     * the id, may be null, FIXME is this unique?
+     * the id, may be null, TODO is this unique?
      **/
     public String id;
     /**

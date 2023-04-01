@@ -50,7 +50,7 @@ public class ModelInstance implements RenderableProvider {
     public static boolean defaultShareKeyframes = true;
 
     /**
-     * the materials of the model, used by nodes that have a graphical representation FIXME not sure if superfluous,
+     * the materials of the model, used by nodes that have a graphical representation TODO not sure if superfluous,
      * allows modification of materials without having to traverse the nodes
      **/
     public final Array<Material> materials = new Array();

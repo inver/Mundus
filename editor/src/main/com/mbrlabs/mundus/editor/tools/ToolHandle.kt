@@ -16,7 +16,6 @@
 
 package com.mbrlabs.mundus.editor.tools
 
-import com.badlogic.gdx.graphics.g3d.ModelBatch
 import com.badlogic.gdx.math.Quaternion
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.utils.Disposable
@@ -24,6 +23,7 @@ import com.mbrlabs.mundus.commons.scene3d.components.Renderable
 import com.mbrlabs.mundus.commons.shaders.ShaderHolder
 import com.mbrlabs.mundus.editor.tools.picker.PickerColorEncoder
 import com.mbrlabs.mundus.editor.tools.picker.PickerIDAttribute
+import net.nevinsky.abyssus.core.ModelBatch
 
 /**
  * A tool handle is the visual part of a tool (e.g. x arrow handle of the

@@ -24,8 +24,6 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Attributes;
 import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.g3d.Renderable;
-import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.CubemapAttribute;
@@ -40,7 +38,6 @@ import com.badlogic.gdx.graphics.g3d.environment.AmbientCubemap;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.g3d.environment.SpotLight;
-import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix3;
@@ -48,8 +45,9 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import net.nevinsky.abyssus.core.Renderable;
 
-public class DefaultShader extends com.badlogic.gdx.graphics.g3d.shaders.BaseShader {
+public class DefaultShader extends BaseShader {
     public static class Config {
         /**
          * The uber vertex shader to use, null to use the default vertex shader.
@@ -145,28 +143,28 @@ public class DefaultShader extends com.badlogic.gdx.graphics.g3d.shaders.BaseSha
     public static class Setters {
         public final static Setter projTrans = new GlobalSetter() {
             @Override
-            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+            public void set(BaseShader shader, int inputID, Renderable renderable,
                             Attributes combinedAttributes) {
                 shader.set(inputID, shader.camera.projection);
             }
         };
         public final static Setter viewTrans = new GlobalSetter() {
             @Override
-            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+            public void set(BaseShader shader, int inputID, Renderable renderable,
                             Attributes combinedAttributes) {
                 shader.set(inputID, shader.camera.view);
             }
         };
         public final static Setter projViewTrans = new GlobalSetter() {
             @Override
-            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+            public void set(BaseShader shader, int inputID, Renderable renderable,
                             Attributes combinedAttributes) {
                 shader.set(inputID, shader.camera.combined);
             }
         };
         public final static Setter cameraPosition = new GlobalSetter() {
             @Override
-            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+            public void set(BaseShader shader, int inputID, Renderable renderable,
                             Attributes combinedAttributes) {
                 shader.set(inputID, shader.camera.position.x, shader.camera.position.y, shader.camera.position.z,
                         1.1881f / (shader.camera.far * shader.camera.far));
@@ -174,28 +172,28 @@ public class DefaultShader extends com.badlogic.gdx.graphics.g3d.shaders.BaseSha
         };
         public final static Setter cameraDirection = new GlobalSetter() {
             @Override
-            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+            public void set(BaseShader shader, int inputID, Renderable renderable,
                             Attributes combinedAttributes) {
                 shader.set(inputID, shader.camera.direction);
             }
         };
         public final static Setter cameraUp = new GlobalSetter() {
             @Override
-            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+            public void set(BaseShader shader, int inputID, Renderable renderable,
                             Attributes combinedAttributes) {
                 shader.set(inputID, shader.camera.up);
             }
         };
         public final static Setter cameraNearFar = new GlobalSetter() {
             @Override
-            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+            public void set(BaseShader shader, int inputID, Renderable renderable,
                             Attributes combinedAttributes) {
                 shader.set(inputID, shader.camera.near, shader.camera.far);
             }
         };
         public final static Setter worldTrans = new LocalSetter() {
             @Override
-            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+            public void set(BaseShader shader, int inputID, Renderable renderable,
                             Attributes combinedAttributes) {
                 shader.set(inputID, renderable.worldTransform);
             }
@@ -204,7 +202,7 @@ public class DefaultShader extends com.badlogic.gdx.graphics.g3d.shaders.BaseSha
             final Matrix4 temp = new Matrix4();
 
             @Override
-            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+            public void set(BaseShader shader, int inputID, Renderable renderable,
                             Attributes combinedAttributes) {
                 shader.set(inputID, temp.set(shader.camera.view).mul(renderable.worldTransform));
             }
@@ -213,7 +211,7 @@ public class DefaultShader extends com.badlogic.gdx.graphics.g3d.shaders.BaseSha
             final Matrix4 temp = new Matrix4();
 
             @Override
-            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+            public void set(BaseShader shader, int inputID, Renderable renderable,
                             Attributes combinedAttributes) {
                 shader.set(inputID, temp.set(shader.camera.combined).mul(renderable.worldTransform));
             }
@@ -222,7 +220,7 @@ public class DefaultShader extends com.badlogic.gdx.graphics.g3d.shaders.BaseSha
             private final Matrix3 tmpM = new Matrix3();
 
             @Override
-            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+            public void set(BaseShader shader, int inputID, Renderable renderable,
                             Attributes combinedAttributes) {
                 shader.set(inputID, tmpM.set(renderable.worldTransform).inv().transpose());
             }
@@ -237,7 +235,7 @@ public class DefaultShader extends com.badlogic.gdx.graphics.g3d.shaders.BaseSha
             }
 
             @Override
-            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+            public void set(BaseShader shader, int inputID, Renderable renderable,
                             Attributes combinedAttributes) {
                 for (int i = 0; i < bones.length; i += 16) {
                     final int idx = i / 16;
@@ -252,21 +250,21 @@ public class DefaultShader extends com.badlogic.gdx.graphics.g3d.shaders.BaseSha
 
         public final static Setter shininess = new LocalSetter() {
             @Override
-            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+            public void set(BaseShader shader, int inputID, Renderable renderable,
                             Attributes combinedAttributes) {
                 shader.set(inputID, ((FloatAttribute) (combinedAttributes.get(FloatAttribute.Shininess))).value);
             }
         };
         public final static Setter diffuseColor = new LocalSetter() {
             @Override
-            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+            public void set(BaseShader shader, int inputID, Renderable renderable,
                             Attributes combinedAttributes) {
                 shader.set(inputID, ((ColorAttribute) (combinedAttributes.get(ColorAttribute.Diffuse))).color);
             }
         };
         public final static Setter diffuseTexture = new LocalSetter() {
             @Override
-            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+            public void set(BaseShader shader, int inputID, Renderable renderable,
                             Attributes combinedAttributes) {
                 final int unit = shader.context.textureBinder
                         .bind(((TextureAttribute) (combinedAttributes.get(
@@ -276,7 +274,7 @@ public class DefaultShader extends com.badlogic.gdx.graphics.g3d.shaders.BaseSha
         };
         public final static Setter diffuseUVTransform = new LocalSetter() {
             @Override
-            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+            public void set(BaseShader shader, int inputID, Renderable renderable,
                             Attributes combinedAttributes) {
                 final TextureAttribute ta = (TextureAttribute) (combinedAttributes.get(TextureAttribute.Diffuse));
                 shader.set(inputID, ta.offsetU, ta.offsetV, ta.scaleU, ta.scaleV);
@@ -284,14 +282,14 @@ public class DefaultShader extends com.badlogic.gdx.graphics.g3d.shaders.BaseSha
         };
         public final static Setter specularColor = new LocalSetter() {
             @Override
-            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+            public void set(BaseShader shader, int inputID, Renderable renderable,
                             Attributes combinedAttributes) {
                 shader.set(inputID, ((ColorAttribute) (combinedAttributes.get(ColorAttribute.Specular))).color);
             }
         };
         public final static Setter specularTexture = new LocalSetter() {
             @Override
-            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+            public void set(BaseShader shader, int inputID, Renderable renderable,
                             Attributes combinedAttributes) {
                 final int unit = shader.context.textureBinder
                         .bind(((TextureAttribute) (combinedAttributes.get(
@@ -301,7 +299,7 @@ public class DefaultShader extends com.badlogic.gdx.graphics.g3d.shaders.BaseSha
         };
         public final static Setter specularUVTransform = new LocalSetter() {
             @Override
-            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+            public void set(BaseShader shader, int inputID, Renderable renderable,
                             Attributes combinedAttributes) {
                 final TextureAttribute ta = (TextureAttribute) (combinedAttributes.get(TextureAttribute.Specular));
                 shader.set(inputID, ta.offsetU, ta.offsetV, ta.scaleU, ta.scaleV);
@@ -309,14 +307,14 @@ public class DefaultShader extends com.badlogic.gdx.graphics.g3d.shaders.BaseSha
         };
         public final static Setter emissiveColor = new LocalSetter() {
             @Override
-            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+            public void set(BaseShader shader, int inputID, Renderable renderable,
                             Attributes combinedAttributes) {
                 shader.set(inputID, ((ColorAttribute) (combinedAttributes.get(ColorAttribute.Emissive))).color);
             }
         };
         public final static Setter emissiveTexture = new LocalSetter() {
             @Override
-            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+            public void set(BaseShader shader, int inputID, Renderable renderable,
                             Attributes combinedAttributes) {
                 final int unit = shader.context.textureBinder
                         .bind(((TextureAttribute) (combinedAttributes.get(
@@ -326,7 +324,7 @@ public class DefaultShader extends com.badlogic.gdx.graphics.g3d.shaders.BaseSha
         };
         public final static Setter emissiveUVTransform = new LocalSetter() {
             @Override
-            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+            public void set(BaseShader shader, int inputID, Renderable renderable,
                             Attributes combinedAttributes) {
                 final TextureAttribute ta = (TextureAttribute) (combinedAttributes.get(TextureAttribute.Emissive));
                 shader.set(inputID, ta.offsetU, ta.offsetV, ta.scaleU, ta.scaleV);
@@ -334,14 +332,14 @@ public class DefaultShader extends com.badlogic.gdx.graphics.g3d.shaders.BaseSha
         };
         public final static Setter reflectionColor = new LocalSetter() {
             @Override
-            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+            public void set(BaseShader shader, int inputID, Renderable renderable,
                             Attributes combinedAttributes) {
                 shader.set(inputID, ((ColorAttribute) (combinedAttributes.get(ColorAttribute.Reflection))).color);
             }
         };
         public final static Setter reflectionTexture = new LocalSetter() {
             @Override
-            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+            public void set(BaseShader shader, int inputID, Renderable renderable,
                             Attributes combinedAttributes) {
                 final int unit = shader.context.textureBinder
                         .bind(((TextureAttribute) (combinedAttributes.get(
@@ -351,7 +349,7 @@ public class DefaultShader extends com.badlogic.gdx.graphics.g3d.shaders.BaseSha
         };
         public final static Setter reflectionUVTransform = new LocalSetter() {
             @Override
-            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+            public void set(BaseShader shader, int inputID, Renderable renderable,
                             Attributes combinedAttributes) {
                 final TextureAttribute ta = (TextureAttribute) (combinedAttributes.get(TextureAttribute.Reflection));
                 shader.set(inputID, ta.offsetU, ta.offsetV, ta.scaleU, ta.scaleV);
@@ -359,7 +357,7 @@ public class DefaultShader extends com.badlogic.gdx.graphics.g3d.shaders.BaseSha
         };
         public final static Setter normalTexture = new LocalSetter() {
             @Override
-            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+            public void set(BaseShader shader, int inputID, Renderable renderable,
                             Attributes combinedAttributes) {
                 final int unit = shader.context.textureBinder
                         .bind(((TextureAttribute) (combinedAttributes.get(
@@ -369,7 +367,7 @@ public class DefaultShader extends com.badlogic.gdx.graphics.g3d.shaders.BaseSha
         };
         public final static Setter normalUVTransform = new LocalSetter() {
             @Override
-            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+            public void set(BaseShader shader, int inputID, Renderable renderable,
                             Attributes combinedAttributes) {
                 final TextureAttribute ta = (TextureAttribute) (combinedAttributes.get(TextureAttribute.Normal));
                 shader.set(inputID, ta.offsetU, ta.offsetV, ta.scaleU, ta.scaleV);
@@ -377,7 +375,7 @@ public class DefaultShader extends com.badlogic.gdx.graphics.g3d.shaders.BaseSha
         };
         public final static Setter ambientTexture = new LocalSetter() {
             @Override
-            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+            public void set(BaseShader shader, int inputID, Renderable renderable,
                             Attributes combinedAttributes) {
                 final int unit = shader.context.textureBinder
                         .bind(((TextureAttribute) (combinedAttributes.get(
@@ -387,7 +385,7 @@ public class DefaultShader extends com.badlogic.gdx.graphics.g3d.shaders.BaseSha
         };
         public final static Setter ambientUVTransform = new LocalSetter() {
             @Override
-            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+            public void set(BaseShader shader, int inputID, Renderable renderable,
                             Attributes combinedAttributes) {
                 final TextureAttribute ta = (TextureAttribute) (combinedAttributes.get(TextureAttribute.Ambient));
                 shader.set(inputID, ta.offsetU, ta.offsetV, ta.scaleU, ta.scaleV);
@@ -407,7 +405,7 @@ public class DefaultShader extends com.badlogic.gdx.graphics.g3d.shaders.BaseSha
             }
 
             @Override
-            public void set(com.badlogic.gdx.graphics.g3d.shaders.BaseShader shader, int inputID, Renderable renderable,
+            public void set(BaseShader shader, int inputID, Renderable renderable,
                             Attributes combinedAttributes) {
                 if (renderable.environment == null)
                     shader.program.setUniform3fv(shader.loc(inputID), ones, 0, ones.length);
@@ -539,7 +537,7 @@ public class DefaultShader extends com.badlogic.gdx.graphics.g3d.shaders.BaseSha
     protected final int u_shadowMapProjViewTrans = register(new Uniform("u_shadowMapProjViewTrans"));
     protected final int u_shadowTexture = register(new Uniform("u_shadowTexture"));
     protected final int u_shadowPCFOffset = register(new Uniform("u_shadowPCFOffset"));
-    // FIXME Cache vertex attribute locations...
+    // TODO Cache vertex attribute locations...
 
     protected int dirLightsLoc;
     protected int dirLightsColorOffset;
@@ -769,27 +767,27 @@ public class DefaultShader extends com.badlogic.gdx.graphics.g3d.shaders.BaseSha
             prefix += "#define " + BlendingAttribute.Alias + "Flag\n";
         if ((attributesMask & TextureAttribute.Diffuse) == TextureAttribute.Diffuse) {
             prefix += "#define " + TextureAttribute.DiffuseAlias + "Flag\n";
-            prefix += "#define " + TextureAttribute.DiffuseAlias + "Coord texCoord0\n"; // FIXME implement UV mapping
+            prefix += "#define " + TextureAttribute.DiffuseAlias + "Coord texCoord0\n"; // TODO implement UV mapping
         }
         if ((attributesMask & TextureAttribute.Specular) == TextureAttribute.Specular) {
             prefix += "#define " + TextureAttribute.SpecularAlias + "Flag\n";
-            prefix += "#define " + TextureAttribute.SpecularAlias + "Coord texCoord0\n"; // FIXME implement UV mapping
+            prefix += "#define " + TextureAttribute.SpecularAlias + "Coord texCoord0\n"; // TODO implement UV mapping
         }
         if ((attributesMask & TextureAttribute.Normal) == TextureAttribute.Normal) {
             prefix += "#define " + TextureAttribute.NormalAlias + "Flag\n";
-            prefix += "#define " + TextureAttribute.NormalAlias + "Coord texCoord0\n"; // FIXME implement UV mapping
+            prefix += "#define " + TextureAttribute.NormalAlias + "Coord texCoord0\n"; // TODO implement UV mapping
         }
         if ((attributesMask & TextureAttribute.Emissive) == TextureAttribute.Emissive) {
             prefix += "#define " + TextureAttribute.EmissiveAlias + "Flag\n";
-            prefix += "#define " + TextureAttribute.EmissiveAlias + "Coord texCoord0\n"; // FIXME implement UV mapping
+            prefix += "#define " + TextureAttribute.EmissiveAlias + "Coord texCoord0\n"; // TODO implement UV mapping
         }
         if ((attributesMask & TextureAttribute.Reflection) == TextureAttribute.Reflection) {
             prefix += "#define " + TextureAttribute.ReflectionAlias + "Flag\n";
-            prefix += "#define " + TextureAttribute.ReflectionAlias + "Coord texCoord0\n"; // FIXME implement UV mapping
+            prefix += "#define " + TextureAttribute.ReflectionAlias + "Coord texCoord0\n"; // TODO implement UV mapping
         }
         if ((attributesMask & TextureAttribute.Ambient) == TextureAttribute.Ambient) {
             prefix += "#define " + TextureAttribute.AmbientAlias + "Flag\n";
-            prefix += "#define " + TextureAttribute.AmbientAlias + "Coord texCoord0\n"; // FIXME implement UV mapping
+            prefix += "#define " + TextureAttribute.AmbientAlias + "Coord texCoord0\n"; // TODO implement UV mapping
         }
         if ((attributesMask & ColorAttribute.Diffuse) == ColorAttribute.Diffuse)
             prefix += "#define " + ColorAttribute.DiffuseAlias + "Flag\n";
@@ -820,7 +818,7 @@ public class DefaultShader extends com.badlogic.gdx.graphics.g3d.shaders.BaseSha
     public int compareTo(Shader other) {
         if (other == null) return -1;
         if (other == this) return 0;
-        return 0; // FIXME compare shaders on their impact on performance
+        return 0; // TODO compare shaders on their impact on performance
     }
 
     @Override

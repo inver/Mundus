@@ -40,7 +40,7 @@ public class ConeShapeBuilder extends BaseShapeBuilder {
     public static void build(MeshPartBuilder builder, float width, float height, float depth, int divisions,
                              float angleFrom,
                              float angleTo, boolean close) {
-        // FIXME create better cylinder method (- axis on which to create the cone (matrix?))
+        // TODO create better cylinder method (- axis on which to create the cone (matrix?))
         builder.ensureVertices(divisions + 2);
         builder.ensureTriangleIndices(divisions);
 
@@ -65,7 +65,7 @@ public class ConeShapeBuilder extends BaseShapeBuilder {
             curr1.position.y = -hh;
             curr1.uv.set(u, 1);
             i1 = builder.vertex(curr1);
-            if (i != 0) builder.triangle(base, i1, i2); // FIXME don't duplicate lines and points
+            if (i != 0) builder.triangle(base, i1, i2); // TODO don't duplicate lines and points
             i2 = i1;
         }
         if (close) {

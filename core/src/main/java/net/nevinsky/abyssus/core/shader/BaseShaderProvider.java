@@ -16,11 +16,9 @@
 
 package net.nevinsky.abyssus.core.shader;
 
-import com.badlogic.gdx.graphics.g3d.Renderable;
-import com.badlogic.gdx.graphics.g3d.Shader;
-import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import net.nevinsky.abyssus.core.Renderable;
 
 public abstract class BaseShaderProvider implements ShaderProvider {
     protected Array<Shader> shaders = new Array<Shader>();

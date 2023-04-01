@@ -51,7 +51,43 @@
     <module name="TreeWalker">
         <module name="AvoidStarImport"/>
         <module name="IllegalImport">
-            <!--            <property name="illegalClasses" value="com.badlogic.gdx.graphics.g3d.Model"/>-->
+            <property name="illegalClasses" value="
+                        com.badlogic.gdx.graphics.g3d.utils.ModelBuilder,
+                        com.badlogic.gdx.graphics.g3d.utils.shapebuilders.ArrowShapeBuilder,
+                        com.badlogic.gdx.graphics.g3d.utils.shapebuilders.BoxShapeBuilder,
+                        com.badlogic.gdx.graphics.g3d.utils.shapebuilders.SphereShapeBuilder,
+                        com.badlogic.gdx.graphics.g3d.utils.shapebuilders.ConeShapeBuilder,
+
+                        com.badlogic.gdx.graphics.Mesh,
+                        com.badlogic.gdx.graphics.g3d.model.MeshPart,
+                        com.badlogic.gdx.graphics.g3d.utils.MeshBuilder,
+                        com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder,
+
+                        com.badlogic.gdx.graphics.g3d.Model,
+                        com.badlogic.gdx.graphics.g3d.ModelData,
+                        com.badlogic.gdx.graphics.g3d.model.data.ModelMesh,
+                        com.badlogic.gdx.graphics.g3d.model.data.ModelMeshPart,
+
+                        com.badlogic.gdx.graphics.g3d.model.Node,
+                        com.badlogic.gdx.graphics.g3d.model.Animation,
+                        com.badlogic.gdx.graphics.g3d.model.NodeAnimation,
+                        com.badlogic.gdx.graphics.g3d.model.NodePart,
+
+                        com.badlogic.gdx.graphics.g3d.shaders.BaseShader,
+                        com.badlogic.gdx.graphics.g3d.utils.BaseShaderProvider,
+                        com.badlogic.gdx.graphics.g3d.shaders.DefaultShader,
+                        com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider,
+                        com.badlogic.gdx.graphics.g3d.Shader,
+                        com.badlogic.gdx.graphics.g3d.utils.ShaderProvider,
+
+                        com.badlogic.gdx.graphics.g3d.utils.AnimationController,
+                        com.badlogic.gdx.graphics.g3d.utils.BaseAnimationController,
+                        com.badlogic.gdx.graphics.g3d.utils.RenderableSorter,
+                        com.badlogic.gdx.graphics.g3d.ModelInstance,
+                        com.badlogic.gdx.graphics.g3d.Renderable,
+                        com.badlogic.gdx.graphics.g3d.RenderableProvider,
+                        com.badlogic.gdx.graphics.g3d.ModelBatch
+            "/>
         </module>
 
     </module>

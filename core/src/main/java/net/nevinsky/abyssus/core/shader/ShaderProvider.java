@@ -16,9 +16,8 @@
 
 package net.nevinsky.abyssus.core.shader;
 
-import com.badlogic.gdx.graphics.g3d.Renderable;
-import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.utils.Disposable;
+import net.nevinsky.abyssus.core.Renderable;
 
 /**
  * Returns {@link Shader} instances for a {@link Renderable} on request. Also responsible for disposing of any created

@@ -20,12 +20,12 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.model.Node;
-import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.badlogic.gdx.graphics.g3d.utils.shapebuilders.BoxShapeBuilder;
 import com.badlogic.gdx.math.Vector3;
+import net.nevinsky.abyssus.core.ModelBuilder;
+import net.nevinsky.abyssus.core.builder.BoxShapeBuilder;
+import net.nevinsky.abyssus.core.mesh.MeshPartBuilder;
+import net.nevinsky.abyssus.core.model.Model;
+import net.nevinsky.abyssus.core.node.Node;
 
 /**
  * @author Marcus Brummer

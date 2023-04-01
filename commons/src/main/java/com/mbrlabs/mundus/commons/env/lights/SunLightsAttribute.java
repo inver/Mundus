@@ -60,7 +60,7 @@ public class SunLightsAttribute extends Attribute {
     @Override
     public int compareTo(Attribute o) {
         if (type != o.type) return type < o.type ? -1 : 1;
-        return 0; // FIXME implement comparing
+        return 0; // TODO implement comparing
     }
 
 }

@@ -55,7 +55,7 @@ public class PickerIDAttribute extends Attribute {
 
     @Override
     public int compareTo(Attribute o) {
-        return -1; // FIXME implement comparing
+        return -1; // TODO implement comparing
     }
 
     @Override

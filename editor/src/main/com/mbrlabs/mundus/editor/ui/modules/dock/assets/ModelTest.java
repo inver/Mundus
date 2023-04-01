@@ -15,12 +15,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import net.nevinsky.abyssus.core.AnimationController;
+import net.nevinsky.abyssus.core.ModelBatch;
+import net.nevinsky.abyssus.core.ModelBuilder;
+import net.nevinsky.abyssus.core.ModelInstance;
 
 public class ModelTest extends Lwjgl3WindowAdapter implements ApplicationListener, InputProcessor {
     private PerspectiveCamera camera;

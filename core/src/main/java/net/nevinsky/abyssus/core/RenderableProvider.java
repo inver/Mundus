@@ -16,7 +16,6 @@
 
 package net.nevinsky.abyssus.core;
 
-import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 

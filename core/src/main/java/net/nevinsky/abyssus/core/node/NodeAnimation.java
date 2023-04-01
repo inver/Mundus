@@ -22,9 +22,9 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
 /**
- * A NodeAnimation defines keyframes for a {@link com.badlogic.gdx.graphics.g3d.model.Node} in a {@link Model}. The
- * keyframes are given as a translation vector, a rotation quaternion and a scale vector. Keyframes are interpolated
- * linearly for now. Keytimes are given in seconds.
+ * A NodeAnimation defines keyframes for a {@link net.nevinsky.abyssus.core.node.Node} in a {@link Model}. The keyframes
+ * are given as a translation vector, a rotation quaternion and a scale vector. Keyframes are interpolated linearly for
+ * now. Keytimes are given in seconds.
  *
  * @author badlogic, Xoppa
  */

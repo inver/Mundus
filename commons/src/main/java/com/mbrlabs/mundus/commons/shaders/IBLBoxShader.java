@@ -1,8 +1,9 @@
 package com.mbrlabs.mundus.commons.shaders;
 
-import com.badlogic.gdx.graphics.g3d.Renderable;
-import com.badlogic.gdx.graphics.g3d.Shader;
-import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
+
+import net.nevinsky.abyssus.core.Renderable;
+import net.nevinsky.abyssus.core.shader.BaseShader;
+import net.nevinsky.abyssus.core.shader.Shader;
 
 public class IBLBoxShader extends BaseShader {
     @Override

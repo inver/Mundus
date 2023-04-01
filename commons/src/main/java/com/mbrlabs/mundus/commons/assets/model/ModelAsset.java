@@ -16,15 +16,15 @@
 package com.mbrlabs.mundus.commons.assets.model;
 
 import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.Renderable;
-import com.badlogic.gdx.graphics.g3d.RenderableProvider;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset;
 import com.mbrlabs.mundus.commons.assets.meta.Meta;
 import lombok.extern.slf4j.Slf4j;
+import net.nevinsky.abyssus.core.Renderable;
+import net.nevinsky.abyssus.core.RenderableProvider;
+import net.nevinsky.abyssus.core.model.Model;
 import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.HashMap;

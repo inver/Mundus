@@ -17,16 +17,9 @@
 package com.mbrlabs.mundus.commons.terrain;
 
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.environment.BaseLight;
-import com.badlogic.gdx.graphics.g3d.model.MeshPart;
-import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
-import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -41,6 +34,13 @@ import com.mbrlabs.mundus.commons.utils.MathUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
+import net.nevinsky.abyssus.core.ModelInstance;
+import net.nevinsky.abyssus.core.Renderable;
+import net.nevinsky.abyssus.core.mesh.Mesh;
+import net.nevinsky.abyssus.core.mesh.MeshBuilder;
+import net.nevinsky.abyssus.core.mesh.MeshPart;
+import net.nevinsky.abyssus.core.mesh.MeshPartBuilder;
+import net.nevinsky.abyssus.core.model.Model;
 
 import java.util.ArrayList;
 import java.util.List;

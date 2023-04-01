@@ -16,13 +16,11 @@
 
 package net.nevinsky.abyssus.core;
 
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.model.Animation;
-import com.badlogic.gdx.graphics.g3d.model.Node;
-import com.badlogic.gdx.graphics.g3d.utils.BaseAnimationController;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool;
+import net.nevinsky.abyssus.core.node.Animation;
+import net.nevinsky.abyssus.core.node.Node;
 
 /**
  * Class to control one or more {@link Animation}s on a {@link ModelInstance}. Use the

@@ -2,9 +2,9 @@ package com.mbrlabs.mundus.commons.tester;
 
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.Attributes;
-import com.badlogic.gdx.graphics.g3d.Renderable;
-import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import net.nevinsky.abyssus.core.Renderable;
+import net.nevinsky.abyssus.core.shader.DefaultShader;
 
 public class WireframeShader extends DefaultShader {
 

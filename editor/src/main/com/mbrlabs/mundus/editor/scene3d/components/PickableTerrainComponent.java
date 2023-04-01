@@ -16,13 +16,13 @@
 
 package com.mbrlabs.mundus.editor.scene3d.components;
 
-import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.scene3d.components.TerrainComponent;
 import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 import com.mbrlabs.mundus.editor.tools.picker.PickerColorEncoder;
 import com.mbrlabs.mundus.editor.tools.picker.PickerIDAttribute;
+import net.nevinsky.abyssus.core.ModelBatch;
 
 /**
  * @author Marcus Brummer

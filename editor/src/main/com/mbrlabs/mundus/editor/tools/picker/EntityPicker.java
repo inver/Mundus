@@ -2,12 +2,12 @@ package com.mbrlabs.mundus.editor.tools.picker;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.mbrlabs.mundus.commons.Scene;
 import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.shader.ShaderStorage;
 import lombok.RequiredArgsConstructor;
+import net.nevinsky.abyssus.core.ModelBatch;
 
 @org.springframework.stereotype.Component
 @RequiredArgsConstructor

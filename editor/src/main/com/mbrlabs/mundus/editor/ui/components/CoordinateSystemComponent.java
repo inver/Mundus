@@ -4,13 +4,13 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.badlogic.gdx.graphics.g3d.utils.shapebuilders.ArrowShapeBuilder;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.components.Renderable;
 import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
+import net.nevinsky.abyssus.core.ModelBatch;
+import net.nevinsky.abyssus.core.ModelBuilder;
+import net.nevinsky.abyssus.core.ModelInstance;
+import net.nevinsky.abyssus.core.builder.ArrowShapeBuilder;
 
 public class CoordinateSystemComponent implements Renderable {
     private static final int START_CONST = 1;
@@ -31,6 +31,7 @@ public class CoordinateSystemComponent implements Renderable {
             partBuilder.line(-START_CONST + i, 0.0f, -START_CONST, -START_CONST + i, 0.0f, START_CONST);
             partBuilder.line(-START_CONST, 0.0f, -START_CONST + i, START_CONST, 0.0f, -START_CONST + i);
         }
+        //todo replace to modelBuilder.xyz
         partBuilder = modelBuilder.part("mainLines", GL20.GL_TRIANGLES,
                 (VertexAttributes.Usage.Position | VertexAttributes.Usage.ColorUnpacked), new Material());
         partBuilder.setColor(Color.RED);

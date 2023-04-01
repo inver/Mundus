@@ -1,11 +1,11 @@
 package com.mbrlabs.mundus.editor.shader;
 
-import com.badlogic.gdx.graphics.g3d.Renderable;
-import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.math.Matrix4;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
+import net.nevinsky.abyssus.core.Renderable;
+import net.nevinsky.abyssus.core.shader.Shader;
 
 public class MaterialPreviewShader extends AppBaseShader {
 

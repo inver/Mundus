@@ -16,12 +16,12 @@
 
 package com.mbrlabs.mundus.commons.scene3d;
 
-import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.components.Component;
 import com.mbrlabs.mundus.commons.scene3d.components.Renderable;
 import com.mbrlabs.mundus.commons.scene3d.traversal.DepthFirstIterator;
 import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
+import net.nevinsky.abyssus.core.ModelBatch;
 
 import java.util.ArrayList;
 import java.util.Iterator;

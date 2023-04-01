@@ -1,7 +1,7 @@
 package com.mbrlabs.mundus.commons.shaders;
 
 
-import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
+import net.nevinsky.abyssus.core.shader.BaseShader;
 
 //todo migrate to ShaderProvider
 public interface ShaderHolder {

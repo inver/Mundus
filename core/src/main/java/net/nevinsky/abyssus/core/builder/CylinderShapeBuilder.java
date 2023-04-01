@@ -47,7 +47,7 @@ public class CylinderShapeBuilder extends BaseShapeBuilder {
     public static void build(MeshPartBuilder builder, float width, float height, float depth, int divisions,
                              float angleFrom,
                              float angleTo, boolean close) {
-        // FIXME create better cylinder method (- axis on which to create the cylinder (matrix?))
+        // TODO create better cylinder method (- axis on which to create the cylinder (matrix?))
         final float hw = width * 0.5f;
         final float hh = height * 0.5f;
         final float hd = depth * 0.5f;
@@ -77,7 +77,7 @@ public class CylinderShapeBuilder extends BaseShapeBuilder {
             curr2.uv.set(u, 0);
             i2 = builder.vertex(curr1);
             i1 = builder.vertex(curr2);
-            if (i != 0) builder.rect(i3, i1, i2, i4); // FIXME don't duplicate lines and points
+            if (i != 0) builder.rect(i3, i1, i2, i4); // TODO don't duplicate lines and points
             i4 = i2;
             i3 = i1;
         }

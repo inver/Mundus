@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
@@ -30,6 +29,7 @@ import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
+import net.nevinsky.abyssus.core.ModelInstance;
 import net.nevinsky.abyssus.core.mesh.Mesh;
 import net.nevinsky.abyssus.core.mesh.MeshPart;
 import net.nevinsky.abyssus.core.node.Animation;
@@ -58,7 +58,7 @@ import java.nio.Buffer;
  */
 public class Model implements Disposable {
     /**
-     * the materials of the model, used by nodes that have a graphical representation FIXME not sure if superfluous,
+     * the materials of the model, used by nodes that have a graphical representation TODO not sure if superfluous,
      * allows modification of materials without having to traverse the nodes
      **/
     public final Array<Material> materials = new Array();
@@ -75,8 +75,8 @@ public class Model implements Disposable {
      **/
     public final Array<Mesh> meshes = new Array();
     /**
-     * parts of meshes, used by nodes that have a graphical representation FIXME not sure if superfluous, stored in
-     * Nodes as well, could be useful to create bullet meshes
+     * parts of meshes, used by nodes that have a graphical representation TODO not sure if superfluous, stored in Nodes
+     * as well, could be useful to create bullet meshes
      **/
     public final Array<MeshPart> meshParts = new Array();
     /**
@@ -195,7 +195,7 @@ public class Model implements Disposable {
         if (modelNode.translation != null) node.translation.set(modelNode.translation);
         if (modelNode.rotation != null) node.rotation.set(modelNode.rotation);
         if (modelNode.scale != null) node.scale.set(modelNode.scale);
-        // FIXME create temporary maps for faster lookup?
+        // TODO create temporary maps for faster lookup?
         if (modelNode.parts != null) {
             for (ModelNodePart modelNodePart : modelNode.parts) {
                 MeshPart meshPart = null;
@@ -298,7 +298,7 @@ public class Model implements Disposable {
 
         ObjectMap<String, Texture> textures = new ObjectMap<String, Texture>();
 
-        // FIXME uvScaling/uvTranslation totally ignored
+        // TODO uvScaling/uvTranslation totally ignored
         if (mtl.textures != null) {
             for (ModelTexture tex : mtl.textures) {
                 Texture texture;

@@ -17,7 +17,6 @@
 package net.nevinsky.abyssus.core;
 
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.utils.Array;
 
 /**

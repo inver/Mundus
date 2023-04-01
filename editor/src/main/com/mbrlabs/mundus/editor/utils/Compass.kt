@@ -18,13 +18,13 @@ package com.mbrlabs.mundus.editor.utils
 
 import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.graphics.g3d.Material
-import com.badlogic.gdx.graphics.g3d.Model
-import com.badlogic.gdx.graphics.g3d.ModelBatch
-import com.badlogic.gdx.graphics.g3d.ModelInstance
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder
-import com.badlogic.gdx.graphics.g3d.utils.shapebuilders.ArrowShapeBuilder
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.utils.Disposable
+import net.nevinsky.abyssus.core.ModelBatch
+import net.nevinsky.abyssus.core.ModelBuilder
+import net.nevinsky.abyssus.core.ModelInstance
+import net.nevinsky.abyssus.core.builder.ArrowShapeBuilder
+import net.nevinsky.abyssus.core.model.Model
 
 /**
  * @author Marcus Brummer

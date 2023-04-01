@@ -663,7 +663,7 @@ public class MeshBuilder implements MeshPartBuilder {
             if (colSize > 3) vertex[colOffset + 3] = col.a;
         } else if (cpOffset > 0) {
             if (col == null) col = Color.WHITE;
-            vertex[cpOffset] = col.toFloatBits(); // FIXME cache packed color?
+            vertex[cpOffset] = col.toFloatBits(); // TODO cache packed color?
         }
 
         if (uv != null && uvOffset >= 0) {
@@ -854,7 +854,7 @@ public class MeshBuilder implements MeshPartBuilder {
             throw new GdxRuntimeException("Vertex attributes do not match");
         if (numIndices <= 0) return; // silently ignore an empty mesh part
 
-        // FIXME don't triple copy, instead move the copy to jni
+        // TODO don't triple copy, instead move the copy to jni
         int numFloats = mesh.getNumVertices() * stride;
         tmpVertices.clear();
         tmpVertices.ensureCapacity(numFloats);

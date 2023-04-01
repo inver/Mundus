@@ -1,10 +1,10 @@
 package com.mbrlabs.mundus.commons.assets.skybox;
 
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.assets.meta.Meta;
 import lombok.Getter;
 import lombok.Setter;
+import net.nevinsky.abyssus.core.ModelInstance;
 
 import java.util.Map;
 

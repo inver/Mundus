@@ -18,20 +18,20 @@ package net.nevinsky.abyssus.core;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.model.MeshPart;
-import com.badlogic.gdx.graphics.g3d.model.Node;
-import com.badlogic.gdx.graphics.g3d.model.NodePart;
-import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
-import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import net.nevinsky.abyssus.core.mesh.Mesh;
+import net.nevinsky.abyssus.core.mesh.MeshBuilder;
+import net.nevinsky.abyssus.core.mesh.MeshPart;
+import net.nevinsky.abyssus.core.mesh.MeshPartBuilder;
+import net.nevinsky.abyssus.core.model.Model;
+import net.nevinsky.abyssus.core.node.Node;
+import net.nevinsky.abyssus.core.node.NodePart;
 
 /**
  * Helper class to create {@link Model}s from code. To start building use the {@link #begin()} method, when finished

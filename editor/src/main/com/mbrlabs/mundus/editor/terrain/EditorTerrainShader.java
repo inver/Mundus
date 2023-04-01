@@ -17,13 +17,13 @@
 package com.mbrlabs.mundus.editor.terrain;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.mbrlabs.mundus.commons.env.Fog;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.shaders.TerrainShader;
+import net.nevinsky.abyssus.core.Renderable;
 
 public class EditorTerrainShader extends TerrainShader {
 

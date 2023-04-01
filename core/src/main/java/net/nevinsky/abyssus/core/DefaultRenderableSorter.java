@@ -17,9 +17,7 @@
 package net.nevinsky.abyssus.core;
 
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
-import com.badlogic.gdx.graphics.g3d.utils.RenderableSorter;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
@@ -54,7 +52,7 @@ public class DefaultRenderableSorter implements RenderableSorter, Comparator<Ren
         final boolean b2 = o2.material.has(BlendingAttribute.Type)
                 && ((BlendingAttribute) o2.material.get(BlendingAttribute.Type)).blended;
         if (b1 != b2) return b1 ? 1 : -1;
-        // FIXME implement better sorting algorithm
+        // TODO implement better sorting algorithm
         // final boolean same = o1.shader == o2.shader && o1.mesh == o2.mesh && (o1.lights == null) ==
         // (o2.lights == null) &&
         // o1.material.equals(o2.material);

@@ -108,7 +108,7 @@ public class SphereShapeBuilder extends BaseShapeBuilder {
                 curr1.uv.set(u, v);
                 tmpIndices.set(tempOffset, builder.vertex(curr1));
                 final int o = tempOffset + s;
-                if ((iv > 0) && (iu > 0)) { // FIXME don't duplicate lines and points
+                if ((iv > 0) && (iu > 0)) { // TODO don't duplicate lines and points
                     if (iv == 1 && closedVFrom) {
                         builder.triangle(tmpIndices.get(tempOffset), tmpIndices.get((o - 1) % s),
                                 tmpIndices.get((o - (divisionsU + 1)) % s));

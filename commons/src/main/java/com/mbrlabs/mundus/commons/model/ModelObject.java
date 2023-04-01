@@ -1,13 +1,13 @@
 package com.mbrlabs.mundus.commons.model;
 
-import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import com.mbrlabs.mundus.commons.assets.AssetType;
 import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObject;
 import lombok.Getter;
+import net.nevinsky.abyssus.core.ModelInstance;
+import net.nevinsky.abyssus.core.Renderable;
+import net.nevinsky.abyssus.core.model.Model;
 
 public class ModelObject implements RenderableObject {
 

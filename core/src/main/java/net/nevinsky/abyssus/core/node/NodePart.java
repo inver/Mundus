@@ -72,7 +72,7 @@ public class NodePart {
         this.material = material;
     }
 
-    // FIXME add copy constructor and override #equals.
+    // TODO add copy constructor and override #equals.
 
     /**
      * Convenience method to set the material, mesh, meshPartOffset, meshPartSize, primitiveType and bones members of
