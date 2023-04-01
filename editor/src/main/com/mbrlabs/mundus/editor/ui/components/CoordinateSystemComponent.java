@@ -13,11 +13,11 @@ import net.nevinsky.abyssus.core.ModelInstance;
 import net.nevinsky.abyssus.core.builder.ArrowShapeBuilder;
 
 public class CoordinateSystemComponent implements Renderable {
-    private static final int START_CONST = 1;
-    private static final int LINE_COUNT = 2;
+    private static final int START_CONST = 10;
+    private static final int LINE_COUNT = 20;
     private static final float ARROW_THICKNESS = 0.1f;
     private static final float ARROW_CAP_SIZE = 0.03f;
-    private static final int ARROW_DIVISIONS = 0;
+    private static final int ARROW_DIVISIONS = 16;
 
     private final ModelInstance instance;
 
@@ -31,7 +31,7 @@ public class CoordinateSystemComponent implements Renderable {
             partBuilder.line(-START_CONST + i, 0.0f, -START_CONST, -START_CONST + i, 0.0f, START_CONST);
             partBuilder.line(-START_CONST, 0.0f, -START_CONST + i, START_CONST, 0.0f, -START_CONST + i);
         }
-        //todo replace to modelBuilder.xyz
+
         partBuilder = modelBuilder.part("mainLines", GL20.GL_TRIANGLES,
                 (VertexAttributes.Usage.Position | VertexAttributes.Usage.ColorUnpacked), new Material());
         partBuilder.setColor(Color.RED);
@@ -45,7 +45,6 @@ public class CoordinateSystemComponent implements Renderable {
                 ARROW_CAP_SIZE, ARROW_THICKNESS, ARROW_DIVISIONS);
 
         instance = new ModelInstance(modelBuilder.end());
-        int i = 0;
     }
 
     @Override
