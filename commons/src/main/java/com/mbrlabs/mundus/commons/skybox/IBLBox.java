@@ -1,8 +1,8 @@
 package com.mbrlabs.mundus.commons.skybox;
 
 import com.badlogic.gdx.graphics.Cubemap;
-import net.nevinsky.mundus.core.model.Model;
-import net.nevinsky.mundus.core.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Disposable;
 

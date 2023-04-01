@@ -1,9 +1,9 @@
 package com.mbrlabs.mundus.commons.shaders;
 
+import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import lombok.RequiredArgsConstructor;
-import net.nevinsky.mundus.core.shader.BaseShader;
 
 @RequiredArgsConstructor
 public abstract class DefaultBaseShader extends BaseShader {

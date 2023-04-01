@@ -1,6 +1,6 @@
 package com.mbrlabs.mundus.commons.scene3d.components;
 
-import net.nevinsky.mundus.core.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 

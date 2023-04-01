@@ -4,9 +4,12 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.PerspectiveCamera
 import com.badlogic.gdx.graphics.g3d.Environment
+import com.badlogic.gdx.graphics.g3d.ModelBatch
+import com.badlogic.gdx.graphics.g3d.ModelInstance
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader
+import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.math.collision.BoundingBox
 import com.badlogic.gdx.scenes.scene2d.ui.Table
@@ -19,9 +22,6 @@ import com.mbrlabs.mundus.commons.model.ImportedModel
 import com.mbrlabs.mundus.editor.ui.widgets.FileChooserField
 import com.mbrlabs.mundus.editor.ui.widgets.RenderWidget
 import com.mbrlabs.mundus.editor.ui.widgets.presenter.FileChooserFieldPresenter
-import net.nevinsky.mundus.core.shader.DefaultShaderProvider
-import net.nevinsky.mundus.core.ModelBatch
-import net.nevinsky.mundus.core.ModelInstance
 
 class ImportModelWidget(
     private val renderWidget: RenderWidget,

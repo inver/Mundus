@@ -4,7 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
+import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -17,11 +22,6 @@ import com.mbrlabs.mundus.commons.env.lights.SpotLight;
 import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
 import com.mbrlabs.mundus.editor.core.shader.ShaderStorage;
 import com.mbrlabs.mundus.editor.ui.widgets.RenderWidget;
-import net.nevinsky.mundus.core.ModelBatch;
-import net.nevinsky.mundus.core.ModelBuilder;
-import net.nevinsky.mundus.core.ModelInstance;
-import net.nevinsky.mundus.core.shader.DefaultShader;
-import net.nevinsky.mundus.core.shader.DefaultShaderProvider;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -17,15 +17,21 @@
 package com.mbrlabs.mundus.commons.terrain;
 
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.environment.BaseLight;
+import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool;
 import com.mbrlabs.mundus.commons.assets.AssetType;
@@ -35,11 +41,6 @@ import com.mbrlabs.mundus.commons.utils.MathUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
-import net.nevinsky.mundus.core.ModelInstance;
-import net.nevinsky.mundus.core.Renderable;
-import net.nevinsky.mundus.core.mesh.Mesh;
-import net.nevinsky.mundus.core.mesh.MeshPart;
-import net.nevinsky.mundus.core.model.Model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -198,10 +199,10 @@ public class TerrainObject implements RenderableObject, Disposable {
 
     }
 
-    private int[] buildIndices() {
+    private short[] buildIndices() {
         final int w = vertexResolution - 1;
         final int h = vertexResolution - 1;
-        int[] indices = new int[w * h * 6];
+        short[] indices = new short[w * h * 6];
         int i = -1;
         for (int y = 0; y < h; ++y) {
             for (int x = 0; x < w; ++x) {
@@ -209,12 +210,12 @@ public class TerrainObject implements RenderableObject, Disposable {
                 final int c10 = c00 + 1;
                 final int c01 = c00 + vertexResolution;
                 final int c11 = c10 + vertexResolution;
-                indices[++i] = (short) c11;
-                indices[++i] = (short) c10;
-                indices[++i] = (short) c00;
-                indices[++i] = (short) c00;
-                indices[++i] = (short) c01;
-                indices[++i] = (short) c11;
+//                indices[++i] = c11;
+//                indices[++i] = c10;
+//                indices[++i] = c00;
+//                indices[++i] = c00;
+//                indices[++i] = c01;
+//                indices[++i] = c11;
             }
         }
         return indices;
@@ -268,8 +269,7 @@ public class TerrainObject implements RenderableObject, Disposable {
     }
 
     /**
-     * Calculates normal of a vertex at x,y based on the verticesOnZ of the
-     * surrounding vertices
+     * Calculates normal of a vertex at x,y based on the verticesOnZ of the surrounding vertices
      */
     private MeshPartBuilder.VertexInfo calculateNormalAt(MeshPartBuilder.VertexInfo out, int x, int y) {
         out.normal.set(getNormalAt(x, y));
@@ -277,15 +277,14 @@ public class TerrainObject implements RenderableObject, Disposable {
     }
 
     /**
-     * Get normal at world coordinates. The methods calculates exact point
-     * position in terrain coordinates and returns normal at that point. If
-     * point doesn't belong to terrain -- it returns default
+     * Get normal at world coordinates. The methods calculates exact point position in terrain coordinates and returns
+     * normal at that point. If point doesn't belong to terrain -- it returns default
      * <code>Vector.Y<code> normal.
      *
      * @param worldX the x coord in world
      * @param worldZ the z coord in world
-     * @return normal at that point. If point doesn't belong to terrain -- it
-     * returns default <code>Vector.Y<code> normal.
+     * @return normal at that point. If point doesn't belong to terrain -- it returns default <code>Vector.Y<code>
+     * normal.
      */
     public Vector3 getNormalAtWordCoordinate(float worldX, float worldZ) {
         transform.getTranslation(c00);
@@ -362,7 +361,7 @@ public class TerrainObject implements RenderableObject, Disposable {
     }
 
     @Override
-    public void getRenderables(List<Renderable> renderables, Pool<Renderable> pool) {
+    public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
         modelInstance.userData = new TerrainUserData(terrainWidth, terrainDepth);
         modelInstance.getRenderables(renderables, pool);
     }

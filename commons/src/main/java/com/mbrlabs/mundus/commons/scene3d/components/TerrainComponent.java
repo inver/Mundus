@@ -16,7 +16,7 @@
 
 package com.mbrlabs.mundus.commons.scene3d.components;
 
-import net.nevinsky.mundus.core.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset;

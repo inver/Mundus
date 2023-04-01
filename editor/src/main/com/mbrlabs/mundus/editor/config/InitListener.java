@@ -26,7 +26,7 @@ public class InitListener extends Lwjgl3WindowAdapter implements ApplicationList
     }
 
     private void initVisUI() {
-        var generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Roboto-Regular.ttf"));
+        var generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/robotoRegular.ttf"));
         var params = new FreeTypeFontGenerator.FreeTypeFontParameter();
         params.kerning = true;
         params.borderStraight = false;

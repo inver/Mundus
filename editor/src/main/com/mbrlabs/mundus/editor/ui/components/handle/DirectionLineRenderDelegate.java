@@ -4,14 +4,14 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.mbrlabs.mundus.commons.core.ecs.base.RenderableDelegate;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 import lombok.Getter;
-import net.nevinsky.mundus.core.ModelBatch;
-import net.nevinsky.mundus.core.ModelBuilder;
-import net.nevinsky.mundus.core.ModelInstance;
 
 public class DirectionLineRenderDelegate implements RenderableDelegate {
     private static final long ATTRIBUTES = VertexAttributes.Usage.Position | VertexAttributes.Usage.ColorUnpacked;
@@ -41,7 +41,7 @@ public class DirectionLineRenderDelegate implements RenderableDelegate {
 
     @Override
     public void set2PointPosition(Vector3 point1, Vector3 point2) {
-        var mesh = instance.model.getMeshes().get(0);
+        var mesh = instance.model.meshes.get(0);
         final int stride = mesh.getVertexSize() / 4;
 
         final float[] vertices = new float[mesh.getNumVertices() * stride];

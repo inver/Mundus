@@ -12,10 +12,10 @@ import org.springframework.stereotype.Component;
 public class ColorPickerPresenter {
 
     private final AppUi appUi;
-    private final UiComponentHolder widgetsHolder;
+    private final UiComponentHolder uiComponentHolder;
 
     public void init(ColorPickerField field) {
-        var colorPicker = widgetsHolder.getColorPicker();
+        var colorPicker = uiComponentHolder.getColorPicker();
 
         field.getCpBtn().addListener(new ClickListener() {
             @Override

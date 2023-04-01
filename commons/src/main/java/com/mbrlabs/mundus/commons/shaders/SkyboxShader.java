@@ -17,13 +17,13 @@
 package com.mbrlabs.mundus.commons.shaders;
 
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.g3d.Renderable;
+import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.CubemapAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.math.Matrix4;
 import com.mbrlabs.mundus.commons.env.Fog;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
-import net.nevinsky.mundus.core.Renderable;
-import net.nevinsky.mundus.core.shader.Shader;
 
 /**
  * @author Marcus Brummer
@@ -68,14 +68,14 @@ public class SkyboxShader extends DefaultBaseShader {
     public void render(Renderable renderable) {
         // texture uniform
         var cubemapAttribute = ((CubemapAttribute) (
-                renderable.getMaterial().get(CubemapAttribute.EnvironmentMap))
+                renderable.material.get(CubemapAttribute.EnvironmentMap))
         );
         if (cubemapAttribute != null) {
             set(UNIFORM_TEXTURE, cubemapAttribute.textureDescription);
         }
 
         // Fog
-        Fog fog = ((SceneEnvironment) renderable.getEnvironment()).getFog();
+        Fog fog = ((SceneEnvironment) renderable.environment).getFog();
         if (fog == null) {
             set(UNIFORM_FOG, 0);
         } else {
@@ -83,7 +83,7 @@ public class SkyboxShader extends DefaultBaseShader {
             set(UNIFORM_FOG_COLOR, fog.color);
         }
 
-        renderable.getMeshPart().render(program);
+        renderable.meshPart.render(program);
     }
 
     @Override

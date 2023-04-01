@@ -1,14 +1,13 @@
 package com.mbrlabs.mundus.commons.model;
 
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.Renderable;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import com.mbrlabs.mundus.commons.assets.AssetType;
 import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObject;
 import lombok.Getter;
-import net.nevinsky.mundus.core.ModelInstance;
-import net.nevinsky.mundus.core.Renderable;
-import net.nevinsky.mundus.core.model.Model;
-
-import java.util.List;
 
 public class ModelObject implements RenderableObject {
 
@@ -30,7 +29,7 @@ public class ModelObject implements RenderableObject {
     }
 
     @Override
-    public void getRenderables(List<Renderable> renderables, Pool<Renderable> pool) {
+    public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
         modelInstance.getRenderables(renderables, pool);
     }
 }

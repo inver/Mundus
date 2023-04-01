@@ -16,18 +16,18 @@
 package com.mbrlabs.mundus.commons.assets.model;
 
 import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.Renderable;
+import com.badlogic.gdx.graphics.g3d.RenderableProvider;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset;
 import com.mbrlabs.mundus.commons.assets.meta.Meta;
 import lombok.extern.slf4j.Slf4j;
-import net.nevinsky.mundus.core.Renderable;
-import net.nevinsky.mundus.core.RenderableProvider;
-import net.nevinsky.mundus.core.model.Model;
 import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -79,7 +79,7 @@ public class ModelAsset extends Asset<ModelMeta> implements RenderableProvider {
         }
 
         // materials
-        for (Material mat : model.getMaterials().values()) {
+        for (Material mat : model.materials) {
             MaterialAsset materialAsset = defaultMaterials.get(mat.id);
             if (materialAsset == null) {
                 continue;
@@ -112,7 +112,7 @@ public class ModelAsset extends Asset<ModelMeta> implements RenderableProvider {
     }
 
     @Override
-    public void getRenderables(List<Renderable> renderables, Pool<Renderable> pool) {
+    public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
         throw new NotImplementedException();
     }
 }

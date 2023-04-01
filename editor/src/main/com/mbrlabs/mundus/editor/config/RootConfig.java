@@ -1,7 +1,7 @@
 package com.mbrlabs.mundus.editor.config;
 
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import net.nevinsky.mundus.core.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;

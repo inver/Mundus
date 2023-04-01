@@ -4,17 +4,11 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttribute;
-import com.badlogic.gdx.graphics.g3d.model.data.ModelMaterial;
-import com.badlogic.gdx.graphics.g3d.model.data.ModelNode;
-import com.badlogic.gdx.graphics.g3d.model.data.ModelNodePart;
-import com.badlogic.gdx.graphics.g3d.model.data.ModelTexture;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.model.data.*;
 import com.badlogic.gdx.utils.Array;
 import com.mbrlabs.mundus.commons.core.AppModelLoader;
 import com.mbrlabs.mundus.commons.model.ImportedModel;
-import net.nevinsky.mundus.core.model.Model;
-import net.nevinsky.mundus.core.model.ModelData;
-import net.nevinsky.mundus.core.model.ModelMesh;
-import net.nevinsky.mundus.core.model.ModelMeshPart;
 import org.lwjgl.assimp.*;
 import org.lwjgl.system.MemoryStack;
 
@@ -63,8 +57,9 @@ public class AssimpModelLoader implements AppModelLoader {
             throw new RuntimeException("Error loading model [modelPath: " + modelPath + "]");
         }
 
-        var res = new ModelData(modelId);
-        res.getMaterials().addAll(loadMaterials(modelDir, aiScene));
+        var res = new ModelData();
+        res.id = modelId;
+        res.materials.addAll(loadMaterials(modelDir, aiScene));
         loadMeshes(res, aiScene);
 
         return res;
@@ -80,10 +75,10 @@ public class AssimpModelLoader implements AppModelLoader {
         }
     }
 
-    private List<ModelMaterial> loadMaterials(String modelDir, AIScene aiScene) {
+    private Array<ModelMaterial> loadMaterials(String modelDir, AIScene aiScene) {
         int numMaterials = aiScene.mNumMaterials();
 
-        var materialList = new ArrayList<ModelMaterial>();
+        var materialList = new Array<ModelMaterial>();
         for (int i = 0; i < numMaterials; i++) {
             AIMaterial aiMaterial = AIMaterial.create(aiScene.mMaterials().get(i));
             materialList.add(processMaterial(aiMaterial, modelDir));
@@ -146,7 +141,7 @@ public class AssimpModelLoader implements AppModelLoader {
         mesh.attributes = attributes.toArray(new VertexAttribute[]{});
         mesh.parts = new ModelMeshPart[]{processParts(aiMesh)};
 
-        String materialId = modelData.getMaterials().get(aiMesh.mMaterialIndex()).id;
+        String materialId = modelData.materials.get(aiMesh.mMaterialIndex()).id;
         node.parts = new ModelNodePart[mesh.parts.length];
         for (int i = 0; i < mesh.parts.length; i++) {
             var nodePart = new ModelNodePart();
@@ -213,9 +208,9 @@ public class AssimpModelLoader implements AppModelLoader {
 
         var part = new ModelMeshPart();
         part.id = UUID.randomUUID().toString();
-        part.indices = new int[resIndices.size()];
+        part.indices = new short[resIndices.size()];
         for (int i = 0; i < resIndices.size(); i++) {
-            part.indices[i] = resIndices.get(i);
+            part.indices[i] = Integer.valueOf(resIndices.get(i)).shortValue();
         }
         part.primitiveType = GL20.GL_TRIANGLES;
 

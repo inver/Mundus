@@ -16,13 +16,6 @@
 
 package com.mbrlabs.mundus.editor.utils
 
-import net.nevinsky.mundus.core.ModelInstance
-import com.badlogic.gdx.math.Vector3
-import com.badlogic.gdx.utils.Array
-import com.mbrlabs.mundus.commons.terrain.TerrainObject
-import net.nevinsky.mundus.core.model.Model
-import java.util.*
-
 /**
  * @author Marcus Brummer
  * *
@@ -30,24 +23,24 @@ import java.util.*
  */
 object TestUtils {
 
-    fun createABunchOfModelsOnTheTerrain(count: Int, model: Model, terrain: TerrainObject): Array<ModelInstance> {
-        val boxInstances = Array<ModelInstance>()
-        val rand = Random()
-
-        val tv3 = Vector3()
-
-        for (i in 0..count - 1) {
-            val mi = ModelInstance(model)
-            terrain.transform.getTranslation(tv3)
-            mi.transform.setTranslation(tv3)
-            val x = terrain.terrainWidth * rand.nextFloat()
-            val z = terrain.terrainDepth * rand.nextFloat()
-            val y = terrain.getHeightAtWorldCoord(x, z)
-            mi.transform.translate(x, y, z)
-            boxInstances.add(mi)
-        }
-
-        return boxInstances
-    }
+//    fun createABunchOfModelsOnTheTerrain(count: Int, model: Model, terrain: TerrainObject): Array<ModelInstance> {
+//        val boxInstances = Array<ModelInstance>()
+//        val rand = Random()
+//
+//        val tv3 = Vector3()
+//
+//        for (i in 0..count - 1) {
+//            val mi = ModelInstance(model)
+//            terrain.transform.getTranslation(tv3)
+//            mi.transform.setTranslation(tv3)
+//            val x = terrain.terrainWidth * rand.nextFloat()
+//            val z = terrain.terrainDepth * rand.nextFloat()
+//            val y = terrain.getHeightAtWorldCoord(x, z)
+//            mi.transform.translate(x, y, z)
+//            boxInstances.add(mi)
+//        }
+//
+//        return boxInstances
+//    }
 
 }

@@ -4,13 +4,13 @@ import com.badlogic.gdx.graphics.Cubemap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.CubemapAttribute;
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.mbrlabs.mundus.commons.assets.AssetLoader;
 import com.mbrlabs.mundus.commons.assets.meta.Meta;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.nevinsky.mundus.core.ModelBuilder;
-import net.nevinsky.mundus.core.ModelInstance;
 
 @Slf4j
 @RequiredArgsConstructor

@@ -1,6 +1,6 @@
 package com.mbrlabs.mundus.commons.core.ecs.delegate;
 
-import net.nevinsky.mundus.core.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.mbrlabs.mundus.commons.core.ecs.base.RenderableDelegate;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;

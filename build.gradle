@@ -76,7 +76,7 @@ project(":commons") {
     targetCompatibility = JavaVersion.VERSION_11
 
     dependencies {
-        implementation project(":core")
+//        implementation project(":core")
 
         compileOnly 'org.projectlombok:lombok:1.18.24'
         annotationProcessor 'org.projectlombok:lombok:1.18.24'
@@ -186,7 +186,7 @@ project(":editor") {
 
     dependencies {
         implementation project(":commons")
-        implementation project(":core")
+//        implementation project(":core")
 
         compileOnly 'org.projectlombok:lombok:1.18.24'
         annotationProcessor 'org.projectlombok:lombok:1.18.24'

@@ -8,13 +8,13 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.mbrlabs.mundus.commons.loader.AssimpModelLoader;
-import net.nevinsky.mundus.core.ModelBatch;
-import net.nevinsky.mundus.core.ModelInstance;
-import net.nevinsky.mundus.core.model.Model;
 
 public class TesterListener extends Lwjgl3WindowAdapter implements ApplicationListener {
 

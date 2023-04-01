@@ -18,11 +18,11 @@ package com.mbrlabs.mundus.editor.shader
 
 import com.badlogic.gdx.graphics.Camera
 import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.graphics.g3d.Renderable
+import com.badlogic.gdx.graphics.g3d.Shader
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext
 import com.mbrlabs.mundus.commons.shaders.DefaultBaseShader
 import com.mbrlabs.mundus.editor.utils.GlUtils
-import net.nevinsky.mundus.core.Renderable
-import net.nevinsky.mundus.core.shader.Shader
 
 /**
  * @author Marcus Brummer

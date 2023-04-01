@@ -19,6 +19,7 @@ package com.mbrlabs.mundus.commons;
 import com.artemis.Aspect;
 import com.artemis.World;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.utils.Disposable;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.core.ecs.behavior.RenderComponentSystem;
@@ -30,7 +31,6 @@ import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import net.nevinsky.mundus.core.ModelBatch;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;

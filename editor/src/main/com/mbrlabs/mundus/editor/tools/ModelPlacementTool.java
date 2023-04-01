@@ -17,6 +17,8 @@
 package com.mbrlabs.mundus.editor.tools;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
@@ -33,8 +35,6 @@ import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.scene3d.components.PickableModelComponent;
 import com.mbrlabs.mundus.editor.ui.AppUi;
 import com.mbrlabs.mundus.editor.ui.widgets.icon.SymbolIcon;
-import net.nevinsky.mundus.core.ModelBatch;
-import net.nevinsky.mundus.core.ModelInstance;
 import org.jetbrains.annotations.NotNull;
 
 /**

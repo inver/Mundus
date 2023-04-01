@@ -1,9 +1,9 @@
 package com.mbrlabs.mundus.commons.loader;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.g3d.Model;
 import com.mbrlabs.mundus.commons.model.ImportedModel;
 import lombok.extern.slf4j.Slf4j;
-import net.nevinsky.mundus.core.model.Model;
 
 @Slf4j
 public class ModelImporter {

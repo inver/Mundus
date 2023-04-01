@@ -3,11 +3,11 @@ package com.mbrlabs.mundus.commons.core.ecs.behavior;
 import com.artemis.ComponentMapper;
 import com.artemis.annotations.All;
 import com.artemis.systems.IteratingSystem;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.mbrlabs.mundus.commons.core.ecs.base.RenderComponent;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 import lombok.extern.slf4j.Slf4j;
-import net.nevinsky.mundus.core.ModelBatch;
 
 @Slf4j
 @All(RenderComponent.class)
