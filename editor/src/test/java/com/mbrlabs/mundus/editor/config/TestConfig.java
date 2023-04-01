@@ -2,10 +2,13 @@ package com.mbrlabs.mundus.editor.config;
 
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.mbrlabs.mundus.commons.assets.shader.ShaderAssetLoader;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAssetLoader;
 import com.mbrlabs.mundus.commons.importer.CameraDeserializer;
@@ -24,6 +27,7 @@ import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.ui.AppUi;
 import com.mbrlabs.mundus.editor.ui.PreviewGenerator;
 import com.mbrlabs.mundus.editor.ui.components.camera.CameraService;
+import com.mbrlabs.mundus.editor.ui.widgets.ButtonFactory;
 import net.nevinsky.abyssus.core.ModelBatch;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -158,7 +162,16 @@ public class TestConfig {
     }
 
     @Bean
-    public UiComponentHolder uiWidgetsHolder() {
-        return mock(UiComponentHolder.class);
+    public UiComponentHolder uiComponentHolder() {
+        var buttonMock = mock(VisTextButton.class);
+        when(buttonMock.getStyle()).thenReturn(mock(TextButton.TextButtonStyle.class));
+        when(buttonMock.getLabel()).thenReturn(mock(Label.class));
+
+        var buttonFactoryMock = mock(ButtonFactory.class);
+        when(buttonFactoryMock.createButton(any())).thenReturn(buttonMock);
+
+        var res = mock(UiComponentHolder.class);
+        when(res.getButtonFactory()).thenReturn(buttonFactoryMock);
+        return res;
     }
 }
