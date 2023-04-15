@@ -8,9 +8,12 @@ import com.badlogic.gdx.graphics.g3d.model.data.ModelMaterial;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelNode;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelNodePart;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelTexture;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 import com.mbrlabs.mundus.commons.core.AppModelLoader;
 import com.mbrlabs.mundus.commons.model.ImportedModel;
+import lombok.extern.slf4j.Slf4j;
 import net.nevinsky.abyssus.core.model.Model;
 import net.nevinsky.abyssus.core.model.ModelData;
 import net.nevinsky.abyssus.core.model.ModelMesh;
@@ -36,6 +39,7 @@ import static org.lwjgl.assimp.Assimp.aiGetMaterialTexture;
 import static org.lwjgl.assimp.Assimp.aiImportFile;
 import static org.lwjgl.assimp.Assimp.aiProcess_CalcTangentSpace;
 import static org.lwjgl.assimp.Assimp.aiProcess_FixInfacingNormals;
+import static org.lwjgl.assimp.Assimp.aiProcess_GenBoundingBoxes;
 import static org.lwjgl.assimp.Assimp.aiProcess_GenNormals;
 import static org.lwjgl.assimp.Assimp.aiProcess_GenSmoothNormals;
 import static org.lwjgl.assimp.Assimp.aiProcess_JoinIdenticalVertices;
@@ -46,12 +50,13 @@ import static org.lwjgl.assimp.Assimp.aiReturn_SUCCESS;
 import static org.lwjgl.assimp.Assimp.aiTextureType_DIFFUSE;
 import static org.lwjgl.assimp.Assimp.aiTextureType_NONE;
 
+@Slf4j
 //todo add texture cache
 public class AssimpModelLoader implements AppModelLoader {
 
     @Override
     public Model loadModel(FileHandle fileHandle) {
-        ModelData data = loadModel(fileHandle.name(), fileHandle);
+        ModelData data = loadModelData(fileHandle.name(), fileHandle);
         if (data == null) {
             return null;
         }
@@ -64,29 +69,27 @@ public class AssimpModelLoader implements AppModelLoader {
         return new ImportedModel(model, handle);
     }
 
-    public ModelData loadModel(String modelId, FileHandle modelPath) {
-        return loadModel(modelId, modelPath, aiProcess_GenNormals | aiProcess_GenSmoothNormals |
+    public ModelData loadModelData(String modelId, FileHandle modelPath) {
+        return loadModelData(modelId, modelPath, aiProcess_GenNormals | aiProcess_GenSmoothNormals |
                 aiProcess_JoinIdenticalVertices | aiProcess_Triangulate | aiProcess_FixInfacingNormals |
-                aiProcess_CalcTangentSpace | aiProcess_LimitBoneWeights | aiProcess_PreTransformVertices);
+                aiProcess_CalcTangentSpace | aiProcess_LimitBoneWeights | aiProcess_PreTransformVertices |
+                aiProcess_GenBoundingBoxes);
     }
 
-    public ModelData loadModel(String modelId, FileHandle modelPath, int flags) {
-//        var file = new File(modelPath);
-//        if (!file.exists()) {
-//            throw new RuntimeException("Model path does not exist [" + modelPath + "]");
-//        }
-        String modelDir = modelPath.file().getParent();
+    public ModelData loadModelData(String modelId, FileHandle modelPath, int flags) {
+        var ts = System.currentTimeMillis();
 
-        AIScene aiScene = aiImportFile(modelPath.path(), flags);
+        var aiScene = aiImportFile(modelPath.path(), flags);
         if (aiScene == null) {
             throw new RuntimeException("Error loading model [modelPath: " + modelPath + "]");
         }
 
         var res = new ModelData();
         res.id = modelId;
-        res.materials.addAll(loadMaterials(modelDir, aiScene));
+        res.materials.addAll(loadMaterials(modelPath.file().getParent(), aiScene));
         loadMeshes(res, aiScene);
 
+        log.debug("Model loaded in {} ms", System.currentTimeMillis() - ts);
         return res;
     }
 
@@ -238,6 +241,13 @@ public class AssimpModelLoader implements AppModelLoader {
             part.indices[i] = resIndices.get(i);
         }
         part.primitiveType = GL20.GL_TRIANGLES;
+
+        var bb = aiMesh.mAABB();
+        var min = bb.mMin();
+        var max = bb.mMax();
+        var boundingBox =
+                new BoundingBox(new Vector3(min.x(), min.y(), min.z()), new Vector3(max.x(), max.y(), max.z()));
+        part.setBoundingBox(boundingBox);
 
         return part;
     }

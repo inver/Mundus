@@ -30,6 +30,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import net.nevinsky.abyssus.core.ModelInstance;
 import net.nevinsky.abyssus.core.mesh.Mesh;
 import net.nevinsky.abyssus.core.mesh.MeshPart;
@@ -38,7 +39,6 @@ import net.nevinsky.abyssus.core.node.Node;
 import net.nevinsky.abyssus.core.node.NodeAnimation;
 import net.nevinsky.abyssus.core.node.NodePart;
 
-import java.nio.Buffer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -60,6 +60,7 @@ import java.util.Map;
  * @author badlogic, xoppa
  */
 @Getter
+@Slf4j
 public class Model implements Disposable {
     /**
      * the materials of the model, used by nodes that have a graphical representation TODO not sure if superfluous,
@@ -152,7 +153,7 @@ public class Model implements Disposable {
                     for (ModelNodeKeyframe<Quaternion> kf : nanim.rotation) {
                         if (kf.keytime > animation.duration) animation.duration = kf.keytime;
                         nodeAnim.rotation
-                                .add(new NodeKeyframe<Quaternion>(kf.keytime,
+                                .add(new NodeKeyframe<>(kf.keytime,
                                         new Quaternion(kf.value == null ? node.rotation : kf.value)));
                     }
                 }
@@ -258,8 +259,11 @@ public class Model implements Disposable {
         disposables.add(mesh);
 
         BufferUtils.copy(modelMesh.vertices, mesh.getVerticesBuffer(), modelMesh.vertices.length, 0);
+
         int offset = 0;
-        ((Buffer) mesh.getIndicesBuffer()).clear();
+        mesh.getIndicesBuffer().clear();
+
+        boolean hasBoundingBox = true;
         for (ModelMeshPart part : modelMesh.parts) {
             MeshPart meshPart = new MeshPart();
             meshPart.id = part.id;
@@ -271,11 +275,19 @@ public class Model implements Disposable {
                 mesh.getIndicesBuffer().put(part.indices);
             }
             offset += meshPart.size;
+            if (part.getBoundingBox() == null) {
+                hasBoundingBox = false;
+            } else {
+                meshPart.update(part.getBoundingBox());
+            }
             meshParts.put(meshPart.id, meshPart);
         }
         mesh.getIndicesBuffer().position(0);
-        for (MeshPart part : meshParts.values()) {
-            part.update();
+        if (!hasBoundingBox) {
+            //hack, for loaded model without bounding box
+            for (MeshPart part : meshParts.values()) {
+                part.update();
+            }
         }
     }
 
@@ -311,7 +323,7 @@ public class Model implements Disposable {
                     disposables.add(texture);
                 }
 
-                TextureDescriptor descriptor = new TextureDescriptor(texture);
+                var descriptor = new TextureDescriptor(texture);
                 descriptor.minFilter = texture.getMinFilter();
                 descriptor.magFilter = texture.getMagFilter();
                 descriptor.uWrap = texture.getUWrap();

@@ -81,7 +81,7 @@ public class Mesh implements Disposable {
     /**
      * list of all meshes
      **/
-    static final Map<Application, Array<Mesh>> meshes = new HashMap<Application, Array<Mesh>>();
+    static final Map<Application, Array<Mesh>> meshes = new HashMap<>();
 
     final VertexData vertices;
     final IndexData indices;

@@ -17,7 +17,6 @@ allprojects {
     apply plugin: "idea"
     apply plugin: "jacoco"
     apply plugin: 'info.solidsoft.pitest'
-    //todo add checkstyle
     apply plugin: 'checkstyle'
 
     tasks.withType(Test).tap {

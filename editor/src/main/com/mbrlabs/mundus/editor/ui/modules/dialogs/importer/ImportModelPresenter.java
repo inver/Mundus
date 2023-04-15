@@ -41,7 +41,7 @@ public class ImportModelPresenter {
                 }
 
                 try {
-                    var node = editorModelService.createTerrainEntity(importModelWidget.getImportedModel());
+                    var node = editorModelService.createModelEntity(importModelWidget.getImportedModel());
                     ctx.getCurrent().getCurrentScene().getRootNode().addChild(node);
 
                     projectManager.saveProject(ctx.getCurrent());

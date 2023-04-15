@@ -9,21 +9,20 @@ import com.mbrlabs.mundus.commons.assets.model.ModelMeta;
 import com.mbrlabs.mundus.commons.core.ecs.base.RenderComponent;
 import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
 import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObjectDelegate;
+import com.mbrlabs.mundus.commons.importExport.AssimpExporter;
+import com.mbrlabs.mundus.commons.loader.AssimpModelLoader;
 import com.mbrlabs.mundus.commons.loader.ModelImporter;
 import com.mbrlabs.mundus.commons.model.ImportedModel;
 import com.mbrlabs.mundus.commons.model.ModelService;
 import com.mbrlabs.mundus.commons.scene3d.HierarchyNode;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import net.mgsx.gltf.exporters.GLTFExporter;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class EditorModelService extends ModelService {
 
     private final MetaService metaService;
@@ -31,8 +30,19 @@ public class EditorModelService extends ModelService {
     private final ModelImporter modelImporter;
     private final ModelAssetLoader modelAssetLoader;
     private final EditorCtx ctx;
+    private final AssimpExporter modelExporter;
 
-    private final GLTFExporter gltfExporter = new GLTFExporter();
+    public EditorModelService(AssimpModelLoader assimpModelLoader, MetaService metaService, AssetsStorage assetsStorage,
+                              ModelImporter modelImporter, ModelAssetLoader modelAssetLoader, EditorCtx ctx,
+                              AssimpExporter modelExporter) {
+        super(assimpModelLoader);
+        this.metaService = metaService;
+        this.assetsStorage = assetsStorage;
+        this.modelImporter = modelImporter;
+        this.modelAssetLoader = modelAssetLoader;
+        this.ctx = ctx;
+        this.modelExporter = modelExporter;
+    }
 
     @SneakyThrows
     public ModelAsset importAndSaveAsset(ImportedModel importedModel) {
@@ -42,7 +52,7 @@ public class EditorModelService extends ModelService {
         var assetFolder = assetsStorage.getAssetsFolder().child(folderName);
         assetFolder.file().mkdirs();
 
-        var modelFileName = "model.json";
+        var modelFileName = "model.gltf";
 
         var modelMeta = new ModelMeta();
         modelMeta.setFile(modelFileName);
@@ -55,14 +65,14 @@ public class EditorModelService extends ModelService {
         metaService.save(meta);
 
         //todo remove binary file if it needed
-//        var model = modelImporter.loadModel(importedModel.getMain());
-//        gltfExporter.export(model, assetFolder.child(modelFileName));
+        var model = modelImporter.loadModel(importedModel.getMain());
+        modelExporter.export(model, assetFolder.child(modelFileName));
 
         var res = modelAssetLoader.load(meta);
         return res;
     }
 
-    public HierarchyNode createTerrainEntity(ImportedModel importedModel) {
+    public HierarchyNode createModelEntity(ImportedModel importedModel) {
         var world = ctx.getCurrentWorld();
 
         var id = world.create();

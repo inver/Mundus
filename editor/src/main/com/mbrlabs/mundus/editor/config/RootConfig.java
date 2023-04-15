@@ -13,9 +13,11 @@ import com.mbrlabs.mundus.commons.assets.shader.ShaderAssetLoader;
 import com.mbrlabs.mundus.commons.assets.skybox.SkyboxAssetLoader;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAssetLoader;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAssetLoader;
+import com.mbrlabs.mundus.commons.importExport.old.GLTFExporter;
 import com.mbrlabs.mundus.commons.importer.CameraDeserializer;
 import com.mbrlabs.mundus.commons.importer.CameraSerializer;
 import com.mbrlabs.mundus.commons.importer.SceneConverter;
+import com.mbrlabs.mundus.commons.loader.AssimpModelLoader;
 import com.mbrlabs.mundus.commons.loader.ModelImporter;
 import com.mbrlabs.mundus.editor.core.ecs.EditorEcsService;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
@@ -103,8 +105,13 @@ public class RootConfig {
     }
 
     @Bean
+    public AssimpModelLoader assimpModelLoader() {
+        return new AssimpModelLoader();
+    }
+
+    @Bean
     public ModelImporter modelImporter() {
-        return new ModelImporter();
+        return new ModelImporter(assimpModelLoader());
     }
 
     @Bean
@@ -126,5 +133,12 @@ public class RootConfig {
     @Bean
     public SceneConverter sceneConverter() {
         return new SceneConverter(mapper());
+    }
+
+    @Bean
+    public GLTFExporter gltfExporter() {
+        return new GLTFExporter();
+//        return new GltfExporter(mapper(), new GltfMeshExporter(), new GltfMaterialExporter(), new GltfSkinExporter(),
+//                new GltfAnimationExporter());
     }
 }

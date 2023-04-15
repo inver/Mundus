@@ -12,10 +12,12 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.mbrlabs.mundus.commons.loader.AssimpModelLoader;
+import lombok.extern.slf4j.Slf4j;
 import net.nevinsky.abyssus.core.ModelBatch;
 import net.nevinsky.abyssus.core.ModelInstance;
 import net.nevinsky.abyssus.core.model.Model;
 
+@Slf4j
 public class TesterListener extends Lwjgl3WindowAdapter implements ApplicationListener {
 
     private Camera camera;
@@ -60,10 +62,17 @@ public class TesterListener extends Lwjgl3WindowAdapter implements ApplicationLi
 //    }
 
     private void loadModel() {
-        var res = loader.loadModel("ololo", new FileHandle(
-                "/Users/inv3r/Development/gamedev/Mundus/commons/src/test/resources/ac3d/sr22.ac"
+        var ts = System.currentTimeMillis();
+        var res = loader.loadModelData("ololo", new FileHandle(
+                "/home/inv3r/Development/gamedev/Mundus/commons/src/test/resources/obj/piper/piper_pa18.obj"
         ));
-        modelInstance = new ModelInstance(new Model(res));
+        log.info("ModelData loaded in {} ms", System.currentTimeMillis() - ts);
+        ts = System.currentTimeMillis();
+        var model = new Model(res);
+        log.info("Model created in {} ms", System.currentTimeMillis() - ts);
+        ts = System.currentTimeMillis();
+        modelInstance = new ModelInstance(model);
+        log.info("Model instance created in {} ms", System.currentTimeMillis() - ts);
     }
 
     @Override

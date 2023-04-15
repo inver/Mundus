@@ -16,8 +16,15 @@
 
 package net.nevinsky.abyssus.core.model;
 
+import com.badlogic.gdx.math.collision.BoundingBox;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class ModelMeshPart {
     public String id;
     public int[] indices;
     public int primitiveType;
+    private BoundingBox boundingBox;
 }

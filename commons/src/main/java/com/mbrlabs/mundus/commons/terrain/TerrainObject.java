@@ -34,6 +34,7 @@ import com.mbrlabs.mundus.commons.utils.MathUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
+import net.nevinsky.abyssus.core.ModelBuilder;
 import net.nevinsky.abyssus.core.ModelInstance;
 import net.nevinsky.abyssus.core.Renderable;
 import net.nevinsky.abyssus.core.mesh.Mesh;
@@ -132,13 +133,13 @@ public class TerrainObject implements RenderableObject, Disposable {
 
         var meshPart = new MeshPart(null, mesh, 0, numIndices, GL20.GL_TRIANGLES);
         meshPart.update();
-//todo
-//        var mb = new ModelBuilder();
-//        mb.begin();
-//        mb.part(meshPart, material);
-//        model = mb.end();
-//        modelInstance = new ModelInstance(model);
-//        modelInstance.transform = transform;
+
+        var mb = new ModelBuilder();
+        mb.begin();
+        mb.part(meshPart, material);
+        model = mb.end();
+        modelInstance = new ModelInstance(model);
+        modelInstance.transform = transform;
     }
 
     public Vector3 getVertexPosition(Vector3 out, int x, int z) {
@@ -314,8 +315,8 @@ public class TerrainObject implements RenderableObject, Disposable {
         // handle edges of terrain
         int xP1 = (x + 1 >= vertexResolution) ? vertexResolution - 1 : x + 1;
         int yP1 = (y + 1 >= vertexResolution) ? vertexResolution - 1 : y + 1;
-        int xM1 = (x - 1 < 0) ? 0 : x - 1;
-        int yM1 = (y - 1 < 0) ? 0 : y - 1;
+        int xM1 = Math.max(x - 1, 0);
+        int yM1 = Math.max(y - 1, 0);
 
         float hL = heightData[y * vertexResolution + xM1];
         float hR = heightData[y * vertexResolution + xP1];
@@ -382,6 +383,6 @@ public class TerrainObject implements RenderableObject, Disposable {
         private int terrainWidth;
         private int terrainDepth;
 
-        private final List<BaseLight> lights = new ArrayList<>();
+        private final List<BaseLight<?>> lights = new ArrayList<>();
     }
 }

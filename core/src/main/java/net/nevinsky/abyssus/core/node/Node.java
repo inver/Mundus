@@ -71,7 +71,7 @@ public class Node {
      **/
     public final Matrix4 globalTransform = new Matrix4();
 
-    public Array<NodePart> parts = new Array<NodePart>(2);
+    public Array<NodePart> parts = new Array<>(2);
 
     protected Node parent;
     private final Array<Node> children = new Array<Node>(2);

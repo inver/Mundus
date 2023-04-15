@@ -1,4 +1,4 @@
-package com.mbrlabs.mundus.commons.loader;
+package com.mbrlabs.mundus.commons;
 
 import com.badlogic.gdx.files.FileHandle;
 import lombok.SneakyThrows;

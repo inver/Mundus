@@ -8,7 +8,7 @@ import static org.junit.Assert.assertEquals;
 
 public class MathUtilsTest {
     @Test
-    public void barryCentric() throws Exception {
+    public void barryCentric() {
         Vector3 a = new Vector3(1.0f, 0.0f, 0.0f);
         Vector3 b = new Vector3(0.0f, 1.0f, 0.0f);
         Vector3 c = new Vector3(0.0f, 0.0f, 1.0f);
@@ -18,12 +18,12 @@ public class MathUtilsTest {
     }
 
     @Test
-    public void dst() throws Exception {
+    public void dst() {
         assertEquals(1.0f, MathUtils.dst(1.0f, 1.0f, 2.0f, 1.0f), 0.0f);
     }
 
     @Test
-    public void angle() throws Exception {
+    public void angle() {
         assertEquals(45.0f, MathUtils.angle(0.0f, 0.0f, 1.0f, 1.0f), 0.0f);
     }
 

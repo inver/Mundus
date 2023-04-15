@@ -211,12 +211,12 @@ class Outline(
 
         val addGroup = MenuItem("Add group")
         val addCamera = MenuItem("Add camera")
-        val addTerrain: MenuItem = MenuItem("Add terrain")
-        private val addLight: MenuItem = MenuItem("Add light")
+        val addTerrain = MenuItem("Add terrain")
+        val addLight = MenuItem("Add light")
         val addShader = MenuItem("Add Shader")
-        private val duplicate: MenuItem = MenuItem("Duplicate")
-        private val rename: MenuItem = MenuItem("Rename")
-        private val delete: MenuItem = MenuItem("Delete")
+        val duplicate = MenuItem("Duplicate")
+        val rename = MenuItem("Rename")
+        val delete = MenuItem("Delete")
 
         private val lightsPopupMenu: PopupMenu = PopupMenu()
         val addDirectionalLight: MenuItem = MenuItem("Directional Light")

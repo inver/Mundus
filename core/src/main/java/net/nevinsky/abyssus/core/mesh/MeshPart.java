@@ -20,6 +20,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import lombok.extern.slf4j.Slf4j;
+import net.nevinsky.abyssus.core.model.Model;
 
 /**
  * A MeshPart is composed of a subset of vertices of a {@link Mesh}, along with the primitive type. The vertices subset
@@ -44,6 +46,7 @@ import com.badlogic.gdx.math.collision.BoundingBox;
  *
  * @author badlogic, Xoppa
  */
+@Slf4j
 public class MeshPart {
     /**
      * Unique id within model, may be null. Will be ignored by {@link #equals(MeshPart)}
@@ -163,6 +166,12 @@ public class MeshPart {
         mesh.calculateBoundingBox(bounds, offset, size);
         bounds.getCenter(center);
         bounds.getDimensions(halfExtents).scl(0.5f);
+        radius = halfExtents.len();
+    }
+
+    public void update(BoundingBox boundingBox) {
+        boundingBox.getCenter(center);
+        boundingBox.getDimensions(halfExtents).scl(0.5f);
         radius = halfExtents.len();
     }
 
