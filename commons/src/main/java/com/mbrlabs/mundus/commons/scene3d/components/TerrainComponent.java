@@ -68,8 +68,9 @@ public class TerrainComponent extends AbstractComponent implements AssetUsage {
 
     @Override
     public boolean usesAsset(Asset assetToCheck) {
-        if (Objects.equals(terrain.getID(), assetToCheck.getID()))
+        if (Objects.equals(terrain.getID(), assetToCheck.getID())) {
             return true;
+        }
 
         return terrain.usesAsset(assetToCheck);
     }

@@ -78,7 +78,9 @@ public class ModelComponent extends AbstractComponent implements AssetUsage {
     public void applyMaterials() {
         for (Material mat : modelInstance.materials) {
             MaterialAsset materialAsset = materials.get(mat.id);
-            if (materialAsset == null) continue;
+            if (materialAsset == null) {
+                continue;
+            }
 
             materialAsset.applyToMaterial(mat);
         }
@@ -104,8 +106,9 @@ public class ModelComponent extends AbstractComponent implements AssetUsage {
 
     @Override
     public boolean usesAsset(Asset assetToCheck) {
-        if (Objects.equals(assetToCheck.getID(), modelAsset.getID()))
+        if (Objects.equals(assetToCheck.getID(), modelAsset.getID())) {
             return true;
+        }
 
         if (assetToCheck instanceof MaterialAsset) {
             if (materials.containsValue(assetToCheck, true)) {

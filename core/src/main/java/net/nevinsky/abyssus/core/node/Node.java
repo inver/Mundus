@@ -74,7 +74,7 @@ public class Node {
     public Array<NodePart> parts = new Array<>(2);
 
     protected Node parent;
-    private final Array<Node> children = new Array<Node>(2);
+    private final Array<Node> children = new Array<>(2);
 
     /**
      * Calculates the local transform based on the translation, scale and rotation

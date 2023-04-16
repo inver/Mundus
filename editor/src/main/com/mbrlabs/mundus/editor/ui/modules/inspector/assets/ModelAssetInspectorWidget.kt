@@ -111,7 +111,8 @@ class ModelAssetInspectorWidget(
         // set info
         name.setText("Name: " + modelAsset!!.name)
         nodeCount.setText("Nodes: " + model.nodes.size)
-        materialCount.setText("Materials: " + model.materials.size)
+        //todo
+//        materialCount.setText("Materials: " + model.materials.size)
         vertexCount.setText("Vertices: " + verts)
         indexCount.setText("Indices: " + indices)
 

@@ -89,8 +89,9 @@ public class ModelBuilder {
         endnode();
         model = null;
 
-        for (final MeshBuilder mb : builders)
+        for (final MeshBuilder mb : builders) {
             mb.end();
+        }
         builders.clear();
 
         rebuildReferences(result);
@@ -481,24 +482,31 @@ public class ModelBuilder {
      * used within it's nodes. This will make the model responsible for disposing all referenced meshes.
      */
     public static void rebuildReferences(final Model model) {
-        model.materials.clear();
-        model.meshes.clear();
-        model.getMeshParts().clear();
-        for (final Node node : model.nodes)
-            rebuildReferences(model, node);
+        //todo is it needed???
+//        model.materials.clear();
+//        model.meshes.clear();
+//        model.getMeshParts().clear();
+//        for (final Node node : model.nodes) {
+//            rebuildReferences(model, node);
+//        }
     }
 
     private static void rebuildReferences(final Model model, final Node node) {
-        for (final NodePart mpm : node.parts) {
-            if (!model.materials.contains(mpm.material, true)) model.materials.add(mpm.material);
-            if (!model.getMeshParts().containsKey(mpm.meshPart.id)) {
-                model.getMeshParts().put(mpm.meshPart.id, mpm.meshPart);
-                if (!model.meshes.contains(mpm.meshPart.mesh, true)) model.meshes.add(mpm.meshPart.mesh);
-                model.manageDisposable(mpm.meshPart.mesh);
-            }
-        }
-        for (final Node child : node.getChildren())
-            rebuildReferences(model, child);
+//        for (final NodePart nodePart : node.parts) {
+//            if (!model.materials.contains(nodePart.material, true)) {
+//                model.materials.add(nodePart.material);
+//            }
+//            if (!model.getMeshParts().containsKey(nodePart.meshPart.id)) {
+//                model.getMeshParts().put(nodePart.meshPart.id, nodePart.meshPart);
+//                if (!model.meshes.contains(nodePart.meshPart.mesh, true)) {
+//                    model.meshes.add(nodePart.meshPart.mesh);
+//                }
+//                model.manageDisposable(nodePart.meshPart.mesh);
+//            }
+//        }
+//        for (final Node child : node.getChildren()) {
+//            rebuildReferences(model, child);
+//        }
     }
 
     /**

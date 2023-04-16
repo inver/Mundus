@@ -66,7 +66,7 @@ public class EditorModelService extends ModelService {
 
         //todo remove binary file if it needed
         var model = modelImporter.loadModel(importedModel.getMain());
-        modelExporter.export(model, assetFolder.child(modelFileName));
+        modelExporter.export(model, assetFolder.child(modelFileName).path());
 
         var res = modelAssetLoader.load(meta);
         return res;

@@ -51,19 +51,29 @@ public class TerrainTexture {
     public SplatTexture.Channel getNextFreeChannel() {
         // base
         SplatTexture st = textures.get(SplatTexture.Channel.BASE);
-        if (st == null || st.texture.getID() == null) return SplatTexture.Channel.BASE;
+        if (st == null || st.texture.getID() == null) {
+            return SplatTexture.Channel.BASE;
+        }
         // r
         st = textures.get(SplatTexture.Channel.R);
-        if (st == null) return SplatTexture.Channel.R;
+        if (st == null) {
+            return SplatTexture.Channel.R;
+        }
         // g
         st = textures.get(SplatTexture.Channel.G);
-        if (st == null) return SplatTexture.Channel.G;
+        if (st == null) {
+            return SplatTexture.Channel.G;
+        }
         // b
         st = textures.get(SplatTexture.Channel.B);
-        if (st == null) return SplatTexture.Channel.B;
+        if (st == null) {
+            return SplatTexture.Channel.B;
+        }
         // a
         st = textures.get(SplatTexture.Channel.A);
-        if (st == null) return SplatTexture.Channel.A;
+        if (st == null) {
+            return SplatTexture.Channel.A;
+        }
 
         return null;
     }

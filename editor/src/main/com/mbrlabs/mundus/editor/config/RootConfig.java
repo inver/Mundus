@@ -13,7 +13,7 @@ import com.mbrlabs.mundus.commons.assets.shader.ShaderAssetLoader;
 import com.mbrlabs.mundus.commons.assets.skybox.SkyboxAssetLoader;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAssetLoader;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAssetLoader;
-import com.mbrlabs.mundus.commons.importExport.old.GLTFExporter;
+import com.mbrlabs.mundus.commons.importExport.AssimpExporter;
 import com.mbrlabs.mundus.commons.importer.CameraDeserializer;
 import com.mbrlabs.mundus.commons.importer.CameraSerializer;
 import com.mbrlabs.mundus.commons.importer.SceneConverter;
@@ -136,8 +136,8 @@ public class RootConfig {
     }
 
     @Bean
-    public GLTFExporter gltfExporter() {
-        return new GLTFExporter();
+    public AssimpExporter gltfExporter() {
+        return new AssimpExporter();
 //        return new GltfExporter(mapper(), new GltfMeshExporter(), new GltfMaterialExporter(), new GltfSkinExporter(),
 //                new GltfAnimationExporter());
     }

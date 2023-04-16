@@ -349,7 +349,9 @@ public class TerrainObject implements RenderableObject, Disposable {
     }
 
     public void setTerrainTexture(TerrainTexture terrainTexture) {
-        if (terrainTexture == null) return;
+        if (terrainTexture == null) {
+            return;
+        }
 
         this.terrainTexture = terrainTexture;
 

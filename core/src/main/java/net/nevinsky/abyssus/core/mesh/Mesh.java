@@ -447,12 +447,18 @@ public class Mesh implements Disposable {
         final int max = getNumVertices() * getVertexSize() / 4;
         if (count == -1) {
             count = max - srcOffset;
-            if (count > vertices.length - destOffset) count = vertices.length - destOffset;
+            if (count > vertices.length - destOffset) {
+                count = vertices.length - destOffset;
+            }
         }
-        if (srcOffset < 0 || count <= 0 || (srcOffset + count) > max || destOffset < 0 || destOffset >= vertices.length)
+        if (srcOffset < 0 || count <= 0 || (srcOffset + count) > max || destOffset < 0 ||
+                destOffset >= vertices.length) {
             throw new IndexOutOfBoundsException();
-        if ((vertices.length - destOffset) < count) throw new IllegalArgumentException(
-                "not enough room in vertices array, has " + vertices.length + " floats, needs " + count);
+        }
+        if ((vertices.length - destOffset) < count) {
+            throw new IllegalArgumentException(
+                    "not enough room in vertices array, has " + vertices.length + " floats, needs " + count);
+        }
         int pos = getVerticesBuffer().position();
         ((Buffer) getVerticesBuffer()).position(srcOffset);
         getVerticesBuffer().get(vertices, destOffset, count);
@@ -607,8 +613,12 @@ public class Mesh implements Disposable {
      */
     public void bind(final ShaderProgram shader, final int[] locations) {
         vertices.bind(shader, locations);
-        if (instances != null && instances.getNumInstances() > 0) instances.bind(shader, locations);
-        if (indices.getNumIndices() > 0) indices.bind();
+        if (instances != null && instances.getNumInstances() > 0) {
+            instances.bind(shader, locations);
+        }
+        if (indices.getNumIndices() > 0) {
+            indices.bind();
+        }
     }
 
     /**
@@ -630,8 +640,12 @@ public class Mesh implements Disposable {
      */
     public void unbind(final ShaderProgram shader, final int[] locations) {
         vertices.unbind(shader, locations);
-        if (instances != null && instances.getNumInstances() > 0) instances.unbind(shader, locations);
-        if (indices.getNumIndices() > 0) indices.unbind();
+        if (instances != null && instances.getNumInstances() > 0) {
+            instances.unbind(shader, locations);
+        }
+        if (indices.getNumIndices() > 0) {
+            indices.unbind();
+        }
     }
 
     /**

@@ -183,8 +183,9 @@ public class IndexBufferObjectSubData implements IndexData {
      * Binds this IndexBufferObject for rendering with glDrawElements.
      */
     public void bind() {
-        if (bufferHandle == 0)
+        if (bufferHandle == 0) {
             throw new GdxRuntimeException("IndexBufferObject cannot be used after it has been disposed.");
+        }
 
         Gdx.gl20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, bufferHandle);
         if (isDirty) {

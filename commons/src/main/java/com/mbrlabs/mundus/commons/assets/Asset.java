@@ -29,9 +29,8 @@ import java.util.Map;
 /**
  * A generic asset type.
  * <p>
- * Assets hold a file handle to the asset file. They also have a meta file,
- * which contains meta information about the asset. Assets can have dependencies
- * to other assets by specifying the asset id in the meta file or in the asset
+ * Assets hold a file handle to the asset file. They also have a meta file, which contains meta information about the
+ * asset. Assets can have dependencies to other assets by specifying the asset id in the meta file or in the asset
  * file.
  *
  * @author Marcus Brummer
@@ -74,8 +73,7 @@ public abstract class Asset<M> implements Disposable, AssetUsage {
     /**
      * Resolves all dependencies of this asset.
      * <p>
-     * Before calling this method all assets must have been loaded using the
-     * load() method.
+     * Before calling this method all assets must have been loaded using the load() method.
      *
      * @param assets map of loaded assets with asset id as key
      */
@@ -85,9 +83,8 @@ public abstract class Asset<M> implements Disposable, AssetUsage {
     /**
      * Applies dependent assets to this one.
      * <p>
-     * If dependencies have been set, this method applies them to the asset.
-     * Note, that the asset and all it's set dependencies must have called
-     * load() before calling this method.
+     * If dependencies have been set, this method applies them to the asset. Note, that the asset and all it's set
+     * dependencies must have called load() before calling this method.
      */
     @Deprecated
     public abstract void applyDependencies();
@@ -95,9 +92,13 @@ public abstract class Asset<M> implements Disposable, AssetUsage {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if (this == o) {
+            return true;
+        }
 
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         Asset<?> asset = (Asset<?>) o;
 

@@ -36,12 +36,13 @@ public class DefaultRenderableSorter implements RenderableSorter, Comparator<Ren
     }
 
     private Vector3 getTranslation(Matrix4 worldTransform, Vector3 center, Vector3 output) {
-        if (center.isZero())
+        if (center.isZero()) {
             worldTransform.getTranslation(output);
-        else if (!worldTransform.hasRotationOrScaling())
+        } else if (!worldTransform.hasRotationOrScaling()) {
             worldTransform.getTranslation(output).add(center);
-        else
+        } else {
             output.set(center).mul(worldTransform);
+        }
         return output;
     }
 
@@ -51,7 +52,9 @@ public class DefaultRenderableSorter implements RenderableSorter, Comparator<Ren
                 && ((BlendingAttribute) o1.material.get(BlendingAttribute.Type)).blended;
         final boolean b2 = o2.material.has(BlendingAttribute.Type)
                 && ((BlendingAttribute) o2.material.get(BlendingAttribute.Type)).blended;
-        if (b1 != b2) return b1 ? 1 : -1;
+        if (b1 != b2) {
+            return b1 ? 1 : -1;
+        }
         // TODO implement better sorting algorithm
         // final boolean same = o1.shader == o2.shader && o1.mesh == o2.mesh && (o1.lights == null) ==
         // (o2.lights == null) &&

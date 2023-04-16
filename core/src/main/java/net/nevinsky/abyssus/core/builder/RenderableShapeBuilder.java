@@ -127,8 +127,9 @@ public class RenderableShapeBuilder extends BaseShapeBuilder {
 
         // Binormal
         int binormalOffset = -1;
-        if (mesh.getVertexAttribute(Usage.BiNormal) != null)
+        if (mesh.getVertexAttribute(Usage.BiNormal) != null) {
             binormalOffset = mesh.getVertexAttribute(Usage.BiNormal).offset / FLOAT_BYTES;
+        }
 
         int attributesSize = mesh.getVertexSize() / FLOAT_BYTES;
         int verticesOffset = 0;

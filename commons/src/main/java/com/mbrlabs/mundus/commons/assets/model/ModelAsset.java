@@ -15,7 +15,6 @@
  */
 package com.mbrlabs.mundus.commons.assets.model;
 
-import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import com.mbrlabs.mundus.commons.assets.Asset;
@@ -78,14 +77,15 @@ public class ModelAsset extends Asset<ModelMeta> implements RenderableProvider {
             return;
         }
 
+        //TODO use materials from nodes
         // materials
-        for (Material mat : model.materials) {
-            MaterialAsset materialAsset = defaultMaterials.get(mat.id);
-            if (materialAsset == null) {
-                continue;
-            }
-            materialAsset.applyToMaterial(mat);
-        }
+//        for (Material mat : model.materials) {
+//            MaterialAsset materialAsset = defaultMaterials.get(mat.id);
+//            if (materialAsset == null) {
+//                continue;
+//            }
+//            materialAsset.applyToMaterial(mat);
+//        }
     }
 
     @Override

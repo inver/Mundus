@@ -36,8 +36,7 @@ public class TerrainTextureAttribute extends Attribute {
     protected static long Mask = ATTRIBUTE_SPLAT0 | ATTRIBUTE_SPLAT1;
 
     /**
-     * Method to check whether the specified type is a valid DoubleAttribute
-     * type
+     * Method to check whether the specified type is a valid DoubleAttribute type
      */
     public static Boolean is(final long type) {
         return (type & Mask) != 0;
@@ -45,19 +44,25 @@ public class TerrainTextureAttribute extends Attribute {
 
     public TerrainTextureAttribute(long type, TerrainTexture terrainTexture) {
         super(type);
-        if (!is(type)) throw new GdxRuntimeException("Invalid type specified");
+        if (!is(type)) {
+            throw new GdxRuntimeException("Invalid type specified");
+        }
         this.terrainTexture = terrainTexture;
     }
 
     public TerrainTextureAttribute(TerrainTextureAttribute other) {
         super(other.type);
-        if (!is(type)) throw new GdxRuntimeException("Invalid type specified");
+        if (!is(type)) {
+            throw new GdxRuntimeException("Invalid type specified");
+        }
         this.terrainTexture = other.terrainTexture;
     }
 
     protected TerrainTextureAttribute(long type) {
         super(type);
-        if (!is(type)) throw new GdxRuntimeException("Invalid type specified");
+        if (!is(type)) {
+            throw new GdxRuntimeException("Invalid type specified");
+        }
     }
 
     @Override
@@ -74,7 +79,9 @@ public class TerrainTextureAttribute extends Attribute {
 
     @Override
     public int compareTo(Attribute o) {
-        if (type != o.type) return type < o.type ? -1 : 1;
+        if (type != o.type) {
+            return type < o.type ? -1 : 1;
+        }
         TerrainTexture otherValue = ((TerrainTextureAttribute) o).terrainTexture;
         return terrainTexture.equals(otherValue) ? 0 : -1;
     }

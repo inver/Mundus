@@ -8,7 +8,8 @@ import org.lwjgl.assimp.Assimp;
 
 public class AssimpExporter {
 
-    public void export(Model model, String format, String fileName) {
+    public void export(Model model, String fileName) {
+        String format = "gltf";
         var assimpScene = AIScene.create();
 
         var rootNode = AINode.create();
@@ -23,7 +24,7 @@ public class AssimpExporter {
 
 //        AINode.nmChildren();
         assimpScene.mRootNode(AINode.create());
-        AINode.nmNumMeshes(assimpScene.mRootNode().address(), model.getMeshes().size);
+//        AINode.nmNumMeshes(assimpScene.mRootNode().address(), model.getMeshes().size);
 
         Assimp.aiExportScene(assimpScene, format, fileName, 0);
     }

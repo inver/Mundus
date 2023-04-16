@@ -227,8 +227,12 @@ public class BaseAnimationController {
 
     private final static Quaternion getRotationAtTime(final NodeAnimation nodeAnim, final float time,
                                                       final Quaternion out) {
-        if (nodeAnim.rotation == null) return out.set(nodeAnim.node.rotation);
-        if (nodeAnim.rotation.size == 1) return out.set(nodeAnim.rotation.get(0).value);
+        if (nodeAnim.rotation == null) {
+            return out.set(nodeAnim.node.rotation);
+        }
+        if (nodeAnim.rotation.size == 1) {
+            return out.set(nodeAnim.rotation.get(0).value);
+        }
 
         int index = getFirstKeyframeIndexAtTime(nodeAnim.rotation, time);
         final NodeKeyframe firstKeyframe = nodeAnim.rotation.get(index);
@@ -284,15 +288,17 @@ public class BaseAnimationController {
 
         Transform t = out.get(node, null);
         if (t != null) {
-            if (alpha > 0.999999f)
+            if (alpha > 0.999999f) {
                 t.set(transform);
-            else
+            } else {
                 t.lerp(transform, alpha);
+            }
         } else {
-            if (alpha > 0.999999f)
+            if (alpha > 0.999999f) {
                 out.put(node, pool.obtain().set(transform));
-            else
+            } else {
                 out.put(node, pool.obtain().set(node.translation, node.rotation, node.scale).lerp(transform, alpha));
+            }
         }
     }
 
@@ -304,13 +310,16 @@ public class BaseAnimationController {
                                          final Animation animation, final float time) {
 
         if (out == null) {
-            for (final NodeAnimation nodeAnim : animation.nodeAnimations)
+            for (final NodeAnimation nodeAnim : animation.nodeAnimations) {
                 applyNodeAnimationDirectly(nodeAnim, time);
+            }
         } else {
-            for (final Node node : out.keys())
+            for (final Node node : out.keys()) {
                 node.isAnimated = false;
-            for (final NodeAnimation nodeAnim : animation.nodeAnimations)
+            }
+            for (final NodeAnimation nodeAnim : animation.nodeAnimations) {
                 applyNodeAnimationBlending(nodeAnim, out, pool, alpha, time);
+            }
             for (final Entry<Node, Transform> e : out.entries()) {
                 if (!e.key.isAnimated) {
                     e.key.isAnimated = true;

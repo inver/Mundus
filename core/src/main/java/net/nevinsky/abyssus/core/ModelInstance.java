@@ -30,6 +30,7 @@ import net.nevinsky.abyssus.core.node.Animation;
 import net.nevinsky.abyssus.core.node.Node;
 import net.nevinsky.abyssus.core.node.NodeAnimation;
 import net.nevinsky.abyssus.core.node.NodePart;
+import net.nevinsky.abyssus.core.shader.Shader;
 
 /**
  * An instance of a {@link Model}, allows to specify global transform and modify the materials, as it has a copy of the

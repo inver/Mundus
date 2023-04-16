@@ -52,14 +52,17 @@ public class SunLightsAttribute extends Attribute {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        for (SpotLight light : lights)
+        for (SpotLight light : lights) {
             result = 1237 * result + (light == null ? 0 : light.hashCode());
+        }
         return result;
     }
 
     @Override
     public int compareTo(Attribute o) {
-        if (type != o.type) return type < o.type ? -1 : 1;
+        if (type != o.type) {
+            return type < o.type ? -1 : 1;
+        }
         return 0; // TODO implement comparing
     }
 

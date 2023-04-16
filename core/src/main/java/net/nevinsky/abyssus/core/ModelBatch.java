@@ -26,6 +26,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.FlushablePool;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool;
+import net.nevinsky.abyssus.core.shader.DefaultShader;
 import net.nevinsky.abyssus.core.shader.DefaultShaderProvider;
 import net.nevinsky.abyssus.core.shader.Shader;
 import net.nevinsky.abyssus.core.shader.ShaderProvider;
@@ -196,9 +197,13 @@ public class ModelBatch implements Disposable {
      * @param cam The {@link Camera} to be used when rendering and sorting.
      */
     public void begin(final Camera cam) {
-        if (camera != null) throw new GdxRuntimeException("Call end() first.");
+        if (camera != null) {
+            throw new GdxRuntimeException("Call end() first.");
+        }
         camera = cam;
-        if (ownContext) context.begin();
+        if (ownContext) {
+            context.begin();
+        }
     }
 
     /**
@@ -359,8 +364,9 @@ public class ModelBatch implements Disposable {
      */
     public <T extends RenderableProvider> void render(
             final Iterable<T> renderableProviders, final Environment environment) {
-        for (final RenderableProvider renderableProvider : renderableProviders)
+        for (final RenderableProvider renderableProvider : renderableProviders) {
             render(renderableProvider, environment);
+        }
     }
 
     /**
@@ -427,11 +433,12 @@ public class ModelBatch implements Disposable {
      * @param environment         the {@link Environment} to use for the renderables
      * @param shader              the shader to use for the renderables
      */
-    public <T extends RenderableProvider> void render(
-            final Iterable<T> renderableProviders, final Environment environment,
-            final Shader shader) {
-        for (final RenderableProvider renderableProvider : renderableProviders)
+    public <T extends RenderableProvider> void render(final Iterable<T> renderableProviders,
+                                                      final Environment environment,
+                                                      final Shader shader) {
+        for (final RenderableProvider renderableProvider : renderableProviders) {
             render(renderableProvider, environment, shader);
+        }
     }
 
     @Override

@@ -178,7 +178,7 @@ public class AssimpModelLoader implements AppModelLoader {
             node.parts[i] = nodePart;
         }
 
-        modelData.meshes.add(mesh);
+        modelData.addMesh(mesh);
         modelData.nodes.add(node);
     }
 

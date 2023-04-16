@@ -38,8 +38,11 @@ import net.nevinsky.abyssus.core.node.Animation;
 import net.nevinsky.abyssus.core.node.Node;
 import net.nevinsky.abyssus.core.node.NodeAnimation;
 import net.nevinsky.abyssus.core.node.NodePart;
+import org.apache.commons.lang3.StringUtils;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 /**
@@ -66,7 +69,7 @@ public class Model implements Disposable {
      * the materials of the model, used by nodes that have a graphical representation TODO not sure if superfluous,
      * allows modification of materials without having to traverse the nodes
      **/
-    public final Array<Material> materials = new Array();
+//    public final Array<Material> materials = new Array();
     /**
      * root nodes of the model
      **/
@@ -78,12 +81,7 @@ public class Model implements Disposable {
     /**
      * the meshes of the model
      **/
-    public final Array<Mesh> meshes = new Array();
-    /**
-     * parts of meshes, used by nodes that have a graphical representation TODO not sure if superfluous, stored in Nodes
-     * as well, could be useful to create bullet meshes
-     **/
-    private final Map<String, MeshPart> meshParts = new HashMap<>();
+//    public final Array<Mesh> meshes = new Array();
     /**
      * Array of disposable resources like textures or meshes the Model is responsible for disposing
      **/
@@ -117,9 +115,9 @@ public class Model implements Disposable {
     }
 
     protected void load(ModelData modelData, TextureProvider textureProvider) {
-        loadMeshes(modelData.meshes);
-        loadMaterials(modelData.materials, textureProvider);
-        loadNodes(modelData.nodes);
+        var meshParts = loadMeshes(modelData.meshes);
+        var materials = loadMaterials(modelData.materials, textureProvider);
+        loadNodes(meshParts, materials, modelData.nodes);
         loadAnimations(modelData.animations);
         calculateTransforms();
     }
@@ -180,21 +178,24 @@ public class Model implements Disposable {
 
     private final ObjectMap<NodePart, ArrayMap<String, Matrix4>> nodePartBones = new ObjectMap<>();
 
-    protected void loadNodes(Iterable<ModelNode> modelNodes) {
+    protected void loadNodes(Map<String, MeshPart> meshParts, Map<String, Material> materials,
+                             Iterable<ModelNode> modelNodes) {
         nodePartBones.clear();
         for (ModelNode node : modelNodes) {
-            nodes.add(loadNode(node));
+            nodes.add(loadNode(meshParts, materials, node));
         }
         for (ObjectMap.Entry<NodePart, ArrayMap<String, Matrix4>> e : nodePartBones.entries()) {
-            if (e.key.invBoneBindTransforms == null)
-                e.key.invBoneBindTransforms = new ArrayMap<Node, Matrix4>(Node.class, Matrix4.class);
+            if (e.key.invBoneBindTransforms == null) {
+                e.key.invBoneBindTransforms = new ArrayMap<>(Node.class, Matrix4.class);
+            }
             e.key.invBoneBindTransforms.clear();
-            for (ObjectMap.Entry<String, Matrix4> b : e.value.entries())
+            for (ObjectMap.Entry<String, Matrix4> b : e.value.entries()) {
                 e.key.invBoneBindTransforms.put(getNode(b.key), new Matrix4(b.value).inv());
+            }
         }
     }
 
-    protected Node loadNode(ModelNode modelNode) {
+    protected Node loadNode(Map<String, MeshPart> meshParts, Map<String, Material> materials, ModelNode modelNode) {
         Node node = new Node();
         node.id = modelNode.id;
 
@@ -212,40 +213,41 @@ public class Model implements Disposable {
                 }
 
                 if (modelNodePart.materialId != null) {
-                    for (Material material : materials) {
-                        if (modelNodePart.materialId.equals(material.id)) {
-                            meshMaterial = material;
-                            break;
-                        }
-                    }
+                    meshMaterial = materials.get(StringUtils.upperCase(modelNodePart.materialId));
                 }
 
-                if (meshPart == null || meshMaterial == null) throw new GdxRuntimeException("Invalid node: " + node.id);
+                if (meshPart == null || meshMaterial == null) {
+                    throw new GdxRuntimeException("Invalid node: " + node.id);
+                }
 
                 NodePart nodePart = new NodePart();
                 nodePart.meshPart = meshPart;
                 nodePart.material = meshMaterial;
                 node.parts.add(nodePart);
-                if (modelNodePart.bones != null) nodePartBones.put(nodePart, modelNodePart.bones);
+                if (modelNodePart.bones != null) {
+                    nodePartBones.put(nodePart, modelNodePart.bones);
+                }
             }
         }
 
         if (modelNode.children != null) {
             for (ModelNode child : modelNode.children) {
-                node.addChild(loadNode(child));
+                node.addChild(loadNode(meshParts, materials, child));
             }
         }
 
         return node;
     }
 
-    protected void loadMeshes(Iterable<ModelMesh> meshes) {
+    protected Map<String, MeshPart> loadMeshes(Iterable<ModelMesh> meshes) {
+        var res = new HashMap<String, MeshPart>();
         for (ModelMesh mesh : meshes) {
-            convertMesh(mesh);
+            convertMesh(res, mesh);
         }
+        return res;
     }
 
-    protected void convertMesh(ModelMesh modelMesh) {
+    protected void convertMesh(Map<String, MeshPart> res, ModelMesh modelMesh) {
         int numIndices = 0;
         for (ModelMeshPart part : modelMesh.parts) {
             numIndices += part.indices.length;
@@ -255,7 +257,7 @@ public class Model implements Disposable {
         int numVertices = modelMesh.vertices.length / (attributes.vertexSize / 4);
 
         Mesh mesh = new Mesh(true, numVertices, numIndices, attributes);
-        meshes.add(mesh);
+//        meshes.add(mesh);
         disposables.add(mesh);
 
         BufferUtils.copy(modelMesh.vertices, mesh.getVerticesBuffer(), modelMesh.vertices.length, 0);
@@ -280,21 +282,26 @@ public class Model implements Disposable {
             } else {
                 meshPart.update(part.getBoundingBox());
             }
-            meshParts.put(meshPart.id, meshPart);
+            res.put(meshPart.id, meshPart);
         }
         mesh.getIndicesBuffer().position(0);
         if (!hasBoundingBox) {
             //hack, for loaded model without bounding box
-            for (MeshPart part : meshParts.values()) {
+            //todo why for each mesh recalculated all map of mesh???
+            for (MeshPart part : res.values()) {
                 part.update();
             }
         }
     }
 
-    protected void loadMaterials(Iterable<ModelMaterial> modelMaterials, TextureProvider textureProvider) {
+    protected Map<String, Material> loadMaterials(Iterable<ModelMaterial> modelMaterials,
+                                                  TextureProvider textureProvider) {
+        var res = new HashMap<String, Material>();
         for (ModelMaterial mtl : modelMaterials) {
-            this.materials.add(convertMaterial(mtl, textureProvider));
+            var m = convertMaterial(mtl, textureProvider);
+            res.put(StringUtils.upperCase(m.id), m);
         }
+        return res;
     }
 
     protected Material convertMaterial(ModelMaterial mtl, TextureProvider textureProvider) {
@@ -378,7 +385,9 @@ public class Model implements Disposable {
      * @param disposable the Disposable
      */
     public void manageDisposable(Disposable disposable) {
-        if (!disposables.contains(disposable, true)) disposables.add(disposable);
+        if (!disposables.contains(disposable, true)) {
+            disposables.add(disposable);
+        }
     }
 
     /**
@@ -467,31 +476,37 @@ public class Model implements Disposable {
         return null;
     }
 
-    /**
-     * @param id The ID of the material to fetch.
-     * @return The {@link Material} with the specified id, or null if not available.
-     */
-    public Material getMaterial(final String id) {
-        return getMaterial(id, true);
-    }
-
-    /**
-     * @param id         The ID of the material to fetch.
-     * @param ignoreCase whether to use case sensitivity when comparing the material id.
-     * @return The {@link Material} with the specified id, or null if not available.
-     */
-    public Material getMaterial(final String id, boolean ignoreCase) {
-        final int n = materials.size;
-        Material material;
-        if (ignoreCase) {
-            for (int i = 0; i < n; i++)
-                if ((material = materials.get(i)).id.equalsIgnoreCase(id)) return material;
-        } else {
-            for (int i = 0; i < n; i++)
-                if ((material = materials.get(i)).id.equals(id)) return material;
-        }
-        return null;
-    }
+//    /**
+//     * @param id The ID of the material to fetch.
+//     * @return The {@link Material} with the specified id, or null if not available.
+//     */
+//    public Material getMaterial(final String id) {
+//        return getMaterial(id, true);
+//    }
+//
+//    /**
+//     * @param id         The ID of the material to fetch.
+//     * @param ignoreCase whether to use case sensitivity when comparing the material id.
+//     * @return The {@link Material} with the specified id, or null if not available.
+//     */
+//    public Material getMaterial(final String id, boolean ignoreCase) {
+//        final int n = materials.size;
+//        Material material;
+//        if (ignoreCase) {
+//            for (int i = 0; i < n; i++) {
+//                if ((material = materials.get(i)).id.equalsIgnoreCase(id)) {
+//                    return material;
+//                }
+//            }
+//        } else {
+//            for (int i = 0; i < n; i++) {
+//                if ((material = materials.get(i)).id.equals(id)) {
+//                    return material;
+//                }
+//            }
+//        }
+//        return null;
+//    }
 
     /**
      * @param id The ID of the node to fetch.
@@ -518,5 +533,23 @@ public class Model implements Disposable {
      */
     public Node getNode(final String id, boolean recursive, boolean ignoreCase) {
         return Node.getNode(nodes, id, recursive, ignoreCase);
+    }
+
+    // todo is caching of this result needed?
+    public Collection<Mesh> getMeshes() {
+        var set = new HashSet<Mesh>();
+        getMeshesFromNode(set, nodes);
+        return set;
+    }
+
+    private void getMeshesFromNode(Collection<Mesh> meshes, Iterable<Node> nodes) {
+        nodes.forEach(n -> {
+            for (var p : n.parts) {
+                meshes.add(p.meshPart.mesh);
+            }
+            if (n.hasChildren()) {
+                getMeshesFromNode(meshes, n.getChildren());
+            }
+        });
     }
 }

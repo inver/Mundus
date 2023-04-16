@@ -41,7 +41,7 @@ public class DirectionLineRenderDelegate implements RenderableDelegate {
 
     @Override
     public void set2PointPosition(Vector3 point1, Vector3 point2) {
-        var mesh = instance.model.meshes.get(0);
+        var mesh = instance.model.getMeshes().iterator().next();
         final int stride = mesh.getVertexSize() / 4;
 
         final float[] vertices = new float[mesh.getNumVertices() * stride];
