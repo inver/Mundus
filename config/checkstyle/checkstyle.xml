@@ -104,8 +104,7 @@
         <module name="AvoidNestedBlocks">
             <property name="allowInSwitchCase" value="true"/>
         </module>
-        <!--        <module name="NeedBraces"/>-->
-
+<!--        <module name="NeedBraces"/>-->
     </module>
 
     <!--    <module name="TreeWalker">-->
@@ -117,7 +116,7 @@
     <!--            <property name="message"-->
     <!--                      value="Consider using special escape sequence instead of octal value or Unicode escaped value."/>-->
     <!--        </module>-->
-    <!--        <module name="AvoidEscapedUnicodeCharacters">-->
+    <!--        <module name="AvoidEscapedUnicodeChara        final int n = nodes.size();cters">-->
     <!--            <property name="allowEscapesForControlCharacters" value="true"/>-->
     <!--            <property name="allowByTailComment" value="true"/>-->
     <!--            <property name="allowNonPrintableEscapes" value="true"/>-->

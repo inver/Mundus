@@ -9,8 +9,7 @@ import com.mbrlabs.mundus.commons.assets.model.ModelMeta;
 import com.mbrlabs.mundus.commons.core.ecs.base.RenderComponent;
 import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
 import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObjectDelegate;
-import com.mbrlabs.mundus.commons.importExport.AssimpExporter;
-import com.mbrlabs.mundus.commons.loader.AssimpModelLoader;
+import com.mbrlabs.mundus.commons.loader.AssimpWorker;
 import com.mbrlabs.mundus.commons.loader.ModelImporter;
 import com.mbrlabs.mundus.commons.model.ImportedModel;
 import com.mbrlabs.mundus.commons.model.ModelService;
@@ -30,18 +29,15 @@ public class EditorModelService extends ModelService {
     private final ModelImporter modelImporter;
     private final ModelAssetLoader modelAssetLoader;
     private final EditorCtx ctx;
-    private final AssimpExporter modelExporter;
 
-    public EditorModelService(AssimpModelLoader assimpModelLoader, MetaService metaService, AssetsStorage assetsStorage,
-                              ModelImporter modelImporter, ModelAssetLoader modelAssetLoader, EditorCtx ctx,
-                              AssimpExporter modelExporter) {
-        super(assimpModelLoader);
+    public EditorModelService(AssimpWorker assimpWorker, MetaService metaService, AssetsStorage assetsStorage,
+                              ModelImporter modelImporter, ModelAssetLoader modelAssetLoader, EditorCtx ctx) {
+        super(assimpWorker);
         this.metaService = metaService;
         this.assetsStorage = assetsStorage;
         this.modelImporter = modelImporter;
         this.modelAssetLoader = modelAssetLoader;
         this.ctx = ctx;
-        this.modelExporter = modelExporter;
     }
 
     @SneakyThrows
@@ -64,12 +60,9 @@ public class EditorModelService extends ModelService {
         meta.setFile(assetFolder);
         metaService.save(meta);
 
-        //todo remove binary file if it needed
-        var model = modelImporter.loadModel(importedModel.getMain());
-        modelExporter.export(model, assetFolder.child(modelFileName).path());
+        modelImporter.loadModelAndSaveForAsset(importedModel.getMain(), assetFolder.child(modelFileName));
 
-        var res = modelAssetLoader.load(meta);
-        return res;
+        return modelAssetLoader.load(meta);
     }
 
     public HierarchyNode createModelEntity(ImportedModel importedModel) {

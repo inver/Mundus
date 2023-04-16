@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.g3d.model.data.ModelTexture;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
-import com.mbrlabs.mundus.commons.core.AppModelLoader;
 import com.mbrlabs.mundus.commons.model.ImportedModel;
 import lombok.extern.slf4j.Slf4j;
 import net.nevinsky.abyssus.core.model.Model;
@@ -24,19 +23,21 @@ import org.lwjgl.assimp.AIMesh;
 import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.AIString;
 import org.lwjgl.assimp.AIVector3D;
+import org.lwjgl.assimp.Assimp;
 import org.lwjgl.system.MemoryStack;
 
 import java.io.File;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import static com.badlogic.gdx.graphics.g3d.model.data.ModelTexture.USAGE_DIFFUSE;
 import static org.lwjgl.assimp.Assimp.AI_MATKEY_COLOR_DIFFUSE;
 import static org.lwjgl.assimp.Assimp.aiGetMaterialColor;
 import static org.lwjgl.assimp.Assimp.aiGetMaterialTexture;
-import static org.lwjgl.assimp.Assimp.aiImportFile;
 import static org.lwjgl.assimp.Assimp.aiProcess_CalcTangentSpace;
 import static org.lwjgl.assimp.Assimp.aiProcess_FixInfacingNormals;
 import static org.lwjgl.assimp.Assimp.aiProcess_GenBoundingBoxes;
@@ -52,34 +53,45 @@ import static org.lwjgl.assimp.Assimp.aiTextureType_NONE;
 
 @Slf4j
 //todo add texture cache
-public class AssimpModelLoader implements AppModelLoader {
+public class AssimpWorker {
 
-    @Override
+    private static final int FLAGS = aiProcess_GenNormals | aiProcess_GenSmoothNormals |
+            aiProcess_JoinIdenticalVertices | aiProcess_Triangulate | aiProcess_FixInfacingNormals |
+            aiProcess_CalcTangentSpace | aiProcess_LimitBoneWeights | aiProcess_PreTransformVertices |
+            aiProcess_GenBoundingBoxes;
+
+    public ImportedModel importModel(FileHandle handle) {
+        var model = loadModel(handle);
+        return new ImportedModel(model, handle);
+    }
+
     public Model loadModel(FileHandle fileHandle) {
-        ModelData data = loadModelData(fileHandle.name(), fileHandle);
+        ModelData data = loadModelData(fileHandle.name(), fileHandle, FLAGS);
         if (data == null) {
             return null;
         }
         return new Model(data, new ParentBasedTextureProvider(fileHandle));
     }
 
-    @Override
-    public ImportedModel importModel(FileHandle handle) {
-        var model = loadModel(handle);
-        return new ImportedModel(model, handle);
-    }
-
-    public ModelData loadModelData(String modelId, FileHandle modelPath) {
-        return loadModelData(modelId, modelPath, aiProcess_GenNormals | aiProcess_GenSmoothNormals |
-                aiProcess_JoinIdenticalVertices | aiProcess_Triangulate | aiProcess_FixInfacingNormals |
-                aiProcess_CalcTangentSpace | aiProcess_LimitBoneWeights | aiProcess_PreTransformVertices |
-                aiProcess_GenBoundingBoxes);
+    public void loadModelAndSaveForAsset(FileHandle from, FileHandle to) {
+        var aiScene = Assimp.aiImportFile(from.path(), FLAGS);
+        if (aiScene == null) {
+            throw new RuntimeException("Error loading model [modelPath: " + from + "]");
+        }
+        var textures = extractTextures(aiScene);
+        textures.forEach(t -> {
+            var folder = t.substring(0, t.lastIndexOf("/"));
+            var pathForCopy = to.parent().child(folder);
+            pathForCopy.mkdirs();
+            from.parent().child(t).copyTo(pathForCopy);
+        });
+        Assimp.aiExportScene(aiScene, "gltf2", to.path(), 0);
     }
 
     public ModelData loadModelData(String modelId, FileHandle modelPath, int flags) {
         var ts = System.currentTimeMillis();
 
-        var aiScene = aiImportFile(modelPath.path(), flags);
+        var aiScene = Assimp.aiImportFile(modelPath.path(), flags);
         if (aiScene == null) {
             throw new RuntimeException("Error loading model [modelPath: " + modelPath + "]");
         }
@@ -101,6 +113,28 @@ public class AssimpModelLoader implements AppModelLoader {
             var aiMesh = AIMesh.create(aiMeshes.get(i));
             processMesh(modelData, aiMesh);
         }
+    }
+
+    private Set<String> extractTextures(AIScene aiScene) {
+        var res = new HashSet<String>();
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            var aiTexturePath = AIString.calloc(stack);
+            for (int i = 0; i < aiScene.mNumMaterials(); i++) {
+                var aiMaterial = AIMaterial.create(aiScene.mMaterials().get(i));
+                log.debug("Process material {}", i);
+                for (var textureType : TextureType.values()) {
+                    log.debug("  Process texture {}", textureType);
+                    aiGetMaterialTexture(aiMaterial, textureType.getValue(), 0, aiTexturePath, (IntBuffer) null,
+                            null, null, null, null, null);
+                    var texturePath = aiTexturePath.dataString();
+                    if (texturePath.length() > 0) {
+                        var path = new File(texturePath).getName().replace("\\", "/").replace("//", "/");
+                        res.add(path);
+                    }
+                }
+            }
+        }
+        return res;
     }
 
     private Array<ModelMaterial> loadMaterials(String modelDir, AIScene aiScene) {
@@ -137,7 +171,8 @@ public class AssimpModelLoader implements AppModelLoader {
                 var texture = new ModelTexture();
                 texture.id = UUID.randomUUID().toString();
                 texture.usage = USAGE_DIFFUSE;
-                texture.fileName = modelDir + File.separator + new File(texturePath).getName().replace("\\", "/");
+                texture.fileName =
+                        modelDir + File.separator + new File(texturePath).getName().replace("\\", "/");
                 material.textures.add(texture);
             }
 

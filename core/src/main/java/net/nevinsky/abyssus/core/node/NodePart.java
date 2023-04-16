@@ -19,6 +19,7 @@ package net.nevinsky.abyssus.core.node;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.ArrayMap;
+import net.nevinsky.abyssus.core.ModelInstance;
 import net.nevinsky.abyssus.core.Renderable;
 import net.nevinsky.abyssus.core.mesh.MeshPart;
 import net.nevinsky.abyssus.core.model.Model;

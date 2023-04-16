@@ -789,19 +789,27 @@ public class DefaultShader extends BaseShader {
             prefix += "#define " + TextureAttribute.AmbientAlias + "Flag\n";
             prefix += "#define " + TextureAttribute.AmbientAlias + "Coord texCoord0\n"; // TODO implement UV mapping
         }
-        if ((attributesMask & ColorAttribute.Diffuse) == ColorAttribute.Diffuse)
+        if ((attributesMask & ColorAttribute.Diffuse) == ColorAttribute.Diffuse) {
             prefix += "#define " + ColorAttribute.DiffuseAlias + "Flag\n";
-        if ((attributesMask & ColorAttribute.Specular) == ColorAttribute.Specular)
+        }
+        if ((attributesMask & ColorAttribute.Specular) == ColorAttribute.Specular) {
             prefix += "#define " + ColorAttribute.SpecularAlias + "Flag\n";
-        if ((attributesMask & ColorAttribute.Emissive) == ColorAttribute.Emissive)
+        }
+        if ((attributesMask & ColorAttribute.Emissive) == ColorAttribute.Emissive) {
             prefix += "#define " + ColorAttribute.EmissiveAlias + "Flag\n";
-        if ((attributesMask & ColorAttribute.Reflection) == ColorAttribute.Reflection)
+        }
+        if ((attributesMask & ColorAttribute.Reflection) == ColorAttribute.Reflection) {
             prefix += "#define " + ColorAttribute.ReflectionAlias + "Flag\n";
-        if ((attributesMask & FloatAttribute.Shininess) == FloatAttribute.Shininess)
+        }
+        if ((attributesMask & FloatAttribute.Shininess) == FloatAttribute.Shininess) {
             prefix += "#define " + FloatAttribute.ShininessAlias + "Flag\n";
-        if ((attributesMask & FloatAttribute.AlphaTest) == FloatAttribute.AlphaTest)
+        }
+        if ((attributesMask & FloatAttribute.AlphaTest) == FloatAttribute.AlphaTest) {
             prefix += "#define " + FloatAttribute.AlphaTestAlias + "Flag\n";
-        if (renderable.bones != null && config.numBones > 0) prefix += "#define numBones " + config.numBones + "\n";
+        }
+        if (renderable.bones != null && config.numBones > 0) {
+            prefix += "#define numBones " + config.numBones + "\n";
+        }
         return prefix;
     }
 

@@ -4,14 +4,11 @@ import com.badlogic.gdx.files.FileHandle;
 import com.mbrlabs.mundus.commons.model.ImportedModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.nevinsky.abyssus.core.model.Model;
 
 @Slf4j
 @RequiredArgsConstructor
 public class ModelImporter {
-
-    //todo remove this hardcode, use DI
-    private final AssimpModelLoader assimpModelLoader;
+    private final AssimpWorker assimpWorker;
 
     public ImportedModel importAndConvertToTmpFolder(FileHandle tempFolder, FileHandle file) {
         if (file == null || !file.exists()) {
@@ -19,14 +16,14 @@ public class ModelImporter {
             return null;
         }
 
-        var modelFile = assimpModelLoader.importModel(file);
+        var modelFile = assimpWorker.importModel(file);
         modelFile.getMain().copyTo(tempFolder);
         modelFile.getDependencies().forEach(dep -> dep.copyTo(tempFolder));
 
         return modelFile;
     }
 
-    public Model loadModel(FileHandle file) {
-        return assimpModelLoader.loadModel(file);
+    public void loadModelAndSaveForAsset(FileHandle from, FileHandle to) {
+        assimpWorker.loadModelAndSaveForAsset(from, to);
     }
 }

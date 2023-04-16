@@ -536,11 +536,17 @@ public class Mesh implements Disposable {
      */
     public void getIndices(int srcOffset, int count, int[] indices, int destOffset) {
         int max = getNumIndices();
-        if (count < 0) count = max - srcOffset;
-        if (srcOffset < 0 || srcOffset >= max || srcOffset + count > max) throw new IllegalArgumentException(
-                "Invalid range specified, offset: " + srcOffset + ", count: " + count + ", max: " + max);
-        if ((indices.length - destOffset) < count) throw new IllegalArgumentException(
-                "not enough room in indices array, has " + indices.length + " shorts, needs " + count);
+        if (count < 0) {
+            count = max - srcOffset;
+        }
+        if (srcOffset < 0 || srcOffset >= max || srcOffset + count > max) {
+            throw new IllegalArgumentException(
+                    "Invalid range specified, offset: " + srcOffset + ", count: " + count + ", max: " + max);
+        }
+        if ((indices.length - destOffset) < count) {
+            throw new IllegalArgumentException(
+                    "not enough room in indices array, has " + indices.length + " shorts, needs " + count);
+        }
         int pos = getIndicesBuffer().position();
         ((Buffer) getIndicesBuffer()).position(srcOffset);
         getIndicesBuffer().get(indices, destOffset, count);
@@ -736,9 +742,13 @@ public class Mesh implements Disposable {
      * @param autoBind      overrides the autoBind member of this Mesh
      */
     public void render(ShaderProgram shader, int primitiveType, int offset, int count, boolean autoBind) {
-        if (count == 0) return;
+        if (count == 0) {
+            return;
+        }
 
-        if (autoBind) bind(shader);
+        if (autoBind) {
+            bind(shader);
+        }
 
         if (isVertexArray) {
             if (indices.getNumIndices() > 0) {
@@ -753,7 +763,9 @@ public class Mesh implements Disposable {
             }
         } else {
             int numInstances = 0;
-            if (isInstanced) numInstances = instances.getNumInstances();
+            if (isInstanced) {
+                numInstances = instances.getNumInstances();
+            }
 
             if (indices.getNumIndices() > 0) {
                 if (count + offset > indices.getNumMaxIndices()) {
@@ -778,7 +790,9 @@ public class Mesh implements Disposable {
             }
         }
 
-        if (autoBind) unbind(shader);
+        if (autoBind) {
+            unbind(shader);
+        }
     }
 
     /**

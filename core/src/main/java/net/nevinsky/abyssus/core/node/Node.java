@@ -26,6 +26,9 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import net.nevinsky.abyssus.core.mesh.MeshPart;
 import net.nevinsky.abyssus.core.model.Model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A node is part of a hierarchy of Nodes in a {@link Model}. A Node encodes a transform relative to its parents. A Node
  * can have child nodes. Optionally a node can specify a {@link MeshPart} and a {@link Material} to be applied to the
@@ -71,10 +74,10 @@ public class Node {
      **/
     public final Matrix4 globalTransform = new Matrix4();
 
-    public Array<NodePart> parts = new Array<>(2);
+    public final Array<NodePart> parts = new Array<>(2);
 
     protected Node parent;
-    private final Array<Node> children = new Array<>(2);
+    private final List<Node> children = new ArrayList<>(2);
 
     /**
      * Calculates the local transform based on the translation, scale and rotation
@@ -82,7 +85,9 @@ public class Node {
      * @return the local transform
      */
     public Matrix4 calculateLocalTransform() {
-        if (!isAnimated) localTransform.set(translation, rotation, scale);
+        if (!isAnimated) {
+            localTransform.set(translation, rotation, scale);
+        }
         return localTransform;
     }
 
@@ -92,10 +97,11 @@ public class Node {
      * @return the world transform
      */
     public Matrix4 calculateWorldTransform() {
-        if (inheritTransform && parent != null)
+        if (inheritTransform && parent != null) {
             globalTransform.set(parent.globalTransform).mul(localTransform);
-        else
+        } else {
             globalTransform.set(localTransform);
+        }
         return globalTransform;
     }
 
@@ -109,21 +115,21 @@ public class Node {
         calculateWorldTransform();
 
         if (recursive) {
-            for (Node child : children) {
-                child.calculateTransforms(true);
-            }
+            children.forEach(n -> n.calculateTransforms(true));
         }
     }
 
     public void calculateBoneTransforms(boolean recursive) {
         for (final NodePart part : parts) {
             if (part.invBoneBindTransforms == null || part.bones == null ||
-                    part.invBoneBindTransforms.size != part.bones.length)
+                    part.invBoneBindTransforms.size != part.bones.length) {
                 continue;
+            }
             final int n = part.invBoneBindTransforms.size;
-            for (int i = 0; i < n; i++)
+            for (int i = 0; i < n; i++) {
                 part.bones[i].set(part.invBoneBindTransforms.keys[i].globalTransform)
                         .mul(part.invBoneBindTransforms.values[i]);
+            }
         }
         if (recursive) {
             for (Node child : children) {
@@ -166,15 +172,16 @@ public class Node {
             final NodePart part = parts.get(i);
             if (part.enabled) {
                 final MeshPart meshPart = part.meshPart;
-                if (transform)
+                if (transform) {
                     meshPart.mesh.extendBoundingBox(out, meshPart.offset, meshPart.size, globalTransform);
-                else
+                } else {
                     meshPart.mesh.extendBoundingBox(out, meshPart.offset, meshPart.size);
+                }
             }
         }
-        final int childCount = children.size;
-        for (int i = 0; i < childCount; i++)
-            children.get(i).extendBoundingBox(out);
+        for (Node child : children) {
+            child.extendBoundingBox(out);
+        }
         return out;
     }
 
@@ -201,7 +208,7 @@ public class Node {
      * @return whether this Node has one or more children (true) or not (false)
      */
     public boolean hasChildren() {
-        return children != null && children.size > 0;
+        return children.size() > 0;
     }
 
     /**
@@ -209,7 +216,7 @@ public class Node {
      * @see #getChild(int)
      */
     public int getChildCount() {
-        return children.size;
+        return children.size();
     }
 
     /**
@@ -266,11 +273,12 @@ public class Node {
         Node p = child.getParent();
         if (p != null && !p.removeChild(child))
             throw new GdxRuntimeException("Could not remove child from its current parent");
-        if (index < 0 || index >= children.size) {
-            index = children.size;
+        if (index < 0 || index >= children.size()) {
+            index = children.size();
             children.add(child);
-        } else
-            children.insert(index, child);
+        } else {
+            children.add(index, child);
+        }
         child.parent = this;
         return index;
     }
@@ -285,10 +293,13 @@ public class Node {
      * @return the zero-based index of the first inserted child
      */
     public <T extends Node> int insertChildren(int index, final Iterable<T> nodes) {
-        if (index < 0 || index > children.size) index = children.size;
+        if (index < 0 || index > children.size()) {
+            index = children.size();
+        }
         int i = index;
-        for (T child : nodes)
+        for (T child : nodes) {
             insertChild(i++, child);
+        }
         return index;
     }
 
@@ -301,7 +312,9 @@ public class Node {
      * @return Whether the removal was successful.
      */
     public <T extends Node> boolean removeChild(final T child) {
-        if (!children.removeValue(child, true)) return false;
+        if (!children.remove(child)) {
+            return false;
+        }
         child.parent = null;
         return true;
     }
@@ -378,19 +391,27 @@ public class Node {
      * @param recursive false to fetch a root node only, true to search the entire node tree for the specified node.
      * @return The node with the specified id, or null if not found.
      */
-    public static Node getNode(final Array<Node> nodes, final String id, boolean recursive, boolean ignoreCase) {
-        final int n = nodes.size;
+    public static Node getNode(final List<Node> nodes, final String id, boolean recursive, boolean ignoreCase) {
         Node node;
         if (ignoreCase) {
-            for (int i = 0; i < n; i++)
-                if ((node = nodes.get(i)).id.equalsIgnoreCase(id)) return node;
+            for (Node value : nodes) {
+                if ((node = value).id.equalsIgnoreCase(id)) {
+                    return node;
+                }
+            }
         } else {
-            for (int i = 0; i < n; i++)
-                if ((node = nodes.get(i)).id.equals(id)) return node;
+            for (Node value : nodes) {
+                if ((node = value).id.equals(id)) {
+                    return node;
+                }
+            }
         }
         if (recursive) {
-            for (int i = 0; i < n; i++)
-                if ((node = getNode(nodes.get(i).children, id, true, ignoreCase)) != null) return node;
+            for (Node value : nodes) {
+                if ((node = getNode(value.children, id, true, ignoreCase)) != null) {
+                    return node;
+                }
+            }
         }
         return null;
     }

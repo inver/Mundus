@@ -352,13 +352,14 @@ public class AnimationController extends BaseAnimationController {
      * Set the active animation, replacing any current animation.
      */
     protected AnimationDesc setAnimation(final AnimationDesc anim) {
-        if (current == null)
+        if (current == null) {
             current = anim;
-        else {
-            if (!allowSameAnimation && anim != null && current.animation == anim.animation)
+        } else {
+            if (!allowSameAnimation && anim != null && current.animation == anim.animation) {
                 anim.time = current.time;
-            else
+            } else {
                 removeAnimation(current.animation);
+            }
             animationPool.free(current);
             current = anim;
         }
@@ -555,13 +556,17 @@ public class AnimationController extends BaseAnimationController {
      * loop.
      */
     protected AnimationDesc queue(final AnimationDesc anim, float transitionTime) {
-        if (current == null || current.loopCount == 0)
+        if (current == null || current.loopCount == 0) {
             animate(anim, transitionTime);
-        else {
-            if (queued != null) animationPool.free(queued);
+        } else {
+            if (queued != null) {
+                animationPool.free(queued);
+            }
             queued = anim;
             queuedTransitionTime = transitionTime;
-            if (current.loopCount < 0) current.loopCount = 1;
+            if (current.loopCount < 0) {
+                current.loopCount = 1;
+            }
         }
         return anim;
     }

@@ -32,6 +32,9 @@ import net.nevinsky.abyssus.core.node.NodeAnimation;
 import net.nevinsky.abyssus.core.node.NodePart;
 import net.nevinsky.abyssus.core.shader.Shader;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * An instance of a {@link Model}, allows to specify global transform and modify the materials, as it has a copy of the
  * model's materials. Multiple instances can be created from the same Model, all sharing the meshes and textures of the
@@ -58,7 +61,7 @@ public class ModelInstance implements RenderableProvider {
     /**
      * root nodes of the model
      **/
-    public final Array<Node> nodes = new Array();
+    public final List<Node> nodes = new ArrayList<>();
     /**
      * animations of the model, modifying node transformations
      **/
@@ -192,7 +195,7 @@ public class ModelInstance implements RenderableProvider {
             copy.scale.set(1, 1, 1);
         } else if (parentTransform && copy.hasParent()) this.transform.mul(node.getParent().globalTransform);
         invalidate();
-        copyAnimations(model.animations, shareKeyframes);
+        copyAnimations(model.getAnimations(), shareKeyframes);
         calculateTransforms();
     }
 
@@ -209,11 +212,12 @@ public class ModelInstance implements RenderableProvider {
     public ModelInstance(final Model model, final Matrix4 transform, final String... rootNodeIds) {
         this.model = model;
         this.transform = transform == null ? new Matrix4() : transform;
-        if (rootNodeIds == null)
-            copyNodes(model.nodes);
-        else
-            copyNodes(model.nodes, rootNodeIds);
-        copyAnimations(model.animations, defaultShareKeyframes);
+        if (rootNodeIds == null) {
+            copyNodes(model.getNodes());
+        } else {
+            copyNodes(model.getNodes(), rootNodeIds);
+        }
+        copyAnimations(model.getAnimations(), defaultShareKeyframes);
         calculateTransforms();
     }
 
@@ -238,8 +242,8 @@ public class ModelInstance implements RenderableProvider {
                          boolean shareKeyframes) {
         this.model = model;
         this.transform = transform == null ? new Matrix4() : transform;
-        copyNodes(model.nodes, rootNodeIds);
-        copyAnimations(model.animations, shareKeyframes);
+        copyNodes(model.getNodes(), rootNodeIds);
+        copyAnimations(model.getAnimations(), shareKeyframes);
         calculateTransforms();
     }
 
@@ -298,17 +302,15 @@ public class ModelInstance implements RenderableProvider {
         return new ModelInstance(this);
     }
 
-    private void copyNodes(Array<Node> nodes) {
-        for (int i = 0, n = nodes.size; i < n; ++i) {
-            final Node node = nodes.get(i);
+    private void copyNodes(List<Node> nodes) {
+        for (final Node node : nodes) {
             this.nodes.add(node.copy());
         }
         invalidate();
     }
 
-    private void copyNodes(Array<Node> nodes, final String... nodeIds) {
-        for (int i = 0, n = nodes.size; i < n; ++i) {
-            final Node node = nodes.get(i);
+    private void copyNodes(List<Node> nodes, final String... nodeIds) {
+        for (final Node node : nodes) {
             for (final String nodeId : nodeIds) {
                 if (nodeId.equals(node.id)) {
                     this.nodes.add(node.copy());
@@ -319,9 +321,8 @@ public class ModelInstance implements RenderableProvider {
         invalidate();
     }
 
-    private void copyNodes(Array<Node> nodes, final Array<String> nodeIds) {
-        for (int i = 0, n = nodes.size; i < n; ++i) {
-            final Node node = nodes.get(i);
+    private void copyNodes(List<Node> nodes, final Array<String> nodeIds) {
+        for (final Node node : nodes) {
             for (final String nodeId : nodeIds) {
                 if (nodeId.equals(node.id)) {
                     this.nodes.add(node.copy());
@@ -363,8 +364,8 @@ public class ModelInstance implements RenderableProvider {
      * that all materials are listed in the {@link #materials} array.
      */
     private void invalidate() {
-        for (int i = 0, n = nodes.size; i < n; ++i) {
-            invalidate(nodes.get(i));
+        for (Node node : nodes) {
+            invalidate(node);
         }
     }
 
@@ -407,8 +408,7 @@ public class ModelInstance implements RenderableProvider {
      * @param shareKeyframes Shallow copy of {@link NodeKeyframe}'s if it's true, otherwise make a deep copy.
      */
     public void copyAnimation(Animation sourceAnim, boolean shareKeyframes) {
-        Animation animation = new Animation();
-        animation.id = sourceAnim.id;
+        Animation animation = new Animation(sourceAnim.id);
         animation.duration = sourceAnim.duration;
         for (final NodeAnimation nanim : sourceAnim.nodeAnimations) {
             final Node node = getNode(nanim.node.id);
@@ -421,19 +421,22 @@ public class ModelInstance implements RenderableProvider {
                 nodeAnim.scaling = nanim.scaling;
             } else {
                 if (nanim.translation != null) {
-                    nodeAnim.translation = new Array<NodeKeyframe<Vector3>>();
-                    for (final NodeKeyframe<Vector3> kf : nanim.translation)
-                        nodeAnim.translation.add(new NodeKeyframe<Vector3>(kf.keytime, kf.value));
+                    nodeAnim.translation = new Array<>();
+                    for (final NodeKeyframe<Vector3> kf : nanim.translation) {
+                        nodeAnim.translation.add(new NodeKeyframe<>(kf.keytime, kf.value));
+                    }
                 }
                 if (nanim.rotation != null) {
-                    nodeAnim.rotation = new Array<NodeKeyframe<Quaternion>>();
-                    for (final NodeKeyframe<Quaternion> kf : nanim.rotation)
-                        nodeAnim.rotation.add(new NodeKeyframe<Quaternion>(kf.keytime, kf.value));
+                    nodeAnim.rotation = new Array<>();
+                    for (final NodeKeyframe<Quaternion> kf : nanim.rotation) {
+                        nodeAnim.rotation.add(new NodeKeyframe<>(kf.keytime, kf.value));
+                    }
                 }
                 if (nanim.scaling != null) {
-                    nodeAnim.scaling = new Array<NodeKeyframe<Vector3>>();
-                    for (final NodeKeyframe<Vector3> kf : nanim.scaling)
-                        nodeAnim.scaling.add(new NodeKeyframe<Vector3>(kf.keytime, kf.value));
+                    nodeAnim.scaling = new Array<>();
+                    for (final NodeKeyframe<Vector3> kf : nanim.scaling) {
+                        nodeAnim.scaling.add(new NodeKeyframe<>(kf.keytime, kf.value));
+                    }
                 }
             }
             if (nodeAnim.translation != null || nodeAnim.rotation != null || nodeAnim.scaling != null)
@@ -505,12 +508,11 @@ public class ModelInstance implements RenderableProvider {
      * rotation, scale) was modified.
      */
     public void calculateTransforms() {
-        final int n = nodes.size;
-        for (int i = 0; i < n; i++) {
-            nodes.get(i).calculateTransforms(true);
+        for (Node node : nodes) {
+            node.calculateTransforms(true);
         }
-        for (int i = 0; i < n; i++) {
-            nodes.get(i).calculateBoneTransforms(true);
+        for (Node node : nodes) {
+            node.calculateBoneTransforms(true);
         }
     }
 
@@ -534,9 +536,9 @@ public class ModelInstance implements RenderableProvider {
      * @return the out parameter for chaining
      */
     public BoundingBox extendBoundingBox(final BoundingBox out) {
-        final int n = nodes.size;
-        for (int i = 0; i < n; i++)
-            nodes.get(i).extendBoundingBox(out);
+        for (Node node : nodes) {
+            node.extendBoundingBox(out);
+        }
         return out;
     }
 

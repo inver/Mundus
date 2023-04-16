@@ -17,6 +17,7 @@
 package net.nevinsky.abyssus.core.node;
 
 import com.badlogic.gdx.utils.Array;
+import lombok.RequiredArgsConstructor;
 import net.nevinsky.abyssus.core.model.Model;
 
 /**
@@ -26,11 +27,12 @@ import net.nevinsky.abyssus.core.model.Model;
  *
  * @author badlogic
  */
+@RequiredArgsConstructor
 public class Animation {
     /**
      * the unique id of the animation
      **/
-    public String id;
+    public final String id;
     /**
      * the duration in seconds
      **/
@@ -38,5 +40,5 @@ public class Animation {
     /**
      * the animation curves for individual nodes
      **/
-    public Array<NodeAnimation> nodeAnimations = new Array<>();
+    public final Array<NodeAnimation> nodeAnimations = new Array<>();
 }

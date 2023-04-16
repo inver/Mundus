@@ -11,11 +11,10 @@ import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
-import com.mbrlabs.mundus.commons.loader.AssimpModelLoader;
+import com.mbrlabs.mundus.commons.loader.AssimpWorker;
 import lombok.extern.slf4j.Slf4j;
 import net.nevinsky.abyssus.core.ModelBatch;
 import net.nevinsky.abyssus.core.ModelInstance;
-import net.nevinsky.abyssus.core.model.Model;
 
 @Slf4j
 public class TesterListener extends Lwjgl3WindowAdapter implements ApplicationListener {
@@ -27,7 +26,7 @@ public class TesterListener extends Lwjgl3WindowAdapter implements ApplicationLi
     public CameraInputController camController;
 
     private final Environment environment = new Environment();
-    private final AssimpModelLoader loader = new AssimpModelLoader();
+    private final AssimpWorker loader = new AssimpWorker();
 
     @Override
     public void create() {
@@ -63,12 +62,9 @@ public class TesterListener extends Lwjgl3WindowAdapter implements ApplicationLi
 
     private void loadModel() {
         var ts = System.currentTimeMillis();
-        var res = loader.loadModelData("ololo", new FileHandle(
+        var model = loader.loadModel(new FileHandle(
                 "/home/inv3r/Development/gamedev/Mundus/commons/src/test/resources/obj/piper/piper_pa18.obj"
         ));
-        log.info("ModelData loaded in {} ms", System.currentTimeMillis() - ts);
-        ts = System.currentTimeMillis();
-        var model = new Model(res);
         log.info("Model created in {} ms", System.currentTimeMillis() - ts);
         ts = System.currentTimeMillis();
         modelInstance = new ModelInstance(model);

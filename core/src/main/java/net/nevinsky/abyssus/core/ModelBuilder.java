@@ -55,7 +55,7 @@ public class ModelBuilder {
     /**
      * The mesh builders created between begin and end
      */
-    private final Array<MeshBuilder> builders = new Array<MeshBuilder>();
+    private final Array<MeshBuilder> builders = new Array<>();
 
     private final Matrix4 tmpTransform = new Matrix4();
 
@@ -109,11 +109,13 @@ public class ModelBuilder {
      * NodePart.
      */
     protected Node node(final Node node) {
-        if (model == null) throw new GdxRuntimeException("Call begin() first");
+        if (model == null) {
+            throw new GdxRuntimeException("Call begin() first");
+        }
 
         endnode();
 
-        model.nodes.add(node);
+        model.getNodes().add(node);
         this.node = node;
 
         return node;
@@ -127,7 +129,7 @@ public class ModelBuilder {
     public Node node() {
         final Node node = new Node();
         node(node);
-        node.id = "node" + model.nodes.size;
+        node.id = "node" + model.getNodes().size();
         return node;
     }
 
@@ -140,10 +142,11 @@ public class ModelBuilder {
     public Node node(final String id, final Model model) {
         final Node node = new Node();
         node.id = id;
-        node.addChildren(model.nodes);
+        node.addChildren(model.getNodes());
         node(node);
-        for (final Disposable disposable : model.getManagedDisposables())
+        for (final Disposable disposable : model.getManagedDisposables()) {
             manage(disposable);
+        }
         return node;
     }
 
@@ -151,7 +154,9 @@ public class ModelBuilder {
      * Add the {@link Disposable} object to the model, causing it to be disposed when the model is disposed.
      */
     public void manage(final Disposable disposable) {
-        if (model == null) throw new GdxRuntimeException("Call begin() first");
+        if (model == null) {
+            throw new GdxRuntimeException("Call begin() first");
+        }
         model.manageDisposable(disposable);
     }
 

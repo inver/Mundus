@@ -30,6 +30,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.nevinsky.abyssus.core.ModelInstance;
 import net.nevinsky.abyssus.core.mesh.Mesh;
@@ -40,10 +41,13 @@ import net.nevinsky.abyssus.core.node.NodeAnimation;
 import net.nevinsky.abyssus.core.node.NodePart;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A model represents a 3D assets. It stores a hierarchy of nodes. A node has a transform and optionally a graphical
@@ -64,35 +68,22 @@ import java.util.Map;
  */
 @Getter
 @Slf4j
+@NoArgsConstructor
 public class Model implements Disposable {
-    /**
-     * the materials of the model, used by nodes that have a graphical representation TODO not sure if superfluous,
-     * allows modification of materials without having to traverse the nodes
-     **/
-//    public final Array<Material> materials = new Array();
     /**
      * root nodes of the model
      **/
-    public final Array<Node> nodes = new Array();
+    @Getter
+    private final List<Node> nodes = new ArrayList<>();
     /**
      * animations of the model, modifying node transformations
      **/
-    public final Array<Animation> animations = new Array();
-    /**
-     * the meshes of the model
-     **/
-//    public final Array<Mesh> meshes = new Array();
+    @Getter
+    private final List<Animation> animations = new ArrayList<>();
     /**
      * Array of disposable resources like textures or meshes the Model is responsible for disposing
      **/
-    protected final Array<Disposable> disposables = new Array();
-
-    /**
-     * Constructs an empty model. Manual created models do not manage their resources by default. Use
-     * {@link #manageDisposable(Disposable)} to add resources to be managed by this model.
-     */
-    public Model() {
-    }
+    protected final Set<Disposable> disposables = new HashSet<>();
 
     /**
      * Constructs a new Model based on the {@link ModelData}. Texture files will be loaded from the internal file
@@ -124,8 +115,7 @@ public class Model implements Disposable {
 
     protected void loadAnimations(Iterable<ModelAnimation> modelAnimations) {
         for (final ModelAnimation anim : modelAnimations) {
-            Animation animation = new Animation();
-            animation.id = anim.id;
+            Animation animation = new Animation(anim.id);
             for (ModelNodeAnimation nanim : anim.nodeAnimations) {
                 final Node node = getNode(nanim.nodeId);
                 if (node == null) {
@@ -138,10 +128,12 @@ public class Model implements Disposable {
                     nodeAnim.translation = new Array<>();
                     nodeAnim.translation.ensureCapacity(nanim.translation.size);
                     for (ModelNodeKeyframe<Vector3> kf : nanim.translation) {
-                        if (kf.keytime > animation.duration) animation.duration = kf.keytime;
-                        nodeAnim.translation
-                                .add(new NodeKeyframe<Vector3>(kf.keytime,
-                                        new Vector3(kf.value == null ? node.translation : kf.value)));
+                        if (kf.keytime > animation.duration) {
+                            animation.duration = kf.keytime;
+                        }
+                        nodeAnim.translation.add(new NodeKeyframe<>(kf.keytime,
+                                new Vector3(kf.value == null ? node.translation : kf.value))
+                        );
                     }
                 }
 
@@ -149,10 +141,12 @@ public class Model implements Disposable {
                     nodeAnim.rotation = new Array<>();
                     nodeAnim.rotation.ensureCapacity(nanim.rotation.size);
                     for (ModelNodeKeyframe<Quaternion> kf : nanim.rotation) {
-                        if (kf.keytime > animation.duration) animation.duration = kf.keytime;
-                        nodeAnim.rotation
-                                .add(new NodeKeyframe<>(kf.keytime,
-                                        new Quaternion(kf.value == null ? node.rotation : kf.value)));
+                        if (kf.keytime > animation.duration) {
+                            animation.duration = kf.keytime;
+                        }
+                        nodeAnim.rotation.add(new NodeKeyframe<>(kf.keytime,
+                                new Quaternion(kf.value == null ? node.rotation : kf.value))
+                        );
                     }
                 }
 
@@ -160,19 +154,24 @@ public class Model implements Disposable {
                     nodeAnim.scaling = new Array<>();
                     nodeAnim.scaling.ensureCapacity(nanim.scaling.size);
                     for (ModelNodeKeyframe<Vector3> kf : nanim.scaling) {
-                        if (kf.keytime > animation.duration) animation.duration = kf.keytime;
-                        nodeAnim.scaling
-                                .add(new NodeKeyframe<Vector3>(kf.keytime,
-                                        new Vector3(kf.value == null ? node.scale : kf.value)));
+                        if (kf.keytime > animation.duration) {
+                            animation.duration = kf.keytime;
+                        }
+                        nodeAnim.scaling.add(new NodeKeyframe<>(kf.keytime,
+                                new Vector3(kf.value == null ? node.scale : kf.value))
+                        );
                     }
                 }
 
                 if ((nodeAnim.translation != null && nodeAnim.translation.size > 0)
                         || (nodeAnim.rotation != null && nodeAnim.rotation.size > 0)
-                        || (nodeAnim.scaling != null && nodeAnim.scaling.size > 0))
+                        || (nodeAnim.scaling != null && nodeAnim.scaling.size > 0)) {
                     animation.nodeAnimations.add(nodeAnim);
+                }
             }
-            if (animation.nodeAnimations.size > 0) animations.add(animation);
+            if (animation.nodeAnimations.size > 0) {
+                animations.add(animation);
+            }
         }
     }
 
@@ -199,9 +198,15 @@ public class Model implements Disposable {
         Node node = new Node();
         node.id = modelNode.id;
 
-        if (modelNode.translation != null) node.translation.set(modelNode.translation);
-        if (modelNode.rotation != null) node.rotation.set(modelNode.rotation);
-        if (modelNode.scale != null) node.scale.set(modelNode.scale);
+        if (modelNode.translation != null) {
+            node.translation.set(modelNode.translation);
+        }
+        if (modelNode.rotation != null) {
+            node.rotation.set(modelNode.rotation);
+        }
+        if (modelNode.scale != null) {
+            node.scale.set(modelNode.scale);
+        }
         // TODO create temporary maps for faster lookup?
         if (modelNode.parts != null) {
             for (ModelNodePart modelNodePart : modelNode.parts) {
@@ -307,16 +312,29 @@ public class Model implements Disposable {
     protected Material convertMaterial(ModelMaterial mtl, TextureProvider textureProvider) {
         Material result = new Material();
         result.id = mtl.id;
-        if (mtl.ambient != null) result.set(new ColorAttribute(ColorAttribute.Ambient, mtl.ambient));
-        if (mtl.diffuse != null) result.set(new ColorAttribute(ColorAttribute.Diffuse, mtl.diffuse));
-        if (mtl.specular != null) result.set(new ColorAttribute(ColorAttribute.Specular, mtl.specular));
-        if (mtl.emissive != null) result.set(new ColorAttribute(ColorAttribute.Emissive, mtl.emissive));
-        if (mtl.reflection != null) result.set(new ColorAttribute(ColorAttribute.Reflection, mtl.reflection));
-        if (mtl.shininess > 0f) result.set(new FloatAttribute(FloatAttribute.Shininess, mtl.shininess));
-        if (mtl.opacity != 1.f)
+        if (mtl.ambient != null) {
+            result.set(new ColorAttribute(ColorAttribute.Ambient, mtl.ambient));
+        }
+        if (mtl.diffuse != null) {
+            result.set(new ColorAttribute(ColorAttribute.Diffuse, mtl.diffuse));
+        }
+        if (mtl.specular != null) {
+            result.set(new ColorAttribute(ColorAttribute.Specular, mtl.specular));
+        }
+        if (mtl.emissive != null) {
+            result.set(new ColorAttribute(ColorAttribute.Emissive, mtl.emissive));
+        }
+        if (mtl.reflection != null) {
+            result.set(new ColorAttribute(ColorAttribute.Reflection, mtl.reflection));
+        }
+        if (mtl.shininess > 0f) {
+            result.set(new FloatAttribute(FloatAttribute.Shininess, mtl.shininess));
+        }
+        if (mtl.opacity != 1.f) {
             result.set(new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA, mtl.opacity));
+        }
 
-        ObjectMap<String, Texture> textures = new ObjectMap<String, Texture>();
+        ObjectMap<String, Texture> textures = new ObjectMap<>();
 
         // TODO uvScaling/uvTranslation totally ignored
         if (mtl.textures != null) {
@@ -330,7 +348,7 @@ public class Model implements Disposable {
                     disposables.add(texture);
                 }
 
-                var descriptor = new TextureDescriptor(texture);
+                var descriptor = new TextureDescriptor<>(texture);
                 descriptor.minFilter = texture.getMinFilter();
                 descriptor.magFilter = texture.getMagFilter();
                 descriptor.uWrap = texture.getUWrap();
@@ -385,9 +403,7 @@ public class Model implements Disposable {
      * @param disposable the Disposable
      */
     public void manageDisposable(Disposable disposable) {
-        if (!disposables.contains(disposable, true)) {
-            disposables.add(disposable);
-        }
+        disposables.add(disposable);
     }
 
     /**
@@ -399,9 +415,7 @@ public class Model implements Disposable {
 
     @Override
     public void dispose() {
-        for (Disposable disposable : disposables) {
-            disposable.dispose();
-        }
+        disposables.forEach(Disposable::dispose);
     }
 
     /**
@@ -415,12 +429,11 @@ public class Model implements Disposable {
      * rotation, scale) was modified.
      */
     public void calculateTransforms() {
-        final int n = nodes.size;
-        for (int i = 0; i < n; i++) {
-            nodes.get(i).calculateTransforms(true);
+        for (Node node : nodes) {
+            node.calculateTransforms(true);
         }
-        for (int i = 0; i < n; i++) {
-            nodes.get(i).calculateBoneTransforms(true);
+        for (Node node : nodes) {
+            node.calculateBoneTransforms(true);
         }
     }
 
@@ -444,9 +457,9 @@ public class Model implements Disposable {
      * @return the out parameter for chaining
      */
     public BoundingBox extendBoundingBox(final BoundingBox out) {
-        final int n = nodes.size;
-        for (int i = 0; i < n; i++)
-            nodes.get(i).extendBoundingBox(out);
+        for (Node node : nodes) {
+            node.extendBoundingBox(out);
+        }
         return out;
     }
 
@@ -464,49 +477,22 @@ public class Model implements Disposable {
      * @return The {@link Animation} with the specified id, or null if not available.
      */
     public Animation getAnimation(final String id, boolean ignoreCase) {
-        final int n = animations.size;
         Animation animation;
         if (ignoreCase) {
-            for (int i = 0; i < n; i++)
-                if ((animation = animations.get(i)).id.equalsIgnoreCase(id)) return animation;
+            for (Animation value : animations) {
+                if ((animation = value).id.equalsIgnoreCase(id)) {
+                    return animation;
+                }
+            }
         } else {
-            for (int i = 0; i < n; i++)
-                if ((animation = animations.get(i)).id.equals(id)) return animation;
+            for (Animation value : animations) {
+                if ((animation = value).id.equals(id)) {
+                    return animation;
+                }
+            }
         }
         return null;
     }
-
-//    /**
-//     * @param id The ID of the material to fetch.
-//     * @return The {@link Material} with the specified id, or null if not available.
-//     */
-//    public Material getMaterial(final String id) {
-//        return getMaterial(id, true);
-//    }
-//
-//    /**
-//     * @param id         The ID of the material to fetch.
-//     * @param ignoreCase whether to use case sensitivity when comparing the material id.
-//     * @return The {@link Material} with the specified id, or null if not available.
-//     */
-//    public Material getMaterial(final String id, boolean ignoreCase) {
-//        final int n = materials.size;
-//        Material material;
-//        if (ignoreCase) {
-//            for (int i = 0; i < n; i++) {
-//                if ((material = materials.get(i)).id.equalsIgnoreCase(id)) {
-//                    return material;
-//                }
-//            }
-//        } else {
-//            for (int i = 0; i < n; i++) {
-//                if ((material = materials.get(i)).id.equals(id)) {
-//                    return material;
-//                }
-//            }
-//        }
-//        return null;
-//    }
 
     /**
      * @param id The ID of the node to fetch.
