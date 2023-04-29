@@ -57,7 +57,7 @@ public class ModelInstance implements RenderableProvider {
      * the materials of the model, used by nodes that have a graphical representation TODO not sure if superfluous,
      * allows modification of materials without having to traverse the nodes
      **/
-    public final Array<Material> materials = new Array();
+    public final Array<Material> materials = new Array<>();
     /**
      * root nodes of the model
      **/
@@ -65,7 +65,7 @@ public class ModelInstance implements RenderableProvider {
     /**
      * animations of the model, modifying node transformations
      **/
-    public final Array<Animation> animations = new Array();
+    public final Array<Animation> animations = new Array<>();
     /**
      * the {@link Model} this instances derives from
      **/

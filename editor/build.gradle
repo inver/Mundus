@@ -22,8 +22,8 @@ task run(dependsOn: classes, type: JavaExec) {
 }
 
 task distEditor(type: Jar) {
-    baseName = 'Abyssus'
-//    version = '0.3.0'
+    archiveBaseName = 'Abyssus'
+    archiveVersion = '0.3.0'
 
     manifest {
         attributes 'Main-Class': project.mainClassName

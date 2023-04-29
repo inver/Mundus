@@ -799,9 +799,13 @@ public class Mesh implements Disposable {
      * Frees all resources associated with this Mesh
      */
     public void dispose() {
-        if (meshes.get(Gdx.app) != null) meshes.get(Gdx.app).removeValue(this, true);
+        if (meshes.get(Gdx.app) != null) {
+            meshes.get(Gdx.app).removeValue(this, true);
+        }
         vertices.dispose();
-        if (instances != null) instances.dispose();
+        if (instances != null) {
+            instances.dispose();
+        }
         indices.dispose();
     }
 
@@ -814,8 +818,11 @@ public class Mesh implements Disposable {
     public VertexAttribute getVertexAttribute(int usage) {
         VertexAttributes attributes = vertices.getAttributes();
         int len = attributes.size();
-        for (int i = 0; i < len; i++)
-            if (attributes.get(i).usage == usage) return attributes.get(i);
+        for (int i = 0; i < len; i++) {
+            if (attributes.get(i).usage == usage) {
+                return attributes.get(i);
+            }
+        }
 
         return null;
     }

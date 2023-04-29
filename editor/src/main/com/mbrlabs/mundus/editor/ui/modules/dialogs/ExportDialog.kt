@@ -46,7 +46,7 @@ class ExportDialog(
 ) : VisDialog("Exporting") {
 
     companion object {
-        private val log = LoggerFactory.getLogger(javaClass)
+        private val log = LoggerFactory.getLogger(ExportDialog::class.java)
     }
 
     private var lastExport: Long = 0

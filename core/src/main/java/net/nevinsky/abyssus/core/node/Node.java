@@ -268,11 +268,14 @@ public class Node {
      */
     public <T extends Node> int insertChild(int index, final T child) {
         for (Node p = this; p != null; p = p.getParent()) {
-            if (p == child) throw new GdxRuntimeException("Cannot add a parent as a child");
+            if (p == child) {
+                throw new GdxRuntimeException("Cannot add a parent as a child");
+            }
         }
         Node p = child.getParent();
-        if (p != null && !p.removeChild(child))
+        if (p != null && !p.removeChild(child)) {
             throw new GdxRuntimeException("Could not remove child from its current parent");
+        }
         if (index < 0 || index >= children.size()) {
             index = children.size();
             children.add(child);

@@ -213,8 +213,12 @@ public class ModelBatch implements Disposable {
      * @param cam The new camera to use.
      */
     public void setCamera(final Camera cam) {
-        if (camera == null) throw new GdxRuntimeException("Call begin() first.");
-        if (renderables.size > 0) flush();
+        if (camera == null) {
+            throw new GdxRuntimeException("Call begin() first.");
+        }
+        if (renderables.size > 0) {
+            flush();
+        }
         camera = cam;
     }
 
@@ -271,13 +275,17 @@ public class ModelBatch implements Disposable {
         for (int i = 0; i < renderables.size; i++) {
             final Renderable renderable = renderables.get(i);
             if (currentShader != renderable.shader) {
-                if (currentShader != null) currentShader.end();
+                if (currentShader != null) {
+                    currentShader.end();
+                }
                 currentShader = renderable.shader;
                 currentShader.begin(camera, context);
             }
             currentShader.render(renderable);
         }
-        if (currentShader != null) currentShader.end();
+        if (currentShader != null) {
+            currentShader.end();
+        }
         renderablesPool.flush();
         renderables.clear();
     }
@@ -289,7 +297,9 @@ public class ModelBatch implements Disposable {
      */
     public void end() {
         flush();
-        if (ownContext) context.end();
+        if (ownContext) {
+            context.end();
+        }
         camera = null;
     }
 
@@ -327,10 +337,10 @@ public class ModelBatch implements Disposable {
      *
      * @param renderableProviders one or more renderable providers
      */
-    public <T extends RenderableProvider> void render(
-            final Iterable<T> renderableProviders) {
-        for (final RenderableProvider renderableProvider : renderableProviders)
+    public <T extends RenderableProvider> void render(final Iterable<T> renderableProviders) {
+        for (final RenderableProvider renderableProvider : renderableProviders) {
             render(renderableProvider);
+        }
     }
 
     /**
@@ -395,10 +405,10 @@ public class ModelBatch implements Disposable {
      * @param renderableProviders one or more renderable providers
      * @param shader              the shader to use for the renderables
      */
-    public <T extends RenderableProvider> void render(
-            final Iterable<T> renderableProviders, final Shader shader) {
-        for (final RenderableProvider renderableProvider : renderableProviders)
+    public <T extends RenderableProvider> void render(final Iterable<T> renderableProviders, final Shader shader) {
+        for (final RenderableProvider renderableProvider : renderableProviders) {
             render(renderableProvider, shader);
+        }
     }
 
     /**

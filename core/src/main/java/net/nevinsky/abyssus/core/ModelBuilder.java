@@ -60,8 +60,11 @@ public class ModelBuilder {
     private final Matrix4 tmpTransform = new Matrix4();
 
     private MeshBuilder getBuilder(final VertexAttributes attributes) {
-        for (final MeshBuilder mb : builders)
-            if (mb.getAttributes().equals(attributes) && mb.lastIndex() < Short.MAX_VALUE / 2) return mb;
+        for (final MeshBuilder mb : builders) {
+            if (mb.getAttributes().equals(attributes) && mb.lastIndex() < Short.MAX_VALUE / 2) {
+                return mb;
+            }
+        }
         final MeshBuilder result = new MeshBuilder();
         result.begin(attributes);
         builders.add(result);
@@ -72,7 +75,9 @@ public class ModelBuilder {
      * Begin building a new model
      */
     public void begin() {
-        if (model != null) throw new GdxRuntimeException("Call end() first");
+        if (model != null) {
+            throw new GdxRuntimeException("Call end() first");
+        }
         node = null;
         model = new Model();
         builders.clear();
@@ -84,7 +89,9 @@ public class ModelBuilder {
      * @return The newly created model. Call the {@link Model#dispose()} method when no longer used.
      */
     public Model end() {
-        if (model == null) throw new GdxRuntimeException("Call begin() first");
+        if (model == null) {
+            throw new GdxRuntimeException("Call begin() first");
+        }
         final Model result = model;
         endnode();
         model = null;
@@ -166,7 +173,9 @@ public class ModelBuilder {
      * add those to the model.
      */
     public void part(final MeshPart meshpart, final Material material) {
-        if (node == null) node();
+        if (node == null) {
+            node();
+        }
         node.parts.add(new NodePart(meshpart, material));
     }
 

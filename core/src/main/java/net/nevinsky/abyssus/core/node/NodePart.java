@@ -102,19 +102,22 @@ public class NodePart {
             invBoneBindTransforms = null;
             bones = null;
         } else {
-            if (invBoneBindTransforms == null)
-                invBoneBindTransforms = new ArrayMap<Node, Matrix4>(true,
-                        other.invBoneBindTransforms.size, Node.class,
-                        Matrix4.class);
-            else
+            if (invBoneBindTransforms == null) {
+                invBoneBindTransforms =
+                        new ArrayMap<>(true, other.invBoneBindTransforms.size, Node.class, Matrix4.class);
+            } else {
                 invBoneBindTransforms.clear();
+            }
             invBoneBindTransforms.putAll(other.invBoneBindTransforms);
 
-            if (bones == null || bones.length != invBoneBindTransforms.size)
+            if (bones == null || bones.length != invBoneBindTransforms.size) {
                 bones = new Matrix4[invBoneBindTransforms.size];
+            }
 
             for (int i = 0; i < bones.length; i++) {
-                if (bones[i] == null) bones[i] = new Matrix4();
+                if (bones[i] == null) {
+                    bones[i] = new Matrix4();
+                }
             }
         }
         return this;

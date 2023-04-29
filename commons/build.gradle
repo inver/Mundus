@@ -6,3 +6,5 @@ sourceSets.main.resources.srcDirs = ["src/main/resources"]
 
 sourceSets.test.java.srcDirs = ["src/test/java"]
 sourceSets.test.resources.srcDirs = ["src/test/resources"]
+
+//Content root '/home/inv3r/Development/gamedev/Mundus/commons/build/generated/sources/annotationProcessor/java/main' is defined for modules 'gamedev.Mundus.commons.main' and 'Mundus.commons.main'. Two modules in a project cannot share the same content root.

@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
@@ -13,24 +14,11 @@ buildscript {
 }
 
 allprojects {
-    apply plugin: "eclipse"
-    apply plugin: "idea"
+    apply from: "$rootDir/gradle/dependencies.gradle"
+
     apply plugin: "jacoco"
     apply plugin: 'info.solidsoft.pitest'
     apply plugin: 'checkstyle'
-
-    tasks.withType(Test).tap {
-        configureEach {
-            testLogging {
-                exceptionFormat "full"
-                showCauses true
-                showExceptions true
-                showStackTraces true
-                showStandardStreams true
-                events = ["passed", "skipped", "failed"]
-            }
-        }
-    }
 
     ext {
         appName = "Mundus"
@@ -53,26 +41,48 @@ allprojects {
         maven { url 'https://jitpack.io' }
     }
 
-    tasks.withType(Checkstyle) {
+    tasks.withType(Checkstyle).configureEach {
         reports {
             xml.required = false
             html.required = true
-//            html.stylesheet resources.text.fromFile('config/xsl/checkstyle-custom.xsl')
+            html.stylesheet resources.text.fromFile('../config/xsl/checkstyle-custom.xsl')
         }
     }
-}
 
-tasks.withType(KotlinCompile).configureEach {
-    kotlinOptions {
-        jvmTarget = "11"
+    tasks.withType(JavaCompile).configureEach {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    tasks.withType(KotlinCompile).configureEach {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_11)
+        }
+    }
+
+    tasks.withType(JacocoReport).configureEach {
+        reports {
+            xml.required = false
+            csv.required = false
+            html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+        }
+    }
+
+    tasks.withType(Test).configureEach {
+        testLogging {
+            exceptionFormat "full"
+            showCauses true
+            showExceptions true
+            showStackTraces true
+            showStandardStreams true
+            events = ["passed", "skipped", "failed"]
+        }
+        finalizedBy(jacocoTestReport)
     }
 }
 
 project(":commons") {
     apply plugin: "java"
-
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
 
     dependencies {
         implementation project(":core")
@@ -109,19 +119,6 @@ project(":commons") {
     }
 
 
-    jacocoTestReport {
-        dependsOn test // tests are required to run before generating the report
-        reports {
-            xml.required = false
-            csv.required = false
-            html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
-        }
-    }
-
-    test {
-        finalizedBy jacocoTestReport
-    }
-
 //
 //    pitest {
 //        targetClasses = ['com.mbrlabs.*']  //by default "${project.group}.*"
@@ -136,9 +133,6 @@ project(":commons") {
 
 project(":core") {
     apply plugin: "java"
-
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
 
     dependencies {
         compileOnly 'org.projectlombok:lombok:1.18.24'
@@ -179,9 +173,6 @@ project(":core") {
 project(":editor") {
     apply plugin: "java"
     apply plugin: "kotlin"
-
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
 
     dependencies {
         implementation project(":commons")

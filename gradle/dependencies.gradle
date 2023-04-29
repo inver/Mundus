@@ -1,0 +1,11 @@
+ext {
+    versions = [:]
+    libs = [:]
+}
+
+versions += [
+        lombok: "1.18.22",
+]
+libs += [
+        lombok: "org.projectlombok:lombok:${versions.lombok}",
+]
