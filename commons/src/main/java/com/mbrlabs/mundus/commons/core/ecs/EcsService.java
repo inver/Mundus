@@ -37,21 +37,26 @@ public class EcsService {
     public World createWorld() {
         var serializationManager = new WorldSerializationManager();
 
-        var config = new WorldConfigurationBuilder()
-                .with(serializationManager)
-                .with(new EntityLinkManager())
-                .with(new LookAtSystem())
-                .with(new SynchronizeRenderComponentSystem())
-                .with(new SynchronizeCameraComponentSystem())
-                .with(new SynchronizeRenderPoint2PointSystem())
-                .with(new RenderComponentSystem())
-                .build();
-        var world = new World(config);
+        var config = new WorldConfigurationBuilder();
+        config.with(serializationManager);
+        configuration(config);
+
+
+        var world = new World(config.build());
 
         var serializer = new JsonArtemisSerializer(world);
         getSerializers().forEach(p -> serializer.register(p.getKey(), p.getValue()));
         serializationManager.setSerializer(serializer);
         return world;
+    }
+
+    protected void configuration(WorldConfigurationBuilder builder) {
+        builder.with(new EntityLinkManager())
+                .with(new LookAtSystem())
+                .with(new SynchronizeRenderComponentSystem())
+                .with(new SynchronizeCameraComponentSystem())
+                .with(new SynchronizeRenderPoint2PointSystem())
+                .with(new RenderComponentSystem());
     }
 
     public List<Pair<Class<?>, JsonSerializer>> getSerializers() {

@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import net.nevinsky.abyssus.core.ModelInstance;
 import net.nevinsky.abyssus.core.RenderableProvider;
 
-public interface RenderableObject extends RenderableProvider {
+public interface RenderableSceneObject extends RenderableProvider {
     String getAssetName();
 
     AssetType getType();

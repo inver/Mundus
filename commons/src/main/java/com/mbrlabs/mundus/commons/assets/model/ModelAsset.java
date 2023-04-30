@@ -95,21 +95,21 @@ public class ModelAsset extends Asset<ModelMeta> implements RenderableProvider {
         }
     }
 
-    @Override
-    public boolean usesAsset(Asset assetToCheck) {
-        // if it's a MaterialAsset compare to the models materials
-        if (assetToCheck instanceof MaterialAsset) {
-            return defaultMaterials.containsValue(assetToCheck);
-        }
-
-        // check if the materials use the asset, like a texture asset
-        for (Map.Entry<String, MaterialAsset> stringMaterialAssetEntry : defaultMaterials.entrySet()) {
-            if (stringMaterialAssetEntry.getValue().usesAsset(assetToCheck)) {
-                return true;
-            }
-        }
-        return false;
-    }
+//    @Override
+//    public boolean usesAsset(Asset assetToCheck) {
+//        // if it's a MaterialAsset compare to the models materials
+//        if (assetToCheck instanceof MaterialAsset) {
+//            return defaultMaterials.containsValue(assetToCheck);
+//        }
+//
+//        // check if the materials use the asset, like a texture asset
+//        for (Map.Entry<String, MaterialAsset> stringMaterialAssetEntry : defaultMaterials.entrySet()) {
+//            if (stringMaterialAssetEntry.getValue().usesAsset(assetToCheck)) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 
     @Override
     public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {

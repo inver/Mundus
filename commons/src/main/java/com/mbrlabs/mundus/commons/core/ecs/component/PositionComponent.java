@@ -1,16 +1,16 @@
 package com.mbrlabs.mundus.commons.core.ecs.component;
 
+import com.artemis.Component;
 import com.artemis.annotations.EntityId;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
-import com.mbrlabs.mundus.commons.core.ecs.base.BaseComponent;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @NoArgsConstructor
-public class PositionComponent extends BaseComponent {
+public class PositionComponent extends Component {
 
     @Getter
     private final Vector3 localPosition = new Vector3();

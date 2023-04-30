@@ -215,8 +215,8 @@ public class TerrainAsset extends Asset<TerrainMeta> {
         meta.getAdditional().setUv(uvScale.x);
     }
 
-    @Override
-    public boolean usesAsset(Asset assetToCheck) {
+//    @Override
+//    public boolean usesAsset(Asset assetToCheck) {
         //todo
 //        if (assetToCheck == splatMap)
 //            return true;
@@ -231,6 +231,6 @@ public class TerrainAsset extends Asset<TerrainMeta> {
 //            }
 //        }
 
-        return false;
-    }
+//        return false;
+//    }
 }

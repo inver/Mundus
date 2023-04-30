@@ -14,6 +14,7 @@ import com.mbrlabs.mundus.commons.loader.ModelImporter;
 import com.mbrlabs.mundus.commons.model.ImportedModel;
 import com.mbrlabs.mundus.commons.model.ModelService;
 import com.mbrlabs.mundus.commons.scene3d.HierarchyNode;
+import com.mbrlabs.mundus.editor.core.ecs.PickableComponent;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
 import lombok.SneakyThrows;
@@ -73,11 +74,12 @@ public class EditorModelService extends ModelService {
 
         var asset = importAndSaveAsset(importedModel);
 
-        var terrain = createFromAsset(asset);
+        var model = createFromAsset(asset);
 
         world.edit(id)
                 .add(new PositionComponent())
-                .add(RenderComponent.of(new RenderableObjectDelegate(terrain, ShaderConstants.MODEL)));
+                .add(PickableComponent.of(id, new RenderableObjectDelegate(model, ShaderConstants.PICKER)))
+                .add(RenderComponent.of(new RenderableObjectDelegate(model, ShaderConstants.MODEL)));
 
         return new HierarchyNode(id, name);
     }

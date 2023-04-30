@@ -24,6 +24,7 @@ import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.tools.picker.EntityPicker;
 import com.mbrlabs.mundus.editor.ui.widgets.icon.SymbolIcon;
+import lombok.extern.slf4j.Slf4j;
 import net.nevinsky.abyssus.core.ModelBatch;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,11 +32,14 @@ import org.jetbrains.annotations.NotNull;
  * @author Marcus Brummer
  * @version 26-12-2015
  */
+@Slf4j
 public class SelectionTool extends Tool {
 
     public static final String NAME = "Selection Tool";
     private final EntityPicker picker;
     protected final EventBus eventBus;
+
+    private int pressedX = -1, pressedY = -1;
 
     public SelectionTool(EditorCtx ctx, String shaderKey, EntityPicker picker,
                          CommandHistory history, EventBus eventBus, String name) {
@@ -90,28 +94,27 @@ public class SelectionTool extends Tool {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        if (button == Input.Buttons.RIGHT) {
-            int entityId = picker.pick(getCtx().getCurrent().getCurrentScene(), screenX, screenY);
-            if (entityId >= 0 && entityId != getCtx().getSelectedEntityId()) {
-                entitySelected(entityId);
-                eventBus.post(new EntitySelectedEvent(entityId));
-            }
+        if (button == Input.Buttons.LEFT) {
+            pressedX = screenX;
+            pressedY = screenY;
+            log.debug("Button pressed");
         }
-
         return false;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
+        if (button != Input.Buttons.LEFT || screenX != pressedX || screenY != pressedY) {
+            return false;
+        }
 
-    @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        //todo
-//        projectManager.current.getCurrentScene().viewport.getScreenHeight();
+        int entityId = picker.pick(getCtx().getCurrent().getCurrentScene(), screenX, screenY);
+        if (entityId >= 0 && entityId != getCtx().getSelectedEntityId()) {
+            entitySelected(entityId);
+            eventBus.post(new EntitySelectedEvent(entityId));
+        }
 
-        return false;
+        return true;
     }
 
     @Override

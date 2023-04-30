@@ -2,6 +2,7 @@ package com.mbrlabs.mundus.editor.core.shader;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.mbrlabs.mundus.commons.assets.shader.ShaderAsset;
+import com.mbrlabs.mundus.commons.shaders.AbyssusDefaultShader;
 import com.mbrlabs.mundus.commons.shaders.DefaultBaseShader;
 import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 import com.mbrlabs.mundus.commons.shaders.SkyboxShader;
@@ -15,6 +16,7 @@ import com.mbrlabs.mundus.editor.events.ProjectChangedEvent;
 import com.mbrlabs.mundus.editor.events.SettingsChangedEvent;
 import com.mbrlabs.mundus.editor.shader.MaterialPreviewShader;
 import com.mbrlabs.mundus.editor.shader.WireframeShader;
+import com.mbrlabs.mundus.editor.tools.picker.PickerShader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.nevinsky.abyssus.core.shader.BaseShader;
@@ -111,7 +113,7 @@ public class ShaderStorage implements ShaderHolder {
             case ShaderConstants.DEFAULT: {
                 //todo remove path hardcode
                 var asset = (ShaderAsset) ctx.getAssetLibrary().get(ProjectConstants.SHADER_DEFAULT_PATH);
-                return new MaterialPreviewShader(asset.getVertexShader(), asset.getFragmentShader());
+                return new AbyssusDefaultShader(asset.getVertexShader(), asset.getFragmentShader());
             }
             case ShaderConstants.SKYBOX: {
                 var asset = (ShaderAsset) ctx.getAssetLibrary().get(ProjectConstants.SHADER_SKYBOX_PATH);
@@ -124,6 +126,10 @@ public class ShaderStorage implements ShaderHolder {
             case ShaderConstants.TERRAIN: {
                 var asset = (ShaderAsset) ctx.getAssetLibrary().get(ProjectConstants.SHADER_TERRAIN_PATH);
                 return new TerrainShader(asset.getVertexShader(), asset.getFragmentShader());
+            }
+            case ShaderConstants.PICKER: {
+                var asset = (ShaderAsset) ctx.getAssetLibrary().get(ProjectConstants.SHADER_PICKER_PATH);
+                return new PickerShader(asset.getVertexShader(), asset.getFragmentShader());
             }
         }
 

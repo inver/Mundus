@@ -29,7 +29,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool;
 import com.mbrlabs.mundus.commons.assets.AssetType;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset;
-import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObject;
+import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableSceneObject;
 import com.mbrlabs.mundus.commons.utils.MathUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -50,7 +50,7 @@ import java.util.List;
  * @author Marcus Brummer
  * @version 30-11-2015
  */
-public class TerrainObject implements RenderableObject, Disposable {
+public class TerrainObject implements RenderableSceneObject, Disposable {
 
     public static final int DEFAULT_SIZE = 1600;
     public static final int DEFAULT_VERTEX_RESOLUTION = 180;

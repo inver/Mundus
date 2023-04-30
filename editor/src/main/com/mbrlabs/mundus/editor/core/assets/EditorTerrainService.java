@@ -13,6 +13,7 @@ import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObjectDelegate;
 import com.mbrlabs.mundus.commons.scene3d.HierarchyNode;
 import com.mbrlabs.mundus.commons.terrain.TerrainObject;
 import com.mbrlabs.mundus.commons.terrain.TerrainService;
+import com.mbrlabs.mundus.editor.core.ecs.PickableComponent;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
 import lombok.RequiredArgsConstructor;
@@ -93,7 +94,8 @@ public class EditorTerrainService extends TerrainService {
 
         world.edit(id)
                 .add(new PositionComponent())
-                .add(RenderComponent.of(new RenderableObjectDelegate(terrain, ShaderConstants.TERRAIN)));
+                .add(RenderComponent.of(new RenderableObjectDelegate(terrain, ShaderConstants.TERRAIN)))
+                .add(PickableComponent.of(id, new RenderableObjectDelegate(terrain, ShaderConstants.PICKER)));
 
         return new HierarchyNode(id, name);
     }

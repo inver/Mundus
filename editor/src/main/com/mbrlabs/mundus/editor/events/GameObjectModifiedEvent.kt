@@ -16,13 +16,11 @@
 
 package com.mbrlabs.mundus.editor.events
 
-import com.mbrlabs.mundus.commons.scene3d.GameObject
-
 /**
  * @author Marcus Brummer
  * @version 23-01-2016
  */
-class GameObjectModifiedEvent(var gameObject: GameObject?) : Event{
+class GameObjectModifiedEvent(var entityId: Int?) : Event {
 
     interface GameObjectModifiedListener {
         @Subscribe

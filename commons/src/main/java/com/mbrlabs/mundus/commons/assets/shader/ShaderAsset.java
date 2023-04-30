@@ -38,8 +38,8 @@ public class ShaderAsset extends Asset<ShaderMeta> {
 
     }
 
-    @Override
-    public boolean usesAsset(Asset assetToCheck) {
-        return false;
-    }
+//    @Override
+//    public boolean usesAsset(Asset assetToCheck) {
+//        return false;
+//    }
 }

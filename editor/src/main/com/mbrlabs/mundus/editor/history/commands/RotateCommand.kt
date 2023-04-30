@@ -17,7 +17,6 @@
 package com.mbrlabs.mundus.editor.history.commands
 
 import com.badlogic.gdx.math.Quaternion
-import com.mbrlabs.mundus.commons.scene3d.GameObject
 import com.mbrlabs.mundus.editor.events.GameObjectModifiedEvent
 import com.mbrlabs.mundus.editor.history.Command
 
@@ -25,7 +24,7 @@ import com.mbrlabs.mundus.editor.history.Command
  * @author Marcus Brummer
  * @version 16-02-2016
  */
-class RotateCommand(private val go: GameObject) : Command {
+class RotateCommand(private val entityId: Int) : Command {
 
     companion object {
         private val modEvent = GameObjectModifiedEvent(null)
@@ -43,13 +42,15 @@ class RotateCommand(private val go: GameObject) : Command {
     }
 
     override fun execute() {
-        go.setLocalRotation(after.x, after.y, after.z, after.w)
-        modEvent.gameObject = go
+        TODO()
+//        go.setLocalRotation(after.x, after.y, after.z, after.w)
+//        modEvent.gameObject = go
     }
 
     override fun undo() {
-        go.setLocalRotation(before.x, before.y, before.z, before.w)
-        modEvent.gameObject = go
+        TODO()
+//        go.setLocalRotation(before.x, before.y, before.z, before.w)
+//        modEvent.gameObject = go
     }
 
 }

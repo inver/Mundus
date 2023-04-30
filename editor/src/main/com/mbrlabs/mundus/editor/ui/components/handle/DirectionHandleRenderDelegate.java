@@ -13,14 +13,19 @@ import net.nevinsky.abyssus.core.ModelBuilder;
 import net.nevinsky.abyssus.core.ModelInstance;
 import net.nevinsky.abyssus.core.builder.SphereShapeBuilder;
 
+import static com.mbrlabs.mundus.editor.core.shader.ShaderConstants.DEFAULT;
+
 public class DirectionHandleRenderDelegate implements RenderableDelegate {
     private static final long ATTRIBUTES =
             VertexAttributes.Usage.Position | VertexAttributes.Usage.ColorUnpacked | VertexAttributes.Usage.Normal;
     private static final Material DEFAULT_MATERIAL = new Material();
     private transient final ModelInstance instance;
     private final boolean hidden = false;
+    private final String shaderKey;
 
-    public DirectionHandleRenderDelegate() {
+    public DirectionHandleRenderDelegate(String shaderKey) {
+        this.shaderKey = shaderKey;
+
         var modelBuilder = new ModelBuilder();
         modelBuilder.begin();
 
@@ -30,10 +35,14 @@ public class DirectionHandleRenderDelegate implements RenderableDelegate {
         instance = new ModelInstance(modelBuilder.end());
     }
 
+    public DirectionHandleRenderDelegate() {
+        this(DEFAULT);
+    }
+
     @Override
     public void render(ModelBatch batch, SceneEnvironment environment, ShaderHolder shaders, float delta) {
         if (!hidden) {
-            batch.render(instance);
+            batch.render(instance, shaders.get(shaderKey));
         }
     }
 

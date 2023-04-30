@@ -5,8 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-@Getter
-public final class RenderComponent extends Component {
+public class RenderComponent extends Component {
+    @Getter
     private RenderableDelegate renderable;
 
     public RenderComponent(RenderableDelegate renderable) {

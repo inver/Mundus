@@ -1,15 +1,20 @@
 package com.mbrlabs.mundus.editor.tools.picker;
 
+import com.artemis.Aspect;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.PixmapIO;
 import com.mbrlabs.mundus.commons.Scene;
-import com.mbrlabs.mundus.commons.scene3d.GameObject;
+import com.mbrlabs.mundus.editor.core.ecs.PickableComponent;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.shader.ShaderStorage;
+import com.mbrlabs.mundus.editor.utils.PickerColorEncoder;
 import lombok.RequiredArgsConstructor;
 import net.nevinsky.abyssus.core.ModelBatch;
+import org.springframework.stereotype.Component;
 
-@org.springframework.stereotype.Component
+@Component
 @RequiredArgsConstructor
 public class EntityPicker extends BasePicker {
     private final EditorCtx ctx;
@@ -18,8 +23,7 @@ public class EntityPicker extends BasePicker {
 
     public int pick(Scene scene, int screenX, int screenY) {
         begin(ctx.getViewport());
-        //todo
-//        renderPickableScene(scene);
+        renderPickableScene(scene);
         end();
         Pixmap pm = getFrameBufferPixmap(ctx.getViewport());
 
@@ -35,28 +39,25 @@ public class EntityPicker extends BasePicker {
         } catch (IndexOutOfBoundsException e) {
             //ignore
         }
+
+//        PixmapIO.writePNG(new FileHandle("/home/inv3r/Development/gamedev/Mundus/editor/src/main/"+
+//        "com/mbrlabs/mundus/editor/tools/picker/image.png"), pm);
+        pm.dispose();
         return -1;
     }
 
     private void renderPickableScene(Scene scene) {
         batch.begin(ctx.getCurrent().getCamera());
-//        for (GameObject go : scene.getSceneGraph().getGameObjects()) {
-//            renderPickableGameObject(scene, go);
-//        }
+        var entityIds = scene.getWorld().getAspectSubscriptionManager().get(Aspect.all(PickableComponent.class))
+                .getEntities();
+        if (entityIds.isEmpty()) {
+            batch.end();
+            return;
+        }
+        var mapper = scene.getWorld().getMapper(PickableComponent.class);
+        for (int i = 0; i < entityIds.size(); i++) {
+            mapper.get(entityIds.get(i)).getRenderable().render(batch, scene.getEnvironment(), shaderStorage, 0);
+        }
         batch.end();
-    }
-
-    private void renderPickableGameObject(Scene scene, GameObject go) {
-//        for (Component c : go.getComponents()) {
-//            if (c instanceof PickableComponent) {
-//                c.render(batch, scene.getEnvironment(), shaderStorage, Gdx.graphics.getDeltaTime());
-//            }
-//        }
-//
-//        if (go.getChildren() != null) {
-//            for (GameObject goc : go.getChildren()) {
-//                renderPickableGameObject(scene, goc);
-//            }
-//        }
     }
 }

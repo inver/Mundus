@@ -42,7 +42,7 @@ import com.kotcrab.vis.ui.widget.VisSplitPane;
 /**
  * This is a slightly modified version of kotcrab's MultiSplitPane and fixes an
  * input issue and a split bug. Changes are marked with @Changed
- *
+ * <p>
  * Similar to {@link VisSplitPane} but supports multiple widgets with multiple
  * split bars at once. Use {@link #setWidgets(Actor...)} after creating to set
  * pane widgets.
@@ -334,7 +334,9 @@ public class MundusMultiSplitPane extends WidgetGroup {
             Rectangle scissor = scissors.get(i);
             getStage().calculateScissors(bounds, scissor);
             if (ScissorStack.pushScissors(scissor)) {
-                if (actor.isVisible()) actor.draw(batch, parentAlpha * color.a);
+                if (actor.isVisible()) {
+                    actor.draw(batch, parentAlpha * color.a);
+                }
                 batch.flush();
                 ScissorStack.popScissors();
             }
@@ -392,13 +394,11 @@ public class MundusMultiSplitPane extends WidgetGroup {
     }
 
     /**
-     * @param handleBarIndex
-     *            index of handle bar starting from zero, max index is number of
-     *            widgets - 1
-     * @param split
-     *            new value of split, must be greater than 0 and lesser than 1
-     *            and must be smaller and bigger than previous and next split
-     *            value. Invalid values will be clamped to closest valid one.
+     * @param handleBarIndex index of handle bar starting from zero, max index is number of
+     *                       widgets - 1
+     * @param split          new value of split, must be greater than 0 and lesser than 1
+     *                       and must be smaller and bigger than previous and next split
+     *                       value. Invalid values will be clamped to closest valid one.
      */
     public void setSplit(int handleBarIndex, float split) {
         if (handleBarIndex < 0) throw new IllegalStateException("handleBarIndex can't be < 0");

@@ -4,7 +4,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.kotcrab.vis.ui.widget.VisTree;
-import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import org.apache.commons.lang3.NotImplementedException;
 
 public class OutlineDragAndDrop extends DragAndDrop {
@@ -101,12 +100,13 @@ public class OutlineDragAndDrop extends DragAndDrop {
 //                listener.updateTree();
             }
 
-            private Vector3 calculatePosition(GameObject oldParent, Vector3 newPosition) {
+            private Vector3 calculatePosition(Integer oldParent, Vector3 newPosition) {
                 if (oldParent != null) {
                     // calculate oldParentPos + draggedPos
                     var oldParentPos = new Vector3();
-                    oldParent.getPosition(oldParentPos);
-                    return oldParentPos.add(newPosition);
+                    throw new NotImplementedException();
+//                    oldParent.getPosition(oldParentPos);
+//                    return oldParentPos.add(newPosition);
                 }
                 return newPosition;
             }
@@ -114,7 +114,7 @@ public class OutlineDragAndDrop extends DragAndDrop {
     }
 
     public interface DropListener {
-        void movedToRoot(GameObject obj);
+        void movedToRoot(int entityId);
 
         void updateTree();
     }

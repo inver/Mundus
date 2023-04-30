@@ -53,6 +53,7 @@ import static org.mockito.Mockito.when;
         "com.mbrlabs.mundus.editor.utils",
         "com.mbrlabs.mundus.editor.tools",
         "com.mbrlabs.mundus.editor.input",
+        "com.mbrlabs.mundus.editor.core.assets",
 })
 @Import({
         UiConfig.class,
@@ -87,6 +88,12 @@ public class TestConfig {
         res.registerModule(appModule);
         return res;
     }
+
+    @Bean
+    public EditorCtx editorCtx() {
+        return new EditorCtx();
+    }
+
 
     @Bean
     public TextureAssetLoader textureService() {

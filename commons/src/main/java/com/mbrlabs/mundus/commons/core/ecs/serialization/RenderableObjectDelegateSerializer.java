@@ -6,7 +6,7 @@ import com.esotericsoftware.jsonbeans.JsonValue;
 import com.mbrlabs.mundus.commons.assets.AssetManager;
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset;
-import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObject;
+import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableSceneObject;
 import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObjectDelegate;
 import com.mbrlabs.mundus.commons.model.ModelService;
 import com.mbrlabs.mundus.commons.terrain.TerrainService;
@@ -31,7 +31,7 @@ public class RenderableObjectDelegateSerializer implements JsonSerializer<Render
 
     @Override
     public RenderableObjectDelegate read(Json json, JsonValue jsonData, Class type) {
-        var dto = json.readValue(RenderableObject.Dto.class, jsonData.get("asset"));
+        var dto = json.readValue(RenderableSceneObject.Dto.class, jsonData.get("asset"));
         var res = new RenderableObjectDelegate();
         res.setShaderName(jsonData.getString("shaderName"));
         var asset = assetManager.loadCurrentProjectAsset(dto.getAssetName());

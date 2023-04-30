@@ -16,6 +16,7 @@ public final class ProjectConstants {
     public static final String SHADER_DEFAULT_PATH = DEFAULT_SHADERS_DIR + "/" + ShaderConstants.DEFAULT;
     public static final String SHADER_WIREFRAME_PATH = DEFAULT_SHADERS_DIR + "/" + ShaderConstants.WIREFRAME;
     public static final String SHADER_TERRAIN_PATH = DEFAULT_SHADERS_DIR + "/" + ShaderConstants.TERRAIN;
+    public static final String SHADER_PICKER_PATH = DEFAULT_SHADERS_DIR + "/" + ShaderConstants.PICKER;
     public static final String DEFAULT_SKYBOX_NAME = "skybox_default";
     public static final String DEFAULT_SKYBOX_PATH = BUNDLED_FOLDER + "/textures/" + DEFAULT_SKYBOX_NAME;
     public static final String SHADER_SKYBOX_PATH = DEFAULT_SHADERS_DIR + "/" + ShaderConstants.SKYBOX;

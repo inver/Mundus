@@ -5,14 +5,14 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
-import com.mbrlabs.mundus.commons.scene3d.components.Renderable;
+import com.mbrlabs.mundus.commons.scene3d.components.RenderableObject;
 import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 import net.nevinsky.abyssus.core.ModelBatch;
 import net.nevinsky.abyssus.core.ModelBuilder;
 import net.nevinsky.abyssus.core.ModelInstance;
 import net.nevinsky.abyssus.core.builder.ArrowShapeBuilder;
 
-public class CoordinateSystemComponent implements Renderable {
+public class CoordinateSystemComponent implements RenderableObject {
     private static final int START_CONST = 10;
     private static final int LINE_COUNT = 20;
     private static final float ARROW_THICKNESS = 0.1f;

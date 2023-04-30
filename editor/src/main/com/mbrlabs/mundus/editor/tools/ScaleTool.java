@@ -24,8 +24,6 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
-import com.mbrlabs.mundus.commons.scene3d.GameObject;
-import com.mbrlabs.mundus.commons.scene3d.components.Component;
 import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.events.EventBus;
@@ -315,9 +313,9 @@ public class ScaleTool extends TransformTool {
         translateHandles();
     }
 
-    private boolean isScalable(GameObject go) {
-        return go == null || go.findComponentByType(Component.Type.TERRAIN) == null;
-    }
+//    private boolean isScalable(GameObject go) {
+//        return go == null || go.findComponentByType(Component.Type.TERRAIN) == null;
+//    }
 
     @Override
     protected void rotateHandles() {

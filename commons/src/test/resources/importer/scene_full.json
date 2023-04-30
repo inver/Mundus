@@ -1,0 +1,453 @@
+{
+  "id": 0,
+  "name": "Main Scene",
+  "fog": {
+    "density": 0.001,
+    "gradient": 1.5,
+    "color": -1
+  },
+  "skyboxName": "skybox_default",
+  "ambientLight": {
+    "intensity": 0.3,
+    "color": -1
+  },
+  "ecs": {
+    "entities": {
+      "0": {
+        "archetype": 1,
+        "components": {
+          "PositionComponent": {},
+          "RenderComponent": {
+            "renderable": {
+              "class": "com.mbrlabs.mundus.editor.ui.components.handle.DirectionHandleRenderDelegate"
+            }
+          },
+          "PickableComponent": {
+            "renderable": {
+              "class": "com.mbrlabs.mundus.editor.ui.components.handle.DirectionHandleRenderDelegate"
+            }
+          }
+        }
+      },
+      "1": {
+        "archetype": 2,
+        "components": {
+          "CameraComponent": {
+            "camera": {
+              "viewPointPosition": {
+                "z": -1
+              },
+              "position": {},
+              "far": 100,
+              "near": 1,
+              "fieldOfView": 67
+            }
+          },
+          "PositionComponent": {
+            "localRotation": {
+              "w": 0.85732335,
+              "x": -0.21978268,
+              "y": -0.4509207,
+              "z": -0.11559766
+            },
+            "lookAtId": 0,
+            "localPosition": {
+              "x": -14.833025,
+              "y": 9.879014,
+              "z": 10.2
+            }
+          },
+          "RenderComponent": {
+            "renderable": {
+              "class": "com.mbrlabs.mundus.editor.ui.components.camera.CameraBodyRenderDelegate"
+            }
+          },
+          "PickableComponent": {
+            "renderable": {
+              "class": "com.mbrlabs.mundus.editor.ui.components.camera.CameraBodyRenderDelegate"
+            }
+          }
+        }
+      },
+      "2": {
+        "archetype": 3,
+        "components": {
+          "Point2PointPositionComponent": {
+            "entity1Id": 1,
+            "entity2Id": 0
+          },
+          "RenderComponent": {
+            "renderable": {
+              "class": "com.mbrlabs.mundus.editor.ui.components.handle.DirectionLineRenderDelegate"
+            }
+          },
+          "PickableComponent": {
+            "renderable": {
+              "class": "com.mbrlabs.mundus.editor.ui.components.handle.DirectionLineRenderDelegate"
+            }
+          }
+        }
+      },
+      "3": {
+        "archetype": 1,
+        "components": {
+          "PositionComponent": {},
+          "RenderComponent": {
+            "renderable": {
+              "class": "com.mbrlabs.mundus.editor.ui.components.handle.DirectionHandleRenderDelegate"
+            }
+          },
+          "PickableComponent": {
+            "renderable": {
+              "class": "com.mbrlabs.mundus.editor.ui.components.handle.DirectionHandleRenderDelegate"
+            }
+          }
+        }
+      },
+      "4": {
+        "archetype": 2,
+        "components": {
+          "CameraComponent": {
+            "camera": {
+              "viewPointPosition": {
+                "z": -1
+              },
+              "position": {},
+              "far": 100,
+              "near": 1,
+              "fieldOfView": 67
+            }
+          },
+          "PositionComponent": {
+            "localRotation": {
+              "w": -4.2842917E-8,
+              "x": 8.670062E-9,
+              "y": 0.9801317,
+              "z": 0.1983479
+            },
+            "lookAtId": 3,
+            "localPosition": {
+              "y": 10.0049715,
+              "z": -23.707323
+            }
+          },
+          "RenderComponent": {
+            "renderable": {
+              "class": "com.mbrlabs.mundus.editor.ui.components.camera.CameraBodyRenderDelegate"
+            }
+          },
+          "PickableComponent": {
+            "renderable": {
+              "class": "com.mbrlabs.mundus.editor.ui.components.camera.CameraBodyRenderDelegate"
+            }
+          }
+        }
+      },
+      "5": {
+        "archetype": 3,
+        "components": {
+          "Point2PointPositionComponent": {
+            "entity1Id": 4,
+            "entity2Id": 3
+          },
+          "RenderComponent": {
+            "renderable": {
+              "class": "com.mbrlabs.mundus.editor.ui.components.handle.DirectionLineRenderDelegate"
+            }
+          },
+          "PickableComponent": {
+            "renderable": {
+              "class": "com.mbrlabs.mundus.editor.ui.components.handle.DirectionLineRenderDelegate"
+            }
+          }
+        }
+      },
+      "6": {
+        "archetype": 1,
+        "components": {
+          "PositionComponent": {
+            "localPosition": {
+              "z": 8.140837
+            }
+          },
+          "RenderComponent": {
+            "renderable": {
+              "class": "com.mbrlabs.mundus.editor.ui.components.handle.DirectionHandleRenderDelegate"
+            }
+          },
+          "PickableComponent": {
+            "renderable": {
+              "class": "com.mbrlabs.mundus.editor.ui.components.handle.DirectionHandleRenderDelegate"
+            }
+          }
+        }
+      },
+      "7": {
+        "archetype": 4,
+        "components": {
+          "PositionComponent": {
+            "localRotation": {
+              "w": 0.75218976,
+              "x": -0.6589466
+            },
+            "lookAtId": 6,
+            "localPosition": {
+              "y": 10,
+              "z": 9.46817
+            }
+          },
+          "RenderComponent": {
+            "renderable": {
+              "class": "com.mbrlabs.mundus.editor.ui.components.light.LightRenderDelegate"
+            }
+          },
+          "PickableComponent": {
+            "renderable": {
+              "class": "com.mbrlabs.mundus.editor.ui.components.light.LightRenderDelegate"
+            }
+          }
+        }
+      },
+      "8": {
+        "archetype": 3,
+        "components": {
+          "Point2PointPositionComponent": {
+            "entity1Id": 7,
+            "entity2Id": 6
+          },
+          "RenderComponent": {
+            "renderable": {
+              "class": "com.mbrlabs.mundus.editor.ui.components.handle.DirectionLineRenderDelegate"
+            }
+          },
+          "PickableComponent": {
+            "renderable": {
+              "class": "com.mbrlabs.mundus.editor.ui.components.handle.DirectionLineRenderDelegate"
+            }
+          }
+        }
+      },
+      "9": {
+        "archetype": 1,
+        "components": {
+          "PositionComponent": {
+            "localPosition": {
+              "z": -9.544492
+            }
+          },
+          "RenderComponent": {
+            "renderable": {
+              "class": "com.mbrlabs.mundus.editor.ui.components.handle.DirectionHandleRenderDelegate"
+            }
+          },
+          "PickableComponent": {
+            "renderable": {
+              "class": "com.mbrlabs.mundus.editor.ui.components.handle.DirectionHandleRenderDelegate"
+            }
+          }
+        }
+      },
+      "10": {
+        "archetype": 4,
+        "components": {
+          "PositionComponent": {
+            "localRotation": {
+              "w": 0.7761564,
+              "x": -0.63054043
+            },
+            "lookAtId": 9,
+            "localPosition": {
+              "y": 10,
+              "z": -7.451744
+            }
+          },
+          "RenderComponent": {
+            "renderable": {
+              "class": "com.mbrlabs.mundus.editor.ui.components.light.LightRenderDelegate"
+            }
+          },
+          "PickableComponent": {
+            "renderable": {
+              "class": "com.mbrlabs.mundus.editor.ui.components.light.LightRenderDelegate"
+            }
+          }
+        }
+      },
+      "11": {
+        "archetype": 3,
+        "components": {
+          "Point2PointPositionComponent": {
+            "entity1Id": 10,
+            "entity2Id": 9
+          },
+          "RenderComponent": {
+            "renderable": {
+              "class": "com.mbrlabs.mundus.editor.ui.components.handle.DirectionLineRenderDelegate"
+            }
+          },
+          "PickableComponent": {
+            "renderable": {
+              "class": "com.mbrlabs.mundus.editor.ui.components.handle.DirectionLineRenderDelegate"
+            }
+          }
+        }
+      },
+      "12": {
+        "archetype": 1,
+        "components": {
+          "PositionComponent": {
+            "localPosition": {
+              "x": -21.949272,
+              "z": -58.582954
+            }
+          },
+          "RenderComponent": {
+            "renderable": {
+              "class": "com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObjectDelegate",
+              "shaderName": "terrain",
+              "asset": {
+                "type": "TERRAIN",
+                "assetName": "terrain_8bd93d7c-565e-447a-a522-f9b02363390c"
+              }
+            }
+          },
+          "PickableComponent": {
+            "renderable": {
+              "class": "com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObjectDelegate",
+              "shaderName": "terrain",
+              "asset": {
+                "type": "TERRAIN",
+                "assetName": "terrain_8bd93d7c-565e-447a-a522-f9b02363390c"
+              }
+            }
+          }
+        }
+      },
+      "13": {
+        "archetype": 1,
+        "components": {
+          "PositionComponent": {
+            "localPosition": {
+              "y": 0.6974802
+            }
+          },
+          "RenderComponent": {
+            "renderable": {
+              "class": "com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObjectDelegate",
+              "shaderName": "model",
+              "asset": {
+                "type": "MODEL",
+                "assetName": "model_77f076cc-7348-4a73-a963-d5ff40b20125"
+              }
+            }
+          },
+          "PickableComponent": {
+            "renderable": {
+              "class": "com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObjectDelegate",
+              "shaderName": "model",
+              "asset": {
+                "type": "MODEL",
+                "assetName": "model_77f076cc-7348-4a73-a963-d5ff40b20125"
+              }
+            }
+          }
+        }
+      }
+    },
+    "archetypes": {
+      "1": [
+        "PositionComponent",
+        "RenderComponent",
+        "PickableComponent"
+      ],
+      "2": [
+        "PositionComponent",
+        "RenderComponent",
+        "PickableComponent",
+        "CameraComponent"
+      ],
+      "3": [
+        "RenderComponent",
+        "PickableComponent",
+        "Point2PointPositionComponent"
+      ],
+      "4": [
+        "PositionComponent",
+        "RenderComponent",
+        "PickableComponent",
+        "LightComponent"
+      ]
+    },
+    "componentIdentifiers": {
+      "com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent": "PositionComponent",
+      "com.mbrlabs.mundus.commons.core.ecs.component.CameraComponent": "CameraComponent",
+      "com.mbrlabs.mundus.commons.core.ecs.component.LightComponent": "LightComponent",
+      "com.mbrlabs.mundus.commons.core.ecs.component.Point2PointPositionComponent": "Point2PointPositionComponent",
+      "com.mbrlabs.mundus.commons.core.ecs.base.RenderComponent": "RenderComponent",
+      "com.mbrlabs.mundus.editor.core.ecs.PickableComponent": "PickableComponent"
+    },
+    "metadata": {
+      "version": 1
+    }
+  },
+  "rootNode": {
+    "id": -1,
+    "name": "Root",
+    "children": [
+      {
+        "id": 1,
+        "name": "Camera 1",
+        "children": [
+          {
+            "id": 0,
+            "name": "'Direction' handle",
+            "children": []
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "name": "Camera 4",
+        "children": [
+          {
+            "id": 3,
+            "name": "'Direction' handle",
+            "children": []
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "name": "Direction light 7",
+        "children": [
+          {
+            "id": 6,
+            "name": "'Direction' handle",
+            "children": []
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "name": "Direction light 10",
+        "children": [
+          {
+            "id": 9,
+            "name": "'Direction' handle",
+            "children": []
+          }
+        ]
+      },
+      {
+        "id": 12,
+        "name": "Terrain 12",
+        "children": []
+      },
+      {
+        "id": 13,
+        "name": "Model 13",
+        "children": []
+      }
+    ]
+  }
+}

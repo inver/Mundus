@@ -15,7 +15,7 @@ import net.nevinsky.abyssus.core.ModelBatch;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RenderableObjectDelegate implements RenderableDelegate {
-    private RenderableObject asset;
+    private RenderableSceneObject asset;
     private String shaderName;
 
     @Override

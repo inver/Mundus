@@ -24,7 +24,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mbrlabs.mundus.commons.Scene;
 import com.mbrlabs.mundus.commons.core.ecs.base.RenderComponent;
-import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObject;
+import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableSceneObject;
 import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObjectDelegate;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -113,7 +113,7 @@ public class ProjectContext implements Disposable {
         }
     }
 
-    public <T extends RenderableObject> T getRenderableObject(Class<T> clazz, int entityId) {
+    public <T extends RenderableSceneObject> T getRenderableObject(Class<T> clazz, int entityId) {
         var delegate = currentScene.getWorld().getMapper(RenderComponent.class).get(entityId).getRenderable();
         if (!(delegate instanceof RenderableObjectDelegate)) {
             return null;

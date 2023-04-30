@@ -18,7 +18,7 @@ package com.mbrlabs.mundus.editor.tools
 
 import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.utils.Disposable
-import com.mbrlabs.mundus.commons.scene3d.components.Renderable
+import com.mbrlabs.mundus.commons.scene3d.components.RenderableObject
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.history.CommandHistory
 import com.mbrlabs.mundus.editor.ui.widgets.icon.SymbolIcon
@@ -32,7 +32,7 @@ abstract class Tool(
     protected var shaderKey: String,
     protected var history: CommandHistory,
     val name: String
-) : Renderable, InputAdapter(), Disposable {
+) : RenderableObject, InputAdapter(), Disposable {
 
 //    protected var shader: Shader = shaderStorage.get(ShaderConstants.WIREFRAME)
 

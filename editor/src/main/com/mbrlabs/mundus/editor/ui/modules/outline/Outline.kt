@@ -22,7 +22,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.Align
 import com.kotcrab.vis.ui.widget.*
 import com.mbrlabs.mundus.commons.Scene
-import com.mbrlabs.mundus.commons.scene3d.GameObject
 import com.mbrlabs.mundus.commons.scene3d.HierarchyNode
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.events.*
@@ -142,12 +141,12 @@ class Outline(
 
      * @param go
      */
-    private fun removeGo(go: GameObject) {
-        TODO()
+//    private fun removeGo(go: GameObject) {
+//        TODO()
 //        val deleteCommand = DeleteCommand(go, tree.findNode(go))
 //        history.add(deleteCommand)
 //        deleteCommand.execute() // run delete
-    }
+//    }
 
     /**
      * Deep copy of all game objects
@@ -158,10 +157,10 @@ class Outline(
      * @param parent
      * *            game object on which clone will be added
      */
-    private fun duplicateGO(go: GameObject, parent: GameObject) {
-        log.trace("Duplicate [{}] with parent [{}]", go, parent)
-        val goCopy = GameObject(go, ctx.current.obtainID())
-        TODO()
+//    private fun duplicateGO(go: GameObject, parent: GameObject) {
+//        log.trace("Duplicate [{}] with parent [{}]", go, parent)
+//        val goCopy = GameObject(go, ctx.current.obtainID())
+//        TODO()
 //        // add copy to tree
 //        val n = tree.findNode(parent)
 //        addGoToTree(n, goCopy)
@@ -175,7 +174,7 @@ class Outline(
 //                duplicateGO(child, goCopy)
 //            }
 //        }
-    }
+//    }
 
     override fun onEntitySelected(event: EntitySelectedEvent) {
         tree.selection.clear()

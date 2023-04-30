@@ -68,11 +68,11 @@ public class PixmapTextureAsset extends Asset<PixmapMeta> {
         texture.dispose();
     }
 
-    @Override
-    public boolean usesAsset(Asset assetToCheck) {
-        if (assetToCheck instanceof TextureAsset) {
-            return texture == ((TextureAsset) assetToCheck).getTexture();
-        }
-        return false;
-    }
+//    @Override
+//    public boolean usesAsset(Asset assetToCheck) {
+//        if (assetToCheck instanceof TextureAsset) {
+//            return texture == ((TextureAsset) assetToCheck).getTexture();
+//        }
+//        return false;
+//    }
 }

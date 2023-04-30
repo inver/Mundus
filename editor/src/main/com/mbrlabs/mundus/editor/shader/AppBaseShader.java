@@ -61,6 +61,9 @@ public abstract class AppBaseShader extends DefaultBaseShader {
     }
 
     protected void setLights(SceneEnvironment env) {
+        if (env == null) {
+            return;
+        }
         // ambient
         if (env.getAmbientLight() != null) {
             set(UNIFORM_AMBIENT_LIGHT_COLOR, env.getAmbientLight().getColor());

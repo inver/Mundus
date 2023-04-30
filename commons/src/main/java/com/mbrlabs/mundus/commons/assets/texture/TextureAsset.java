@@ -69,8 +69,8 @@ public class TextureAsset extends Asset<TextureMeta> implements TextureProvider 
         }
     }
 
-    @Override
-    public boolean usesAsset(Asset assetToCheck) {
-        return false;
-    }
+//    @Override
+//    public boolean usesAsset(Asset assetToCheck) {
+//        return false;
+//    }
 }

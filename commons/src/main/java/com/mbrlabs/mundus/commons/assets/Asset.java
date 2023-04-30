@@ -18,7 +18,6 @@ package com.mbrlabs.mundus.commons.assets;
 
 import com.badlogic.gdx.utils.Disposable;
 import com.mbrlabs.mundus.commons.assets.meta.Meta;
-import com.mbrlabs.mundus.commons.scene3d.components.AssetUsage;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -37,7 +36,7 @@ import java.util.Map;
  * @version 01-10-2016
  */
 @RequiredArgsConstructor
-public abstract class Asset<M> implements Disposable, AssetUsage {
+public abstract class Asset<M> implements Disposable {
 
     @Getter
     protected final Meta<M> meta;

@@ -4,7 +4,7 @@ import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 import net.nevinsky.abyssus.core.ModelBatch;
 
-public interface Renderable {
+public interface RenderableObject {
     /**
      * Calls the render() method for each component in this and all child nodes.
      *

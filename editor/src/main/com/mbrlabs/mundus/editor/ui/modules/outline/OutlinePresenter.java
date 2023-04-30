@@ -10,7 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.widget.MenuItem;
 import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
-import com.mbrlabs.mundus.commons.scene3d.GameObject;
 import com.mbrlabs.mundus.commons.scene3d.HierarchyNode;
 import com.mbrlabs.mundus.editor.core.assets.AssetsStorage;
 import com.mbrlabs.mundus.editor.core.assets.EditorTerrainService;
@@ -209,26 +208,27 @@ public class OutlinePresenter {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 var node = new HierarchyNode(-1, "Group");
+                throw new NotImplementedException();
                 // the new game object
-                var go = new GameObject(GameObject.DEFAULT_NAME, ctx.getCurrent().obtainID());
+//                var go = new GameObject(GameObject.DEFAULT_NAME, ctx.getCurrent().obtainID());
                 // update outline
-                var selectedGO = outline.getRightClickMenu().getSelectedEntityId();
-                if (selectedGO == -1) {
-                    // update sceneGraph
-                    log.trace("Add empty game object [{}] in root node.", go);
-//                    ctx.getCurrent().getCurrentScene().getSceneGraph().addGameObject(go);
-                    // update outline
-                    ctx.getCurrent().getCurrentScene().getRootNode().addChild(node);
-                } else {
-                    throw new NotImplementedException();
-//                    log.trace("Add empty game object [{}] child in node [{}].", go, selectedGO);
+//                var selectedGO = outline.getRightClickMenu().getSelectedEntityId();
+//                if (selectedGO == -1) {
 //                    // update sceneGraph
-//                    selectedGO.addChild(go);
+////                    log.trace("Add empty game object [{}] in root node.", go);
+////                    ctx.getCurrent().getCurrentScene().getSceneGraph().addGameObject(go);
 //                    // update outline
-//                    var n = outline.getTree().findNode(selectedGO);
-//                    outline.addGoToTree(n, go);
-                }
-                eventBus.post(new SceneGraphChangedEvent());
+//                    ctx.getCurrent().getCurrentScene().getRootNode().addChild(node);
+//                } else {
+//                    throw new NotImplementedException();
+////                    log.trace("Add empty game object [{}] child in node [{}].", go, selectedGO);
+////                    // update sceneGraph
+////                    selectedGO.addChild(go);
+////                    // update outline
+////                    var n = outline.getTree().findNode(selectedGO);
+////                    outline.addGoToTree(n, go);
+//                }
+//                eventBus.post(new SceneGraphChangedEvent());
             }
         });
     }
@@ -237,7 +237,7 @@ public class OutlinePresenter {
     public OutlineDragAndDrop.DropListener getDropListener(Outline outline) {
         return new OutlineDragAndDrop.DropListener() {
             @Override
-            public void movedToRoot(GameObject obj) {
+            public void movedToRoot(int entityId) {
 //                ctx.getCurrent().getCurrentScene().getSceneGraph().addGameObject(obj);
             }
 

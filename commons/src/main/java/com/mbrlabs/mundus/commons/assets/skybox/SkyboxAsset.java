@@ -40,8 +40,8 @@ public class SkyboxAsset extends Asset<SkyboxMeta> {
 
     }
 
-    @Override
-    public boolean usesAsset(Asset assetToCheck) {
-        return false;
-    }
+//    @Override
+//    public boolean usesAsset(Asset assetToCheck) {
+//        return false;
+//    }
 }

@@ -19,22 +19,18 @@ package com.mbrlabs.mundus.editor.tools;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
-import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
-import com.mbrlabs.mundus.commons.scene3d.GameObject;
-import com.mbrlabs.mundus.commons.scene3d.InvalidComponentException;
 import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.project.ProjectContext;
 import com.mbrlabs.mundus.editor.events.EventBus;
-import com.mbrlabs.mundus.editor.events.SceneGraphChangedEvent;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
-import com.mbrlabs.mundus.editor.scene3d.components.PickableModelComponent;
 import com.mbrlabs.mundus.editor.ui.AppUi;
 import com.mbrlabs.mundus.editor.ui.widgets.icon.SymbolIcon;
 import net.nevinsky.abyssus.core.ModelBatch;
 import net.nevinsky.abyssus.core.ModelInstance;
+import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -100,31 +96,34 @@ public class ModelPlacementTool extends Tool {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-
-        if (modelInstance != null && button == Input.Buttons.LEFT) {
-            int id = getCtx().getCurrent().obtainID();
-            GameObject modelGo = new GameObject(model.getName(), id);
-//            getCtx().getCurrent().getCurrentScene().getSceneGraph().addGameObject(modelGo);
-
-            modelInstance.transform.getTranslation(tempV3);
-            modelGo.translate(tempV3);
-
-            PickableModelComponent modelComponent = new PickableModelComponent(modelGo, getShaderKey());
-//            modelComponent.setShader(getShader());
-            modelComponent.setModel(model, true);
-            modelComponent.encodeRayPickColorId();
-
-            try {
-//                modelGo.addComponent(modelComponent);
-            } catch (InvalidComponentException e) {
-                Dialogs.showErrorDialog(appUi, e.getMessage());
-                return false;
-            }
-
-            eventBus.post(new SceneGraphChangedEvent());
-            mouseMoved(screenX, screenY);
+        if (modelInstance == null || button != Input.Buttons.LEFT) {
+            return false;
         }
-        return false;
+
+        int id = getCtx().getCurrent().obtainID();
+        throw new NotImplementedException();
+//        GameObject modelGo = new GameObject(model.getName(), id);
+////            getCtx().getCurrent().getCurrentScene().getSceneGraph().addGameObject(modelGo);
+//
+//        modelInstance.transform.getTranslation(tempV3);
+//        modelGo.translate(tempV3);
+//
+//        PickableModelComponent modelComponent = new PickableModelComponent(modelGo, getShaderKey());
+////            modelComponent.setShader(getShader());
+//        modelComponent.setModel(model, true);
+//        modelComponent.encodeRayPickColorId();
+//
+//        try {
+////                modelGo.addComponent(modelComponent);
+//        } catch (InvalidComponentException e) {
+//            Dialogs.showErrorDialog(appUi, e.getMessage());
+//            return false;
+//        }
+
+//        eventBus.post(new SceneGraphChangedEvent());
+//        mouseMoved(screenX, screenY);
+//
+//        return false;
     }
 
     @Override

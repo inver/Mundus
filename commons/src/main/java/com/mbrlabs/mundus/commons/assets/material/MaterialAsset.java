@@ -100,11 +100,11 @@ public class MaterialAsset extends Asset<MaterialMeta> {
         // nothing to dispose
     }
 
-    @Override
-    public boolean usesAsset(Asset assetToCheck) {
-
-        return false;
-    }
+//    @Override
+//    public boolean usesAsset(Asset assetToCheck) {
+//
+//        return false;
+//    }
 
     public String getPreview() {
         return meta.getAdditional().getPreview();

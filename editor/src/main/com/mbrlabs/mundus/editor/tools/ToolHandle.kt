@@ -19,10 +19,10 @@ package com.mbrlabs.mundus.editor.tools
 import com.badlogic.gdx.math.Quaternion
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.utils.Disposable
-import com.mbrlabs.mundus.commons.scene3d.components.Renderable
+import com.mbrlabs.mundus.commons.scene3d.components.RenderableObject
 import com.mbrlabs.mundus.commons.shaders.ShaderHolder
-import com.mbrlabs.mundus.editor.tools.picker.PickerColorEncoder
 import com.mbrlabs.mundus.editor.tools.picker.PickerIDAttribute
+import com.mbrlabs.mundus.editor.utils.PickerColorEncoder
 import net.nevinsky.abyssus.core.ModelBatch
 
 /**
@@ -35,7 +35,8 @@ import net.nevinsky.abyssus.core.ModelBatch
  * @author Marcus Brummer
  * @version 07-03-2016
  */
-abstract class ToolHandle(val id: Int, val state: TransformTool.TransformState) : Disposable, Renderable {
+abstract class ToolHandle(val id: Int, val state: TransformTool.TransformState) : Disposable,
+    RenderableObject {
 
     val position: Vector3 = Vector3()
     val rotationEuler: Vector3 = Vector3()

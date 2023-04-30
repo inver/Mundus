@@ -22,7 +22,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
-import com.mbrlabs.mundus.commons.scene3d.components.Renderable;
+import com.mbrlabs.mundus.commons.scene3d.components.RenderableObject;
 import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
@@ -48,7 +48,7 @@ import java.util.List;
  * @version 25-12-2015
  */
 @Component
-public class ToolManager extends InputAdapter implements Disposable, Renderable {
+public class ToolManager extends InputAdapter implements Disposable, RenderableObject {
 
     private static final int KEY_DEACTIVATE = Input.Keys.ESCAPE;
 

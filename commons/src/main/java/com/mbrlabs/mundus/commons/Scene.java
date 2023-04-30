@@ -25,7 +25,7 @@ import com.mbrlabs.mundus.commons.core.ecs.behavior.RenderComponentSystem;
 import com.mbrlabs.mundus.commons.core.ecs.component.CameraComponent;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.HierarchyNode;
-import com.mbrlabs.mundus.commons.scene3d.components.Renderable;
+import com.mbrlabs.mundus.commons.scene3d.components.RenderableObject;
 import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +42,7 @@ import java.util.List;
  * @version 22-12-2015
  */
 @RequiredArgsConstructor
-public class Scene implements Disposable, Renderable {
+public class Scene implements Disposable, RenderableObject {
     private long id;
     private String name;
 
