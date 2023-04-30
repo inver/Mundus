@@ -1,5 +1,4 @@
-apply plugin: "java"
-apply plugin: "kotlin"
+import java.text.SimpleDateFormat
 
 sourceSets.main.java.srcDirs = ["src/main", "assets"]
 sourceSets.main.resources.srcDirs = ["src/main", "assets"]
@@ -8,34 +7,49 @@ sourceSets.test.java.srcDirs = ["src/test/java", "src/test/kotlin"]
 project.ext.mainClassName = "com.mbrlabs.mundus.editor.Main"
 project.ext.assetsDir = new File("assets")
 
-
-task run(dependsOn: classes, type: JavaExec) {
-    main = project.mainClassName
+tasks.register("run", JavaExec) {
+    dependsOn(classes)
+    mainClass = project.mainClassName
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
     workingDir = project.assetsDir
-    ignoreExitValue = true
+    ignoreExitValue(true)
+
     if (System.properties['os.name'].toLowerCase().contains('mac')) {
         jvmArgs "-XstartOnFirstThread"
         jvmArgs "-Djava.awt.headless=true"
     }
 }
 
-task distEditor(type: Jar) {
-    archiveBaseName = 'Abyssus'
-    archiveVersion = '0.3.0'
+tasks.register("distEditor", Jar) {
+    archiveBaseName = project.appName
+    archiveVersion = project.appVersion
 
-    manifest {
-        attributes 'Main-Class': project.mainClassName
-    }
     dependsOn configurations.runtimeClasspath
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
     with jar
-    duplicatesStrategy 'exclude'
+    duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+}
+
+tasks.withType(Jar).configureEach {
+    manifest {
+        attributes 'Main-Class': project.mainClassName
+        attributes "AppName": project.appName
+        attributes "Version": project.appVersion
+    }
+}
+
+tasks.withType(ProcessResources).configureEach {
+    doLast {
+        new File("${project.buildDir}/resources/main", "version.properties").text = """appName=${project.appName}
+appVersion=${project.appVersion}
+buildTime=${new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date())}
+"""
+    }
 }
 
 build {
-    finalizedBy distEditor
+    finalizedBy("distEditor")
 }

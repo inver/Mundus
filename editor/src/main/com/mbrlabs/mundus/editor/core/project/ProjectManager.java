@@ -22,7 +22,6 @@ import com.badlogic.gdx.utils.Disposable;
 import com.mbrlabs.mundus.commons.Scene;
 import com.mbrlabs.mundus.commons.core.ecs.EcsService;
 import com.mbrlabs.mundus.commons.importer.SceneConverter;
-import com.mbrlabs.mundus.editor.Main;
 import com.mbrlabs.mundus.editor.core.ProjectConstants;
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager;
 import com.mbrlabs.mundus.editor.core.registry.ProjectRef;
@@ -32,6 +31,7 @@ import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.LogEvent;
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent;
 import com.mbrlabs.mundus.editor.events.SceneChangedEvent;
+import com.mbrlabs.mundus.editor.utils.AppUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -303,7 +303,7 @@ public class ProjectManager implements Disposable {
 
     private String constructWindowTitle() {
         return editorCtx.getCurrent().name + " - " + editorCtx.getCurrent().getCurrentScene().getName() +
-                " [" + editorCtx.getCurrent().path + "]" + " - " + Main.TITLE;
+                " [" + editorCtx.getCurrent().path + "]" + " - " + AppUtils.getAppVersion();
     }
 
     @Override
