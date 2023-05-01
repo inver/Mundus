@@ -17,17 +17,16 @@
 package net.nevinsky.abyssus.core.shader;
 
 import com.badlogic.gdx.files.FileHandle;
-import net.nevinsky.abyssus.core.Renderable;
 
 public class DefaultShaderProvider extends BaseShaderProvider {
-    public final DefaultShader.Config config;
+    public final ShaderConfig config;
 
-    public DefaultShaderProvider(final DefaultShader.Config config) {
-        this.config = (config == null) ? new DefaultShader.Config() : config;
+    public DefaultShaderProvider(final ShaderConfig config) {
+        this.config = (config == null) ? new ShaderConfig() : config;
     }
 
     public DefaultShaderProvider(final String vertexShader, final String fragmentShader) {
-        this(new DefaultShader.Config(vertexShader, fragmentShader));
+        this(new ShaderConfig(vertexShader, fragmentShader));
     }
 
     public DefaultShaderProvider(final FileHandle vertexShader, final FileHandle fragmentShader) {
@@ -39,7 +38,7 @@ public class DefaultShaderProvider extends BaseShaderProvider {
     }
 
     @Override
-    protected Shader createShader(final Renderable renderable) {
-        return new DefaultShader(renderable, config);
+    protected BaseShader loadShader(String key) {
+        return new DefaultShader(config.getVertexShader(), config.getFragmentShader());
     }
 }

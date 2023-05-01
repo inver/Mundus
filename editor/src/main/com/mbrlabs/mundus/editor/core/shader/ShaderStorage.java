@@ -1,10 +1,6 @@
 package com.mbrlabs.mundus.editor.core.shader;
 
-import com.badlogic.gdx.files.FileHandle;
 import com.mbrlabs.mundus.commons.assets.shader.ShaderAsset;
-import com.mbrlabs.mundus.commons.shaders.AbyssusDefaultShader;
-import com.mbrlabs.mundus.commons.shaders.DefaultBaseShader;
-import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 import com.mbrlabs.mundus.commons.shaders.SkyboxShader;
 import com.mbrlabs.mundus.commons.shaders.TerrainShader;
 import com.mbrlabs.mundus.editor.core.ProjectConstants;
@@ -20,6 +16,8 @@ import com.mbrlabs.mundus.editor.tools.picker.PickerShader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.nevinsky.abyssus.core.shader.BaseShader;
+import net.nevinsky.abyssus.core.shader.DefaultShader;
+import net.nevinsky.abyssus.core.shader.ShaderProvider;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -36,17 +34,15 @@ import static com.mbrlabs.mundus.editor.core.ProjectConstants.SHADER_MATERIAL_PR
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class ShaderStorage implements ShaderHolder {
+public class ShaderStorage implements ShaderProvider {
 
     private final EditorCtx ctx;
     private final EventBus eventBus;
     private final Registry registry;
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
-    private volatile Future watchFuture = null;
+    private volatile Future<?> watchFuture = null;
     private volatile Boolean autoReloadFromDisk = false;
-
-    //todo move to shader context
-    private final Map<String, DefaultBaseShader> shaders = new ConcurrentHashMap<>();
+    private final Map<String, BaseShader> shaders = new ConcurrentHashMap<>();
 
     @PostConstruct
     public void init() {
@@ -56,26 +52,6 @@ public class ShaderStorage implements ShaderHolder {
             toggleAutoReload();
         });
         eventBus.register((ProjectChangedEvent.ProjectChangedListener) event -> toggleAutoReload());
-    }
-
-    //    public ShaderStorage() {
-//        ShaderProgram.pedantic = false;
-//
-//        shaders.put(ShaderConstants.WIREFRAME, new WireframeShader());
-//        shaders.put(ShaderConstants.TERRAIN, new TerrainShader());
-//        shaders.put(ShaderConstants.MODEL, new ModelShader());
-//        shaders.put(ShaderConstants.SKYBOX, new SkyboxShader());
-//        shaders.put(ShaderConstants.PICKER, new PickerShader());
-//
-//        shaders.values().forEach(Shader::init);
-//    }
-//
-    public void addShader(FileHandle handle) {
-//        shaders.put(ShaderConstants.WIREFRAME, new WireframeShader());
-//        shaders.put(ShaderConstants.TERRAIN, new TerrainShader());
-//        shaders.put(ShaderConstants.MODEL, new ModelShader());
-//        shaders.put(ShaderConstants.SKYBOX, new SkyboxShader());
-//        shaders.put(ShaderConstants.PICKER, new PickerShader());
     }
 
     public Map<String, BaseShader> load(ProjectRef ref) {
@@ -104,16 +80,17 @@ public class ShaderStorage implements ShaderHolder {
         if (res != null) {
             res.init();
             shaders.put(key, res);
+            return (T) res;
         }
-        return (T) res;
+
+        return (T) shaders.get(ShaderConstants.DEFAULT);
     }
 
-    private DefaultBaseShader loadShader(String key) {
+    private BaseShader loadShader(String key) {
         switch (key) {
             case ShaderConstants.DEFAULT: {
-                //todo remove path hardcode
                 var asset = (ShaderAsset) ctx.getAssetLibrary().get(ProjectConstants.SHADER_DEFAULT_PATH);
-                return new AbyssusDefaultShader(asset.getVertexShader(), asset.getFragmentShader());
+                return new DefaultShader(asset.getVertexShader(), asset.getFragmentShader());
             }
             case ShaderConstants.SKYBOX: {
                 var asset = (ShaderAsset) ctx.getAssetLibrary().get(ProjectConstants.SHADER_SKYBOX_PATH);
@@ -131,13 +108,9 @@ public class ShaderStorage implements ShaderHolder {
                 var asset = (ShaderAsset) ctx.getAssetLibrary().get(ProjectConstants.SHADER_PICKER_PATH);
                 return new PickerShader(asset.getVertexShader(), asset.getFragmentShader());
             }
+            default:
+                return null;
         }
-
-        return null;
-    }
-
-    public void createShaderAsset(String name) {
-
     }
 
     public void toggleAutoReload() {

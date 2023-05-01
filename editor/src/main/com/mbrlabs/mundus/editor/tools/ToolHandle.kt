@@ -20,10 +20,10 @@ import com.badlogic.gdx.math.Quaternion
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.utils.Disposable
 import com.mbrlabs.mundus.commons.scene3d.components.RenderableObject
-import com.mbrlabs.mundus.commons.shaders.ShaderHolder
 import com.mbrlabs.mundus.editor.tools.picker.PickerIDAttribute
 import com.mbrlabs.mundus.editor.utils.PickerColorEncoder
 import net.nevinsky.abyssus.core.ModelBatch
+import net.nevinsky.abyssus.core.shader.ShaderProvider
 
 /**
  * A tool handle is the visual part of a tool (e.g. x arrow handle of the
@@ -48,7 +48,7 @@ abstract class ToolHandle(val id: Int, val state: TransformTool.TransformState) 
         PickerColorEncoder.encodeRaypickColorId(id, idAttribute)
     }
 
-    abstract fun renderPick(modelBatch: ModelBatch, shaders: ShaderHolder)
+    abstract fun renderPick(modelBatch: ModelBatch, shaders: ShaderProvider)
     abstract fun act()
     abstract fun applyTransform()
 }

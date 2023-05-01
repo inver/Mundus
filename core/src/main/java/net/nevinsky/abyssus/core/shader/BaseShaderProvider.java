@@ -16,33 +16,32 @@
 
 package net.nevinsky.abyssus.core.shader;
 
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import net.nevinsky.abyssus.core.Renderable;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class BaseShaderProvider implements ShaderProvider {
-    protected Array<Shader> shaders = new Array<Shader>();
+    protected final Map<String, Shader> shaders = new ConcurrentHashMap<>();
 
     @Override
-    public Shader getShader(Renderable renderable) {
-        Shader suggestedShader = renderable.shader;
-        if (suggestedShader != null && suggestedShader.canRender(renderable)) return suggestedShader;
-        for (Shader shader : shaders) {
-            if (shader.canRender(renderable)) return shader;
+    public <T extends BaseShader> T get(String key) {
+        var res = shaders.get(key);
+        if (res != null) {
+            return (T) res;
         }
-        final Shader shader = createShader(renderable);
-        if (!shader.canRender(renderable))
-            throw new GdxRuntimeException("unable to provide a shader for this renderable");
-        shader.init();
-        shaders.add(shader);
-        return shader;
+
+        res = loadShader(key);
+        if (res != null) {
+            res.init();
+            shaders.put(key, res);
+        }
+        return (T) res;
     }
 
-    protected abstract Shader createShader(final Renderable renderable);
+    protected abstract BaseShader loadShader(String key);
 
     @Override
     public void dispose() {
-        for (Shader shader : shaders) {
+        for (Shader shader : shaders.values()) {
             shader.dispose();
         }
         shaders.clear();

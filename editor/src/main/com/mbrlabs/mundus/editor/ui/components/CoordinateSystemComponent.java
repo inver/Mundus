@@ -6,11 +6,11 @@ import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.components.RenderableObject;
-import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 import net.nevinsky.abyssus.core.ModelBatch;
 import net.nevinsky.abyssus.core.ModelBuilder;
 import net.nevinsky.abyssus.core.ModelInstance;
 import net.nevinsky.abyssus.core.builder.ArrowShapeBuilder;
+import net.nevinsky.abyssus.core.shader.ShaderProvider;
 
 public class CoordinateSystemComponent implements RenderableObject {
     private static final int START_CONST = 10;
@@ -48,7 +48,7 @@ public class CoordinateSystemComponent implements RenderableObject {
     }
 
     @Override
-    public void render(ModelBatch batch, SceneEnvironment environment, ShaderHolder shaders, float delta) {
-        batch.render(instance);
+    public void render(ModelBatch batch, SceneEnvironment environment, ShaderProvider shaders, float delta) {
+        batch.render(instance, shaders.get());
     }
 }

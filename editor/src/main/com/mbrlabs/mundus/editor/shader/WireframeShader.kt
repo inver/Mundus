@@ -19,16 +19,16 @@ package com.mbrlabs.mundus.editor.shader
 import com.badlogic.gdx.graphics.Camera
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext
-import com.mbrlabs.mundus.commons.shaders.DefaultBaseShader
 import com.mbrlabs.mundus.editor.utils.GlUtils
 import net.nevinsky.abyssus.core.Renderable
+import net.nevinsky.abyssus.core.shader.DefaultShader
 import net.nevinsky.abyssus.core.shader.Shader
 
 /**
  * @author Marcus Brummer
  * @version 03-12-2015
  */
-class WireframeShader(vertex: String, fragment: String) : DefaultBaseShader(vertex, fragment) {
+class WireframeShader(vertex: String, fragment: String) : DefaultShader(vertex, fragment) {
 
     private val UNIFORM_PROJ_VIEW_MATRIX = register(Uniform("u_projViewMatrix"))
     private val UNIFORM_TRANS_MATRIX = register(Uniform("u_transMatrix"))

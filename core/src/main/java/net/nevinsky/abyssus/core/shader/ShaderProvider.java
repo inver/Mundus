@@ -26,13 +26,19 @@ import net.nevinsky.abyssus.core.Renderable;
  * @author badlogic
  */
 public interface ShaderProvider extends Disposable {
+
+    String DEFAULT_SHADER = "default";
+
     /**
-     * Returns a {@link Shader} for the given {@link Renderable}. The RenderInstance may already contain a Shader, in
+     * Returns a {@link Shader} for the given {@link String}. The RenderInstance may already contain a Shader, in
      * which case the provider may decide to return that.
      *
-     * @param renderable the Renderable
+     * @param key the key of shader
      * @return the Shader to be used for the RenderInstance
      */
-    Shader getShader(Renderable renderable);
+    <T extends BaseShader> T get(String key);
 
+    default DefaultShader get() {
+        return get(DEFAULT_SHADER);
+    }
 }

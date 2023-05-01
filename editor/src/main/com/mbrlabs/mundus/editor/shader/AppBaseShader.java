@@ -4,9 +4,9 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.env.lights.SunLightsAttribute;
-import com.mbrlabs.mundus.commons.shaders.DefaultBaseShader;
+import net.nevinsky.abyssus.core.shader.DefaultShader;
 
-public abstract class AppBaseShader extends DefaultBaseShader {
+public abstract class AppBaseShader extends DefaultShader {
 
     // ============================ MATERIALS ============================
     protected final int UNIFORM_MATERIAL_DIFFUSE_TEXTURE = register(new Uniform("u_diffuseTexture"));

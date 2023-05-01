@@ -17,7 +17,6 @@ package com.mbrlabs.mundus.editor.tools;
 
 import com.badlogic.gdx.Input;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
-import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.events.EntitySelectedEvent;
 import com.mbrlabs.mundus.editor.events.EventBus;
@@ -26,6 +25,7 @@ import com.mbrlabs.mundus.editor.tools.picker.EntityPicker;
 import com.mbrlabs.mundus.editor.ui.widgets.icon.SymbolIcon;
 import lombok.extern.slf4j.Slf4j;
 import net.nevinsky.abyssus.core.ModelBatch;
+import net.nevinsky.abyssus.core.shader.ShaderProvider;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -64,7 +64,7 @@ public class SelectionTool extends Tool {
     }
 
     @Override
-    public void render(ModelBatch batch, SceneEnvironment environment, ShaderHolder shaders, float delta) {
+    public void render(ModelBatch batch, SceneEnvironment environment, ShaderProvider shaders, float delta) {
         if (getCtx().getSelectedEntity() == null) {
             return;
         }

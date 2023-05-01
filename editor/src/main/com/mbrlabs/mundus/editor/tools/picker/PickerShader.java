@@ -20,8 +20,8 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.math.Vector3;
-import com.mbrlabs.mundus.commons.shaders.DefaultBaseShader;
 import net.nevinsky.abyssus.core.Renderable;
+import net.nevinsky.abyssus.core.shader.DefaultShader;
 import net.nevinsky.abyssus.core.shader.Shader;
 
 /**
@@ -35,7 +35,7 @@ import net.nevinsky.abyssus.core.shader.Shader;
  * @author Marcus Brummer
  * @version 20-02-2016
  */
-public class PickerShader extends DefaultBaseShader {
+public class PickerShader extends DefaultShader {
 
     protected final int UNIFORM_PROJ_VIEW_MATRIX = register(new Uniform("u_projViewMatrix"));
     protected final int UNIFORM_TRANS_MATRIX = register(new Uniform("u_transMatrix"));

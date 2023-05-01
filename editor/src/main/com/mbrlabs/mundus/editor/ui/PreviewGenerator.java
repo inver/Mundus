@@ -24,8 +24,8 @@ import com.mbrlabs.mundus.editor.ui.widgets.RenderWidget;
 import net.nevinsky.abyssus.core.ModelBatch;
 import net.nevinsky.abyssus.core.ModelBuilder;
 import net.nevinsky.abyssus.core.ModelInstance;
-import net.nevinsky.abyssus.core.shader.DefaultShader;
 import net.nevinsky.abyssus.core.shader.DefaultShaderProvider;
+import net.nevinsky.abyssus.core.shader.ShaderConfig;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -87,10 +87,10 @@ public class PreviewGenerator {
                 materialAsset.applyToMaterial(new Material()), VertexAttributes.Usage.Position
         ));
 
-        var config = new DefaultShader.Config();
-        config.numBones = 60;
+        var config = new ShaderConfig();
+        config.setNumBones(0);
 
-        var modelBatch = new ModelBatch(new DefaultShaderProvider(config));
+        var modelBatch = new ModelBatch();
 
 
         var sunLight = new SpotLight();

@@ -40,6 +40,7 @@ import com.mbrlabs.mundus.editor.utils.UsefulMeshs;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.nevinsky.abyssus.core.ModelBatch;
+import net.nevinsky.abyssus.core.shader.ShaderProvider;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
@@ -194,7 +195,7 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
                 batch.end();
 
                 toolManager.render(batch, scene.getEnvironment(), shaderStorage, Gdx.graphics.getDeltaTime());
-                compass.render(batch);
+                compass.render(batch, shaderStorage.get(ShaderProvider.DEFAULT_SHADER));
             } catch (Exception e) {
                 log.error("ERROR", e);
             }

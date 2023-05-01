@@ -15,17 +15,20 @@ import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.mbrlabs.mundus.commons.model.ImportedModel
+import com.mbrlabs.mundus.editor.core.shader.ShaderStorage
 import com.mbrlabs.mundus.editor.ui.widgets.FileChooserField
 import com.mbrlabs.mundus.editor.ui.widgets.RenderWidget
 import com.mbrlabs.mundus.editor.ui.widgets.presenter.FileChooserFieldPresenter
 import net.nevinsky.abyssus.core.ModelBatch
 import net.nevinsky.abyssus.core.ModelInstance
-import net.nevinsky.abyssus.core.shader.DefaultShader
 import net.nevinsky.abyssus.core.shader.DefaultShaderProvider
+import net.nevinsky.abyssus.core.shader.OldDefaultShader
+import net.nevinsky.abyssus.core.shader.ShaderProvider
 
 class ImportModelWidget(
     private val renderWidget: RenderWidget,
     private val importModelPresenter: ImportModelPresenter,
+    private val shaderStorage: ShaderStorage,
     fileChooserFieldPresenter: FileChooserFieldPresenter,
     closeListener: Runnable
 ) : VisTable(), Disposable {
@@ -62,7 +65,7 @@ class ImportModelWidget(
             previewInstance!!.transform.rotate(0f, 1f, 0f, -1f)
 
             modelBatch?.begin(camera)
-            modelBatch?.render(previewInstance!!, env)
+            modelBatch?.render(previewInstance!!, env, shaderStorage.get(ShaderProvider.DEFAULT_SHADER))
             modelBatch?.end()
         }
 
@@ -101,9 +104,9 @@ class ImportModelWidget(
     }
 
     private fun showPreview() {
-        val config = DefaultShader.Config()
+        val config = OldDefaultShader.Config()
         config.numBones = 600 // TODO get max bones from model
-        modelBatch = ModelBatch(DefaultShaderProvider())
+        modelBatch = ModelBatch()
 
         // scale to 2 open gl units
         val boundingBox = previewInstance!!.calculateBoundingBox(BoundingBox())
@@ -119,7 +122,6 @@ class ImportModelWidget(
         if (previewInstance != null) {
             previewInstance = null
         }
-        modelBatch?.dispose()
         modelInput.clear()
     }
 }

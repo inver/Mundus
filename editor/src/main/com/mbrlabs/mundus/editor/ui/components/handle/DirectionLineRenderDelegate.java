@@ -7,11 +7,11 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.math.Vector3;
 import com.mbrlabs.mundus.commons.core.ecs.base.RenderableDelegate;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
-import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 import lombok.Getter;
 import net.nevinsky.abyssus.core.ModelBatch;
 import net.nevinsky.abyssus.core.ModelBuilder;
 import net.nevinsky.abyssus.core.ModelInstance;
+import net.nevinsky.abyssus.core.shader.ShaderProvider;
 
 public class DirectionLineRenderDelegate implements RenderableDelegate {
     private static final long ATTRIBUTES = VertexAttributes.Usage.Position | VertexAttributes.Usage.ColorUnpacked;
@@ -33,9 +33,9 @@ public class DirectionLineRenderDelegate implements RenderableDelegate {
     }
 
     @Override
-    public void render(ModelBatch batch, SceneEnvironment environment, ShaderHolder shaders, float delta) {
+    public void render(ModelBatch batch, SceneEnvironment environment, ShaderProvider shaders, float delta) {
         if (!hidden) {
-            batch.render(instance);
+            batch.render(instance, shaders.get());
         }
     }
 

@@ -21,6 +21,7 @@ import net.nevinsky.abyssus.core.AnimationController;
 import net.nevinsky.abyssus.core.ModelBatch;
 import net.nevinsky.abyssus.core.ModelBuilder;
 import net.nevinsky.abyssus.core.ModelInstance;
+import net.nevinsky.abyssus.core.shader.DefaultShaderProvider;
 
 public class ModelTest extends Lwjgl3WindowAdapter implements ApplicationListener, InputProcessor {
     private PerspectiveCamera camera;
@@ -88,8 +89,7 @@ public class ModelTest extends Lwjgl3WindowAdapter implements ApplicationListene
 
     @Override
     public void dispose() {
-        modelBatch.dispose();
-//        model.dispose();
+
     }
 
     @Override
@@ -108,9 +108,12 @@ public class ModelTest extends Lwjgl3WindowAdapter implements ApplicationListene
         if (screenShot) {
             frameBuffer.begin();
         }
+
+        var shaderProvider = new DefaultShaderProvider();
+
         // Like spriteBatch, just with models!  pass in the box Instance and the environment
         modelBatch.begin(camera);
-        modelBatch.render(modelInstance, environment);
+        modelBatch.render(modelInstance, environment, shaderProvider.get());
         modelBatch.end();
         // Now tell OpenGL that we are done sending graphics to the framebuffer
         if (screenShot) {

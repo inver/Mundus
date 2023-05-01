@@ -30,13 +30,14 @@ import com.mbrlabs.mundus.commons.terrain.TerrainObject;
 import com.mbrlabs.mundus.commons.terrain.TerrainTexture;
 import com.mbrlabs.mundus.commons.terrain.TerrainTextureAttribute;
 import net.nevinsky.abyssus.core.Renderable;
+import net.nevinsky.abyssus.core.shader.DefaultShader;
 import net.nevinsky.abyssus.core.shader.Shader;
 
 /**
  * @author Marcus Brummer
  * @version 22-11-2015
  */
-public class TerrainShader extends DefaultBaseShader {
+public class TerrainShader extends DefaultShader {
 
     protected static final String VERTEX_SHADER = "bundled/shaders/terrain.vert.glsl";
     protected static final String FRAGMENT_SHADER = "bundled/shaders/terrain.frag.glsl";

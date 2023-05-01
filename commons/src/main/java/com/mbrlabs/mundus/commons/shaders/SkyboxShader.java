@@ -23,13 +23,14 @@ import com.badlogic.gdx.math.Matrix4;
 import com.mbrlabs.mundus.commons.env.Fog;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import net.nevinsky.abyssus.core.Renderable;
+import net.nevinsky.abyssus.core.shader.DefaultShader;
 import net.nevinsky.abyssus.core.shader.Shader;
 
 /**
  * @author Marcus Brummer
  * @version 08-01-2016
  */
-public class SkyboxShader extends DefaultBaseShader {
+public class SkyboxShader extends DefaultShader {
     protected final int UNIFORM_PROJ_VIEW_MATRIX = register(new Uniform("u_projViewMatrix"));
     protected final int UNIFORM_TRANS_MATRIX = register(new Uniform("u_transMatrix"));
     protected final int UNIFORM_TEXTURE = register(new Uniform("u_texture"));

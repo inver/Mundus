@@ -18,6 +18,7 @@ package com.mbrlabs.mundus.editor.ui.modules.dialogs.importer
 
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.kotcrab.vis.ui.widget.VisTable
+import com.mbrlabs.mundus.editor.core.shader.ShaderStorage
 import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.BaseDialog
 import com.mbrlabs.mundus.editor.ui.widgets.RenderWidget
@@ -32,11 +33,17 @@ import org.springframework.stereotype.Component
 class ImportModelDialog(
     appUi: AppUi,
     fileChooserFieldPresenter: FileChooserFieldPresenter,
-    importModelPresenter: ImportModelPresenter
+    importModelPresenter: ImportModelPresenter,
+    shaderStorage: ShaderStorage
 ) : BaseDialog("Import Mesh") {
 
     private val importWidget =
-        ImportModelWidget(RenderWidget(appUi), importModelPresenter, fileChooserFieldPresenter) { close() }
+        ImportModelWidget(
+            RenderWidget(appUi),
+            importModelPresenter,
+            shaderStorage,
+            fileChooserFieldPresenter
+        ) { close() }
 
     init {
         isModal = true

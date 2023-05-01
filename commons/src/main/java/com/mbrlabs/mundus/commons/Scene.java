@@ -21,16 +21,17 @@ import com.artemis.World;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.utils.Disposable;
 import com.mbrlabs.mundus.commons.assets.Asset;
+import com.mbrlabs.mundus.commons.assets.skybox.SkyboxAsset;
 import com.mbrlabs.mundus.commons.core.ecs.behavior.RenderComponentSystem;
 import com.mbrlabs.mundus.commons.core.ecs.component.CameraComponent;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.HierarchyNode;
 import com.mbrlabs.mundus.commons.scene3d.components.RenderableObject;
-import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import net.nevinsky.abyssus.core.ModelBatch;
+import net.nevinsky.abyssus.core.shader.ShaderProvider;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
@@ -59,7 +60,7 @@ public class Scene implements Disposable, RenderableObject {
     private HierarchyNode rootNode = new HierarchyNode(-1, "Root");
 
     @Override
-    public void render(ModelBatch batch, SceneEnvironment environment, ShaderHolder shaders, float delta) {
+    public void render(ModelBatch batch, SceneEnvironment environment, ShaderProvider shaders, float delta) {
         world.setDelta(delta);
         world.getSystem(RenderComponentSystem.class).setRenderData(batch, environment, shaders);
         world.process();

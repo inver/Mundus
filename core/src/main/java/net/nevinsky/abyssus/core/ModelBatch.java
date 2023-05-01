@@ -16,17 +16,14 @@
 
 package net.nevinsky.abyssus.core;
 
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultTextureBinder;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.FlushablePool;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool;
-import net.nevinsky.abyssus.core.shader.DefaultShader;
 import net.nevinsky.abyssus.core.shader.DefaultShaderProvider;
 import net.nevinsky.abyssus.core.shader.Shader;
 import net.nevinsky.abyssus.core.shader.ShaderProvider;
@@ -44,7 +41,7 @@ import net.nevinsky.abyssus.core.shader.ShaderProvider;
  *
  * @author xoppa, badlogic
  */
-public class ModelBatch implements Disposable {
+public class ModelBatch {
     protected static class RenderablePool extends FlushablePool<Renderable> {
         @Override
         protected Renderable newObject() {
@@ -68,47 +65,19 @@ public class ModelBatch implements Disposable {
     /**
      * list of Renderables to be rendered in the current batch
      **/
-    protected final Array<Renderable> renderables =
-            new Array<Renderable>();
+    protected final Array<Renderable> renderables = new Array<>();
     /**
      * the {@link RenderContext}
      **/
     protected final RenderContext context;
     private final boolean ownContext;
     /**
-     * the {@link ShaderProvider}, provides {@link Shader} instances for Renderables
-     **/
-    protected final ShaderProvider shaderProvider;
-    /**
      * the {@link RenderableSorter}
      **/
     protected final RenderableSorter sorter;
 
-    /**
-     * Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and
-     * context.end() yourself.
-     *
-     * @param context        The {@link RenderContext} to use.
-     * @param shaderProvider The {@link ShaderProvider} to use, will be disposed when this ModelBatch is disposed.
-     * @param sorter         The {@link RenderableSorter} to use.
-     */
-    public ModelBatch(final RenderContext context, final ShaderProvider shaderProvider, final RenderableSorter sorter) {
-        this.sorter = (sorter == null) ? new DefaultRenderableSorter() : sorter;
-        this.ownContext = (context == null);
-        this.context =
-                (context == null) ? new RenderContext(new DefaultTextureBinder(DefaultTextureBinder.LRU, 1)) : context;
-        this.shaderProvider = (shaderProvider == null) ? new DefaultShaderProvider() : shaderProvider;
-    }
-
-    /**
-     * Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and
-     * context.end() yourself.
-     *
-     * @param context        The {@link RenderContext} to use.
-     * @param shaderProvider The {@link ShaderProvider} to use, will be disposed when this ModelBatch is disposed.
-     */
-    public ModelBatch(final RenderContext context, final ShaderProvider shaderProvider) {
-        this(context, shaderProvider, null);
+    public ModelBatch() {
+        this(null, null);
     }
 
     /**
@@ -119,7 +88,10 @@ public class ModelBatch implements Disposable {
      * @param sorter  The {@link RenderableSorter} to use.
      */
     public ModelBatch(final RenderContext context, final RenderableSorter sorter) {
-        this(context, null, sorter);
+        this.sorter = (sorter == null) ? new DefaultRenderableSorter() : sorter;
+        this.ownContext = (context == null);
+        this.context =
+                (context == null) ? new RenderContext(new DefaultTextureBinder(DefaultTextureBinder.LRU, 1)) : context;
     }
 
     /**
@@ -129,17 +101,7 @@ public class ModelBatch implements Disposable {
      * @param context The {@link RenderContext} to use.
      */
     public ModelBatch(final RenderContext context) {
-        this(context, null, null);
-    }
-
-    /**
-     * Construct a ModelBatch
-     *
-     * @param shaderProvider The {@link ShaderProvider} to use, will be disposed when this ModelBatch is disposed.
-     * @param sorter         The {@link RenderableSorter} to use.
-     */
-    public ModelBatch(final ShaderProvider shaderProvider, final RenderableSorter sorter) {
-        this(null, shaderProvider, sorter);
+        this(context, null);
     }
 
     /**
@@ -148,45 +110,7 @@ public class ModelBatch implements Disposable {
      * @param sorter The {@link RenderableSorter} to use.
      */
     public ModelBatch(final RenderableSorter sorter) {
-        this(null, null, sorter);
-    }
-
-    /**
-     * Construct a ModelBatch
-     *
-     * @param shaderProvider The {@link ShaderProvider} to use, will be disposed when this ModelBatch is disposed.
-     */
-    public ModelBatch(final ShaderProvider shaderProvider) {
-        this(null, shaderProvider, null);
-    }
-
-    /**
-     * Construct a ModelBatch with the default implementation and the specified ubershader. See {@link DefaultShader}
-     * for more information about using a custom ubershader. Requires OpenGL ES 2.0.
-     *
-     * @param vertexShader   The {@link FileHandle} of the vertex shader to use.
-     * @param fragmentShader The {@link FileHandle} of the fragment shader to use.
-     */
-    public ModelBatch(final FileHandle vertexShader, final FileHandle fragmentShader) {
-        this(null, new DefaultShaderProvider(vertexShader, fragmentShader), null);
-    }
-
-    /**
-     * Construct a ModelBatch with the default implementation and the specified ubershader. See {@link DefaultShader}
-     * for more information about using a custom ubershader. Requires OpenGL ES 2.0.
-     *
-     * @param vertexShader   The vertex shader to use.
-     * @param fragmentShader The fragment shader to use.
-     */
-    public ModelBatch(final String vertexShader, final String fragmentShader) {
-        this(null, new DefaultShaderProvider(vertexShader, fragmentShader), null);
-    }
-
-    /**
-     * Construct a ModelBatch with the default implementation
-     */
-    public ModelBatch() {
-        this(null, null, null);
+        this(null, sorter);
     }
 
     /**
@@ -252,13 +176,6 @@ public class ModelBatch implements Disposable {
     }
 
     /**
-     * @return the {@link ShaderProvider} used by this ModelBatch.
-     */
-    public ShaderProvider getShaderProvider() {
-        return shaderProvider;
-    }
-
-    /**
      * @return the {@link RenderableSorter} used by this ModelBatch.
      */
     public RenderableSorter getRenderableSorter() {
@@ -304,82 +221,6 @@ public class ModelBatch implements Disposable {
     }
 
     /**
-     * Add a single {@link Renderable} to the batch. The {@link ShaderProvider} will be used to fetch a suitable
-     * {@link Shader}. Can only be called after a call to {@link #begin(Camera)} and before a call to {@link #end()}.
-     *
-     * @param renderable The {@link Renderable} to be added.
-     */
-    public void render(final Renderable renderable) {
-        renderable.shader = shaderProvider.getShader(renderable);
-        renderables.add(renderable);
-    }
-
-    /**
-     * Calls {@link RenderableProvider#getRenderables(Array, Pool)} and adds all returned {@link Renderable} instances
-     * to the current batch to be rendered. Can only be called after a call to {@link #begin(Camera)} and before a call
-     * to {@link #end()}.
-     *
-     * @param renderableProvider the renderable provider
-     */
-    public void render(final RenderableProvider renderableProvider) {
-        final int offset = renderables.size;
-        renderableProvider.getRenderables(renderables, renderablesPool);
-        for (int i = offset; i < renderables.size; i++) {
-            Renderable renderable = renderables.get(i);
-            renderable.shader = shaderProvider.getShader(renderable);
-        }
-    }
-
-    /**
-     * Calls {@link RenderableProvider#getRenderables(Array, Pool)} and adds all returned {@link Renderable} instances
-     * to the current batch to be rendered. Can only be called after a call to {@link #begin(Camera)} and before a call
-     * to {@link #end()}.
-     *
-     * @param renderableProviders one or more renderable providers
-     */
-    public <T extends RenderableProvider> void render(final Iterable<T> renderableProviders) {
-        for (final RenderableProvider renderableProvider : renderableProviders) {
-            render(renderableProvider);
-        }
-    }
-
-    /**
-     * Calls {@link RenderableProvider#getRenderables(Array, Pool)} and adds all returned {@link Renderable} instances
-     * to the current batch to be rendered. Any environment set on the returned renderables will be replaced with the
-     * given environment. Can only be called after a call to {@link #begin(Camera)} and before a call to
-     * {@link #end()}.
-     *
-     * @param renderableProvider the renderable provider
-     * @param environment        the {@link Environment} to use for the renderables
-     */
-    public void render(final RenderableProvider renderableProvider,
-                       final Environment environment) {
-        final int offset = renderables.size;
-        renderableProvider.getRenderables(renderables, renderablesPool);
-        for (int i = offset; i < renderables.size; i++) {
-            Renderable renderable = renderables.get(i);
-            renderable.environment = environment;
-            renderable.shader = shaderProvider.getShader(renderable);
-        }
-    }
-
-    /**
-     * Calls {@link RenderableProvider#getRenderables(Array, Pool)} and adds all returned {@link Renderable} instances
-     * to the current batch to be rendered. Any environment set on the returned renderables will be replaced with the
-     * given environment. Can only be called after a call to {@link #begin(Camera)} and before a call to
-     * {@link #end()}.
-     *
-     * @param renderableProviders one or more renderable providers
-     * @param environment         the {@link Environment} to use for the renderables
-     */
-    public <T extends RenderableProvider> void render(
-            final Iterable<T> renderableProviders, final Environment environment) {
-        for (final RenderableProvider renderableProvider : renderableProviders) {
-            render(renderableProvider, environment);
-        }
-    }
-
-    /**
      * Calls {@link RenderableProvider#getRenderables(Array, Pool)} and adds all returned {@link Renderable} instances
      * to the current batch to be rendered. Any shaders set on the returned renderables will be replaced with the given
      * {@link Shader}. Can only be called after a call to {@link #begin(Camera)} and before a call to {@link #end()}.
@@ -393,7 +234,6 @@ public class ModelBatch implements Disposable {
         for (int i = offset; i < renderables.size; i++) {
             Renderable renderable = renderables.get(i);
             renderable.shader = shader;
-            renderable.shader = shaderProvider.getShader(renderable);
         }
     }
 
@@ -421,15 +261,14 @@ public class ModelBatch implements Disposable {
      * @param environment        the {@link Environment} to use for the renderables
      * @param shader             the shader to use for the renderables
      */
-    public void render(final RenderableProvider renderableProvider,
-                       final Environment environment, final Shader shader) {
+    public void render(final RenderableProvider renderableProvider, final Environment environment,
+                       final Shader shader) {
         final int offset = renderables.size;
         renderableProvider.getRenderables(renderables, renderablesPool);
         for (int i = offset; i < renderables.size; i++) {
             Renderable renderable = renderables.get(i);
             renderable.environment = environment;
             renderable.shader = shader;
-            renderable.shader = shaderProvider.getShader(renderable);
         }
     }
 
@@ -449,10 +288,5 @@ public class ModelBatch implements Disposable {
         for (final RenderableProvider renderableProvider : renderableProviders) {
             render(renderableProvider, environment, shader);
         }
-    }
-
-    @Override
-    public void dispose() {
-        shaderProvider.dispose();
     }
 }

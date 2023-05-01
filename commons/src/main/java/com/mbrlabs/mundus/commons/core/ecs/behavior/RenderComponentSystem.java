@@ -5,16 +5,16 @@ import com.artemis.annotations.All;
 import com.artemis.systems.IteratingSystem;
 import com.mbrlabs.mundus.commons.core.ecs.base.RenderComponent;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
-import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 import lombok.extern.slf4j.Slf4j;
 import net.nevinsky.abyssus.core.ModelBatch;
+import net.nevinsky.abyssus.core.shader.ShaderProvider;
 
 @Slf4j
 @All(RenderComponent.class)
 public class RenderComponentSystem extends IteratingSystem {
     private ModelBatch batch;
     private SceneEnvironment environment;
-    private ShaderHolder shaders;
+    private ShaderProvider shaders;
     protected ComponentMapper<RenderComponent> mapper;
 
     @Override
@@ -22,7 +22,7 @@ public class RenderComponentSystem extends IteratingSystem {
         mapper.get(entityId).getRenderable().render(batch, environment, shaders, world.getDelta());
     }
 
-    public void setRenderData(ModelBatch batch, SceneEnvironment environment, ShaderHolder shaders) {
+    public void setRenderData(ModelBatch batch, SceneEnvironment environment, ShaderProvider shaders) {
         this.batch = batch;
         this.environment = environment;
         this.shaders = shaders;

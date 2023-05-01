@@ -8,11 +8,11 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.mbrlabs.mundus.commons.core.ecs.base.RenderableDelegate;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
-import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 import net.nevinsky.abyssus.core.ModelBatch;
 import net.nevinsky.abyssus.core.ModelBuilder;
 import net.nevinsky.abyssus.core.ModelInstance;
 import net.nevinsky.abyssus.core.builder.ConeShapeBuilder;
+import net.nevinsky.abyssus.core.shader.ShaderProvider;
 
 public class LightRenderDelegate implements RenderableDelegate {
 
@@ -34,8 +34,8 @@ public class LightRenderDelegate implements RenderableDelegate {
     }
 
     @Override
-    public void render(ModelBatch batch, SceneEnvironment environment, ShaderHolder shaders, float delta) {
-        batch.render(instance);
+    public void render(ModelBatch batch, SceneEnvironment environment, ShaderProvider shaders, float delta) {
+        batch.render(instance, shaders.get());
     }
 
     @Override

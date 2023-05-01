@@ -25,7 +25,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
-import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 import com.mbrlabs.mundus.commons.terrain.SplatTexture;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
@@ -33,6 +32,7 @@ import com.mbrlabs.mundus.editor.history.commands.TerrainHeightCommand;
 import com.mbrlabs.mundus.editor.history.commands.TerrainPaintCommand;
 import com.mbrlabs.mundus.editor.tools.Tool;
 import net.nevinsky.abyssus.core.ModelBatch;
+import net.nevinsky.abyssus.core.shader.ShaderProvider;
 
 /**
  * A Terrain Brush can modify the terrainAsset in various ways (BrushMode).
@@ -339,7 +339,7 @@ public abstract class TerrainBrush extends Tool {
     }
 
     @Override
-    public void render(ModelBatch batch, SceneEnvironment environment, ShaderHolder shaders, float delta) {
+    public void render(ModelBatch batch, SceneEnvironment environment, ShaderProvider shaders, float delta) {
         // rendering of the brush is done in the editor terrain shader
     }
 

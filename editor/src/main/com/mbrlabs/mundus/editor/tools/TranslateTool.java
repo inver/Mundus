@@ -27,7 +27,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
-import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.events.EntityModifiedEvent;
 import com.mbrlabs.mundus.editor.events.EventBus;
@@ -40,6 +39,7 @@ import net.nevinsky.abyssus.core.ModelBatch;
 import net.nevinsky.abyssus.core.ModelBuilder;
 import net.nevinsky.abyssus.core.ModelInstance;
 import net.nevinsky.abyssus.core.model.Model;
+import net.nevinsky.abyssus.core.shader.ShaderProvider;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;
 
@@ -128,7 +128,7 @@ public class TranslateTool extends TransformTool {
     }
 
     @Override
-    public void render(ModelBatch batch, SceneEnvironment environment, ShaderHolder shaders, float delta) {
+    public void render(ModelBatch batch, SceneEnvironment environment, ShaderProvider shaders, float delta) {
         super.render(batch, environment, shaders, delta);
         if (getCtx().getSelectedEntityId() < 0) {
             return;
@@ -319,12 +319,12 @@ public class TranslateTool extends TransformTool {
         }
 
         @Override
-        public void render(ModelBatch batch, SceneEnvironment environment, ShaderHolder shaders, float delta) {
-            batch.render(modelInstance);
+        public void render(ModelBatch batch, SceneEnvironment environment, ShaderProvider shaders, float delta) {
+            batch.render(modelInstance, shaders.get());
         }
 
         @Override
-        public void renderPick(ModelBatch modelBatch, ShaderHolder shaders) {
+        public void renderPick(ModelBatch modelBatch, ShaderProvider shaders) {
             modelBatch.render(modelInstance, shaders.get(getShaderKey()));
         }
 
