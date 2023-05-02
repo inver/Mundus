@@ -4,6 +4,7 @@
   "type": "SHADER",
   "additional": {
     "vertex": "skybox.vert.glsl",
-    "fragment": "skybox.frag.glsl"
+    "fragment": "skybox.frag.glsl",
+    "shaderClass": "SkyboxShader.groovy"
   }
 }

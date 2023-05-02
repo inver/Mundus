@@ -38,7 +38,7 @@ public class DefaultShaderProvider extends BaseShaderProvider {
     }
 
     @Override
-    protected BaseShader loadShader(String key) {
-        return new DefaultShader(config.getVertexShader(), config.getFragmentShader());
+    protected ShaderWrapper loadShader(String key) {
+        return new ShaderWrapper(new DefaultShader(config.getVertexShader(), config.getFragmentShader()));
     }
 }

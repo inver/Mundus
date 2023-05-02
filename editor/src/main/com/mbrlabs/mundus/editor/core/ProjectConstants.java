@@ -21,7 +21,7 @@ public final class ProjectConstants {
     public static final String DEFAULT_SKYBOX_PATH = BUNDLED_FOLDER + "/textures/" + DEFAULT_SKYBOX_NAME;
     public static final String SHADER_SKYBOX_PATH = DEFAULT_SHADERS_DIR + "/" + ShaderConstants.SKYBOX;
     public static final String SHADER_MATERIAL_PREVIEW = "materialPreview";
-    public static final String SHADER_MATERIAL_PREVIEW_FRAG = DEFAULT_SHADERS_DIR + "default.frag.glsl";
-    public static final String SHADER_MATERIAL_PREVIEW_VERT = DEFAULT_SHADERS_DIR + "default.vert.glsl";
+    public static final String SHADER_MATERIAL_PREVIEW_FRAG = DEFAULT_SHADERS_DIR + "material_preview.frag.glsl";
+    public static final String SHADER_MATERIAL_PREVIEW_VERT = DEFAULT_SHADERS_DIR + "material_preview.vert.glsl";
 
 }

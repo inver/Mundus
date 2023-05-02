@@ -4,6 +4,7 @@
   "type": "SHADER",
   "additional": {
     "vertex": "picker.vert.glsl",
-    "fragment": "picker.frag.glsl"
+    "fragment": "picker.frag.glsl",
+    "shaderClass": "PickerShader.groovy"
   }
 }

@@ -97,14 +97,14 @@ public class EditorAssetManager extends AssetManager {
                 + projectPath + "/" + ProjectConstants.PROJECT_ASSETS_DIR + assetName);
     }
 
-    void loadStandardAssets(Map<String, Asset<?>> assets) {
+    void loadStandardAssets(Map<EditorCtx.AssetKey, Asset<?>> assets) {
         try {
             var metaPaths = getClasspathMetas(BUNDLED_FOLDER);
 
             for (var metaPath : metaPaths) {
                 var assetFolder = new AppFileHandle(metaPath, Files.FileType.Classpath).parent();
                 var asset = loadAsset(assetFolder);
-                assets.put(assetFolder.path(), asset);
+                assets.put(new EditorCtx.AssetKey(asset.getType(), asset.getName()), asset);
             }
         } catch (Exception e) {
             log.error("ERROR", e);

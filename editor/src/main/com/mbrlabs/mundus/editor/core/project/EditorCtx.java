@@ -5,6 +5,11 @@ import com.artemis.World;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mbrlabs.mundus.commons.assets.Asset;
+import com.mbrlabs.mundus.commons.assets.AssetType;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
@@ -18,7 +23,7 @@ public class EditorCtx implements Disposable {
 
     private ProjectContext current;
     private Viewport viewport;
-    private final Map<String, Asset<?>> assetLibrary = new HashMap<>();
+    private final Map<AssetKey, Asset<?>> assetLibrary = new HashMap<>();
 
     private int selectedEntityId = -1;
 
@@ -65,7 +70,7 @@ public class EditorCtx implements Disposable {
     }
 
 
-    public Map<String, Asset<?>> getAssetLibrary() {
+    public Map<AssetKey, Asset<?>> getAssetLibrary() {
         return assetLibrary;
     }
 
@@ -76,6 +81,20 @@ public class EditorCtx implements Disposable {
 
     public World getCurrentWorld() {
         return getCurrent().getCurrentScene().getWorld();
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends Asset<?>> T getAsset(AssetKey key) {
+        return (T) assetLibrary.get(key);
+    }
+
+    @RequiredArgsConstructor
+    @Getter
+    @EqualsAndHashCode(of = {"type", "name"})
+    @ToString(of = {"type", "name"})
+    public static class AssetKey {
+        private final AssetType type;
+        private final String name;
     }
 }
 

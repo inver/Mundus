@@ -2,6 +2,7 @@ package com.mbrlabs.mundus.editor.core.assets;
 
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.editor.config.BaseCtxTest;
+import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ public class EditorAssetManagerTest extends BaseCtxTest {
 
     @Test
     public void testLoadBundledAssets() {
-        var assets = new HashMap<String, Asset<?>>();
+        var assets = new HashMap<EditorCtx.AssetKey, Asset<?>>();
         assetManager.loadStandardAssets(assets);
 
         Assert.assertEquals(20, assets.size());

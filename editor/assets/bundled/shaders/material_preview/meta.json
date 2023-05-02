@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "lastModified": 1663444124794,
+  "type": "SHADER",
+  "additional": {
+    "vertex": "material_preview.vert.glsl",
+    "fragment": "material_preview.frag.glsl",
+    "shaderClass": "MaterialPreviewShader.groovy"
+  }
+}

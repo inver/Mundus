@@ -4,6 +4,7 @@
   "type": "SHADER",
   "additional": {
     "vertex": "wire.vert.glsl",
-    "fragment": "wire.frag.glsl"
+    "fragment": "wire.frag.glsl",
+    "shaderClass": "WireframeShader.groovy"
   }
 }

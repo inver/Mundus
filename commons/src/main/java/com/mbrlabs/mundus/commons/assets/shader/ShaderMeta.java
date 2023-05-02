@@ -8,6 +8,7 @@ import lombok.Setter;
 public class ShaderMeta {
     private String vertex;
     private String fragment;
+    private String shaderClass;
 
     public ShaderMeta() {
         vertex = "shader.vert.gsls";

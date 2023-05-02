@@ -6,6 +6,7 @@ import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.env.lights.SunLightsAttribute;
 import net.nevinsky.abyssus.core.shader.DefaultShader;
 
+//TODO rework this shader
 public abstract class AppBaseShader extends DefaultShader {
 
     // ============================ MATERIALS ============================

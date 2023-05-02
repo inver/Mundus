@@ -12,7 +12,8 @@ versions += [
         junit              : "4.13.2",
         mockito_core       : "4.8.0",
         logback_classic    : "1.4.0",
-        jackson            : "2.13.4"
+        jackson            : "2.13.4",
+        groovy             : "4.0.11"
 ]
 libs += [
         lombok              : "org.projectlombok:lombok:${versions.lombok}",
@@ -24,5 +25,8 @@ libs += [
         mockito_core        : "org.mockito:mockito-core:${versions.mockito_core}",
         logback_classic     : "ch.qos.logback:logback-classic:${versions.logback_classic}",
         jackson_databind    : "com.fasterxml.jackson.core:jackson-databind:${versions.jackson}",
-        jackson_annotations : "com.fasterxml.jackson.core:jackson-annotations:${versions.jackson}"
+        jackson_annotations : "com.fasterxml.jackson.core:jackson-annotations:${versions.jackson}",
+        groovy              : "org.apache.groovy:groovy:${versions.groovy}",
+        groovy_jsr223       : "org.apache.groovy:groovy-jsr223:${versions.groovy}"
 ]
+

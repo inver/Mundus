@@ -41,8 +41,8 @@ public class PreviewGenerator {
     public PreviewGenerator(ShaderStorage shaderStorage) {
         this.shaderStorage = shaderStorage;
 //        shader = new MaterialPreviewShader(
-//                "bundled/shaders/default.vert.glsl",
-//                "bundled/shaders/default.frag.glsl"
+//                "bundled/shaders/material_preview.vert.glsl",
+//                "bundled/shaders/material_preview.frag.glsl"
 //        );
 //        shader.init();
     }

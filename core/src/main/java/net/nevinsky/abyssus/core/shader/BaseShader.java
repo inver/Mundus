@@ -225,13 +225,16 @@ public abstract class BaseShader implements Shader {
         this.context = context;
         program.bind();
         currentMesh = null;
-        for (int u, i = 0; i < globalUniforms.size; ++i)
-            if (setters.get(u = globalUniforms.get(i)) != null) setters.get(u).set(this, u, null, null);
+        for (int u, i = 0; i < globalUniforms.size; ++i) {
+            if (setters.get(u = globalUniforms.get(i)) != null) {
+                setters.get(u).set(this, u, null, null);
+            }
+        }
     }
 
     private final IntArray tempArray = new IntArray();
 
-    private final int[] getAttributeLocations(final VertexAttributes attrs) {
+    private int[] getAttributeLocations(final VertexAttributes attrs) {
         tempArray.clear();
         final int n = attrs.size();
         for (int i = 0; i < n; i++) {
