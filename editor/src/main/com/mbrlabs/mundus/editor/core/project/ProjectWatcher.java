@@ -1,5 +1,6 @@
 package com.mbrlabs.mundus.editor.core.project;
 
+import com.badlogic.gdx.utils.Disposable;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent;
 import com.mbrlabs.mundus.editor.events.ProjectFileChangedEvent;
@@ -24,7 +25,7 @@ import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
 
 @Slf4j
 @Component
-public class ProjectWatcher {
+public class ProjectWatcher implements Disposable {
 
     private final EventBus eventBus;
     private WatchService watchService;
@@ -45,7 +46,7 @@ public class ProjectWatcher {
         watchFuture = watchExecutorService.submit(() -> {
             try {
                 watchService = FileSystems.getDefault().newWatchService();
-                var watchDir = Path.of(projectEvent.getProjectContext().path);
+                var watchDir = Path.of(projectEvent.getProjectContext().getPath());
                 watchDir(watchDir);
 
                 WatchKey key;
@@ -93,5 +94,10 @@ public class ProjectWatcher {
                         log.error("ERROR", e);
                     }
                 });
+    }
+
+    @Override
+    public void dispose() {
+        watchExecutorService.shutdownNow();
     }
 }

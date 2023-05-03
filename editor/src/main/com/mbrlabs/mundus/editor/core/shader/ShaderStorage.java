@@ -3,6 +3,7 @@ package com.mbrlabs.mundus.editor.core.shader;
 import com.badlogic.gdx.Files;
 import com.mbrlabs.mundus.commons.assets.AssetType;
 import com.mbrlabs.mundus.commons.assets.shader.ShaderAsset;
+import com.mbrlabs.mundus.editor.core.project.AssetKey;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent;
@@ -33,13 +34,13 @@ public class ShaderStorage extends BaseShaderProvider {
         reloadShaders();
         eventBus.register((ProjectChangedEvent.ProjectChangedListener) event -> reloadShaders());
         eventBus.register((ProjectFileChangedEvent.ProjectFileChangedListener) event -> {
-            if (!event.getPath().toFile().exists()) {
+            var assetFolderPath = event.getPath().getParent();
+            if (!assetFolderPath.toFile().exists()) {
                 throw new NotImplementedException("Implement removing shader");
             }
 
-            var assetName = event.getPath().getParent().getFileName().toString();
-            var key = new EditorCtx.AssetKey(AssetType.SHADER, assetName);
-            var asset = ctx.getAssetLibrary().get(key);
+            var assetName = assetFolderPath.getFileName().toString();
+            var asset = ctx.getAssetLibrary().get(new AssetKey(AssetType.SHADER, assetName));
             if (asset instanceof ShaderAsset) {
                 var wrapper = reloadShader((ShaderAsset) asset);
                 shaders.put(asset.getName(), wrapper);
@@ -48,6 +49,7 @@ public class ShaderStorage extends BaseShaderProvider {
     }
 
     private void reloadShaders() {
+        //todo do hierarchy of assets
         ctx.getAssetLibrary().values().stream()
                 .filter(asset -> asset.getType() == AssetType.SHADER)
                 .forEach(asset -> get(asset.getName()));
@@ -55,7 +57,7 @@ public class ShaderStorage extends BaseShaderProvider {
 
     @Override
     protected ShaderWrapper loadShader(String key) {
-        var asset = (ShaderAsset) ctx.getAssetLibrary().get(new EditorCtx.AssetKey(AssetType.SHADER, key));
+        var asset = (ShaderAsset) ctx.getAssetLibrary().get(new AssetKey(AssetType.SHADER, key));
         if (asset == null) {
             return null;
         }
@@ -63,7 +65,6 @@ public class ShaderStorage extends BaseShaderProvider {
         return reloadShader(asset);
     }
 
-    @SuppressWarnings("unchecked")
     @SneakyThrows
     private EditorShaderWrapper reloadShader(ShaderAsset asset) {
         var classPath = asset.getMeta().getFile().child(asset.getMeta().getAdditional().getShaderClass());
@@ -88,7 +89,7 @@ public class ShaderStorage extends BaseShaderProvider {
             }
 
             var constructor = clazz.getDeclaredConstructor(String.class, String.class);
-            BaseShader shader = (BaseShader) constructor.newInstance(asset.getVertexShader(), asset.getFragmentShader());
+            var shader = (BaseShader) constructor.newInstance(asset.getVertexShader(), asset.getFragmentShader());
             log.info("Loaded shader for {}", asset.getName());
 
             return new EditorShaderWrapper(loader, shader);

@@ -16,9 +16,13 @@
 
 package com.mbrlabs.mundus.editor.core.registry;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Objects;
+import java.nio.file.Path;
 
 /**
  * A reference to a Mundus project, stored in the registry.
@@ -27,29 +31,18 @@ import java.util.Objects;
  * @version 07-06-2016
  */
 @Setter
+@EqualsAndHashCode(of = {"path"})
 public class ProjectRef {
 
-    private String name;
-    private String path;
+    @Getter
+    private final String path;
+
+    @JsonCreator
+    public ProjectRef(@JsonProperty("path") String path) {
+        this.path = path;
+    }
 
     public String getName() {
-        return name;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ProjectRef that = (ProjectRef) o;
-        return Objects.equals(name, that.name) && Objects.equals(path, that.path);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, path);
+        return Path.of(path).getFileName().toString();
     }
 }

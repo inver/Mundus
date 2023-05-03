@@ -24,9 +24,8 @@ public class ProjectStorageTest extends BaseCtxTest {
     @Test
     public void testSaveProject() {
 
-        var project = new ProjectContext(111, new PerspectiveCamera());
-        project.path = PROJECT_PATH;
-        project.name = "alala";
+        var project = new ProjectContext(new PerspectiveCamera());
+        project.setPath(PROJECT_PATH);
 
         var testWorld = new World();
         var scene = new Scene(testWorld);
@@ -34,24 +33,21 @@ public class ProjectStorageTest extends BaseCtxTest {
         project.setCurrentScene(scene);
 
         //create dirs for project if it doesn't exist
-        new File(project.path + "/").mkdirs();
+        new File(project.getPath() + "/").mkdirs();
 
         storage.saveProjectContext(project);
 
-        var ref = new ProjectRef();
-        ref.setPath(PROJECT_PATH);
+        var ref = new ProjectRef(PROJECT_PATH);
 
         var res = storage.loadProjectContext(ref);
-        Assert.assertEquals(project.path, res.path);
-        Assert.assertEquals(project.name, res.name);
+        Assert.assertEquals(project.getPath(), res.getPath());
+        Assert.assertEquals(project.getName(), res.getName());
         Assert.assertEquals("ololo", project.getActiveSceneName());
     }
 
     @Test
     public void testSerializeAndDeserializeRegistry() {
-        var ref = new ProjectRef();
-        ref.setPath("alala");
-        ref.setName("ololo");
+        var ref = new ProjectRef("alala");
 
         var registry = new Registry("/tmp/tmp");
         registry.setLastProject(ref);

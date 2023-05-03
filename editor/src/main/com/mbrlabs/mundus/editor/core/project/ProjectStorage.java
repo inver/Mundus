@@ -89,7 +89,8 @@ public class ProjectStorage {
      * @param context project context to save
      */
     public void saveProjectContext(ProjectContext context) {
-        try (var fos = new FileOutputStream(context.path + "/" + context.name + "." + PROJECT_EXTENSION)) {
+        try (var fos = new FileOutputStream(context.getPath() + "/" + context.getName()
+                + "." + PROJECT_EXTENSION)) {
             var res = mapper.writeValueAsString(context);
             IOUtils.write(res, fos, Charset.defaultCharset());
         } catch (Exception e) {
@@ -116,14 +117,16 @@ public class ProjectStorage {
                 .findFirst()
                 .orElse(null);
 
-        if (projectFile != null) {
-            try (var fis = new FileInputStream(projectFile)) {
-                var res = mapper.readValue(fis, ProjectContext.class);
-                res.path = ref.getPath();
-                return res;
-            } catch (Exception e) {
-                log.error("ERROR", e);
-            }
+        if (projectFile == null) {
+            return null;
+        }
+
+        try (var fis = new FileInputStream(projectFile)) {
+            var project = mapper.readValue(fis, ProjectContext.class);
+            project.setPath(ref.getPath());
+            return project;
+        } catch (Exception e) {
+            log.error("ERROR", e);
         }
 
         return null;

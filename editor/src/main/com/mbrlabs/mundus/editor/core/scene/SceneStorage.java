@@ -60,12 +60,11 @@ public class SceneStorage {
     private final SceneConverter sceneConverter;
     private final EditorEcsService ecsService;
 
-    public Scene createDefault(String projectPath, int id) {
+    public Scene createDefault(String projectPath) {
         var scene = new Scene(ecsService.createWorld());
         scene.setName(DEFAULT_SCENE_NAME);
         scene.getEnvironment().setSkyboxName(DEFAULT_SKYBOX_NAME);
         scene.getEnvironment().setFog(new Fog());
-        scene.setId(id);
         scene.getEnvironment().setAmbientLight(createDefaultAmbientLight());
 
         saveScene(projectPath, scene);

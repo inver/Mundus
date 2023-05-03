@@ -69,7 +69,7 @@ class NewProjectDialog(
                     if (!path.endsWith("/")) {
                         path += "/"
                     }
-                    val projectContext = projectManager.createProject(name, path)
+                    val projectContext = projectManager.createProject(path)
                     close()
                     loadingProjectDialog.loadProjectAsync(projectContext)
                 }

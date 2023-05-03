@@ -71,10 +71,8 @@ public class Registry {
         }
     }
 
-    public ProjectRef createProjectRef(String name, String folder) {
-        var projectRef = new ProjectRef();
-        projectRef.setName(name);
-        projectRef.setPath(FilenameUtils.concat(folder, name));
+    public ProjectRef createProjectRef(String folder) {
+        var projectRef = new ProjectRef(folder);
 
         projects.add(projectRef);
 

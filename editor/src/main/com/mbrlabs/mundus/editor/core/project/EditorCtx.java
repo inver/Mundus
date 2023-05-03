@@ -23,7 +23,7 @@ public class EditorCtx implements Disposable {
 
     private ProjectContext current;
     private Viewport viewport;
-    private final Map<AssetKey, Asset<?>> assetLibrary = new HashMap<>();
+    private final Map<AssetKey, Asset<?>> editorAssets = new HashMap<>();
 
     private int selectedEntityId = -1;
 
@@ -71,7 +71,7 @@ public class EditorCtx implements Disposable {
 
 
     public Map<AssetKey, Asset<?>> getAssetLibrary() {
-        return assetLibrary;
+        return editorAssets;
     }
 
     @Override
@@ -85,16 +85,9 @@ public class EditorCtx implements Disposable {
 
     @SuppressWarnings("unchecked")
     public <T extends Asset<?>> T getAsset(AssetKey key) {
-        return (T) assetLibrary.get(key);
+        return (T) editorAssets.get(key);
     }
 
-    @RequiredArgsConstructor
-    @Getter
-    @EqualsAndHashCode(of = {"type", "name"})
-    @ToString(of = {"type", "name"})
-    public static class AssetKey {
-        private final AssetType type;
-        private final String name;
-    }
+
 }
 

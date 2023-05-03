@@ -100,7 +100,7 @@ public class ModelPlacementTool extends Tool {
             return false;
         }
 
-        int id = getCtx().getCurrent().obtainID();
+//        int id = getCtx().getCurrent().obtainID();
         throw new NotImplementedException();
 //        GameObject modelGo = new GameObject(model.getName(), id);
 ////            getCtx().getCurrent().getCurrentScene().getSceneGraph().addGameObject(modelGo);

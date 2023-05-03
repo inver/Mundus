@@ -20,6 +20,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.utils.Disposable;
 import com.mbrlabs.mundus.commons.Scene;
+import com.mbrlabs.mundus.commons.assets.AssetType;
 import com.mbrlabs.mundus.commons.core.ecs.EcsService;
 import com.mbrlabs.mundus.commons.importer.SceneConverter;
 import com.mbrlabs.mundus.editor.core.ProjectConstants;
@@ -77,41 +78,34 @@ public class ProjectManager implements Disposable {
      * <p>
      * Creates a new project. However, it does not switch the current project.
      *
-     * @param name   project name
      * @param folder absolute path to project folder
      * @return new project context
      */
-    public ProjectContext createProject(String name, String folder) {
-        var ref = registry.createProjectRef(name, folder);
+    public ProjectContext createProject(String folder) {
+        var ref = registry.createProjectRef(folder);
         var path = ref.getPath();
         new File(path).mkdirs();
         new File(path, PROJECT_ASSETS_DIR).mkdirs();
         new File(path, PROJECT_SCENES_DIR).mkdirs();
 
-        var ctx = new ProjectContext(-1, new PerspectiveCamera());
-        ctx.path = path;
-        ctx.name = ref.getName();
+        var ctx = new ProjectContext(new PerspectiveCamera());
+        ctx.setPath(path);
 
-        var scene = sceneStorage.createDefault(ctx.path, ctx.obtainID());
+        var scene = sceneStorage.createDefault(ctx.getPath());
         scene.getEnvironment().setSkyboxName(DEFAULT_SKYBOX_NAME);
         sceneStorage.copyAssetToProject(
-                ctx.path, editorCtx.getAssetLibrary().get(ProjectConstants.DEFAULT_SKYBOX_PATH)
+                ctx.getPath(), editorCtx.getAssetLibrary()
+                        .get(new AssetKey(AssetType.SKYBOX, ProjectConstants.DEFAULT_SKYBOX_NAME))
         );
         loadSkybox(ctx, scene);
 
         ctx.setCurrentScene(scene);
         saveProject(ctx);
-
-
-        var newCtx = loadProject(ref);
-//        ctx.getCurrentScene().setEnvironment(newCtx.getCurrentScene().getEnvironment());
-//        ctx.getCurrentScene().getCameras().clear();
-//        ctx.getCurrentScene().getCameras().addAll(newCtx.getCurrentScene().getCameras());
         return ctx;
     }
 
     private void loadSkybox(ProjectContext ctx, Scene scene) {
-        scene.getAssets().add(assetManager.loadProjectAsset(ctx.path, scene.getEnvironment().getSkyboxName()));
+        scene.getAssets().add(assetManager.loadProjectAsset(ctx.getPath(), scene.getEnvironment().getSkyboxName()));
     }
 
     /**
@@ -131,12 +125,10 @@ public class ProjectManager implements Disposable {
             }
         }
 
-        ProjectRef ref = new ProjectRef();
-        ref.setPath(absolutePath);
+        ProjectRef ref = new ProjectRef(absolutePath);
 
         try {
             ProjectContext context = loadProject(ref);
-            ref.setName(context.name);
             registry.getProjects().add(ref);
             projectStorage.saveRegistry(registry);
             return context;
@@ -155,16 +147,17 @@ public class ProjectManager implements Disposable {
      * @throws FileNotFoundException if project can't be found
      */
     public ProjectContext loadProject(ProjectRef ref) {
-        var context = projectStorage.loadProjectContext(ref);
-        if (context == null) {
+        var currentProject = projectStorage.loadProjectContext(ref);
+        if (currentProject == null) {
             // project doesn't exist, but ref is exist - create default project
-            return createProject(ref.getName(), ref.getPath());
+            return createProject(ref.getPath());
         }
-        editorCtx.setCurrent(context);
+        editorCtx.setCurrent(currentProject);
+        assetManager.loadProjectAssets(currentProject);
+        var scene = loadScene(currentProject, currentProject.getActiveSceneName());
+        currentProject.setCurrentScene(scene);
 
-        context.setCurrentScene(loadScene(context, context.getActiveSceneName()));
-
-        return context;
+        return currentProject;
     }
 
     /**
@@ -188,10 +181,11 @@ public class ProjectManager implements Disposable {
         // save current in .pro file
         projectStorage.saveProjectContext(projectContext);
         // save scene in .mundus file
-        sceneStorage.saveScene(projectContext.path, projectContext.getCurrentScene());
+        sceneStorage.saveScene(projectContext.getPath(), projectContext.getCurrentScene());
 
-        log.debug("Saving currentProject {}", projectContext.name + " [" + projectContext.path + "]");
-        eventBus.post(new LogEvent("Saving currentProject " + projectContext.name + " [" + projectContext.path + "]"));
+        log.debug("Saving currentProject {}", projectContext.getName() + " [" + projectContext.getPath() + "]");
+        eventBus.post(new LogEvent("Saving currentProject " + projectContext.getName() + " ["
+                + projectContext.getPath() + "]"));
     }
 
     /**
@@ -230,9 +224,7 @@ public class ProjectManager implements Disposable {
         editorCtx.setCurrent(context);
 
         // currentProject.copyFrom(context);
-        registry.setLastProject(new ProjectRef());
-        registry.getLastProject().setName(context.name);
-        registry.getLastProject().setPath(context.path);
+        registry.setLastProject(new ProjectRef(context.getPath()));
 
         projectStorage.saveRegistry(registry);
 
@@ -270,12 +262,13 @@ public class ProjectManager implements Disposable {
      * @throws FileNotFoundException if scene file not found
      */
     public Scene loadScene(ProjectContext context, String sceneName) {
-        var dto = sceneStorage.loadScene(context.path, sceneName);
+        var dto = sceneStorage.loadScene(context.getPath(), sceneName);
 
         var scene = new Scene(ecsService.createWorld());
 
         //todo preload assets to cache
         sceneConverter.fillScene(scene, dto);
+
         loadSkybox(context, scene);
 
         return scene;
@@ -302,8 +295,8 @@ public class ProjectManager implements Disposable {
     }
 
     private String constructWindowTitle() {
-        return editorCtx.getCurrent().name + " - " + editorCtx.getCurrent().getCurrentScene().getName() +
-                " [" + editorCtx.getCurrent().path + "]" + " - " + AppUtils.getAppVersion();
+        return editorCtx.getCurrent().getName() + " - " + editorCtx.getCurrent().getCurrentScene().getName() +
+                " [" + editorCtx.getCurrent().getPath() + "]" + " - " + AppUtils.getAppVersion();
     }
 
     @Override
@@ -315,7 +308,7 @@ public class ProjectManager implements Disposable {
         if (registry.getLastProject() == null || registry.getProjects().size() == 0) {
             var path = FilenameUtils.concat(FileUtils.getUserDirectoryPath(), "MundusProjects");
 
-            return createProject("Default Project", path);
+            return createProject(path);
         }
 
         return null;

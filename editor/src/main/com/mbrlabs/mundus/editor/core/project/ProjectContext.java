@@ -23,14 +23,18 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mbrlabs.mundus.commons.Scene;
+import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.core.ecs.base.RenderComponent;
-import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableSceneObject;
 import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObjectDelegate;
+import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableSceneObject;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A project context represents a loaded and opened project.
@@ -44,11 +48,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ProjectContext implements Disposable {
 
     public static final int MAIN_CAMERA_SELECTED = -1;
-    private final AtomicInteger idProvider;
 
     public ProjectSettings settings;
-    public String path;
-    public String name;
+    @Setter
+    @JsonIgnore
+    private String path;
+
+    @JsonIgnore
+    @Getter
+    private final Map<AssetKey, Asset<?>> projectAssets = new HashMap<>();
 
 //    @JsonIgnore
 //    private final List<String> scenes = new ArrayList<>();
@@ -65,16 +73,9 @@ public class ProjectContext implements Disposable {
     private int selectedCamera = MAIN_CAMERA_SELECTED;
 
     @JsonCreator
-    public ProjectContext(@JsonProperty("idProvider") int startId,
-                          @JsonProperty("mainCamera") PerspectiveCamera camera) {
+    public ProjectContext(@JsonProperty("mainCamera") PerspectiveCamera camera) {
         settings = new ProjectSettings();
-//        currentScene = new Scene(world);
-        idProvider = new AtomicInteger(startId);
         mainCamera = camera;
-    }
-
-    public int obtainID() {
-        return idProvider.incrementAndGet();
     }
 
     @JsonIgnore
@@ -127,5 +128,13 @@ public class ProjectContext implements Disposable {
 
     public void setSelectedCamera(int selectedCamera) {
         this.selectedCamera = selectedCamera;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public String getName() {
+        return Path.of(path).getFileName().toString();
     }
 }

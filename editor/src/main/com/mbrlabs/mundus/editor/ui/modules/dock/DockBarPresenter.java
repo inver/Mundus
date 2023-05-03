@@ -100,8 +100,8 @@ public class DockBarPresenter {
                 try {
                     var context = ctx.getCurrent();
 //                    var sceneGraph = context.getCurrentScene().getSceneGraph();
-                    var goID = context.obtainID();
-                    var name = asset.getType() + "_" + goID;
+//                    var goID = context.obtainID();
+//                    var name = asset.getType() + "_" + goID;
 
                     // create asset
 //                        var asset = context.getAssetManager().createModelAsset(it.file)

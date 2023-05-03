@@ -83,13 +83,13 @@ public class MenuBarPresenter {
 
     @SneakyThrows
     public void initRecentProjectsMenu(PopupMenu recentProjectsPopup) {
-        for (var proj : registry.getProjects()) {
-            var menu = new MenuItem(proj.getName() + " - [" + proj.getPath() + "]");
+        for (var ref : registry.getProjects()) {
+            var menu = new MenuItem(ref.getName() + " - [" + ref.getPath() + "]");
             menu.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     try {
-                        projectManager.changeProject(projectManager.loadProject(proj));
+                        projectManager.changeProject(projectManager.loadProject(ref));
                     } catch (Exception e) {
                         log.error("ERROR", e);
                         Dialogs.showErrorDialog(appUi, "Could not open project");

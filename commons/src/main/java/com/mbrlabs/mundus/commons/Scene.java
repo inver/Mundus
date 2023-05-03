@@ -44,7 +44,7 @@ import java.util.List;
  */
 @RequiredArgsConstructor
 public class Scene implements Disposable, RenderableObject {
-    private long id;
+    private long id = 0;
     private String name;
 
     @Getter

@@ -25,7 +25,9 @@ import com.mbrlabs.mundus.commons.assets.texture.TextureAssetLoader;
 import com.mbrlabs.mundus.commons.model.ImportedModel;
 import com.mbrlabs.mundus.commons.utils.FileUtils;
 import com.mbrlabs.mundus.editor.core.ProjectConstants;
+import com.mbrlabs.mundus.editor.core.project.AssetKey;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
+import com.mbrlabs.mundus.editor.core.project.ProjectContext;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -79,7 +81,7 @@ public class EditorAssetManager extends AssetManager {
 
     @Override
     public Asset<?> loadCurrentProjectAsset(String assetName) {
-        return loadProjectAsset(ctx.getCurrent().path, assetName);
+        return loadProjectAsset(ctx.getCurrent().getPath(), assetName);
     }
 
     public <T extends Asset<?>> T loadCurrentProjectAsset(Class<T> tClass, String assetName) {
@@ -97,14 +99,27 @@ public class EditorAssetManager extends AssetManager {
                 + projectPath + "/" + ProjectConstants.PROJECT_ASSETS_DIR + assetName);
     }
 
-    void loadStandardAssets(Map<EditorCtx.AssetKey, Asset<?>> assets) {
+    void loadStandardAssets(Map<AssetKey, Asset<?>> assets) {
         try {
             var metaPaths = getClasspathMetas(BUNDLED_FOLDER);
 
             for (var metaPath : metaPaths) {
                 var assetFolder = new AppFileHandle(metaPath, Files.FileType.Classpath).parent();
                 var asset = loadAsset(assetFolder);
-                assets.put(new EditorCtx.AssetKey(asset.getType(), asset.getName()), asset);
+                assets.put(new AssetKey(asset.getType(), asset.getName()), asset);
+            }
+        } catch (Exception e) {
+            log.error("ERROR", e);
+        }
+    }
+
+    public void loadProjectAssets(ProjectContext project) {
+        try {
+            var metaPaths = new FileHandle(project.getPath() + "/" + ProjectConstants.PROJECT_ASSETS_DIR);
+
+            for (var assetFolder : metaPaths.list()) {
+                var asset = loadAsset(assetFolder);
+                project.getProjectAssets().put(new AssetKey(asset.getType(), asset.getName()), asset);
             }
         } catch (Exception e) {
             log.error("ERROR", e);
