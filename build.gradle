@@ -24,7 +24,6 @@ allprojects {
         appName = "Abyssus"
         appVersion = "0.3.0"
 
-        gdxVersion = '1.11.0'
         visuiVersion = '1.5.1'
         kryoVersion = '5.2.0'
         gltfVersion = 'master-SNAPSHOT'

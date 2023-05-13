@@ -29,26 +29,34 @@ public abstract class BaseShaderProvider implements ShaderProvider {
             return getInstance(res);
         }
 
-        res = loadShader(key);
+        res = loadProjectShader(key);
         if (res != null) {
             shaders.put(key, res);
             return getInstance(res);
         }
 
-        var wrapper = shaders.get(DEFAULT_SHADER);
-        if (wrapper == null) {
+        res = loadBundledShader(key);
+        if (res != null) {
+            shaders.put(key, res);
+            return getInstance(res);
+        }
+
+        res = shaders.get(DEFAULT_SHADER);
+        if (res == null) {
             throw new RuntimeException(String.format("Shader with name '%s' is null", key));
         }
-        return getInstance(wrapper);
+        return getInstance(res);
     }
 
     @SuppressWarnings("unchecked")
     protected <T extends BaseShader> T getInstance(ShaderWrapper wrapper) {
         wrapper.init();
-        return (T) wrapper.getInstance();
+        return (T) wrapper.getDefaultInstance();
     }
 
-    protected abstract ShaderWrapper loadShader(String key);
+    protected abstract ShaderWrapper loadBundledShader(String key);
+
+    protected abstract ShaderWrapper loadProjectShader(String key);
 
     @Override
     public void dispose() {

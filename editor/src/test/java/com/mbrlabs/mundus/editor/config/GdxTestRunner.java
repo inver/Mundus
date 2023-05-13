@@ -9,18 +9,15 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Files;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3NativesLoader;
 import com.badlogic.gdx.graphics.GL20;
 import com.kotcrab.vis.ui.VisUI;
-import org.junit.runners.model.InitializationError;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class GdxTestRunner extends SpringJUnit4ClassRunner {
+public class GdxTestRunner extends SpringExtension {
 
-    public GdxTestRunner(Class<?> klass) throws InitializationError {
-        super(klass);
-
+    public GdxTestRunner(Class<?> klass) {
         Lwjgl3NativesLoader.load();
         var gl20 = mock(GL20.class);
         Gdx.gl = gl20;

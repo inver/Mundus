@@ -16,13 +16,11 @@
 
 package com.mbrlabs.mundus.editor.history;
 
-import static org.junit.Assert.assertEquals;
 
 import com.mbrlabs.mundus.editor.events.EventBus;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import com.mbrlabs.mundus.editor.history.Command;
-import com.mbrlabs.mundus.editor.history.CommandHistory;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Marcus Brummer

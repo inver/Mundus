@@ -2,8 +2,9 @@ package com.mbrlabs.mundus.editor.events;
 
 import com.mbrlabs.mundus.editor.events.child_package.SomeListenerClass;
 import org.jetbrains.annotations.NotNull;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class EventBusTest {
 
@@ -22,8 +23,8 @@ public class EventBusTest {
         });
         eventBus.post(new LogEvent(""));
 
-        Assert.assertEquals(2, eventCount);
-        Assert.assertEquals(1, testClass2.getI());
+        assertEquals(2, eventCount);
+        assertEquals(1, testClass2.getI());
     }
 
     private static class TestClass implements LogEvent.LogEventListener {

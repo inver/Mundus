@@ -71,12 +71,12 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 
     // libGDX
-    implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
-    implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    implementation libs.gdx_backend_lwjgl3
+    implementation libs.gdx_platform
 
     // gdx-freetype
-    implementation "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
-    implementation "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
+    implementation libs.gdx_freetype
+    implementation libs.gdx_freetype_platform
     implementation "com.github.mgsx-dev.gdx-gltf:gltf:$gltfVersion"
     implementation "net.onedaybeard.artemis:artemis-odb:2.3.0"
 
@@ -85,7 +85,7 @@ dependencies {
     implementation "com.esotericsoftware:kryo:$kryoVersion"
 
     // tests
-    testImplementation libs.junit
+    testImplementation libs.junit_jupiter_engine
     testImplementation libs.mockito_core
     testImplementation 'org.springframework:spring-test:5.3.23'
 }

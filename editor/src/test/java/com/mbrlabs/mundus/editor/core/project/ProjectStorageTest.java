@@ -7,12 +7,13 @@ import com.mbrlabs.mundus.commons.Scene;
 import com.mbrlabs.mundus.editor.config.BaseCtxTest;
 import com.mbrlabs.mundus.editor.core.registry.ProjectRef;
 import com.mbrlabs.mundus.editor.core.registry.Registry;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ProjectStorageTest extends BaseCtxTest {
 
@@ -40,9 +41,9 @@ public class ProjectStorageTest extends BaseCtxTest {
         var ref = new ProjectRef(PROJECT_PATH);
 
         var res = storage.loadProjectContext(ref);
-        Assert.assertEquals(project.getPath(), res.getPath());
-        Assert.assertEquals(project.getName(), res.getName());
-        Assert.assertEquals("ololo", project.getActiveSceneName());
+        assertEquals(project.getPath(), res.getPath());
+        assertEquals(project.getName(), res.getName());
+        assertEquals("ololo", project.getActiveSceneName());
     }
 
     @Test
@@ -56,8 +57,8 @@ public class ProjectStorageTest extends BaseCtxTest {
 
         storage.saveRegistry(registry);
         var input = storage.loadRegistry();
-        Assert.assertEquals(1, input.getProjects().size());
-        Assert.assertEquals(ref, input.getProjects().get(0));
-        Assert.assertEquals(ref, input.getLastProject());
+        assertEquals(1, input.getProjects().size());
+        assertEquals(ref, input.getProjects().get(0));
+        assertEquals(ref, input.getLastProject());
     }
 }

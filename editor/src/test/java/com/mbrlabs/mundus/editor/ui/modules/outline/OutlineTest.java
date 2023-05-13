@@ -3,9 +3,10 @@ package com.mbrlabs.mundus.editor.ui.modules.outline;
 import com.mbrlabs.mundus.editor.config.BaseCtxTest;
 import com.mbrlabs.mundus.editor.events.EntitySelectedEvent;
 import com.mbrlabs.mundus.editor.events.EventBus;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class OutlineTest extends BaseCtxTest {
 
@@ -19,6 +20,6 @@ public class OutlineTest extends BaseCtxTest {
         var event = new EntitySelectedEvent(-1);
         outline.onEntitySelected(event);
         //NPE not raised
-        Assert.assertEquals(1, 1);
+        assertEquals(1, 1);
     }
 }

@@ -4,17 +4,17 @@ dependencies {
     implementation 'org.lwjgl:lwjgl-assimp:3.3.1'
     implementation 'org.lwjgl:lwjgl-assimp:3.3.1:natives-linux'
 
-    implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+    implementation libs.gdx
     implementation "com.github.mgsx-dev.gdx-gltf:gltf:$gltfVersion"
     implementation "net.onedaybeard.artemis:artemis-odb:2.3.0"
     implementation 'net.onedaybeard.artemis:artemis-odb-serializer-json:2.3.0'
 
     implementation 'org.locationtech.jts:jts-core:1.19.0'
 
-    testImplementation libs.junit
+    testImplementation libs.junit_jupiter_engine
     testImplementation libs.mockito_core
-    testImplementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
-    testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    testImplementation libs.gdx_backend_lwjgl3
+    testImplementation libs.gdx_platform
     testImplementation libs.logback_classic
 }
 

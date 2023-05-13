@@ -1,13 +1,13 @@
 package com.mbrlabs.mundus.editor.config;
 
-import org.junit.Before;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.io.File;
 
-@RunWith(GdxTestRunner.class)
+@ExtendWith(GdxTestRunner.class)
 @ContextConfiguration(classes = {
         TestConfig.class
 })
@@ -16,7 +16,7 @@ public abstract class BaseCtxTest {
     @Autowired
     private AppEnvironment appEnvironment;
 
-    @Before
+    @BeforeEach
     public void init() {
         new File(appEnvironment.getHomeDir()).mkdirs();
     }

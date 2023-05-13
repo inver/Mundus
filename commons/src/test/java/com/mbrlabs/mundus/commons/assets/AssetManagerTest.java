@@ -22,10 +22,12 @@ import com.mbrlabs.mundus.commons.assets.skybox.SkyboxAssetLoader;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAssetLoader;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAssetLoader;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -45,7 +47,7 @@ public class AssetManagerTest {
     private final AssetManager assetManager = new AssetManager(mapper, metaService, textureService, terrainService,
             materialService, pixmapTextureService, modelService, shaderAssetLoader, skyboxAssetLoader);
 
-    @Before
+    @BeforeEach
     public void init() {
         Lwjgl3NativesLoader.load();
         var gl20 = mock(GL20.class);
@@ -70,35 +72,35 @@ public class AssetManagerTest {
     public void testLoadTexture() {
         var file = new AppFileHandle("assets/chessboard", Files.FileType.Classpath);
         var asset = (TextureAsset) assetManager.loadAsset(file);
-        Assert.assertNotNull(asset);
-        Assert.assertEquals(Files.FileType.Classpath, asset.meta.getFile().type());
-        Assert.assertNotNull(asset.getTexture());
-        Assert.assertEquals(Texture.TextureFilter.MipMapLinearLinear, asset.getTexture().getMagFilter());
-        Assert.assertEquals(Texture.TextureFilter.MipMapLinearLinear, asset.getTexture().getMinFilter());
-        Assert.assertTrue(asset.isTileable());
-        Assert.assertTrue(asset.isGenerateMipMaps());
-        Assert.assertEquals(1, asset.meta.getVersion());
-        Assert.assertEquals(1663444124794L, asset.meta.getLastModified());
-        Assert.assertEquals(AssetType.TEXTURE, asset.meta.getType());
-        Assert.assertEquals("assets/chessboard", asset.meta.getFile().path());
-        Assert.assertEquals("chessboard.png", asset.meta.getAdditional().getFile());
+        assertNotNull(asset);
+        assertEquals(Files.FileType.Classpath, asset.meta.getFile().type());
+        assertNotNull(asset.getTexture());
+        assertEquals(Texture.TextureFilter.MipMapLinearLinear, asset.getTexture().getMagFilter());
+        assertEquals(Texture.TextureFilter.MipMapLinearLinear, asset.getTexture().getMinFilter());
+        assertTrue(asset.isTileable());
+        assertTrue(asset.isGenerateMipMaps());
+        assertEquals(1, asset.meta.getVersion());
+        assertEquals(1663444124794L, asset.meta.getLastModified());
+        assertEquals(AssetType.TEXTURE, asset.meta.getType());
+        assertEquals("assets/chessboard", asset.meta.getFile().path());
+        assertEquals("chessboard.png", asset.meta.getAdditional().getFile());
     }
 
     @Test
     public void testLoadMaterial() {
         var file = new AppFileHandle("assets/dented-metal-bl", Files.FileType.Classpath);
         var asset = (MaterialAsset) assetManager.loadAsset(file);
-        Assert.assertNotNull(asset);
-        Assert.assertEquals("preview.jpg", asset.getPreview());
-        Assert.assertEquals(1, asset.meta.getVersion());
-        Assert.assertEquals(1663444124794L, asset.meta.getLastModified());
-        Assert.assertEquals(AssetType.MATERIAL, asset.getType());
+        assertNotNull(asset);
+        assertEquals("preview.jpg", asset.getPreview());
+        assertEquals(1, asset.meta.getVersion());
+        assertEquals(1663444124794L, asset.meta.getLastModified());
+        assertEquals(AssetType.MATERIAL, asset.getType());
     }
 
     @Test
     public void testLoadModel() {
         var file = new AppFileHandle("assets/sphere", Files.FileType.Classpath);
         var asset = (ModelAsset) assetManager.loadAsset(file);
-        Assert.assertNotNull(asset);
+        assertNotNull(asset);
     }
 }

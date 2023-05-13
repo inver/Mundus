@@ -9,24 +9,30 @@ versions += [
         commons_lang3      : "3.12.0",
         common_collections4: "4.4",
         slf4j_api          : "2.0.0",
-        junit              : "4.13.2",
+        junit              : "5.9.3",
         mockito_core       : "4.8.0",
         logback_classic    : "1.4.0",
         jackson            : "2.13.4",
-        groovy             : "4.0.11"
+        groovy             : "4.0.11",
+        gdx                : "1.11.0"
 ]
 libs += [
-        lombok              : "org.projectlombok:lombok:${versions.lombok}",
-        commons_io          : "commons-io:commons-io:${versions.commons_io}",
-        commons_lang3       : "org.apache.commons:commons-lang3:${versions.commons_lang3}",
-        commons_collections4: "org.apache.commons:commons-collections4:${versions.common_collections4}",
-        slf4j_api           : "org.slf4j:slf4j-api:${versions.slf4j_api}",
-        junit               : "junit:junit:${versions.junit}",
-        mockito_core        : "org.mockito:mockito-core:${versions.mockito_core}",
-        logback_classic     : "ch.qos.logback:logback-classic:${versions.logback_classic}",
-        jackson_databind    : "com.fasterxml.jackson.core:jackson-databind:${versions.jackson}",
-        jackson_annotations : "com.fasterxml.jackson.core:jackson-annotations:${versions.jackson}",
-        groovy              : "org.apache.groovy:groovy:${versions.groovy}",
-        groovy_jsr223       : "org.apache.groovy:groovy-jsr223:${versions.groovy}"
+        lombok               : "org.projectlombok:lombok:${versions.lombok}",
+        commons_io           : "commons-io:commons-io:${versions.commons_io}",
+        commons_lang3        : "org.apache.commons:commons-lang3:${versions.commons_lang3}",
+        commons_collections4 : "org.apache.commons:commons-collections4:${versions.common_collections4}",
+        slf4j_api            : "org.slf4j:slf4j-api:${versions.slf4j_api}",
+        junit_jupiter_engine : "org.junit.jupiter:junit-jupiter-engine:${versions.junit}",
+        mockito_core         : "org.mockito:mockito-core:${versions.mockito_core}",
+        logback_classic      : "ch.qos.logback:logback-classic:${versions.logback_classic}",
+        jackson_databind     : "com.fasterxml.jackson.core:jackson-databind:${versions.jackson}",
+        jackson_annotations  : "com.fasterxml.jackson.core:jackson-annotations:${versions.jackson}",
+        groovy               : "org.apache.groovy:groovy:${versions.groovy}",
+        groovy_jsr223        : "org.apache.groovy:groovy-jsr223:${versions.groovy}",
+        gdx_backend_lwjgl3   : "com.badlogicgames.gdx:gdx-backend-lwjgl3:${versions.gdx}",
+        gdx_platform         : "com.badlogicgames.gdx:gdx-platform:${versions.gdx}:natives-desktop",
+        gdx                  : "com.badlogicgames.gdx:gdx:${versions.gdx}",
+        gdx_freetype         : "com.badlogicgames.gdx:gdx-freetype:${versions.gdx}",
+        gdx_freetype_platform: "com.badlogicgames.gdx:gdx-freetype-platform:${versions.gdx}:natives-desktop"
 ]
 
