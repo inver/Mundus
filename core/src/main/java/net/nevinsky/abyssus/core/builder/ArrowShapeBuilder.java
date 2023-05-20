@@ -51,7 +51,9 @@ public class ArrowShapeBuilder extends BaseShapeBuilder {
 
         Vector3 up = obtainV3().set(end).sub(begin).nor();
         Vector3 forward = obtainV3().set(up).crs(Vector3.Z);
-        if (forward.isZero()) forward.set(Vector3.X);
+        if (forward.isZero()){
+            forward.set(Vector3.X);
+        }
         forward.crs(up).nor();
         Vector3 left = obtainV3().set(up).crs(forward).nor();
         Vector3 direction = obtainV3().set(end).sub(begin).nor();

@@ -19,7 +19,7 @@ public class PositionComponent extends Component {
     @Getter
     private final Vector3 localScale = new Vector3(1, 1, 1);
 
-    private transient final Matrix4 combined = new Matrix4();
+    private final transient Matrix4 combined = new Matrix4();
 
     @Getter
     @Setter

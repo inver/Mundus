@@ -751,47 +751,54 @@ public class Mesh implements Disposable {
         }
 
         if (isVertexArray) {
-            if (indices.getNumIndices() > 0) {
-                IntBuffer buffer = indices.getBuffer();
-                int oldPosition = buffer.position();
-                int oldLimit = buffer.limit();
-                ((Buffer) buffer).position(offset);
-                Gdx.gl20.glDrawElements(primitiveType, count, GL20.GL_UNSIGNED_INT, buffer);
-                ((Buffer) buffer).position(oldPosition);
-            } else {
-                Gdx.gl20.glDrawArrays(primitiveType, offset, count);
-            }
+            renderVertexArray(primitiveType, offset, count);
         } else {
-            int numInstances = 0;
-            if (isInstanced) {
-                numInstances = instances.getNumInstances();
-            }
-
-            if (indices.getNumIndices() > 0) {
-                if (count + offset > indices.getNumMaxIndices()) {
-                    throw new GdxRuntimeException(
-                            "Mesh attempting to access memory outside of the index buffer (count: " + count
-                                    + ", offset: " + offset + ", max: " + indices.getNumMaxIndices() + ")");
-                }
-
-                if (isInstanced && numInstances > 0) {
-                    Gdx.gl30.glDrawElementsInstanced(primitiveType, count, GL20.GL_UNSIGNED_INT,
-                            offset * CoreConst.BYTES_IN_VERTEX_COORD, numInstances);
-                } else {
-                    Gdx.gl20.glDrawElements(primitiveType, count, GL20.GL_UNSIGNED_INT,
-                            offset * CoreConst.BYTES_IN_VERTEX_COORD);
-                }
-            } else {
-                if (isInstanced && numInstances > 0) {
-                    Gdx.gl30.glDrawArraysInstanced(primitiveType, offset, count, numInstances);
-                } else {
-                    Gdx.gl20.glDrawArrays(primitiveType, offset, count);
-                }
-            }
+            renderNonVertexArray(primitiveType, offset, count);
         }
 
         if (autoBind) {
             unbind(shader);
+        }
+    }
+
+    private void renderVertexArray(int primitiveType, int offset, int count) {
+        if (indices.getNumIndices() > 0) {
+            IntBuffer buffer = indices.getBuffer();
+            int oldPosition = buffer.position();
+            buffer.position(offset);
+            Gdx.gl20.glDrawElements(primitiveType, count, GL20.GL_UNSIGNED_INT, buffer);
+            buffer.position(oldPosition);
+        } else {
+            Gdx.gl20.glDrawArrays(primitiveType, offset, count);
+        }
+    }
+
+    private void renderNonVertexArray(int primitiveType, int offset, int count) {
+        int numInstances = 0;
+        if (isInstanced) {
+            numInstances = instances.getNumInstances();
+        }
+
+        if (indices.getNumIndices() > 0) {
+            if (count + offset > indices.getNumMaxIndices()) {
+                throw new GdxRuntimeException(
+                        "Mesh attempting to access memory outside of the index buffer (count: " + count
+                                + ", offset: " + offset + ", max: " + indices.getNumMaxIndices() + ")");
+            }
+
+            if (isInstanced && numInstances > 0) {
+                Gdx.gl30.glDrawElementsInstanced(primitiveType, count, GL20.GL_UNSIGNED_INT,
+                        offset * CoreConst.BYTES_IN_VERTEX_COORD, numInstances);
+            } else {
+                Gdx.gl20.glDrawElements(primitiveType, count, GL20.GL_UNSIGNED_INT,
+                        offset * CoreConst.BYTES_IN_VERTEX_COORD);
+            }
+        } else {
+            if (isInstanced && numInstances > 0) {
+                Gdx.gl30.glDrawArraysInstanced(primitiveType, offset, count, numInstances);
+            } else {
+                Gdx.gl20.glDrawArrays(primitiveType, offset, count);
+            }
         }
     }
 
@@ -861,7 +868,9 @@ public class Mesh implements Disposable {
      */
     public void calculateBoundingBox(BoundingBox bbox) {
         final int numVertices = getNumVertices();
-        if (numVertices == 0) throw new GdxRuntimeException("No vertices defined");
+        if (numVertices == 0) {
+            throw new GdxRuntimeException("No vertices defined");
+        }
 
         final FloatBuffer verts = vertices.getBuffer();
         bbox.inf();
@@ -942,9 +951,10 @@ public class Mesh implements Disposable {
         final int numIndices = getNumIndices();
         final int numVertices = getNumVertices();
         final int max = numIndices == 0 ? numVertices : numIndices;
-        if (offset < 0 || count < 1 || offset + count > max)
+        if (offset < 0 || count < 1 || offset + count > max) {
             throw new GdxRuntimeException(
                     "Invalid part specified ( offset=" + offset + ", count=" + count + ", max=" + max + " )");
+        }
 
         final FloatBuffer verts = vertices.getBuffer();
         final IntBuffer index = indices.getBuffer();
@@ -959,14 +969,18 @@ public class Mesh implements Disposable {
                     for (int i = offset; i < end; i++) {
                         final int idx = (index.get(i) & 0xFFFF) * vertexSize + posoff;
                         tmpV.set(verts.get(idx), 0, 0);
-                        if (transform != null) tmpV.mul(transform);
+                        if (transform != null) {
+                            tmpV.mul(transform);
+                        }
                         out.ext(tmpV);
                     }
                 } else {
                     for (int i = offset; i < end; i++) {
                         final int idx = i * vertexSize + posoff;
                         tmpV.set(verts.get(idx), 0, 0);
-                        if (transform != null) tmpV.mul(transform);
+                        if (transform != null) {
+                            tmpV.mul(transform);
+                        }
                         out.ext(tmpV);
                     }
                 }
@@ -976,14 +990,18 @@ public class Mesh implements Disposable {
                     for (int i = offset; i < end; i++) {
                         final int idx = (index.get(i) & 0xFFFF) * vertexSize + posoff;
                         tmpV.set(verts.get(idx), verts.get(idx + 1), 0);
-                        if (transform != null) tmpV.mul(transform);
+                        if (transform != null) {
+                            tmpV.mul(transform);
+                        }
                         out.ext(tmpV);
                     }
                 } else {
                     for (int i = offset; i < end; i++) {
                         final int idx = i * vertexSize + posoff;
                         tmpV.set(verts.get(idx), verts.get(idx + 1), 0);
-                        if (transform != null) tmpV.mul(transform);
+                        if (transform != null) {
+                            tmpV.mul(transform);
+                        }
                         out.ext(tmpV);
                     }
                 }
@@ -993,14 +1011,18 @@ public class Mesh implements Disposable {
                     for (int i = offset; i < end; i++) {
                         final int idx = (index.get(i) & 0xFFFF) * vertexSize + posoff;
                         tmpV.set(verts.get(idx), verts.get(idx + 1), verts.get(idx + 2));
-                        if (transform != null) tmpV.mul(transform);
+                        if (transform != null) {
+                            tmpV.mul(transform);
+                        }
                         out.ext(tmpV);
                     }
                 } else {
                     for (int i = offset; i < end; i++) {
                         final int idx = i * vertexSize + posoff;
                         tmpV.set(verts.get(idx), verts.get(idx + 1), verts.get(idx + 2));
-                        if (transform != null) tmpV.mul(transform);
+                        if (transform != null) {
+                            tmpV.mul(transform);
+                        }
                         out.ext(tmpV);
                     }
                 }
@@ -1023,7 +1045,9 @@ public class Mesh implements Disposable {
                                         int count,
                                         final Matrix4 transform) {
         int numIndices = getNumIndices();
-        if (offset < 0 || count < 1 || offset + count > numIndices) throw new GdxRuntimeException("Not enough indices");
+        if (offset < 0 || count < 1 || offset + count > numIndices) {
+            throw new GdxRuntimeException("Not enough indices");
+        }
 
         final FloatBuffer verts = vertices.getBuffer();
         final IntBuffer index = indices.getBuffer();
@@ -1039,27 +1063,39 @@ public class Mesh implements Disposable {
                 for (int i = offset; i < end; i++) {
                     final int idx = (index.get(i) & 0xFFFF) * vertexSize + posoff;
                     tmpV.set(verts.get(idx), 0, 0);
-                    if (transform != null) tmpV.mul(transform);
+                    if (transform != null) {
+                        tmpV.mul(transform);
+                    }
                     final float r = tmpV.sub(centerX, centerY, centerZ).len2();
-                    if (r > result) result = r;
+                    if (r > result) {
+                        result = r;
+                    }
                 }
                 break;
             case 2:
                 for (int i = offset; i < end; i++) {
                     final int idx = (index.get(i) & 0xFFFF) * vertexSize + posoff;
                     tmpV.set(verts.get(idx), verts.get(idx + 1), 0);
-                    if (transform != null) tmpV.mul(transform);
+                    if (transform != null) {
+                        tmpV.mul(transform);
+                    }
                     final float r = tmpV.sub(centerX, centerY, centerZ).len2();
-                    if (r > result) result = r;
+                    if (r > result) {
+                        result = r;
+                    }
                 }
                 break;
             case 3:
                 for (int i = offset; i < end; i++) {
                     final int idx = (index.get(i) & 0xFFFF) * vertexSize + posoff;
                     tmpV.set(verts.get(idx), verts.get(idx + 1), verts.get(idx + 2));
-                    if (transform != null) tmpV.mul(transform);
+                    if (transform != null) {
+                        tmpV.mul(transform);
+                    }
                     final float r = tmpV.sub(centerX, centerY, centerZ).len2();
-                    if (r > result) result = r;
+                    if (r > result) {
+                        result = r;
+                    }
                 }
                 break;
         }
@@ -1150,7 +1186,9 @@ public class Mesh implements Disposable {
 
     private static void addManagedMesh(Application app, Mesh mesh) {
         Array<Mesh> managedResources = meshes.get(app);
-        if (managedResources == null) managedResources = new Array<Mesh>();
+        if (managedResources == null) {
+            managedResources = new Array<>();
+        }
         managedResources.add(mesh);
         meshes.put(app, managedResources);
     }
@@ -1162,7 +1200,9 @@ public class Mesh implements Disposable {
      */
     public static void invalidateAllMeshes(Application app) {
         Array<Mesh> meshesArray = meshes.get(app);
-        if (meshesArray == null) return;
+        if (meshesArray == null) {
+            return;
+        }
         for (int i = 0; i < meshesArray.size; i++) {
             meshesArray.get(i).vertices.invalidate();
             meshesArray.get(i).indices.invalidate();
@@ -1275,11 +1315,14 @@ public class Mesh implements Disposable {
     public static void transform(final Matrix4 matrix, final float[] vertices, int vertexSize, int offset,
                                  int dimensions,
                                  int start, int count) {
-        if (offset < 0 || dimensions < 1 || (offset + dimensions) > vertexSize) throw new IndexOutOfBoundsException();
-        if (start < 0 || count < 1 || ((start + count) * vertexSize) > vertices.length)
+        if (offset < 0 || dimensions < 1 || (offset + dimensions) > vertexSize) {
+            throw new IndexOutOfBoundsException();
+        }
+        if (start < 0 || count < 1 || ((start + count) * vertexSize) > vertices.length) {
             throw new IndexOutOfBoundsException(
                     "start = " + start + ", count = " + count + ", vertexSize = " + vertexSize + ", length = " +
                             vertices.length);
+        }
 
         final Vector3 tmp = new Vector3();
 
@@ -1350,10 +1393,11 @@ public class Mesh implements Disposable {
      */
     public static void transformUV(final Matrix3 matrix, final float[] vertices, int vertexSize, int offset, int start,
                                    int count) {
-        if (start < 0 || count < 1 || ((start + count) * vertexSize) > vertices.length)
+        if (start < 0 || count < 1 || ((start + count) * vertexSize) > vertices.length) {
             throw new IndexOutOfBoundsException(
                     "start = " + start + ", count = " + count + ", vertexSize = " + vertexSize + ", length = " +
                             vertices.length);
+        }
 
         final Vector2 tmp = new Vector2();
 
@@ -1389,11 +1433,12 @@ public class Mesh implements Disposable {
         if (usage != null) {
             int size = 0;
             int as = 0;
-            for (int i = 0; i < usage.length; i++)
+            for (int i = 0; i < usage.length; i++) {
                 if (getVertexAttribute(usage[i]) != null) {
                     size += getVertexAttribute(usage[i]).numComponents;
                     as++;
                 }
+            }
             if (size > 0) {
                 attrs = new VertexAttribute[as];
                 checks = new int[size];
@@ -1401,9 +1446,12 @@ public class Mesh implements Disposable {
                 int ai = -1;
                 for (int i = 0; i < usage.length; i++) {
                     VertexAttribute a = getVertexAttribute(usage[i]);
-                    if (a == null) continue;
-                    for (int j = 0; j < a.numComponents; j++)
+                    if (a == null) {
+                        continue;
+                    }
+                    for (int j = 0; j < a.numComponents; j++) {
                         checks[++idx] = a.offset + j;
+                    }
                     attrs[++ai] = a.copy();
                     newVertexSize += a.numComponents;
                 }
@@ -1411,8 +1459,9 @@ public class Mesh implements Disposable {
         }
         if (checks == null) {
             checks = new int[vertexSize];
-            for (int i = 0; i < vertexSize; i++)
+            for (int i = 0; i < vertexSize; i++) {
                 checks[i] = i;
+            }
             newVertexSize = vertexSize;
         }
 
@@ -1437,15 +1486,18 @@ public class Mesh implements Disposable {
                                     break;
                                 }
                             }
-                            if (found) newIndex = j;
+                            if (found) {
+                                newIndex = j;
+                            }
                         }
                     }
-                    if (newIndex > 0)
+                    if (newIndex > 0) {
                         indices[i] = newIndex;
-                    else {
+                    } else {
                         final int idx = size * newVertexSize;
-                        for (int j = 0; j < checks.length; j++)
+                        for (int j = 0; j < checks.length; j++) {
                             tmp[idx + j] = vertices[idx1 + checks[j]];
+                        }
                         indices[i] = size;
                         size++;
                     }
@@ -1456,12 +1508,15 @@ public class Mesh implements Disposable {
         }
 
         Mesh result;
-        if (attrs == null)
+        if (attrs == null) {
             result = new Mesh(isStatic, numVertices, indices == null ? 0 : indices.length, getVertexAttributes());
-        else
+        } else {
             result = new Mesh(isStatic, numVertices, indices == null ? 0 : indices.length, attrs);
+        }
         result.setVertices(vertices, 0, numVertices * newVertexSize);
-        if (indices != null) result.setIndices(indices);
+        if (indices != null) {
+            result.setIndices(indices);
+        }
         return result;
     }
 

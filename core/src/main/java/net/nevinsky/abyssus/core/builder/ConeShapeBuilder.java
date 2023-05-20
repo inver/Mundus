@@ -65,7 +65,9 @@ public class ConeShapeBuilder extends BaseShapeBuilder {
             curr1.position.y = -hh;
             curr1.uv.set(u, 1);
             i1 = builder.vertex(curr1);
-            if (i != 0) builder.triangle(base, i1, i2); // TODO don't duplicate lines and points
+            if (i != 0) {
+                builder.triangle(base, i1, i2); // TODO don't duplicate lines and points
+            }
             i2 = i1;
         }
         if (close) {

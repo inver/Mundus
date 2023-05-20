@@ -118,21 +118,29 @@ public class AnimationController extends BaseAnimationController {
                         loops = (int) Math.abs(time / duration);
                         time = Math.abs(time % duration);
                     }
-                } else
+                } else {
                     loops = 1;
+                }
                 for (int i = 0; i < loops; i++) {
-                    if (loopCount > 0) loopCount--;
-                    if (loopCount != 0 && listener != null) listener.onLoop(this);
+                    if (loopCount > 0) {
+                        loopCount--;
+                    }
+                    if (loopCount != 0 && listener != null) {
+                        listener.onLoop(this);
+                    }
                     if (loopCount == 0) {
                         final float result = ((loops - 1) - i) * duration + (diff < 0f ? duration - time : time);
                         time = (diff < 0f) ? 0f : duration;
-                        if (listener != null) listener.onEnd(this);
+                        if (listener != null) {
+                            listener.onEnd(this);
+                        }
                         return result;
                     }
                 }
                 return -1;
-            } else
+            } else {
                 return delta;
+            }
         }
     }
 
@@ -193,7 +201,9 @@ public class AnimationController extends BaseAnimationController {
 
     private AnimationDesc obtain(final Animation anim, float offset, float duration, int loopCount, float speed,
                                  final AnimationListener listener) {
-        if (anim == null) return null;
+        if (anim == null) {
+            return null;
+        }
         final AnimationDesc result = animationPool.obtain();
         result.animation = anim;
         result.listener = listener;
@@ -207,9 +217,13 @@ public class AnimationController extends BaseAnimationController {
 
     private AnimationDesc obtain(final String id, float offset, float duration, int loopCount, float speed,
                                  final AnimationListener listener) {
-        if (id == null) return null;
+        if (id == null) {
+            return null;
+        }
         final Animation anim = target.getAnimation(id);
-        if (anim == null) throw new GdxRuntimeException("Unknown animation: " + id);
+        if (anim == null) {
+            throw new GdxRuntimeException("Unknown animation: " + id);
+        }
         return obtain(anim, offset, duration, loopCount, speed, listener);
     }
 
@@ -223,7 +237,9 @@ public class AnimationController extends BaseAnimationController {
      * @param delta The time elapsed since last update, change this to alter the overall speed (can be negative).
      */
     public void update(float delta) {
-        if (paused) return;
+        if (paused) {
+            return;
+        }
         if (previous != null && ((transitionCurrentTime += delta) >= transitionTargetTime)) {
             removeAnimation(previous.animation);
             justChangedAnimation = true;
@@ -234,21 +250,26 @@ public class AnimationController extends BaseAnimationController {
             target.calculateTransforms();
             justChangedAnimation = false;
         }
-        if (current == null || current.loopCount == 0 || current.animation == null) return;
+        if (current == null || current.loopCount == 0 || current.animation == null) {
+            return;
+        }
         final float remain = current.update(delta);
         if (remain >= 0f && queued != null) {
             inAction = false;
             animate(queued, queuedTransitionTime);
             queued = null;
-            if (remain > 0f) update(remain);
+            if (remain > 0f) {
+                update(remain);
+            }
             return;
         }
-        if (previous != null)
+        if (previous != null) {
             applyAnimations(previous.animation, previous.offset + previous.time, current.animation,
                     current.offset + current.time,
                     transitionCurrentTime / transitionTargetTime);
-        else
+        } else {
             applyAnimation(current.animation, current.offset + current.time);
+        }
     }
 
     /**
@@ -472,11 +493,11 @@ public class AnimationController extends BaseAnimationController {
      * Changes the current animation by blending the new on top of the old during the transition time.
      */
     protected AnimationDesc animate(final AnimationDesc anim, float transitionTime) {
-        if (current == null || current.loopCount == 0)
+        if (current == null || current.loopCount == 0) {
             current = anim;
-        else if (inAction)
+        } else if (inAction) {
             queue(anim, transitionTime);
-        else if (!allowSameAnimation && anim != null && current.animation == anim.animation) {
+        } else if (!allowSameAnimation && anim != null && current.animation == anim.animation) {
             anim.time = current.time;
             animationPool.free(current);
             current = anim;
@@ -630,15 +651,19 @@ public class AnimationController extends BaseAnimationController {
      * Apply an action animation on top of the current animation.
      */
     protected AnimationDesc action(final AnimationDesc anim, float transitionTime) {
-        if (anim.loopCount < 0) throw new GdxRuntimeException("An action cannot be continuous");
-        if (current == null || current.loopCount == 0)
+        if (anim.loopCount < 0) {
+            throw new GdxRuntimeException("An action cannot be continuous");
+        }
+        if (current == null || current.loopCount == 0) {
             animate(anim, transitionTime);
-        else {
+        } else {
             AnimationDesc toQueue = inAction ? null : obtain(current);
             inAction = false;
             animate(anim, transitionTime);
             inAction = true;
-            if (toQueue != null) queue(toQueue, transitionTime);
+            if (toQueue != null) {
+                queue(toQueue, transitionTime);
+            }
         }
         return anim;
     }

@@ -16,11 +16,21 @@
 
 package net.nevinsky.abyssus.core.shader;
 
+import com.badlogic.gdx.utils.GdxRuntimeException;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class BaseShaderProvider implements ShaderProvider {
-    protected final Map<String, ShaderWrapper> shaders = new ConcurrentHashMap<>();
+    protected final Map<String, ShaderHolder> shaders = new ConcurrentHashMap<>();
+    protected ShaderHolder defaultShader;
+
+    protected void init() {
+        defaultShader = loadShaderAndCache(DEFAULT_SHADER);
+        if (defaultShader == null) {
+            throw new GdxRuntimeException("Failed to load Default Shader!");
+        }
+    }
 
     @Override
     public <T extends BaseShader> T get(String key) {
@@ -29,34 +39,27 @@ public abstract class BaseShaderProvider implements ShaderProvider {
             return getInstance(res);
         }
 
-        res = loadProjectShader(key);
+        res = loadShaderAndCache(key);
         if (res != null) {
-            shaders.put(key, res);
             return getInstance(res);
         }
 
-        res = loadBundledShader(key);
-        if (res != null) {
-            shaders.put(key, res);
-            return getInstance(res);
-        }
-
-        res = shaders.get(DEFAULT_SHADER);
-        if (res == null) {
-            throw new RuntimeException(String.format("Shader with name '%s' is null", key));
-        }
-        return getInstance(res);
+        return getInstance(defaultShader);
     }
 
     @SuppressWarnings("unchecked")
-    protected <T extends BaseShader> T getInstance(ShaderWrapper wrapper) {
+    protected <T extends BaseShader> T getInstance(ShaderHolder wrapper) {
         wrapper.init();
         return (T) wrapper.getDefaultInstance();
     }
 
-    protected abstract ShaderWrapper loadBundledShader(String key);
-
-    protected abstract ShaderWrapper loadProjectShader(String key);
+    /**
+     * Method load shader from file system or class path or etc. and put it to cache
+     *
+     * @param key the name of shader
+     * @return cached holder with shader
+     */
+    protected abstract ShaderHolder loadShaderAndCache(String key);
 
     @Override
     public void dispose() {
@@ -65,6 +68,4 @@ public abstract class BaseShaderProvider implements ShaderProvider {
         }
         shaders.clear();
     }
-
-
 }

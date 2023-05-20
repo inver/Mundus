@@ -6,12 +6,12 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter
-public class ShaderWrapper implements Disposable {
+public class ShaderHolder implements Disposable {
 
     protected final BaseShader defaultInstance;
     private boolean initialized = false;
 
-    public ShaderWrapper(BaseShader instance) {
+    public ShaderHolder(BaseShader instance) {
         this.defaultInstance = instance;
     }
 

@@ -4,9 +4,9 @@ import groovy.lang.GroovyClassLoader;
 import lombok.Getter;
 import lombok.Setter;
 import net.nevinsky.abyssus.core.shader.BaseShader;
-import net.nevinsky.abyssus.core.shader.ShaderWrapper;
+import net.nevinsky.abyssus.core.shader.ShaderHolder;
 
-public class EditorShaderWrapper extends ShaderWrapper {
+public class EditorShaderHolder extends ShaderHolder {
 
     @Setter
     private BaseShader overrideInstance;
@@ -14,7 +14,7 @@ public class EditorShaderWrapper extends ShaderWrapper {
     @Getter
     private final GroovyClassLoader shaderClassLoader;
 
-    public EditorShaderWrapper(GroovyClassLoader shaderClassLoader, BaseShader instance) {
+    public EditorShaderHolder(GroovyClassLoader shaderClassLoader, BaseShader instance) {
         super(instance);
         this.shaderClassLoader = shaderClassLoader;
     }

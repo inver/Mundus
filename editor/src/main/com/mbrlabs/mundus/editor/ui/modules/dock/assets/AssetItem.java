@@ -31,10 +31,7 @@ public class AssetItem extends WidgetGroup {
             addActor(generator.generate(asset));
         } else if (asset.getType() == AssetType.MATERIAL) {
             addActor(generator.generate(asset));
-        } else {
-
         }
-
         var table = new VisTable();
 //        table.debugAll();
         table.setWidth(ASSET_BAR_PREVIEW_SIZE);

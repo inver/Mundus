@@ -209,7 +209,9 @@ public class EllipseShapeBuilder extends BaseShapeBuilder {
                              float angleTo) {
         tmpV1.set(normalX, normalY, normalZ).crs(0, 0, 1);
         tmpV2.set(normalX, normalY, normalZ).crs(0, 1, 0);
-        if (tmpV2.len2() > tmpV1.len2()) tmpV1.set(tmpV2);
+        if (tmpV2.len2() > tmpV1.len2()) {
+            tmpV1.set(tmpV2);
+        }
         tmpV2.set(tmpV1.nor()).crs(normalX, normalY, normalZ).nor();
         build(builder, width, height, innerWidth, innerHeight, divisions, centerX, centerY, centerZ, normalX, normalY,
                 normalZ,
@@ -251,8 +253,11 @@ public class EllipseShapeBuilder extends BaseShapeBuilder {
         } else if (innerWidth == width && innerHeight == height) {
             builder.ensureVertices(divisions + 1);
             builder.ensureIndices(divisions + 1);
-            if (builder.getPrimitiveType() != GL20.GL_LINES) throw new GdxRuntimeException(
-                    "Incorrect primitive type : expect GL_LINES because innerWidth == width && innerHeight == height");
+            if (builder.getPrimitiveType() != GL20.GL_LINES) {
+                throw new GdxRuntimeException(
+                        "Incorrect primitive type : expect GL_LINES because innerWidth == width " +
+                                "&& innerHeight == height");
+            }
         } else {
             builder.ensureVertices((divisions + 1) * 2);
             builder.ensureRectangleIndices(divisions + 1);
@@ -289,10 +294,14 @@ public class EllipseShapeBuilder extends BaseShapeBuilder {
             i1 = builder.vertex(currEx);
 
             if (innerWidth <= 0f || innerHeight <= 0f) {
-                if (i != 0) builder.triangle(i1, i2, center);
+                if (i != 0) {
+                    builder.triangle(i1, i2, center);
+                }
                 i2 = i1;
             } else if (innerWidth == width && innerHeight == height) {
-                if (i != 0) builder.line(i1, i2);
+                if (i != 0) {
+                    builder.line(i1, i2);
+                }
                 i2 = i1;
             } else {
                 currIn.position.set(centerX, centerY, centerZ).add(sxIn.x * x + syIn.x * y, sxIn.y * x + syIn.y * y,
@@ -301,7 +310,9 @@ public class EllipseShapeBuilder extends BaseShapeBuilder {
                 i2 = i1;
                 i1 = builder.vertex(currIn);
 
-                if (i != 0) builder.rect(i1, i2, i4, i3);
+                if (i != 0) {
+                    builder.rect(i1, i2, i4, i3);
+                }
                 i4 = i2;
                 i3 = i1;
             }

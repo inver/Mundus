@@ -19,7 +19,7 @@ public class LightRenderDelegate implements RenderableDelegate {
     private static final long ATTRIBUTES =
             VertexAttributes.Usage.Position | VertexAttributes.Usage.ColorUnpacked | VertexAttributes.Usage.Normal;
     private static final Material DEFAULT_MATERIAL = new Material();
-    private transient final ModelInstance instance;
+    private final transient ModelInstance instance;
 
     public LightRenderDelegate() {
         var modelBuilder = new ModelBuilder();

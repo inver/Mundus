@@ -128,7 +128,9 @@ public abstract class BaseShader implements Shader {
      * @return The ID of the uniform to use in this shader.
      */
     public int register(final String alias, final Validator validator, final Setter setter) {
-        if (locations != null) throw new GdxRuntimeException("Cannot register an uniform after initialization");
+        if (locations != null) {
+            throw new GdxRuntimeException("Cannot register an uniform after initialization");
+        }
         final int existing = getUniformID(alias);
         if (existing >= 0) {
             validators.set(existing, validator);
@@ -166,8 +168,11 @@ public abstract class BaseShader implements Shader {
      */
     public int getUniformID(final String alias) {
         final int n = uniforms.size;
-        for (int i = 0; i < n; i++)
-            if (uniforms.get(i).equals(alias)) return i;
+        for (int i = 0; i < n; i++) {
+            if (uniforms.get(i).equals(alias)) {
+                return i;
+            }
+        }
         return -1;
     }
 
@@ -182,8 +187,12 @@ public abstract class BaseShader implements Shader {
      * Initialize this shader, causing all registered uniforms/attributes to be fetched.
      */
     public void init(final ShaderProgram program, final Renderable renderable) {
-        if (locations != null) throw new GdxRuntimeException("Already initialized");
-        if (!program.isCompiled()) throw new GdxRuntimeException(program.getLog());
+        if (locations != null) {
+            throw new GdxRuntimeException("Already initialized");
+        }
+        if (!program.isCompiled()) {
+            throw new GdxRuntimeException(program.getLog());
+        }
         this.program = program;
 
         final int n = uniforms.size;
@@ -192,15 +201,16 @@ public abstract class BaseShader implements Shader {
             final String input = uniforms.get(i);
             final Validator validator = validators.get(i);
             final Setter setter = setters.get(i);
-            if (validator != null && !validator.validate(this, i, renderable))
+            if (validator != null && !validator.validate(this, i, renderable)) {
                 locations[i] = -1;
-            else {
+            } else {
                 locations[i] = program.fetchUniformLocation(input, false);
                 if (locations[i] >= 0 && setter != null) {
-                    if (setter.isGlobal(this, i))
+                    if (setter.isGlobal(this, i)) {
                         globalUniforms.add(i);
-                    else
+                    } else {
                         localUniforms.add(i);
+                    }
                 }
             }
             if (locations[i] < 0) {
@@ -214,7 +224,9 @@ public abstract class BaseShader implements Shader {
             for (int i = 0; i < c; i++) {
                 final VertexAttribute attr = attrs.get(i);
                 final int location = program.getAttributeLocation(attr.alias);
-                if (location >= 0) attributes.put(attr.getKey(), location);
+                if (location >= 0) {
+                    attributes.put(attr.getKey(), location);
+                }
             }
         }
     }
@@ -248,19 +260,29 @@ public abstract class BaseShader implements Shader {
 
     @Override
     public void render(Renderable renderable) {
-        if (renderable.worldTransform.det3x3() == 0) return;
+        if (renderable.worldTransform.det3x3() == 0) {
+            return;
+        }
         combinedAttributes.clear();
-        if (renderable.environment != null) combinedAttributes.set(renderable.environment);
-        if (renderable.material != null) combinedAttributes.set(renderable.material);
+        if (renderable.environment != null) {
+            combinedAttributes.set(renderable.environment);
+        }
+        if (renderable.material != null) {
+            combinedAttributes.set(renderable.material);
+        }
         render(renderable, combinedAttributes);
     }
 
     public void render(Renderable renderable, final Attributes combinedAttributes) {
-        for (int u, i = 0; i < localUniforms.size; ++i)
-            if (setters.get(u = localUniforms.get(i)) != null)
+        for (int u, i = 0; i < localUniforms.size; ++i) {
+            if (setters.get(u = localUniforms.get(i)) != null) {
                 setters.get(u).set(this, u, renderable, combinedAttributes);
+            }
+        }
         if (currentMesh != renderable.meshPart.mesh) {
-            if (currentMesh != null) currentMesh.unbind(program, tempArray.items);
+            if (currentMesh != null) {
+                currentMesh.unbind(program, tempArray.items);
+            }
             currentMesh = renderable.meshPart.mesh;
             currentMesh.bind(program, getAttributeLocations(renderable.meshPart.mesh.getVertexAttributes()));
         }
@@ -298,91 +320,121 @@ public abstract class BaseShader implements Shader {
     }
 
     public final boolean set(final int uniform, final Matrix4 value) {
-        if (locations[uniform] < 0) return false;
+        if (locations[uniform] < 0) {
+            return false;
+        }
         program.setUniformMatrix(locations[uniform], value);
         return true;
     }
 
     public final boolean set(final int uniform, final Matrix3 value) {
-        if (locations[uniform] < 0) return false;
+        if (locations[uniform] < 0) {
+            return false;
+        }
         program.setUniformMatrix(locations[uniform], value);
         return true;
     }
 
     public final boolean set(final int uniform, final Vector3 value) {
-        if (locations[uniform] < 0) return false;
+        if (locations[uniform] < 0) {
+            return false;
+        }
         program.setUniformf(locations[uniform], value);
         return true;
     }
 
     public final boolean set(final int uniform, final Vector2 value) {
-        if (locations[uniform] < 0) return false;
+        if (locations[uniform] < 0) {
+            return false;
+        }
         program.setUniformf(locations[uniform], value);
         return true;
     }
 
     public final boolean set(final int uniform, final Color value) {
-        if (locations[uniform] < 0) return false;
+        if (locations[uniform] < 0) {
+            return false;
+        }
         program.setUniformf(locations[uniform], value);
         return true;
     }
 
     public final boolean set(final int uniform, final float value) {
-        if (locations[uniform] < 0) return false;
+        if (locations[uniform] < 0) {
+            return false;
+        }
         program.setUniformf(locations[uniform], value);
         return true;
     }
 
     public final boolean set(final int uniform, final float v1, final float v2) {
-        if (locations[uniform] < 0) return false;
+        if (locations[uniform] < 0) {
+            return false;
+        }
         program.setUniformf(locations[uniform], v1, v2);
         return true;
     }
 
     public final boolean set(final int uniform, final float v1, final float v2, final float v3) {
-        if (locations[uniform] < 0) return false;
+        if (locations[uniform] < 0) {
+            return false;
+        }
         program.setUniformf(locations[uniform], v1, v2, v3);
         return true;
     }
 
     public final boolean set(final int uniform, final float v1, final float v2, final float v3, final float v4) {
-        if (locations[uniform] < 0) return false;
+        if (locations[uniform] < 0) {
+            return false;
+        }
         program.setUniformf(locations[uniform], v1, v2, v3, v4);
         return true;
     }
 
     public final boolean set(final int uniform, final int value) {
-        if (locations[uniform] < 0) return false;
+        if (locations[uniform] < 0) {
+            return false;
+        }
         program.setUniformi(locations[uniform], value);
         return true;
     }
 
     public final boolean set(final int uniform, final int v1, final int v2) {
-        if (locations[uniform] < 0) return false;
+        if (locations[uniform] < 0) {
+            return false;
+        }
         program.setUniformi(locations[uniform], v1, v2);
         return true;
     }
 
     public final boolean set(final int uniform, final int v1, final int v2, final int v3) {
-        if (locations[uniform] < 0) return false;
+        if (locations[uniform] < 0) {
+            return false;
+        }
         program.setUniformi(locations[uniform], v1, v2, v3);
         return true;
     }
 
     public final boolean set(final int uniform, final int v1, final int v2, final int v3, final int v4) {
-        if (locations[uniform] < 0) return false;
+        if (locations[uniform] < 0) {
+            return false;
+        }
         program.setUniformi(locations[uniform], v1, v2, v3, v4);
         return true;
     }
 
     public final boolean set(final int uniform, final TextureDescriptor textureDesc) {
-        if (locations[uniform] < 0) return false;
+        if (locations[uniform] < 0) {
+            return false;
+        }
         program.setUniformi(locations[uniform], context.textureBinder.bind(textureDesc));
         return true;
     }
 
     public final boolean set(final int uniform, final GLTexture texture) {
-        if (locations[uniform] < 0) return false;
+        if (locations[uniform] < 0) {
+            return false;
+        }
         program.setUniformi(locations[uniform], context.textureBinder.bind(texture));
         return true;
     }

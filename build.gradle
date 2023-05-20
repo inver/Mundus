@@ -78,6 +78,9 @@ allprojects {
     }
 
     tasks.withType(Test).configureEach {
+        useJUnitPlatform{
+
+        }
         testLogging {
             exceptionFormat "full"
             showCauses true

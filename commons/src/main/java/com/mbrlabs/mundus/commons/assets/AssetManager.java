@@ -51,9 +51,9 @@ public class AssetManager {
                 return skyboxAssetLoader.load(metaService.loadSkyboxMeta(assetFolderPath));
             case TERRAIN:
                 return terrainAssetLoader.load(metaService.loadTerrainMeta(assetFolderPath));
+            default:
+                throw new AssetTypeNotSupportException("Asset with type '" + meta.getType() + "' not supported");
         }
-
-        throw new AssetTypeNotSupportException("Asset with type '" + meta.getType() + "' not supported");
     }
 
     public Asset<?> loadCurrentProjectAsset(String assetName) {

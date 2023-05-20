@@ -42,16 +42,15 @@ import com.kotcrab.vis.ui.widget.VisSplitPane;
  * This is a slightly modified version of kotcrab's VisSplitPane and fixes an
  * input issue. touchDown() in line 95 originally returned true, which prevents
  * the event to be passed on
- *
+ * <p>
  * Extends functionality of standard {@link SplitPane}. Style supports handle
  * over {@link Drawable}. Due to scope of changes made this widget is not
  * compatible with {@link SplitPane}.
- * 
+ *
  * @author mzechner
  * @author Nathan Sweet
  * @author Kotcrab
  * @author mbrlabs
- *
  * @see SplitPane
  */
 public class MundusSplitPane extends WidgetGroup {
@@ -73,33 +72,27 @@ public class MundusSplitPane extends WidgetGroup {
     private boolean mouseOnHandle;
 
     /**
-     * @param firstWidget
-     *            May be null.
-     * @param secondWidget
-     *            May be null.
+     * @param firstWidget  May be null.
+     * @param secondWidget May be null.
      */
     public MundusSplitPane(Actor firstWidget, Actor secondWidget, boolean vertical) {
         this(firstWidget, secondWidget, vertical, "default-" + (vertical ? "vertical" : "horizontal"));
     }
 
     /**
-     * @param firstWidget
-     *            May be null.
-     * @param secondWidget
-     *            May be null.
+     * @param firstWidget  May be null.
+     * @param secondWidget May be null.
      */
     public MundusSplitPane(Actor firstWidget, Actor secondWidget, boolean vertical, String styleName) {
         this(firstWidget, secondWidget, vertical, VisUI.getSkin().get(styleName, VisSplitPane.VisSplitPaneStyle.class));
     }
 
     /**
-     * @param firstWidget
-     *            May be null.
-     * @param secondWidget
-     *            May be null.
+     * @param firstWidget  May be null.
+     * @param secondWidget May be null.
      */
     public MundusSplitPane(Actor firstWidget, Actor secondWidget, boolean vertical,
-            VisSplitPane.VisSplitPaneStyle style) {
+                           VisSplitPane.VisSplitPaneStyle style) {
         this.firstWidget = firstWidget;
         this.secondWidget = secondWidget;
         this.vertical = vertical;
@@ -159,10 +152,16 @@ public class MundusSplitPane extends WidgetGroup {
                 // TODO potential bug with libgdx scene2d?
                 // fixes issue when split bar could be still dragged even when
                 // touchable is set to childrenOnly, probably scene2d issue
-                if (!isTouchable()) return false;
+                if (!isTouchable()) {
+                    return false;
+                }
 
-                if (draggingPointer != -1) return false;
-                if (pointer == 0 && button != 0) return false;
+                if (draggingPointer != -1) {
+                    return false;
+                }
+                if (pointer == 0 && button != 0) {
+                    return false;
+                }
                 if (handleBounds.contains(x, y)) {
                     FocusManager.resetFocus(getStage());
 
@@ -176,7 +175,9 @@ public class MundusSplitPane extends WidgetGroup {
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                if (pointer == draggingPointer) draggingPointer = -1;
+                if (pointer == draggingPointer) {
+                    draggingPointer = -1;
+                }
             }
 
             @Override
@@ -187,7 +188,9 @@ public class MundusSplitPane extends WidgetGroup {
 
             @Override
             public void touchDragged(InputEvent event, float x, float y, int pointer) {
-                if (pointer != draggingPointer) return;
+                if (pointer != draggingPointer) {
+                    return;
+                }
 
                 Drawable handle = style.handle;
                 if (!vertical) {
@@ -198,8 +201,12 @@ public class MundusSplitPane extends WidgetGroup {
                     dragX = Math.max(0, dragX);
                     dragX = Math.min(availWidth, dragX);
                     splitAmount = dragX / availWidth;
-                    if (splitAmount < minAmount) splitAmount = minAmount;
-                    if (splitAmount > maxAmount) splitAmount = maxAmount;
+                    if (splitAmount < minAmount) {
+                        splitAmount = minAmount;
+                    }
+                    if (splitAmount > maxAmount) {
+                        splitAmount = maxAmount;
+                    }
                     lastPoint.set(x, y);
                 } else {
                     float delta = y - lastPoint.y;
@@ -209,8 +216,12 @@ public class MundusSplitPane extends WidgetGroup {
                     dragY = Math.max(0, dragY);
                     dragY = Math.min(availHeight, dragY);
                     splitAmount = 1 - (dragY / availHeight);
-                    if (splitAmount < minAmount) splitAmount = minAmount;
-                    if (splitAmount > maxAmount) splitAmount = maxAmount;
+                    if (splitAmount < minAmount) {
+                        splitAmount = minAmount;
+                    }
+                    if (splitAmount > maxAmount) {
+                        splitAmount = maxAmount;
+                    }
                     lastPoint.set(x, y);
                 }
                 invalidate();
@@ -234,46 +245,60 @@ public class MundusSplitPane extends WidgetGroup {
 
     @Override
     public void layout() {
-        if (!vertical)
+        if (!vertical) {
             calculateHorizBoundsAndPositions();
-        else
+        } else {
             calculateVertBoundsAndPositions();
+        }
 
         Actor firstWidget = this.firstWidget;
         if (firstWidget != null) {
             Rectangle firstWidgetBounds = this.firstWidgetBounds;
             firstWidget.setBounds(firstWidgetBounds.x, firstWidgetBounds.y, firstWidgetBounds.width,
                     firstWidgetBounds.height);
-            if (firstWidget instanceof Layout) ((Layout) firstWidget).validate();
+            if (firstWidget instanceof Layout) {
+                ((Layout) firstWidget).validate();
+            }
         }
         Actor secondWidget = this.secondWidget;
         if (secondWidget != null) {
             Rectangle secondWidgetBounds = this.secondWidgetBounds;
             secondWidget.setBounds(secondWidgetBounds.x, secondWidgetBounds.y, secondWidgetBounds.width,
                     secondWidgetBounds.height);
-            if (secondWidget instanceof Layout) ((Layout) secondWidget).validate();
+            if (secondWidget instanceof Layout) {
+                ((Layout) secondWidget).validate();
+            }
         }
     }
 
     @Override
     public float getPrefWidth() {
         float width = 0;
-        if (firstWidget != null)
+        if (firstWidget != null) {
             width = firstWidget instanceof Layout ? ((Layout) firstWidget).getPrefWidth() : firstWidget.getWidth();
-        if (secondWidget != null)
+        }
+        if (secondWidget != null) {
             width += secondWidget instanceof Layout ? ((Layout) secondWidget).getPrefWidth() : secondWidget.getWidth();
-        if (!vertical) width += style.handle.getMinWidth();
+        }
+        if (!vertical) {
+            width += style.handle.getMinWidth();
+        }
         return width;
     }
 
     @Override
     public float getPrefHeight() {
         float height = 0;
-        if (firstWidget != null)
+        if (firstWidget != null) {
             height = firstWidget instanceof Layout ? ((Layout) firstWidget).getPrefHeight() : firstWidget.getHeight();
-        if (secondWidget != null) height += secondWidget instanceof Layout ? ((Layout) secondWidget).getPrefHeight()
-                : secondWidget.getHeight();
-        if (vertical) height += style.handle.getMinHeight();
+        }
+        if (secondWidget != null) {
+            height += secondWidget instanceof Layout ? ((Layout) secondWidget).getPrefHeight()
+                    : secondWidget.getHeight();
+        }
+        if (vertical) {
+            height += style.handle.getMinHeight();
+        }
         return height;
     }
 
@@ -289,7 +314,7 @@ public class MundusSplitPane extends WidgetGroup {
 
     /**
      * @return first widgets bounds, changing returned rectangle values does not
-     *         have any effect
+     * have any effect
      */
     public Rectangle getFirstWidgetBounds() {
         return new Rectangle(firstWidgetBounds);
@@ -297,7 +322,7 @@ public class MundusSplitPane extends WidgetGroup {
 
     /**
      * @return seconds widgets bounds, changing returned rectangle values does
-     *         not have any effect
+     * not have any effect
      */
     public Rectangle getSecondWidgetBounds() {
         return new Rectangle(secondWidgetBounds);
@@ -349,7 +374,9 @@ public class MundusSplitPane extends WidgetGroup {
         if (firstWidget != null) {
             getStage().calculateScissors(firstWidgetBounds, firstScissors);
             if (ScissorStack.pushScissors(firstScissors)) {
-                if (firstWidget.isVisible()) firstWidget.draw(batch, parentAlpha * color.a);
+                if (firstWidget.isVisible()) {
+                    firstWidget.draw(batch, parentAlpha * color.a);
+                }
                 batch.flush();
                 ScissorStack.popScissors();
             }
@@ -357,14 +384,18 @@ public class MundusSplitPane extends WidgetGroup {
         if (secondWidget != null) {
             getStage().calculateScissors(secondWidgetBounds, secondScissors);
             if (ScissorStack.pushScissors(secondScissors)) {
-                if (secondWidget.isVisible()) secondWidget.draw(batch, parentAlpha * color.a);
+                if (secondWidget.isVisible()) {
+                    secondWidget.draw(batch, parentAlpha * color.a);
+                }
                 batch.flush();
                 ScissorStack.popScissors();
             }
         }
 
         Drawable handle = style.handle;
-        if (mouseOnHandle && isTouchable() && style.handleOver != null) handle = style.handleOver;
+        if (mouseOnHandle && isTouchable() && style.handleOver != null) {
+            handle = style.handleOver;
+        }
         batch.setColor(color.r, color.g, color.b, parentAlpha * color.a);
         handle.draw(batch, handleBounds.x, handleBounds.y, handleBounds.width, handleBounds.height);
         resetTransform(batch);
@@ -373,7 +404,9 @@ public class MundusSplitPane extends WidgetGroup {
 
     @Override
     public Actor hit(float x, float y, boolean touchable) {
-        if (touchable && getTouchable() == Touchable.disabled) return null;
+        if (touchable && getTouchable() == Touchable.disabled) {
+            return null;
+        }
         if (handleBounds.contains(x, y)) {
             return this;
         } else {
@@ -382,8 +415,7 @@ public class MundusSplitPane extends WidgetGroup {
     }
 
     /**
-     * @param split
-     *            The split amount between the min and max amount.
+     * @param split The split amount between the min and max amount.
      */
     public void setSplitAmount(float split) {
         this.splitAmount = Math.max(Math.min(maxAmount, split), minAmount);
@@ -395,22 +427,28 @@ public class MundusSplitPane extends WidgetGroup {
     }
 
     public void setMinSplitAmount(float minAmount) {
-        if (minAmount < 0) throw new GdxRuntimeException("minAmount has to be >= 0");
-        if (minAmount >= maxAmount) throw new GdxRuntimeException("minAmount has to be < maxAmount");
+        if (minAmount < 0) {
+            throw new GdxRuntimeException("minAmount has to be >= 0");
+        }
+        if (minAmount >= maxAmount) {
+            throw new GdxRuntimeException("minAmount has to be < maxAmount");
+        }
         this.minAmount = minAmount;
     }
 
     public void setMaxSplitAmount(float maxAmount) {
-        if (maxAmount > 1) throw new GdxRuntimeException("maxAmount has to be >= 0");
-        if (maxAmount <= minAmount) throw new GdxRuntimeException("maxAmount has to be > minAmount");
+        if (maxAmount > 1) {
+            throw new GdxRuntimeException("maxAmount has to be >= 0");
+        }
+        if (maxAmount <= minAmount) {
+            throw new GdxRuntimeException("maxAmount has to be > minAmount");
+        }
         this.maxAmount = maxAmount;
     }
 
     /**
-     * @param firstWidget
-     *            May be null
-     * @param secondWidget
-     *            May be null
+     * @param firstWidget  May be null
+     * @param secondWidget May be null
      */
     public void setWidgets(Actor firstWidget, Actor secondWidget) {
         setFirstWidget(firstWidget);
@@ -418,24 +456,30 @@ public class MundusSplitPane extends WidgetGroup {
     }
 
     /**
-     * @param widget
-     *            May be null.
+     * @param widget May be null.
      */
     public void setFirstWidget(Actor widget) {
-        if (firstWidget != null) super.removeActor(firstWidget);
+        if (firstWidget != null) {
+            super.removeActor(firstWidget);
+        }
         firstWidget = widget;
-        if (widget != null) super.addActor(widget);
+        if (widget != null) {
+            super.addActor(widget);
+        }
         invalidate();
     }
 
     /**
-     * @param widget
-     *            May be null.
+     * @param widget May be null.
      */
     public void setSecondWidget(Actor widget) {
-        if (secondWidget != null) super.removeActor(secondWidget);
+        if (secondWidget != null) {
+            super.removeActor(secondWidget);
+        }
         secondWidget = widget;
-        if (widget != null) super.addActor(widget);
+        if (widget != null) {
+            super.addActor(widget);
+        }
         invalidate();
     }
 
@@ -460,7 +504,9 @@ public class MundusSplitPane extends WidgetGroup {
     }
 
     public static class VisSplitPaneStyle extends SplitPane.SplitPaneStyle {
-        /** Optional **/
+        /**
+         * Optional
+         **/
         public Drawable handleOver;
 
         public VisSplitPaneStyle() {

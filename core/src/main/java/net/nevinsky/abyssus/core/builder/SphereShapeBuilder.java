@@ -29,8 +29,8 @@ import net.nevinsky.abyssus.core.mesh.MeshPartBuilder.VertexInfo;
  * @author xoppa
  */
 public class SphereShapeBuilder extends BaseShapeBuilder {
-    private final static IntArray tmpIndices = new IntArray();
-    private final static Matrix3 normalTransform = new Matrix3();
+    private static final IntArray tmpIndices = new IntArray();
+    private static final Matrix3 normalTransform = new Matrix3();
 
     public static void build(MeshPartBuilder builder, float width, float height, float depth, int divisionsU,
                              int divisionsV) {

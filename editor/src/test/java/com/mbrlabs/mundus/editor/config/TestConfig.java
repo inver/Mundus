@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.kotcrab.vis.ui.widget.VisTextButton;
+import com.mbrlabs.mundus.commons.assets.shader.ShaderAsset;
 import com.mbrlabs.mundus.commons.assets.shader.ShaderAssetLoader;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAssetLoader;
 import com.mbrlabs.mundus.commons.importer.CameraDeserializer;
@@ -22,13 +23,15 @@ import com.mbrlabs.mundus.editor.core.assets.EditorTerrainService;
 import com.mbrlabs.mundus.editor.core.ecs.EditorEcsService;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.scene.SceneStorage;
-import com.mbrlabs.mundus.editor.core.shader.ShaderStorage;
+import com.mbrlabs.mundus.editor.core.shader.EditorShaderHolder;
+import com.mbrlabs.mundus.editor.core.shader.ShaderClassLoader;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.ui.AppUi;
 import com.mbrlabs.mundus.editor.ui.PreviewGenerator;
 import com.mbrlabs.mundus.editor.ui.components.camera.CameraService;
 import com.mbrlabs.mundus.editor.ui.widgets.ButtonFactory;
 import net.nevinsky.abyssus.core.ModelBatch;
+import net.nevinsky.abyssus.core.shader.ShaderHolder;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -103,8 +106,6 @@ public class TestConfig {
     @Autowired
     private AssetWriter assetWriter;
     @Autowired
-    private EditorCtx editorCtx;
-    @Autowired
     private EditorAssetManager editorAssetManager;
     @Autowired
     private EditorTerrainService terrainService;
@@ -118,7 +119,7 @@ public class TestConfig {
 
     @Bean
     public AssetsStorage assetsStorage() {
-        return new AssetsStorage(assetWriter, shaderAssetLoader(), editorCtx);
+        return new AssetsStorage(assetWriter, shaderAssetLoader(), editorCtx());
     }
 
     @Bean
@@ -163,9 +164,19 @@ public class TestConfig {
         return mock(ShapeRenderer.class);
     }
 
+//    @Bean
+//    public ShaderStorage shaderStorage() {
+//        return new ShaderStorage(editorCtx(), eventBus(), shaderAssetLoader());
+//    }
+
     @Bean
-    public ShaderStorage shaderStorage() {
-        return mock(ShaderStorage.class);
+    public ShaderClassLoader shaderClassLoader() {
+        return new ShaderClassLoader() {
+            @Override
+            public EditorShaderHolder reloadShader(ShaderAsset asset, ShaderHolder holder) {
+                return mock(EditorShaderHolder.class);
+            }
+        };
     }
 
     @Bean

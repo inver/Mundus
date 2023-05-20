@@ -6,7 +6,7 @@ import lombok.Getter;
 
 public class LightComponent extends Component {
     @Getter
-    private transient final DirectionalLight light;
+    private  final transient DirectionalLight light;
 
     public LightComponent() {
         this.light = new DirectionalLight();

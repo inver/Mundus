@@ -193,7 +193,9 @@ public class ModelInstance implements RenderableProvider {
             copy.translation.set(0, 0, 0);
             copy.rotation.idt();
             copy.scale.set(1, 1, 1);
-        } else if (parentTransform && copy.hasParent()) this.transform.mul(node.getParent().globalTransform);
+        } else if (parentTransform && copy.hasParent()) {
+            this.transform.mul(node.getParent().globalTransform);
+        }
         invalidate();
         copyAnimations(model.getAnimations(), shareKeyframes);
         calculateTransforms();
@@ -348,10 +350,11 @@ public class ModelInstance implements RenderableProvider {
             }
             if (!materials.contains(part.material, true)) {
                 final int midx = materials.indexOf(part.material, false);
-                if (midx < 0)
+                if (midx < 0) {
                     materials.add(part.material = part.material.copy());
-                else
+                } else {
                     part.material = materials.get(midx);
+                }
             }
         }
         for (int i = 0, n = node.getChildCount(); i < n; ++i) {
@@ -412,7 +415,9 @@ public class ModelInstance implements RenderableProvider {
         animation.duration = sourceAnim.duration;
         for (final NodeAnimation nanim : sourceAnim.nodeAnimations) {
             final Node node = getNode(nanim.node.id);
-            if (node == null) continue;
+            if (node == null) {
+                continue;
+            }
             NodeAnimation nodeAnim = new NodeAnimation();
             nodeAnim.node = node;
             if (shareKeyframes) {
@@ -439,10 +444,13 @@ public class ModelInstance implements RenderableProvider {
                     }
                 }
             }
-            if (nodeAnim.translation != null || nodeAnim.rotation != null || nodeAnim.scaling != null)
+            if (nodeAnim.translation != null || nodeAnim.rotation != null || nodeAnim.scaling != null) {
                 animation.nodeAnimations.add(nodeAnim);
+            }
         }
-        if (animation.nodeAnimations.size > 0) animations.add(animation);
+        if (animation.nodeAnimations.size > 0) {
+            animations.add(animation);
+        }
     }
 
     /**
@@ -475,12 +483,13 @@ public class ModelInstance implements RenderableProvider {
 
     public Renderable getRenderable(final Renderable out, final Node node, final NodePart nodePart) {
         nodePart.setRenderable(out);
-        if (nodePart.bones == null && transform != null)
+        if (nodePart.bones == null && transform != null) {
             out.worldTransform.set(transform).mul(node.globalTransform);
-        else if (transform != null)
+        } else if (transform != null) {
             out.worldTransform.set(transform);
-        else
+        } else {
             out.worldTransform.idt();
+        }
         out.userData = userData;
         return out;
     }
@@ -488,7 +497,9 @@ public class ModelInstance implements RenderableProvider {
     protected void getRenderables(Node node, Array<Renderable> renderables, Pool<Renderable> pool) {
         if (node.parts.size > 0) {
             for (NodePart nodePart : node.parts) {
-                if (nodePart.enabled) renderables.add(getRenderable(pool.obtain(), node, nodePart));
+                if (nodePart.enabled) {
+                    renderables.add(getRenderable(pool.obtain(), node, nodePart));
+                }
             }
         }
 
@@ -559,11 +570,17 @@ public class ModelInstance implements RenderableProvider {
         final int n = animations.size;
         Animation animation;
         if (ignoreCase) {
-            for (int i = 0; i < n; i++)
-                if ((animation = animations.get(i)).id.equalsIgnoreCase(id)) return animation;
+            for (int i = 0; i < n; i++) {
+                if ((animation = animations.get(i)).id.equalsIgnoreCase(id)) {
+                    return animation;
+                }
+            }
         } else {
-            for (int i = 0; i < n; i++)
-                if ((animation = animations.get(i)).id.equals(id)) return animation;
+            for (int i = 0; i < n; i++) {
+                if ((animation = animations.get(i)).id.equals(id)) {
+                    return animation;
+                }
+            }
         }
         return null;
     }
@@ -585,11 +602,17 @@ public class ModelInstance implements RenderableProvider {
         final int n = materials.size;
         Material material;
         if (ignoreCase) {
-            for (int i = 0; i < n; i++)
-                if ((material = materials.get(i)).id.equalsIgnoreCase(id)) return material;
+            for (int i = 0; i < n; i++) {
+                if ((material = materials.get(i)).id.equalsIgnoreCase(id)) {
+                    return material;
+                }
+            }
         } else {
-            for (int i = 0; i < n; i++)
-                if ((material = materials.get(i)).id.equals(id)) return material;
+            for (int i = 0; i < n; i++) {
+                if ((material = materials.get(i)).id.equals(id)) {
+                    return material;
+                }
+            }
         }
         return null;
     }

@@ -38,7 +38,7 @@ import net.nevinsky.abyssus.core.node.NodeAnimation;
  * @author Xoppa
  */
 public class BaseAnimationController {
-    public final static class Transform implements Poolable {
+    public static final class Transform implements Poolable {
         public final Vector3 translation = new Vector3();
         public final Quaternion rotation = new Quaternion();
         public final Vector3 scale = new Vector3(1, 1, 1);
@@ -97,7 +97,7 @@ public class BaseAnimationController {
             return new Transform();
         }
     };
-    private final static ObjectMap<Node, Transform> transforms = new ObjectMap<Node, Transform>();
+    private static final ObjectMap<Node, Transform> transforms = new ObjectMap<Node, Transform>();
     private boolean applying = false;
     /**
      * The {@link ModelInstance} on which the animations are being performed.
@@ -118,7 +118,9 @@ public class BaseAnimationController {
      * {@link #apply(Animation, float, float)} and finally {{@link #end()}.
      */
     protected void begin() {
-        if (applying) throw new GdxRuntimeException("You must call end() after each call to being()");
+        if (applying) {
+            throw new GdxRuntimeException("You must call end() after each call to being()");
+        }
         applying = true;
     }
 
@@ -128,7 +130,9 @@ public class BaseAnimationController {
      * @param weight The blend weight of this animation relative to the previous applied animations.
      */
     protected void apply(final Animation animation, final float time, final float weight) {
-        if (!applying) throw new GdxRuntimeException("You must call begin() before adding an animation");
+        if (!applying) {
+            throw new GdxRuntimeException("You must call begin() before adding an animation");
+        }
         applyAnimation(transforms, transformPool, weight, animation, time);
     }
 
@@ -136,7 +140,9 @@ public class BaseAnimationController {
      * End applying multiple animations to the instance and update it to reflect the changes.
      */
     protected void end() {
-        if (!applying) throw new GdxRuntimeException("You must call begin() first");
+        if (!applying) {
+            throw new GdxRuntimeException("You must call begin() first");
+        }
         for (Entry<Node, Transform> entry : transforms.entries()) {
             entry.value.toMatrix4(entry.key.localTransform);
             transformPool.free(entry.value);
@@ -150,7 +156,9 @@ public class BaseAnimationController {
      * Apply a single animation to the {@link ModelInstance} and update the it to reflect the changes.
      */
     protected void applyAnimation(final Animation animation, final float time) {
-        if (applying) throw new GdxRuntimeException("Call end() first");
+        if (applying) {
+            throw new GdxRuntimeException("Call end() first");
+        }
         applyAnimation(null, null, 1.f, animation, time);
         target.calculateTransforms();
     }
@@ -160,13 +168,13 @@ public class BaseAnimationController {
      */
     protected void applyAnimations(final Animation anim1, final float time1, final Animation anim2, final float time2,
                                    final float weight) {
-        if (anim2 == null || weight == 0.f)
+        if (anim2 == null || weight == 0.f) {
             applyAnimation(anim1, time1);
-        else if (anim1 == null || weight == 1.f)
+        } else if (anim1 == null || weight == 1.f) {
             applyAnimation(anim2, time2);
-        else if (applying)
+        } else if (applying) {
             throw new GdxRuntimeException("Call end() first");
-        else {
+        } else {
             begin();
             apply(anim1, time1, 1.f);
             apply(anim2, time2, weight);
@@ -174,7 +182,7 @@ public class BaseAnimationController {
         }
     }
 
-    private final static Transform tmpT = new Transform();
+    private static final Transform tmpT = new Transform();
 
     /**
      * Find first key frame index just before a given time
@@ -183,7 +191,7 @@ public class BaseAnimationController {
      * @param time Time to search
      * @return key frame index, 0 if time is out of key frames time range
      */
-    final static <T> int getFirstKeyframeIndexAtTime(final Array<NodeKeyframe<T>> arr, final float time) {
+    static final <T> int getFirstKeyframeIndexAtTime(final Array<NodeKeyframe<T>> arr, final float time) {
         final int lastIndex = arr.size - 1;
 
         // edges cases : time out of range always return first index
@@ -208,10 +216,14 @@ public class BaseAnimationController {
         return minIndex;
     }
 
-    private final static Vector3 getTranslationAtTime(final NodeAnimation nodeAnim, final float time,
+    private static final Vector3 getTranslationAtTime(final NodeAnimation nodeAnim, final float time,
                                                       final Vector3 out) {
-        if (nodeAnim.translation == null) return out.set(nodeAnim.node.translation);
-        if (nodeAnim.translation.size == 1) return out.set(nodeAnim.translation.get(0).value);
+        if (nodeAnim.translation == null) {
+            return out.set(nodeAnim.node.translation);
+        }
+        if (nodeAnim.translation.size == 1) {
+            return out.set(nodeAnim.translation.get(0).value);
+        }
 
         int index = getFirstKeyframeIndexAtTime(nodeAnim.translation, time);
         final NodeKeyframe firstKeyframe = nodeAnim.translation.get(index);
@@ -225,7 +237,7 @@ public class BaseAnimationController {
         return out;
     }
 
-    private final static Quaternion getRotationAtTime(final NodeAnimation nodeAnim, final float time,
+    private static final Quaternion getRotationAtTime(final NodeAnimation nodeAnim, final float time,
                                                       final Quaternion out) {
         if (nodeAnim.rotation == null) {
             return out.set(nodeAnim.node.rotation);
@@ -246,7 +258,7 @@ public class BaseAnimationController {
         return out;
     }
 
-    private final static Vector3 getScalingAtTime(final NodeAnimation nodeAnim, final float time, final Vector3 out) {
+    private static final Vector3 getScalingAtTime(final NodeAnimation nodeAnim, final float time, final Vector3 out) {
         if (nodeAnim.scaling == null) {
             return out.set(nodeAnim.node.scale);
         }
@@ -266,7 +278,7 @@ public class BaseAnimationController {
         return out;
     }
 
-    private final static Transform getNodeAnimationTransform(final NodeAnimation nodeAnim, final float time) {
+    private static final Transform getNodeAnimationTransform(final NodeAnimation nodeAnim, final float time) {
         final Transform transform = tmpT;
         getTranslationAtTime(nodeAnim, time, transform.translation);
         getRotationAtTime(nodeAnim, time, transform.rotation);
@@ -274,14 +286,14 @@ public class BaseAnimationController {
         return transform;
     }
 
-    private final static void applyNodeAnimationDirectly(final NodeAnimation nodeAnim, final float time) {
+    private static final void applyNodeAnimationDirectly(final NodeAnimation nodeAnim, final float time) {
         final Node node = nodeAnim.node;
         node.isAnimated = true;
         final Transform transform = getNodeAnimationTransform(nodeAnim, time);
         transform.toMatrix4(node.localTransform);
     }
 
-    private final static void applyNodeAnimationBlending(final NodeAnimation nodeAnim,
+    private static final void applyNodeAnimationBlending(final NodeAnimation nodeAnim,
                                                          final ObjectMap<Node, Transform> out,
                                                          final Pool<Transform> pool, final float alpha,
                                                          final float time) {

@@ -24,8 +24,8 @@ import com.badlogic.gdx.graphics.g3d.Attribute;
  */
 public class PickerIDAttribute extends Attribute {
 
-    public final static String Alias = "goID";
-    public final static long TYPE = register(Alias);
+    public static final String Alias = "goID";
+    public static final long TYPE = register(Alias);
 
     public int r = 255;
     public int g = 255;

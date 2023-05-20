@@ -56,8 +56,8 @@ public class RenderableShapeBuilder extends BaseShapeBuilder {
 
     private static int[] indices;
     private static float[] vertices;
-    private final static RenderablePool renderablesPool = new RenderablePool();
-    private final static Array<Renderable> renderables = new Array<Renderable>();
+    private static final RenderablePool renderablesPool = new RenderablePool();
+    private static final Array<Renderable> renderables = new Array<Renderable>();
     private static final int FLOAT_BYTES = 4;
 
     /**
@@ -112,18 +112,21 @@ public class RenderableShapeBuilder extends BaseShapeBuilder {
 
         // Position
         int positionOffset = -1;
-        if (mesh.getVertexAttribute(Usage.Position) != null)
+        if (mesh.getVertexAttribute(Usage.Position) != null) {
             positionOffset = mesh.getVertexAttribute(Usage.Position).offset / FLOAT_BYTES;
+        }
 
         // Normal
         int normalOffset = -1;
-        if (mesh.getVertexAttribute(Usage.Normal) != null)
+        if (mesh.getVertexAttribute(Usage.Normal) != null) {
             normalOffset = mesh.getVertexAttribute(Usage.Normal).offset / FLOAT_BYTES;
+        }
 
         // Tangent
         int tangentOffset = -1;
-        if (mesh.getVertexAttribute(Usage.Tangent) != null)
+        if (mesh.getVertexAttribute(Usage.Tangent) != null) {
             tangentOffset = mesh.getVertexAttribute(Usage.Tangent).offset / FLOAT_BYTES;
+        }
 
         // Binormal
         int binormalOffset = -1;
@@ -204,24 +207,34 @@ public class RenderableShapeBuilder extends BaseShapeBuilder {
     }
 
     private static void ensureVerticesCapacity(int capacity) {
-        if (vertices == null || vertices.length < capacity) vertices = new float[capacity];
+        if (vertices == null || vertices.length < capacity) {
+            vertices = new float[capacity];
+        }
     }
 
     private static void ensureIndicesCapacity(int capacity) {
-        if (indices == null || indices.length < capacity) indices = new int[capacity];
+        if (indices == null || indices.length < capacity) {
+            indices = new int[capacity];
+        }
     }
 
     private static int minVerticeInIndices() {
         int min = (int) 32767;
-        for (int i = 0; i < indices.length; i++)
-            if (indices[i] < min) min = indices[i];
+        for (int i = 0; i < indices.length; i++) {
+            if (indices[i] < min) {
+                min = indices[i];
+            }
+        }
         return min;
     }
 
     private static int maxVerticeInIndices() {
         int max = (int) -32768;
-        for (int i = 0; i < indices.length; i++)
-            if (indices[i] > max) max = indices[i];
+        for (int i = 0; i < indices.length; i++) {
+            if (indices[i] > max) {
+                max = indices[i];
+            }
+        }
         return max;
     }
 }

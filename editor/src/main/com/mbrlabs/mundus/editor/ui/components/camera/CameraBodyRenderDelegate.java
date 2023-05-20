@@ -19,7 +19,7 @@ public class CameraBodyRenderDelegate implements RenderableDelegate {
     private static final long ATTRIBUTES =
             VertexAttributes.Usage.Position | VertexAttributes.Usage.ColorUnpacked | VertexAttributes.Usage.Normal;
     private static final Material DEFAULT_MATERIAL = new Material();
-    private transient final ModelInstance instance;
+    private final transient ModelInstance instance;
     private final boolean selected = false;
 
     public CameraBodyRenderDelegate() {

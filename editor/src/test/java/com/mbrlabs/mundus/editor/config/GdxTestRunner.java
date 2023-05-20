@@ -12,14 +12,17 @@ import com.kotcrab.vis.ui.VisUI;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class GdxTestRunner extends SpringExtension {
 
-    public GdxTestRunner(Class<?> klass) {
+    public GdxTestRunner() {
         Lwjgl3NativesLoader.load();
         var gl20 = mock(GL20.class);
+        when(gl20.glCreateShader(anyInt())).thenReturn(1);
+
         Gdx.gl = gl20;
         Gdx.gl20 = gl20;
         Gdx.files = new Lwjgl3Files();

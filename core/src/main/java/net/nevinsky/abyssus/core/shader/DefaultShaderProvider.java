@@ -17,12 +17,15 @@
 package net.nevinsky.abyssus.core.shader;
 
 import com.badlogic.gdx.files.FileHandle;
+import lombok.Getter;
 
 public class DefaultShaderProvider extends BaseShaderProvider {
-    public final ShaderConfig config;
+    @Getter
+    private final ShaderConfig config;
 
     public DefaultShaderProvider(final ShaderConfig config) {
         this.config = (config == null) ? new ShaderConfig() : config;
+        init();
     }
 
     public DefaultShaderProvider(final String vertexShader, final String fragmentShader) {
@@ -38,12 +41,9 @@ public class DefaultShaderProvider extends BaseShaderProvider {
     }
 
     @Override
-    protected ShaderWrapper loadBundledShader(String key) {
-        return new ShaderWrapper(new DefaultShader(config.getVertexShader(), config.getFragmentShader()));
-    }
-
-    @Override
-    protected ShaderWrapper loadProjectShader(String key) {
-        return null;
+    protected ShaderHolder loadShaderAndCache(String key) {
+        var res = new ShaderHolder(new DefaultShader(config.getVertexShader(), config.getFragmentShader()));
+        shaders.put(key, res);
+        return res;
     }
 }

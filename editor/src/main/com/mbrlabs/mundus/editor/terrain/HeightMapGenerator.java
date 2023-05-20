@@ -23,7 +23,6 @@ import com.mbrlabs.mundus.commons.terrain.TerrainObject;
 import java.nio.ByteBuffer;
 
 /**
- *
  * @author Marcus Brummer
  * @version 20-06-2016
  */
@@ -53,10 +52,14 @@ public class HeightMapGenerator extends Generator<HeightMapGenerator> {
     // Simply creates an array containing only all the red components of the
     // heightData.
     private float[] heightColorsToMap(final ByteBuffer data, final Pixmap.Format format, int width, int height,
-            float maxHeight) {
+                                      float maxHeight) {
         final int bytesPerColor = (format == Pixmap.Format.RGB888 ? 3 : (format == Pixmap.Format.RGBA8888 ? 4 : 0));
-        if (bytesPerColor == 0) throw new GdxRuntimeException("Unsupported format, should be either RGB8 or RGBA8");
-        if (data.remaining() < (width * height * bytesPerColor)) throw new GdxRuntimeException("Incorrect map size");
+        if (bytesPerColor == 0) {
+            throw new GdxRuntimeException("Unsupported format, should be either RGB8 or RGBA8");
+        }
+        if (data.remaining() < (width * height * bytesPerColor)) {
+            throw new GdxRuntimeException("Incorrect map size");
+        }
 
         final int startPos = data.position();
         byte[] source = null;

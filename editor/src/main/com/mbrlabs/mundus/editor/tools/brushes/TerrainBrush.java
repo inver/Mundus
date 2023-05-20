@@ -132,8 +132,12 @@ public abstract class TerrainBrush extends Tool {
 
     @Override
     public void act() {
-        if (action == null) return;
-        if (terrainAsset == null) return;
+        if (action == null) {
+            return;
+        }
+        if (terrainAsset == null) {
+            return;
+        }
 
         // sample height
         if (action == BrushAction.SECONDARY && mode == BrushMode.FLATTEN) {
@@ -142,7 +146,9 @@ public abstract class TerrainBrush extends Tool {
         }
 
         // only act if mouse has been moved
-        if (!mouseMoved) return;
+        if (!mouseMoved) {
+            return;
+        }
         mouseMoved = false;
 
         if (mode == BrushMode.PAINT) {

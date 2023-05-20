@@ -138,10 +138,16 @@ public class MundusMultiSplitPane extends WidgetGroup {
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                if (!isTouchable()) return false;
+                if (!isTouchable()) {
+                    return false;
+                }
 
-                if (draggingPointer != -1) return false;
-                if (pointer == 0 && button != 0) return false;
+                if (draggingPointer != -1) {
+                    return false;
+                }
+                if (pointer == 0 && button != 0) {
+                    return false;
+                }
                 Rectangle containingHandle = getHandleContaining(x, y);
                 if (containingHandle != null) {
                     handleOverIndex = handleBounds.indexOf(containingHandle, true);
@@ -157,7 +163,9 @@ public class MundusMultiSplitPane extends WidgetGroup {
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                if (pointer == draggingPointer) draggingPointer = -1;
+                if (pointer == draggingPointer) {
+                    draggingPointer = -1;
+                }
                 handleOver = getHandleContaining(x, y);
             }
 
@@ -169,9 +177,13 @@ public class MundusMultiSplitPane extends WidgetGroup {
 
             @Override
             public void touchDragged(InputEvent event, float x, float y, int pointer) {
-                if (pointer != draggingPointer) return;
+                if (pointer != draggingPointer) {
+                    return;
+                }
                 // @Changed
-                if (!isDraggable) return;
+                if (!isDraggable) {
+                    return;
+                }
 
                 Drawable handle = style.handle;
                 if (!vertical) {
@@ -228,17 +240,20 @@ public class MundusMultiSplitPane extends WidgetGroup {
 
     @Override
     public void layout() {
-        if (!vertical)
+        if (!vertical) {
             calculateHorizBoundsAndPositions();
-        else
+        } else {
             calculateVertBoundsAndPositions();
+        }
 
         SnapshotArray<Actor> actors = getChildren();
         for (int i = 0; i < actors.size; i++) {
             Actor actor = actors.get(i);
             Rectangle bounds = widgetBounds.get(i);
             actor.setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
-            if (actor instanceof Layout) ((Layout) actor).validate();
+            if (actor instanceof Layout) {
+                ((Layout) actor).validate();
+            }
         }
     }
 
@@ -248,7 +263,9 @@ public class MundusMultiSplitPane extends WidgetGroup {
         for (Actor actor : getChildren()) {
             width = actor instanceof Layout ? ((Layout) actor).getPrefWidth() : actor.getWidth();
         }
-        if (!vertical) width += handleBounds.size * style.handle.getMinWidth();
+        if (!vertical) {
+            width += handleBounds.size * style.handle.getMinWidth();
+        }
         return width;
     }
 
@@ -259,7 +276,9 @@ public class MundusMultiSplitPane extends WidgetGroup {
             height = actor instanceof Layout ? ((Layout) actor).getPrefHeight() : actor.getHeight();
 
         }
-        if (vertical) height += handleBounds.size * style.handle.getMinHeight();
+        if (vertical) {
+            height += handleBounds.size * style.handle.getMinHeight();
+        }
         return height;
     }
 
@@ -295,7 +314,9 @@ public class MundusMultiSplitPane extends WidgetGroup {
             handleBounds.get(i).set(currentX, 0, handleWidth, height);
             currentX += handleWidth;
         }
-        if (widgetBounds.size != 0) widgetBounds.peek().set(currentX, 0, availWidth - areaUsed, height);
+        if (widgetBounds.size != 0) {
+            widgetBounds.peek().set(currentX, 0, availWidth - areaUsed, height);
+        }
     }
 
     private void calculateVertBoundsAndPositions() {
@@ -316,7 +337,9 @@ public class MundusMultiSplitPane extends WidgetGroup {
             handleBounds.get(i).set(0, currentY - handleHeight, width, handleHeight);
             currentY -= handleHeight;
         }
-        if (widgetBounds.size != 0) widgetBounds.peek().set(0, 0, width, availHeight - areaUsed);
+        if (widgetBounds.size != 0) {
+            widgetBounds.peek().set(0, 0, width, availHeight - areaUsed);
+        }
     }
 
     @Override
@@ -346,7 +369,9 @@ public class MundusMultiSplitPane extends WidgetGroup {
 
         Drawable handle = style.handle;
         Drawable handleOver = style.handle;
-        if (isTouchable() && style.handleOver != null) handleOver = style.handleOver;
+        if (isTouchable() && style.handleOver != null) {
+            handleOver = style.handleOver;
+        }
         for (Rectangle rect : handleBounds) {
             if (this.handleOver == rect) {
                 handleOver.draw(batch, rect.x, rect.y, rect.width, rect.height);
@@ -359,7 +384,9 @@ public class MundusMultiSplitPane extends WidgetGroup {
 
     @Override
     public Actor hit(float x, float y, boolean touchable) {
-        if (touchable && getTouchable() == Touchable.disabled) return null;
+        if (touchable && getTouchable() == Touchable.disabled) {
+            return null;
+        }
         if (getHandleContaining(x, y) != null) {
             return this;
         } else {
@@ -401,8 +428,12 @@ public class MundusMultiSplitPane extends WidgetGroup {
      *                       value. Invalid values will be clamped to closest valid one.
      */
     public void setSplit(int handleBarIndex, float split) {
-        if (handleBarIndex < 0) throw new IllegalStateException("handleBarIndex can't be < 0");
-        if (handleBarIndex >= splits.size) throw new IllegalStateException("handleBarIndex can't be >= splits size");
+        if (handleBarIndex < 0) {
+            throw new IllegalStateException("handleBarIndex can't be < 0");
+        }
+        if (handleBarIndex >= splits.size) {
+            throw new IllegalStateException("handleBarIndex can't be >= splits size");
+        }
         // float minSplit = handleOverIndex == 0 ? 0 :
         // splits.get(handleOverIndex - 1);
         // @Changed

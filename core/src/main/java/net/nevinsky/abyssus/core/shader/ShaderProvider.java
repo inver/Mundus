@@ -27,7 +27,7 @@ import net.nevinsky.abyssus.core.Renderable;
  */
 public interface ShaderProvider extends Disposable {
 
-    String DEFAULT_SHADER = "default";
+    String DEFAULT_SHADER = "defaultShader";
 
     /**
      * Returns a {@link Shader} for the given {@link String}. The RenderInstance may already contain a Shader, in

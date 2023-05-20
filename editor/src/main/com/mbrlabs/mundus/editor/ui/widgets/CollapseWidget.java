@@ -26,11 +26,11 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 /**
  * Modified version of Kotcrab's CollapsibleWidget.
  * https://github.com/kotcrab/VisEditor/blob/b2ea63a045e805099ddd16778517d46d2419a637/UI/src/com/kotcrab/vis/ui/widget/CollapsibleWidget.java
- *
+ * <p>
  * Size of expandable content expands to parent WidgetGroup.
- *
+ * <p>
  * In layout():
- *
+ * <p>
  * table.setBounds(0, 0, table.getPrefWidth(), table.getPrefHeight()); ===>
  * table.setBounds(0, 0, getWidth(), getHeight());
  */
@@ -54,14 +54,18 @@ public class CollapseWidget extends WidgetGroup {
 
         updateTouchable();
 
-        if (table != null) addActor(table);
+        if (table != null) {
+            addActor(table);
+        }
     }
 
     public void setCollapsed(boolean collapse, boolean withAnimation) {
         this.collapsed = collapse;
         updateTouchable();
 
-        if (table == null) return;
+        if (table == null) {
+            return;
+        }
 
         actionRunning = true;
 
@@ -90,10 +94,11 @@ public class CollapseWidget extends WidgetGroup {
     }
 
     private void updateTouchable() {
-        if (collapsed)
+        if (collapsed) {
             setTouchable(Touchable.disabled);
-        else
+        } else {
             setTouchable(Touchable.enabled);
+        }
     }
 
     @Override
@@ -105,21 +110,26 @@ public class CollapseWidget extends WidgetGroup {
             super.draw(batch, parentAlpha);
 
             batch.flush();
-            if (clipEnabled) clipEnd();
+            if (clipEnabled) {
+                clipEnd();
+            }
         }
     }
 
     @Override
     public void layout() {
-        if (table == null) return;
+        if (table == null) {
+            return;
+        }
 
         table.setBounds(0, 0, getWidth(), getHeight());
 
         if (!actionRunning) {
-            if (collapsed)
+            if (collapsed) {
                 currentHeight = 0;
-            else
+            } else {
                 currentHeight = table.getPrefHeight();
+            }
         }
     }
 
@@ -130,13 +140,16 @@ public class CollapseWidget extends WidgetGroup {
 
     @Override
     public float getPrefHeight() {
-        if (table == null) return 0;
+        if (table == null) {
+            return 0;
+        }
 
         if (!actionRunning) {
-            if (collapsed)
+            if (collapsed) {
                 return 0;
-            else
+            } else {
                 return table.getPrefHeight();
+            }
         }
 
         return currentHeight;
@@ -151,7 +164,9 @@ public class CollapseWidget extends WidgetGroup {
     @Override
     protected void childrenChanged() {
         super.childrenChanged();
-        if (getChildren().size > 1) throw new GdxRuntimeException("Only one actor can be added to CollapsibleWidget");
+        if (getChildren().size > 1) {
+            throw new GdxRuntimeException("Only one actor can be added to CollapsibleWidget");
+        }
     }
 
     private class CollapseAction extends Action {

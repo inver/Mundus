@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.mbrlabs.mundus.editor.tools;
 
 import com.badlogic.gdx.Input;
@@ -116,10 +117,11 @@ public class ToolManager extends InputAdapter implements Disposable, RenderableO
     }
 
     public void setDefaultTool() {
-        if (activeTool == null || activeTool == modelPlacementTool || activeTool instanceof TerrainBrush)
+        if (activeTool == null || activeTool == modelPlacementTool || activeTool instanceof TerrainBrush) {
             activateTool(translateTool);
-        else
+        } else {
             activeTool.onDisabled();
+        }
 
     }
 

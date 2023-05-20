@@ -82,7 +82,7 @@ public class TerrainObject implements RenderableSceneObject, Disposable {
 
     // Textures
     private TerrainTexture terrainTexture;
-    private transient final Material material;
+    private final transient  Material material;
     // Mesh
     private transient Model model;
     @Getter

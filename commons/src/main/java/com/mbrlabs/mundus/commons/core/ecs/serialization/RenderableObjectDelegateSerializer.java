@@ -6,8 +6,8 @@ import com.esotericsoftware.jsonbeans.JsonValue;
 import com.mbrlabs.mundus.commons.assets.AssetManager;
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset;
-import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableSceneObject;
 import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObjectDelegate;
+import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableSceneObject;
 import com.mbrlabs.mundus.commons.model.ModelService;
 import com.mbrlabs.mundus.commons.terrain.TerrainService;
 import lombok.RequiredArgsConstructor;
@@ -42,8 +42,9 @@ public class RenderableObjectDelegateSerializer implements JsonSerializer<Render
             case MODEL:
                 res.setAsset(modelService.createFromAsset((ModelAsset) asset));
                 return res;
+            default:
+                log.error("Wrong type of RenderableObject for deserialization {}", dto.getType());
+                return null;
         }
-        log.error("Wrong type of RenderableObject for deserialization {}", dto.getType());
-        return null;
     }
 }

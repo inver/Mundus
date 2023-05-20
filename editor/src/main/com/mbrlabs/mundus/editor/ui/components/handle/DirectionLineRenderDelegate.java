@@ -18,7 +18,7 @@ public class DirectionLineRenderDelegate implements RenderableDelegate {
     private static final Material DEFAULT_MATERIAL = new Material();
     private final boolean hidden = false;
     @Getter
-    private transient final ModelInstance instance;
+    private final transient ModelInstance instance;
 
     public DirectionLineRenderDelegate() {
         var modelBuilder = new ModelBuilder();

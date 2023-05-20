@@ -77,7 +77,9 @@ public class CylinderShapeBuilder extends BaseShapeBuilder {
             curr2.uv.set(u, 0);
             i2 = builder.vertex(curr1);
             i1 = builder.vertex(curr2);
-            if (i != 0) builder.rect(i3, i1, i2, i4); // TODO don't duplicate lines and points
+            if (i != 0) {
+                builder.rect(i3, i1, i2, i4); // TODO don't duplicate lines and points
+            }
             i4 = i2;
             i3 = i1;
         }

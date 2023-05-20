@@ -25,10 +25,10 @@ import com.badlogic.gdx.utils.Array;
  */
 public class SunLightsAttribute extends Attribute {
 
-    public final static String Alias = "sunLights";
+    public static final String Alias = "sunLights";
     public final Array<SpotLight> lights;
 
-    public final static long Type = register(Alias);
+    public static final long Type = register(Alias);
 
     public static boolean is(final long mask) {
         return (mask & Type) == mask;

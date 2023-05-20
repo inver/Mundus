@@ -151,7 +151,9 @@ public class TranslateTool extends TransformTool {
             return;
         }
         translateHandles();
-        if (state == TransformState.IDLE) return;
+        if (state == TransformState.IDLE) {
+            return;
+        }
 
         Ray ray = getCtx().getViewport().getPickRay(Gdx.input.getX(), Gdx.input.getY());
 

@@ -90,7 +90,7 @@ public class MeshPart {
     /**
      * Temporary static {@link BoundingBox} instance, used in the {@link #update()} method.
      **/
-    private final static BoundingBox bounds = new BoundingBox();
+    private static final BoundingBox bounds = new BoundingBox();
 
     /**
      * Construct a new MeshPart, with null values. The MeshPart is unusable until you set all members.
