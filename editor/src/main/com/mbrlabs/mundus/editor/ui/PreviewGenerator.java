@@ -18,14 +18,13 @@ import com.mbrlabs.mundus.commons.assets.material.MaterialAsset;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.env.lights.SpotLight;
-import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
 import com.mbrlabs.mundus.editor.core.shader.ShaderStorage;
 import com.mbrlabs.mundus.editor.ui.widgets.RenderWidget;
 import net.nevinsky.abyssus.core.ModelBatch;
 import net.nevinsky.abyssus.core.ModelBuilder;
 import net.nevinsky.abyssus.core.ModelInstance;
-import net.nevinsky.abyssus.core.shader.DefaultShaderProvider;
 import net.nevinsky.abyssus.core.shader.ShaderConfig;
+import net.nevinsky.abyssus.core.shader.ShaderProvider;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -60,7 +59,7 @@ public class PreviewGenerator {
 
                 Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT);
                 modelBatch.begin(camera);
-                modelBatch.render(instance, environment, shaderStorage.get(ShaderConstants.DEFAULT));
+                modelBatch.render(instance, environment, shaderStorage.get(ShaderProvider.DEFAULT_SHADER));
                 modelBatch.end();
 
                 fb.end();
@@ -116,7 +115,7 @@ public class PreviewGenerator {
             widget.setRenderer(cam -> {
                 Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT);
                 modelBatch.begin(cam);
-                modelBatch.render(instance, environment, shaderStorage.get(ShaderConstants.DEFAULT));
+                modelBatch.render(instance, environment, shaderStorage.get(ShaderProvider.DEFAULT_SHADER));
                 modelBatch.end();
             });
             return widget;

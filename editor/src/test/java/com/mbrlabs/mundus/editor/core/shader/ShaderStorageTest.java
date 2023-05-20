@@ -29,8 +29,8 @@ import static org.mockito.Mockito.when;
 
 public class ShaderStorageTest {
 
-    private static final String BUNDLED_SHADER_ASSET = "bundledShaderAsset";
-    public static final String OVERRIDE_SHADER = "overrideShader";
+    private static final String BUNDLED_SHADER = "bundledShader";
+    public static final String PROJECT_SHADER = "projectShader";
     private ShaderStorage shaderStorage;
 
     private final EditorCtx ctx = new EditorCtx();
@@ -40,15 +40,16 @@ public class ShaderStorageTest {
 
     private final BaseShader defaultShader = mock(BaseShader.class);
     private final BaseShader bundledShader = mock(BaseShader.class);
+    private final BaseShader projectBundledShader = mock(BaseShader.class);
     private final BaseShader projectShader = mock(BaseShader.class);
 
     @BeforeEach
     public void init() {
         initShaderClassLoader(DEFAULT_SHADER, defaultShader);
-        initShaderClassLoader(BUNDLED_SHADER_ASSET, bundledShader);
+        initShaderClassLoader(BUNDLED_SHADER, bundledShader);
 
-        var meta = createShaderMeta("./" + BUNDLED_SHADER_ASSET);
-        ctx.getAssetLibrary().put(new AssetKey(AssetType.SHADER, BUNDLED_SHADER_ASSET), shaderAssetLoader.load(meta));
+        var meta = createShaderMeta("./" + BUNDLED_SHADER);
+        ctx.getAssetLibrary().put(new AssetKey(AssetType.SHADER, BUNDLED_SHADER), shaderAssetLoader.load(meta));
         meta = createShaderMeta("./" + DEFAULT_SHADER);
         ctx.getAssetLibrary().put(new AssetKey(AssetType.SHADER, DEFAULT_SHADER), shaderAssetLoader.load(meta));
 
@@ -58,26 +59,57 @@ public class ShaderStorageTest {
     @Test
     public void testLoadingBundled() {
         shaderStorage.init();
-        Assertions.assertEquals(bundledShader, shaderStorage.get(BUNDLED_SHADER_ASSET));
+        Assertions.assertEquals(bundledShader, shaderStorage.get(BUNDLED_SHADER));
+    }
+
+    @Test
+    public void testLoadingMissingShader() {
+        shaderStorage.init();
+        Assertions.assertEquals(defaultShader, shaderStorage.get("ololo"));
     }
 
     @Test
     public void testProjectShaders() {
-        initShaderClassLoader(OVERRIDE_SHADER, projectShader);
+        initShaderClassLoader(PROJECT_SHADER, projectShader);
 
-        var meta = createShaderMeta("./testProject/assets/overrideShader");
+        var meta = createShaderMeta("testProject/assets/" + PROJECT_SHADER);
         shaderStorage.init();
 
         var project = new ProjectContext(new PerspectiveCamera());
-        project.getProjectAssets().put(new AssetKey(AssetType.SHADER, OVERRIDE_SHADER),
+        project.getProjectAssets().put(new AssetKey(AssetType.SHADER, PROJECT_SHADER),
                 shaderAssetLoader.load(meta));
         ctx.setCurrent(project);
 
         eventBus.post(new ProjectChangedEvent(project));
 
-        var shader = shaderStorage.get(BUNDLED_SHADER_ASSET);
+        var shader = shaderStorage.get(BUNDLED_SHADER);
         Assertions.assertEquals(bundledShader, shader);
-        shader = shaderStorage.get(OVERRIDE_SHADER);
+        shader = shaderStorage.get(PROJECT_SHADER);
+        Assertions.assertEquals(projectShader, shader);
+    }
+
+    @Test
+    public void testOverrideShaders() {
+        initShaderClassLoader(PROJECT_SHADER, projectShader);
+
+        shaderStorage.init();
+        var project = new ProjectContext(new PerspectiveCamera());
+
+        var meta = createShaderMeta("./testProject/assets/" + PROJECT_SHADER);
+        project.getProjectAssets().put(new AssetKey(AssetType.SHADER, PROJECT_SHADER),
+                shaderAssetLoader.load(meta));
+        meta = createShaderMeta("./testProject/assets/" + BUNDLED_SHADER);
+        project.getProjectAssets().put(new AssetKey(AssetType.SHADER, BUNDLED_SHADER),
+                shaderAssetLoader.load(meta));
+
+        ctx.setCurrent(project);
+
+        initShaderClassLoader(BUNDLED_SHADER, projectBundledShader);
+        eventBus.post(new ProjectChangedEvent(project));
+
+        var shader = shaderStorage.get(BUNDLED_SHADER);
+        Assertions.assertEquals(projectBundledShader, shader);
+        shader = shaderStorage.get(PROJECT_SHADER);
         Assertions.assertEquals(projectShader, shader);
     }
 

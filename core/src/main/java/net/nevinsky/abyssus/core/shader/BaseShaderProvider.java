@@ -34,12 +34,7 @@ public abstract class BaseShaderProvider implements ShaderProvider {
 
     @Override
     public <T extends BaseShader> T get(String key) {
-        var res = shaders.get(key);
-        if (res != null) {
-            return getInstance(res);
-        }
-
-        res = loadShaderAndCache(key);
+        var res = loadShaderAndCache(key);
         if (res != null) {
             return getInstance(res);
         }

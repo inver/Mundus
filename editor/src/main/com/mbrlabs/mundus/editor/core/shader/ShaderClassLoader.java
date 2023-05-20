@@ -3,7 +3,6 @@ package com.mbrlabs.mundus.editor.core.shader;
 import com.badlogic.gdx.Files;
 import com.mbrlabs.mundus.commons.assets.shader.ShaderAsset;
 import groovy.lang.GroovyClassLoader;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import net.nevinsky.abyssus.core.shader.BaseShader;
 import net.nevinsky.abyssus.core.shader.ShaderHolder;
@@ -18,7 +17,6 @@ public class ShaderClassLoader {
      * @param asset actual loaded shader asset
      * @return new instance of wrapper with full reloaded shader
      */
-    @SneakyThrows
     public EditorShaderHolder reloadShader(ShaderAsset asset, ShaderHolder holder) {
         var classPath = asset.getMeta().getFile().child(asset.getMeta().getAdditional().getShaderClass());
 
@@ -40,7 +38,6 @@ public class ShaderClassLoader {
             } else {
                 clazz = loader.parseClass(classPath.file());
             }
-
 
             var constructor = clazz.getDeclaredConstructor(String.class, String.class);
             var shader = (BaseShader) constructor.newInstance(asset.getVertexShader(), asset.getFragmentShader());

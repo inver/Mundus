@@ -1,4 +1,4 @@
-package bundled.shaders.skybox
+package bundled.shaders.skyboxShader
 
 import com.badlogic.gdx.graphics.Camera
 import com.badlogic.gdx.graphics.g3d.attributes.CubemapAttribute

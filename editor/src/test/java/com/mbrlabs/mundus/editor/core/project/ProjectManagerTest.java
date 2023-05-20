@@ -48,6 +48,6 @@ public class ProjectManagerTest extends BaseCtxTest {
         var project = projectManager.loadProject(ref);
         assertNotNull(project);
         assertEquals(ref.getPath(), project.getPath());
-        assertEquals(2, project.getProjectAssets().size());
+        assertEquals(3, project.getProjectAssets().size());
     }
 }

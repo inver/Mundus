@@ -13,8 +13,6 @@ import net.nevinsky.abyssus.core.ModelInstance;
 import net.nevinsky.abyssus.core.builder.SphereShapeBuilder;
 import net.nevinsky.abyssus.core.shader.ShaderProvider;
 
-import static com.mbrlabs.mundus.editor.core.shader.ShaderConstants.DEFAULT;
-
 public class DirectionHandleRenderDelegate implements RenderableDelegate {
     private static final long ATTRIBUTES =
             VertexAttributes.Usage.Position | VertexAttributes.Usage.ColorUnpacked | VertexAttributes.Usage.Normal;
@@ -36,7 +34,7 @@ public class DirectionHandleRenderDelegate implements RenderableDelegate {
     }
 
     public DirectionHandleRenderDelegate() {
-        this(DEFAULT);
+        this(ShaderProvider.DEFAULT_SHADER);
     }
 
     @Override

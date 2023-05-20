@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "lastModified": 1663444124794,
+  "type": "SHADER",
+  "additional": {
+    "vertex": "default.vert.glsl",
+    "fragment": "default.frag.glsl",
+    "shaderClass": "Shader.groovy"
+  }
+}
