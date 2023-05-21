@@ -17,7 +17,8 @@ public class LightService {
 
     public HierarchyNode createDirectionLight() {
         return editorEcsService.createEntityWithDirection(ctx.getCurrentWorld(), new Vector3(0, 10f, 0),
-                Vector3.Zero, "Direction light", new LightRenderDelegate(), new LightComponent()
+                Vector3.Zero, "Direction light", new LightRenderDelegate(), HierarchyNode.Type.NONE,
+                new LightComponent()
         );
     }
 }

@@ -33,12 +33,7 @@ import com.mbrlabs.mundus.editor.events.SceneGraphChangedEvent
 import com.mbrlabs.mundus.editor.tools.*
 import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.ExportDialog
-import com.mbrlabs.mundus.editor.ui.widgets.ButtonFactory
-import com.mbrlabs.mundus.editor.ui.widgets.FaTextButton
-import com.mbrlabs.mundus.editor.ui.widgets.MundusSelectBox
-import com.mbrlabs.mundus.editor.ui.widgets.ToggleButton
-import com.mbrlabs.mundus.editor.ui.widgets.Toolbar
-import com.mbrlabs.mundus.editor.ui.widgets.UiStyles
+import com.mbrlabs.mundus.editor.ui.widgets.*
 import com.mbrlabs.mundus.editor.ui.widgets.icon.SymbolIcon
 import com.mbrlabs.mundus.editor.utils.Toaster
 import org.springframework.stereotype.Component

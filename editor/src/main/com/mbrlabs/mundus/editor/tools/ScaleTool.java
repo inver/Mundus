@@ -37,7 +37,6 @@ import com.mbrlabs.mundus.editor.ui.widgets.icon.SymbolIcon;
 import com.mbrlabs.mundus.editor.utils.UsefulMeshs;
 import net.nevinsky.abyssus.core.ModelBatch;
 import net.nevinsky.abyssus.core.ModelBuilder;
-import net.nevinsky.abyssus.core.ModelInstance;
 import net.nevinsky.abyssus.core.model.Model;
 import net.nevinsky.abyssus.core.shader.ShaderProvider;
 import org.jetbrains.annotations.NotNull;
@@ -64,7 +63,7 @@ public class ScaleTool extends TransformTool {
     private final ScaleHandle[] handles;
 
     private final Matrix4 shapeRenderMat = new Matrix4();
-    private final Viewport viewport3d = null;
+    private Viewport viewport3d = null;
 
     private final Vector3 temp0 = new Vector3();
     private final Vector3 temp1 = new Vector3();
@@ -135,36 +134,32 @@ public class ScaleTool extends TransformTool {
                 shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
                 shapeRenderer.setColor(COLOR_X);
                 shapeRenderer.setProjectionMatrix(shapeRenderMat);
-                shapeRenderer.rectLine(pivot.x, pivot.y, Gdx.input.getX(), Gdx.graphics.getHeight()
-//                    - Gdx.input.getY(),
-                        2);
+                shapeRenderer.rectLine(pivot.x, pivot.y, Gdx.input.getX(),
+                        Gdx.graphics.getHeight() - Gdx.input.getY(), 2);
                 shapeRenderer.end();
                 break;
             case TRANSFORM_Y:
                 shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
                 shapeRenderer.setColor(COLOR_Y);
                 shapeRenderer.setProjectionMatrix(shapeRenderMat);
-                shapeRenderer.rectLine(pivot.x, pivot.y, Gdx.input.getX(), Gdx.graphics.getHeight() -
-//                    Gdx.input.getY(),
-                        2);
+                shapeRenderer.rectLine(pivot.x, pivot.y, Gdx.input.getX(),
+                        Gdx.graphics.getHeight() - Gdx.input.getY(), 2);
                 shapeRenderer.end();
                 break;
             case TRANSFORM_Z:
                 shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
                 shapeRenderer.setColor(COLOR_Z);
                 shapeRenderer.setProjectionMatrix(shapeRenderMat);
-                shapeRenderer.rectLine(pivot.x, pivot.y, Gdx.input.getX(), Gdx.graphics.getHeight() -
-//                    Gdx.input.getY(),
-                        2);
+                shapeRenderer.rectLine(pivot.x, pivot.y, Gdx.input.getX(),
+                        Gdx.graphics.getHeight() - Gdx.input.getY(), 2);
                 shapeRenderer.end();
                 break;
             case TRANSFORM_XYZ:
                 shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
                 shapeRenderer.setColor(COLOR_XYZ);
                 shapeRenderer.setProjectionMatrix(shapeRenderMat);
-                shapeRenderer.rectLine(pivot.x, pivot.y, Gdx.input.getX(), Gdx.graphics.getHeight() -
-//                    Gdx.input.getY(),
-                        2);
+                shapeRenderer.rectLine(pivot.x, pivot.y, Gdx.input.getX(),
+                        Gdx.graphics.getHeight() - Gdx.input.getY(), 2);
                 shapeRenderer.end();
                 break;
             default:
@@ -380,9 +375,6 @@ public class ScaleTool extends TransformTool {
     }
 
     private class ScaleHandle extends ToolHandle {
-
-        private final Model model;
-        private final ModelInstance modelInstance;
 
         public ScaleHandle(int id, TransformState state, Model model) {
             super(id, state, model);

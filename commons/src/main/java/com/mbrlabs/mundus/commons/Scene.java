@@ -20,7 +20,7 @@ import com.artemis.World;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.utils.Disposable;
 import com.mbrlabs.mundus.commons.assets.Asset;
-import com.mbrlabs.mundus.commons.assets.skybox.SkyboxAsset;
+import com.mbrlabs.mundus.commons.core.ecs.WorldUtils;
 import com.mbrlabs.mundus.commons.core.ecs.behavior.RenderComponentSystem;
 import com.mbrlabs.mundus.commons.core.ecs.component.CameraComponent;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;

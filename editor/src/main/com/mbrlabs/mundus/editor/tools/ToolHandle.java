@@ -1,18 +1,18 @@
 package com.mbrlabs.mundus.editor.tools;
 
-import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
-import com.mbrlabs.mundus.commons.scene3d.components.Renderable;
-import com.mbrlabs.mundus.commons.shaders.ShaderHolder;
-import com.mbrlabs.mundus.editor.tools.picker.PickerColorEncoder;
+import com.mbrlabs.mundus.commons.scene3d.components.RenderableObject;
 import com.mbrlabs.mundus.editor.tools.picker.PickerIDAttribute;
+import com.mbrlabs.mundus.editor.utils.PickerColorEncoder;
 import lombok.Getter;
+import net.nevinsky.abyssus.core.ModelBatch;
+import net.nevinsky.abyssus.core.ModelInstance;
+import net.nevinsky.abyssus.core.model.Model;
+import net.nevinsky.abyssus.core.shader.ShaderProvider;
 
-public abstract class ToolHandle implements Disposable, Renderable {
+public abstract class ToolHandle implements Disposable, RenderableObject {
 
     @Getter
     protected final int id;
@@ -38,7 +38,7 @@ public abstract class ToolHandle implements Disposable, Renderable {
         PickerColorEncoder.encodeRaypickColorId(id, idAttribute);
     }
 
-    public abstract void renderPick(ModelBatch modelBatch, ShaderHolder shaders);
+    public abstract void renderPick(ModelBatch modelBatch, ShaderProvider shaders);
 
     public void act() {
 

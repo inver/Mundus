@@ -36,8 +36,6 @@ import com.mbrlabs.mundus.editor.tools.picker.ToolHandlePicker;
 import com.mbrlabs.mundus.editor.ui.widgets.icon.SymbolIcon;
 import com.mbrlabs.mundus.editor.utils.UsefulMeshs;
 import net.nevinsky.abyssus.core.ModelBatch;
-import net.nevinsky.abyssus.core.ModelInstance;
-import net.nevinsky.abyssus.core.model.Model;
 import net.nevinsky.abyssus.core.shader.ShaderProvider;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;
@@ -67,7 +65,7 @@ public class RotateTool extends TransformTool {
 
     private TransformState state = TransformState.IDLE;
     private RotateCommand currentRotateCommand;
-    private final float lastRot = 0;
+    private float lastRot = 0;
 
     public RotateTool(EditorCtx ctx, String shaderKey, EntityPicker picker, ToolHandlePicker handlePicker,
                       ShapeRenderer shapeRenderer, CommandHistory history, EventBus eventBus) {
@@ -283,7 +281,6 @@ public class RotateTool extends TransformTool {
 //        zHandle.applyTransform();
     }
 
-    @NotNull
     @Override
     @NotNull
     public SymbolIcon getIcon() {
@@ -302,9 +299,6 @@ public class RotateTool extends TransformTool {
      *
      */
     private class RotateHandle extends ToolHandle {
-
-        private final Model model;
-        private final ModelInstance modelInstance;
 
         public RotateHandle(int id, TransformState state, Color color) {
             super(id, state, UsefulMeshs.torus(

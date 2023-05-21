@@ -16,7 +16,7 @@ public class CameraService {
         var world = ctx.getCurrent().getCurrentScene().getWorld();
 
         return editorEcsService.createEntityWithDirection(world, new Vector3(0, 0, 10.2f), Vector3.Zero,
-                "Camera", new CameraBodyRenderDelegate(), new CameraComponent()
+                "Camera", new CameraBodyRenderDelegate(), HierarchyNode.Type.CAMERA, new CameraComponent()
         );
     }
 }

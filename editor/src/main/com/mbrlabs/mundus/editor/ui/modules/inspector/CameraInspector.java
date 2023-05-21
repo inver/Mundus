@@ -1,10 +1,10 @@
 package com.mbrlabs.mundus.editor.ui.modules.inspector;
 
-import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.mbrlabs.mundus.editor.ui.AppUi;
 import com.mbrlabs.mundus.editor.ui.PreviewGenerator;
 import lombok.extern.slf4j.Slf4j;
+import net.nevinsky.abyssus.core.ModelBatch;
 
 @Slf4j
 public class CameraInspector extends VisTable {

@@ -43,23 +43,22 @@ public class SelectionTool extends Tool {
 
     private int pressedX = -1, pressedY = -1;
 
-    public SelectionTool(EditorCtx ctx, String shaderKey, EntityPicker picker,
-                         CommandHistory history, EventBus eventBus) {
+    public SelectionTool(EditorCtx ctx, String shaderKey, EntityPicker picker, CommandHistory history,
+                         EventBus eventBus) {
         super(ctx, shaderKey, history, NAME);
         this.picker = picker;
         this.eventBus = eventBus;
     }
 
-    public SelectionTool(EditorCtx ctx, String shaderKey, EntityPicker picker, CommandHistory history,
-                         EventBus eventBus) {
-        this(ctx, shaderKey, picker, history, eventBus, NAME);
-    }
+//    public SelectionTool(EditorCtx ctx, String shaderKey, EntityPicker picker, CommandHistory history,
+//                         EventBus eventBus) {
+//        this(ctx, shaderKey, picker, history, eventBus, NAME);
+//    }
 
     public void entitySelected(int entityId) {
         getCtx().selectEntity(entityId);
     }
 
-    @NotNull
     @Override
     @NotNull
     public SymbolIcon getIcon() {

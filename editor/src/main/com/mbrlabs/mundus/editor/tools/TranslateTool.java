@@ -36,7 +36,6 @@ import com.mbrlabs.mundus.editor.tools.picker.ToolHandlePicker;
 import com.mbrlabs.mundus.editor.ui.widgets.icon.SymbolIcon;
 import net.nevinsky.abyssus.core.ModelBatch;
 import net.nevinsky.abyssus.core.ModelBuilder;
-import net.nevinsky.abyssus.core.ModelInstance;
 import net.nevinsky.abyssus.core.model.Model;
 import net.nevinsky.abyssus.core.shader.ShaderProvider;
 import org.jetbrains.annotations.NotNull;
@@ -299,9 +298,6 @@ public class TranslateTool extends TransformTool {
      *
      */
     private class TranslateHandle extends ToolHandle {
-
-        private final Model model;
-        private final ModelInstance modelInstance;
 
         public TranslateHandle(int id, TransformState state, Model model) {
             super(id, state, model);

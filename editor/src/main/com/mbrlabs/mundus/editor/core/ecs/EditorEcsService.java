@@ -6,7 +6,6 @@ import com.artemis.WorldConfigurationBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.mbrlabs.mundus.commons.assets.AssetManager;
 import com.mbrlabs.mundus.commons.core.ecs.EcsService;
-import com.mbrlabs.mundus.commons.core.ecs.base.RenderComponent;
 import com.mbrlabs.mundus.commons.core.ecs.base.RenderableDelegate;
 import com.mbrlabs.mundus.commons.core.ecs.component.Point2PointPositionComponent;
 import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
@@ -16,8 +15,6 @@ import com.mbrlabs.mundus.commons.terrain.TerrainService;
 import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
 import com.mbrlabs.mundus.editor.ui.components.handle.DirectionHandleRenderDelegate;
 import com.mbrlabs.mundus.editor.ui.components.handle.DirectionLineRenderDelegate;
-
-import static com.mbrlabs.mundus.commons.scene3d.HierarchyNode.Type.NONE;
 
 @org.springframework.stereotype.Component
 public class EditorEcsService extends EcsService {
@@ -35,13 +32,7 @@ public class EditorEcsService extends EcsService {
 
     public HierarchyNode createEntityWithDirection(World world, Vector3 rootPosition, Vector3 handlePosition,
                                                    String nodeName, RenderableDelegate renderableDelegate,
-                                                   Component... rootComponents) {
-        return createEntityWithDirection(world, rootPosition, handlePosition, NONE, nodeName, rootComponents);
-    }
-
-    public HierarchyNode createEntityWithDirection(World world, Vector3 rootPosition, Vector3 handlePosition,
-                                                   HierarchyNode.Type type, String nodeName,
-                                                   Component... rootComponents) {
+                                                   HierarchyNode.Type type, Component... rootComponents) {
         int handleId = world.create();
         int rootId = world.create();
         int lineId = world.create();
@@ -54,7 +45,7 @@ public class EditorEcsService extends EcsService {
 
         var rootEdit = world.edit(rootId)
                 .add(new PositionComponent(rootPosition, handleId))
-                .add(RenderComponent.of(renderableDelegate))
+                .add(renderableDelegate.asComponent())
                 .add(PickableComponent.of(rootId, renderableDelegate));
         for (var c : rootComponents) {
             rootEdit.add(c);

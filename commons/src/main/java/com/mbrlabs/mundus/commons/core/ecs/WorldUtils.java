@@ -10,7 +10,8 @@ import java.util.List;
 import java.util.function.BiFunction;
 
 public final class WorldUtils {
-    public static <R, I extends Component> List<R> getFromWorld(World world, Class<I> clazz, BiFunction<Integer, I, R> converter) {
+    public static <R, I extends Component> List<R> getFromWorld(World world, Class<I> clazz,
+                                                                BiFunction<Integer, I, R> converter) {
         var entityIds = world.getAspectSubscriptionManager().get(Aspect.all(clazz)).getEntities();
         if (entityIds.isEmpty()) {
             return Collections.emptyList();

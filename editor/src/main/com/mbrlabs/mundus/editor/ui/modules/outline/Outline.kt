@@ -255,7 +255,7 @@ class Outline(
                         TODO()
 //                        removeGo(selectedGO!!)
 //                        eventBus.post(SceneGraphChangedEvent())
-//                    }
+                    }
                 }
             })
 
