@@ -78,6 +78,7 @@ class Inspector(
 
     private val goInspector: GameObjectInspector
     private val assetInspector: AssetInspector
+//    private val cameraInspector = CameraInspector(previewGenerator, appUi)
 
     init {
         eventBus.register(this)

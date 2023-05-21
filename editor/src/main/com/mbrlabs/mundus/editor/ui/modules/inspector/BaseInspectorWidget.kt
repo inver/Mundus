@@ -30,10 +30,7 @@ import com.mbrlabs.mundus.editor.ui.widgets.icon.SymbolIcon
  * @author Marcus Brummer
  * @version 19-01-2016
  */
-abstract class BaseInspectorWidget(
-    private val uiComponentHolder: UiComponentHolder,
-    title: String
-) : VisTable() {
+abstract class BaseInspectorWidget(private val uiComponentHolder: UiComponentHolder, title: String) : VisTable() {
 
     var title: String? = null
         set(title) {

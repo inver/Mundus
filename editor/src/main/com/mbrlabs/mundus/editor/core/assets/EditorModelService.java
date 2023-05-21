@@ -6,7 +6,6 @@ import com.mbrlabs.mundus.commons.assets.meta.MetaService;
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset;
 import com.mbrlabs.mundus.commons.assets.model.ModelAssetLoader;
 import com.mbrlabs.mundus.commons.assets.model.ModelMeta;
-import com.mbrlabs.mundus.commons.core.ecs.base.RenderComponent;
 import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
 import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObjectDelegate;
 import com.mbrlabs.mundus.commons.loader.AssimpWorker;
@@ -79,7 +78,7 @@ public class EditorModelService extends ModelService {
         world.edit(id)
                 .add(new PositionComponent())
                 .add(PickableComponent.of(id, new RenderableObjectDelegate(model, ShaderConstants.PICKER)))
-                .add(RenderComponent.of(new RenderableObjectDelegate(model, ShaderConstants.MODEL)));
+                .add(new RenderableObjectDelegate(model, ShaderConstants.MODEL).asComponent());
 
         return new HierarchyNode(id, name);
     }

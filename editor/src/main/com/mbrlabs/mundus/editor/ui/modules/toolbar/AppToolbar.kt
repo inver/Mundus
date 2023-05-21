@@ -22,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.Array
 import com.kotcrab.vis.ui.widget.*
+import com.mbrlabs.mundus.commons.scene3d.HierarchyNode
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.core.project.ProjectContext
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
@@ -33,6 +34,8 @@ import com.mbrlabs.mundus.editor.tools.*
 import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.ExportDialog
 import com.mbrlabs.mundus.editor.ui.widgets.ButtonFactory
+import com.mbrlabs.mundus.editor.ui.widgets.FaTextButton
+import com.mbrlabs.mundus.editor.ui.widgets.MundusSelectBox
 import com.mbrlabs.mundus.editor.ui.widgets.ToggleButton
 import com.mbrlabs.mundus.editor.ui.widgets.Toolbar
 import com.mbrlabs.mundus.editor.ui.widgets.UiStyles
@@ -76,7 +79,7 @@ class AppToolbar(
     private val createMaterial = MenuItem("Create material")
 
     private val sceneSelector = VisSelectBox<String>()
-    private val cameraSelector = VisSelectBox<Pair<String, Int>>()
+    private val cameraSelector = MundusSelectBox<HierarchyNode>()
 
     init {
         eventBus.register(this)
@@ -108,10 +111,11 @@ class AppToolbar(
 
         sceneSelector.setItems("Main")
 
+        cameraSelector.setValueRenderer { it.name }
         cameraSelector.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                ctx.current.selectedCamera = cameraSelector.selected.second
-                eventBus.post(CameraChangedEvent(cameraSelector.selected.second))
+                ctx.current.selectedCamera = cameraSelector.selected.id
+                eventBus.post(CameraChangedEvent(cameraSelector.selected.id))
             }
         })
 
@@ -222,24 +226,13 @@ class AppToolbar(
     }
 
     private fun reloadCamerasList() {
-        val arr = Array<Pair<String, Int>>()
-        arr.add(Pair("Main", ProjectContext.MAIN_CAMERA_SELECTED))
-        ctx.current.currentScene.cameras.forEach {
-            arr.add(Pair("Camera " + it.right, it.right))
+        val arr = Array<HierarchyNode>()
+        arr.add(HierarchyNode(ProjectContext.MAIN_CAMERA_SELECTED, "Main", HierarchyNode.Type.CAMERA))
+        ctx.current.currentScene.rootNode.children.filter { it.type == HierarchyNode.Type.CAMERA }.forEach {
+            arr.add(it)
         }
 
         cameraSelector.items = arr
-//        val cameras = ArrayList<com.mbrlabs.mundus.commons.scene3d.components.Component>()
-////        ctx.current.currentScene.sceneGraph.gameObjects.forEach {
-////            it.findComponentsByType(cameras, com.mbrlabs.mundus.commons.scene3d.components.Component.Type.CAMERA, true)
-////        }
-//
-//        val arr = Array<String>()
-//        arr.add("Main")
-//        cameras.forEach() {
-//            arr.add(it.gameObject.parent.name)
-//        }
-//        cameraSelector.items = arr
     }
 
     override fun onSceneGraphChanged(event: SceneGraphChangedEvent) {

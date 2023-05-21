@@ -30,6 +30,7 @@ import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.utils.TextureUtils
 import mu.KotlinLogging
 import org.springframework.util.CollectionUtils
+import java.util.*
 
 /**
  * Outline shows overview about all game objects in the scene
@@ -254,7 +255,7 @@ class Outline(
                         TODO()
 //                        removeGo(selectedGO!!)
 //                        eventBus.post(SceneGraphChangedEvent())
-                    }
+//                    }
                 }
             })
 

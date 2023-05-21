@@ -12,4 +12,8 @@ public interface RenderableDelegate extends RenderableObject {
     default void set2PointPosition(Vector3 point1, Vector3 point2) {
         //do nothing
     }
+
+    default RenderComponent asComponent() {
+        return new RenderComponent(this);
+    }
 }

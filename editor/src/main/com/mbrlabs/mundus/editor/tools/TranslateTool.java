@@ -24,7 +24,6 @@ import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.collision.Ray;
 import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
@@ -133,13 +132,13 @@ public class TranslateTool extends TransformTool {
         if (getCtx().getSelectedEntityId() < 0) {
             return;
         }
+
         batch.begin(getCtx().getCurrent().getCamera());
         GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
         xHandle.render(batch, environment, shaders, delta);
         yHandle.render(batch, environment, shaders, delta);
         zHandle.render(batch, environment, shaders, delta);
         xzPlaneHandle.render(batch, environment, shaders, delta);
-
         batch.end();
     }
 
@@ -150,39 +149,36 @@ public class TranslateTool extends TransformTool {
         if (getCtx().getSelectedEntityId() < 0) {
             return;
         }
+        scaleHandles();
         translateHandles();
         if (state == TransformState.IDLE) {
             return;
         }
 
-        Ray ray = getCtx().getViewport().getPickRay(Gdx.input.getX(), Gdx.input.getY());
+        var ray = getCtx().getViewport().getPickRay(Gdx.input.getX(), Gdx.input.getY());
 
         var positionComponent = getCtx().getSelectedEntity().getComponent(PositionComponent.class);
-        Vector3 rayEnd = positionComponent.getLocalPosition(temp0);
-        float dst = getCtx().getCurrent().getCamera().position.dst(rayEnd);
-        rayEnd = ray.getEndPoint(rayEnd, dst);
+        positionComponent.getLocalPosition(temp0);
+        float dst = getCtx().getCurrent().getCamera().position.dst(temp0);
+        ray.getEndPoint(temp0, dst);
 
         if (initTranslate) {
             initTranslate = false;
-            lastPos.set(rayEnd);
+            lastPos.set(temp0);
         }
 
-//        GameObject go = getCtx().getSelectedEntityId();
-
-        boolean modified = false;
-        Vector3 vec = new Vector3();
+        boolean modified = true;
+        var vec = new Vector3();
         if (state == TransformState.TRANSFORM_XZ) {
-            vec.set(rayEnd.x - lastPos.x, 0, rayEnd.z - lastPos.z);
-            modified = true;
+            vec.set(temp0.x - lastPos.x, 0, temp0.z - lastPos.z);
         } else if (state == TransformState.TRANSFORM_X) {
-            vec.set(rayEnd.x - lastPos.x, 0, 0);
-            modified = true;
+            vec.set(temp0.x - lastPos.x, 0, 0);
         } else if (state == TransformState.TRANSFORM_Y) {
-            vec.set(0, rayEnd.y - lastPos.y, 0);
-            modified = true;
+            vec.set(0, temp0.y - lastPos.y, 0);
         } else if (state == TransformState.TRANSFORM_Z) {
-            vec.set(0, 0, rayEnd.z - lastPos.z);
-            modified = true;
+            vec.set(0, 0, temp0.z - lastPos.z);
+        } else {
+            modified = false;
         }
 
         // TODO translation in global space
@@ -198,7 +194,7 @@ public class TranslateTool extends TransformTool {
             eventBus.post(entityModifiedEvent);
         }
 
-        lastPos.set(rayEnd);
+        lastPos.set(temp0);
     }
 
     @Override
@@ -227,7 +223,6 @@ public class TranslateTool extends TransformTool {
         if (getCtx().getSelectedEntityId() < 0) {
             return;
         }
-
 
         final Vector3 pos =
                 getCtx().getSelectedEntity().getComponent(PositionComponent.class).getTransform().getTranslation(temp0);
@@ -309,10 +304,8 @@ public class TranslateTool extends TransformTool {
         private final ModelInstance modelInstance;
 
         public TranslateHandle(int id, TransformState state, Model model) {
-            super(id, state);
-            this.model = model;
-            this.modelInstance = new ModelInstance(model);
-            modelInstance.materials.first().set(getIdAttribute());
+            super(id, state, model);
+            modelInstance.materials.first().set(idAttribute);
         }
 
         public void changeColor(Color color) {
@@ -337,8 +330,8 @@ public class TranslateTool extends TransformTool {
 
         @Override
         public void applyTransform() {
-            getRotation().setEulerAngles(getRotationEuler().y, getRotationEuler().x, getRotationEuler().z);
-            modelInstance.transform.set(getPosition(), getRotation(), getScale());
+            rotation.setEulerAngles(rotationEuler.y, rotationEuler.x, rotationEuler.z);
+            modelInstance.transform.set(position, rotation, scale);
         }
 
         @Override

@@ -9,11 +9,7 @@ public class RenderComponent extends Component {
     @Getter
     private RenderableDelegate renderable;
 
-    public RenderComponent(RenderableDelegate renderable) {
+    RenderComponent(RenderableDelegate renderable) {
         this.renderable = renderable;
-    }
-
-    public static RenderComponent of(RenderableDelegate renderable) {
-        return new RenderComponent(renderable);
     }
 }
