@@ -10,6 +10,7 @@ import com.mbrlabs.mundus.commons.assets.skybox.SkyboxAsset;
 import com.mbrlabs.mundus.editor.config.AppEnvironment;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.project.ProjectManager;
+import com.mbrlabs.mundus.editor.core.project.ProjectWatcher;
 import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
 import com.mbrlabs.mundus.editor.core.shader.ShaderStorage;
 import com.mbrlabs.mundus.editor.events.CameraChangedEvent;
@@ -71,6 +72,7 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
     private final StatusBar statusBar;
     private final Inspector inspector;
     private final AppEnvironment appEnvironment;
+    private final ProjectWatcher projectWatcher;
 
     private DockBar dockBar;
     private Compass compass;
@@ -224,6 +226,7 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
     }
 
     public void dispose() {
+        projectWatcher.dispose();
         shaderStorage.dispose();
     }
 

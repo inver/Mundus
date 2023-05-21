@@ -58,8 +58,8 @@ public abstract class BaseShaderProvider implements ShaderProvider {
 
     @Override
     public void dispose() {
-        for (var wrapper : shaders.values()) {
-            wrapper.dispose();
+        for (var holder : shaders.values()) {
+            holder.dispose();
         }
         shaders.clear();
     }
