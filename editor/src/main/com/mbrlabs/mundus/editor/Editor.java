@@ -29,8 +29,6 @@ import com.mbrlabs.mundus.editor.ui.modules.dialogs.ExitDialog;
 import com.mbrlabs.mundus.editor.ui.modules.dock.DockBar;
 import com.mbrlabs.mundus.editor.ui.modules.dock.DockBarPresenter;
 import com.mbrlabs.mundus.editor.ui.modules.inspector.Inspector;
-import com.mbrlabs.mundus.editor.ui.modules.menubar.MenuBarPresenter;
-import com.mbrlabs.mundus.editor.ui.modules.menubar.MundusMenuBar;
 import com.mbrlabs.mundus.editor.ui.modules.outline.Outline;
 import com.mbrlabs.mundus.editor.ui.modules.toolbar.AppToolbar;
 import com.mbrlabs.mundus.editor.ui.widgets.MundusMultiSplitPane;
@@ -65,7 +63,6 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
     private final AppUi appUi;
     private final ExitDialog exitDialog;
     private final ShaderStorage shaderStorage;
-    private final MenuBarPresenter menuBarPresenter;
     private final DockBarPresenter dockBarPresenter;
     private final Outline outline;
     private final AppToolbar toolbar;
@@ -115,8 +112,6 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
 
 
     private void setupUI() {
-        MundusMenuBar menuBar = new MundusMenuBar(menuBarPresenter);
-
         var root = new VisTable();
         appUi.addActor(root);
         root.setFillParent(true);
@@ -124,13 +119,10 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
         var mainContainer = new VisTable();
         var splitPane = new MundusSplitPane(mainContainer, null, true);
 
-        // row 1: add menu
-        root.add(menuBar.getTable()).fillX().expandX().row();
-
-        // row 2: toolbar
+        // row 1: toolbar
         root.add(toolbar.getRoot()).fillX().expandX().row();
 
-        // row 3: sidebar & 3d viewport & inspector
+        // row 2: sidebar & 3d viewport & inspector
         var multiSplit = new MundusMultiSplitPane(false);
         multiSplit.setDraggable(false);
         multiSplit.setWidgets(outline, appUi.getSceneWidget(), inspector);
@@ -140,11 +132,11 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
 
         root.add(splitPane).grow().row();
 
-        // row 4: DOCKER
+        // row 3: DOCKER
         dockBar = new DockBar(splitPane, dockBarPresenter);
         root.add(dockBar).bottom().expandX().fillX().height(30f).row();
 
-        // row 5: status bar
+        // row 4: status bar
         root.add(statusBar).expandX().fillX().height(25f).row();
     }
 

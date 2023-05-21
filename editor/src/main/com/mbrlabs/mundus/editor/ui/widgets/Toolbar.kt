@@ -19,6 +19,7 @@ package com.mbrlabs.mundus.editor.ui.widgets
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.utils.Align
 import com.kotcrab.vis.ui.widget.VisTable
+import com.mbrlabs.mundus.editor.ui.UiConstants.MENU_BAR_BUTTON_SIZE
 
 /**
  * @author Marcus Brummer
@@ -36,7 +37,7 @@ open class Toolbar {
         root.align(Align.left or Align.center)
 
         left.left().top()
-        root.add(left).pad(2f).expandX().fillX()
+        root.add(left).expandX().fillX()
 
         right.right().top()
         root.add(right).pad(2f).expandX().fillX().row()
@@ -45,13 +46,13 @@ open class Toolbar {
 
     fun addItem(actor: Actor, addLeft: Boolean) {
         if (addLeft) {
-            left.add(actor)
+            left.add(actor).height(MENU_BAR_BUTTON_SIZE).minWidth(MENU_BAR_BUTTON_SIZE)
         } else {
             right.add(actor)
         }
     }
 
-    fun addSeperator(addLeft: Boolean) {
+    fun addSeparator(addLeft: Boolean) {
         if (addLeft) {
             left.addSeparator(true)
         } else {

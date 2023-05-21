@@ -51,14 +51,4 @@ class SkyboxShader extends DefaultShader {
 
         renderable.meshPart.render(program)
     }
-
-    @Override
-    void end() {
-        context.end()
-    }
-
-    @Override
-    void dispose() {
-        program.dispose()
-    }
 }

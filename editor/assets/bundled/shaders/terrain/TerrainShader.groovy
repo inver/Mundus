@@ -177,15 +177,4 @@ class TerrainShader extends DefaultShader {
         terrainSize.y = userData.getTerrainDepth()
         set(UNIFORM_TERRAIN_SIZE, terrainSize)
     }
-
-    @Override
-    void end() {
-        context.end()
-    }
-
-    @Override
-    void dispose() {
-        program.dispose()
-    }
-
 }

@@ -47,7 +47,7 @@ import org.springframework.stereotype.Component
 class AppToolbar(
     private val ctx: EditorCtx,
     private val eventBus: EventBus,
-    toolbarPresenter: ToolbarPresenter,
+    toolbarPresenter: AppToolbarPresenter,
     private val toolManager: ToolManager,
     private val projectManager: ProjectManager,
     private val toaster: Toaster,
@@ -56,6 +56,8 @@ class AppToolbar(
     buttonFactory: ButtonFactory,
     private val uiStyles: UiStyles
 ) : Toolbar(), SceneGraphChangedEvent.SceneGraphChangedListener, ProjectChangedEvent.ProjectChangedListener {
+
+    private val mainMenuBtn = buttonFactory.createButton(SymbolIcon.MENU)
 
     private val saveBtn = buttonFactory.createButton(SymbolIcon.SAVE)
     private val importBtn = buttonFactory.createButton(SymbolIcon.IMPORT)
@@ -68,6 +70,14 @@ class AppToolbar(
 
     private val globalLocalSwitch = ToggleButton("Global space", "Local space")
 
+    private val mainMenu = PopupMenu()
+    val fileMenu = FileMenu()
+    val editMenu = EditMenu()
+    val assetsMenu = AssetsMenu()
+    val environmentMenu = EnvironmentMenu()
+    val scenesMenu = SceneMenu()
+    val windowMenu = WindowMenu()
+
     private val importMenu = PopupMenu()
     private val importMesh = MenuItem("Import 3D model")
     private val importTexture = MenuItem("Import texture")
@@ -79,29 +89,23 @@ class AppToolbar(
     init {
         eventBus.register(this)
 
+        mainMenu.addItem(fileMenu)
+        mainMenu.addItem(editMenu)
+        mainMenu.addItem(assetsMenu)
+        mainMenu.addItem(environmentMenu)
+        mainMenu.addItem(scenesMenu)
+        mainMenu.addItem(windowMenu)
+
         importMenu.addItem(importMesh)
         importMenu.addItem(importTexture)
         importMenu.addItem(createMaterial)
 
-        saveBtn.padRight(7f).padLeft(7f)
         Tooltip.Builder("Save project (Ctrl+S)").target(saveBtn).build()
-
-        importBtn.padRight(7f).padLeft(7f)
         Tooltip.Builder("Import model").target(importBtn).build()
-
-        exportBtn.padRight(12f).padLeft(7f)
         Tooltip.Builder("Export project (F1)").target(exportBtn).build()
-
-        selectBtn.padRight(7f).padLeft(12f)
         Tooltip.Builder(toolManager.selectionTool.name).target(selectBtn).build()
-
-        translateBtn.padRight(7f).padLeft(7f)
         Tooltip.Builder(toolManager.translateTool.name).target(translateBtn).build()
-
-        rotateBtn.padRight(7f).padLeft(7f)
         Tooltip.Builder(toolManager.rotateTool.name).target(rotateBtn).build()
-
-        scaleBtn.padRight(7f).padLeft(7f)
         Tooltip.Builder(toolManager.scaleTool.name).target(scaleBtn).build()
 
         sceneSelector.setItems("Main")
@@ -114,22 +118,25 @@ class AppToolbar(
             }
         })
 
+        addItem(mainMenuBtn, true)
+        addSeparator(true)
         addItem(saveBtn, true)
         addItem(importBtn, true)
         addItem(exportBtn, true)
-        addSeperator(true)
+        addSeparator(true)
         addItem(selectBtn, true)
         addItem(translateBtn, true)
         addItem(rotateBtn, true)
         addItem(scaleBtn, true)
-        addSeperator(true)
+        addSeparator(true)
         addItem(VisLabel(" Scene: "), true)
         addItem(sceneSelector, true)
-        addSeperator(true)
+        addSeparator(true)
         addItem(VisLabel(" Camera: "), true)
         addItem(cameraSelector, true)
         // addItem(globalLocalSwitch, true);
 
+        toolbarPresenter.initToolbar(this)
         setActive(translateBtn)
 
         // save btn
@@ -154,6 +161,11 @@ class AppToolbar(
             }
         })
 
+        mainMenuBtn.addListener(object : ClickListener() {
+            override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                mainMenu.showMenu(appUi, mainMenuBtn)
+            }
+        })
 
         importMesh.addListener(toolbarPresenter.importMeshListener())
         importTexture.addListener(toolbarPresenter.importTextureListener())

@@ -1,6 +1,7 @@
 package com.mbrlabs.mundus.editor.ui.widgets.icon;
 
 public enum SymbolIcon {
+    MENU("\ue5d2"),
     SAVE("\ue161"),
     EXPORT("\ue6b8"),
     EXPAND_MORE("\ue5cf"),

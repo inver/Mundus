@@ -117,9 +117,9 @@ public abstract class BaseShader implements Shader {
     private final IntArray localUniforms = new IntArray();
     private final IntIntMap attributes = new IntIntMap();
 
-    public ShaderProgram program;
-    public RenderContext context;
-    public Camera camera;
+    protected ShaderProgram program;
+    protected RenderContext context;
+    protected Camera camera;
     private Mesh currentMesh;
 
     /**

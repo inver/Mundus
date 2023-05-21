@@ -1,18 +1,22 @@
-package com.mbrlabs.mundus.editor.ui.modules.menubar;
+package com.mbrlabs.mundus.editor.ui.modules.toolbar;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.util.dialog.Dialogs;
+import com.kotcrab.vis.ui.util.dialog.InputDialogAdapter;
 import com.kotcrab.vis.ui.widget.MenuItem;
 import com.kotcrab.vis.ui.widget.PopupMenu;
 import com.kotcrab.vis.ui.widget.file.FileChooser;
 import com.kotcrab.vis.ui.widget.file.SingleFileChooserListener;
+import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager;
 import com.mbrlabs.mundus.editor.core.project.ProjectAlreadyImportedException;
 import com.mbrlabs.mundus.editor.core.project.ProjectManager;
 import com.mbrlabs.mundus.editor.core.project.ProjectOpenException;
 import com.mbrlabs.mundus.editor.core.registry.Registry;
+import com.mbrlabs.mundus.editor.events.AssetImportEvent;
+import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.ui.AppUi;
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.AmbientLightDialog;
@@ -22,40 +26,41 @@ import com.mbrlabs.mundus.editor.ui.modules.dialogs.IBLBoxDialog;
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.NewProjectDialog;
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.SkyboxDialog;
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.importer.ImportModelDialog;
+import com.mbrlabs.mundus.editor.ui.modules.dialogs.importer.ImportTextureDialog;
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.settings.SettingsDialog;
+import com.mbrlabs.mundus.editor.ui.modules.outline.ClickButtonListener;
+import com.mbrlabs.mundus.editor.utils.Toaster;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 
-@Component
 @Slf4j
+@Component
 @RequiredArgsConstructor
-public class MenuBarPresenter {
+public class AppToolbarPresenter {
 
-    private final Registry registry;
     private final AppUi appUi;
-    private final ProjectManager projectManager;
+    private final EditorAssetManager assetManager;
+    private final ImportModelDialog importModelDialog;
+    private final ImportTextureDialog importTextureDialog;
+    private final Toaster toaster;
+    private final EventBus eventBus;
     private final NewProjectDialog newProjectDialog;
     private final ExitDialog exitDialog;
-    private final FileChooser fileChooser;
+    private final Registry registry;
+    private final ProjectManager projectManager;
     private final CommandHistory commandHistory;
-    private final ImportModelDialog importModelDialog;
+    private final FileChooser fileChooser;
     private final AmbientLightDialog ambientLightDialog;
     private final SkyboxDialog skyboxDialog;
-    private final FogDialog fogDialog;
     private final IBLBoxDialog iblBoxDialog;
+    private final FogDialog fogDialog;
     private final SettingsDialog settingsDialog;
 
-    @Nullable
-    public EventListener newProjectListener() {
-        return appUi.createOpenDialogListener(newProjectDialog);
-    }
-
-    @Nullable
-    public EventListener importProjectListener() {
-        return new ClickListener() {
+    public void initToolbar(AppToolbar toolbar) {
+        toolbar.getFileMenu().getNewProject().addListener(appUi.createOpenDialogListener(newProjectDialog));
+        toolbar.getFileMenu().getImportProject().addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 fileChooser.setListener(new SingleFileChooserListener() {
@@ -73,16 +78,36 @@ public class MenuBarPresenter {
                     }
                 });
             }
-        };
+        });
+        toolbar.getFileMenu().getSaveProject()
+                .addListener(new ClickButtonListener(projectManager::saveCurrentProject));
+        initRecentProjectPopup(toolbar.getFileMenu().getRecentProjectsPopup());
+        toolbar.getFileMenu().getExit().addListener(appUi.createOpenDialogListener(exitDialog));
+
+        toolbar.getEditMenu().getRedo().addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                commandHistory.goForward();
+            }
+        });
+        toolbar.getEditMenu().getUndo().addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                commandHistory.goBack();
+            }
+        });
+
+        toolbar.getEnvironmentMenu().getAmbientLight().addListener(appUi.createOpenDialogListener(ambientLightDialog));
+        toolbar.getEnvironmentMenu().getSkybox().addListener(appUi.createOpenDialogListener(skyboxDialog));
+        toolbar.getEnvironmentMenu().getIblImage().addListener(appUi.createOpenDialogListener(iblBoxDialog));
+        toolbar.getEnvironmentMenu().getFog().addListener(appUi.createOpenDialogListener(fogDialog));
+
+        toolbar.getAssetsMenu().getImportMesh().addListener(importMeshListener());
+
+        toolbar.getWindowMenu().getSettings().addListener(appUi.createOpenDialogListener(settingsDialog));
     }
 
-    @Nullable
-    public EventListener exitListener() {
-        return appUi.createOpenDialogListener(exitDialog);
-    }
-
-    @SneakyThrows
-    public void initRecentProjectsMenu(PopupMenu recentProjectsPopup) {
+    private void initRecentProjectPopup(PopupMenu recentProjectsPopup) {
         for (var ref : registry.getProjects()) {
             var menu = new MenuItem(ref.getName() + " - [" + ref.getPath() + "]");
             menu.addListener(new ClickListener() {
@@ -101,52 +126,34 @@ public class MenuBarPresenter {
     }
 
     @Nullable
-    public EventListener redoListener() {
-        return new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                commandHistory.goForward();
-            }
-        };
-    }
-
-    @Nullable
-    public EventListener undoListener() {
-        return new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                commandHistory.goBack();
-            }
-        };
-    }
-
-    @Nullable
     public EventListener importMeshListener() {
         return appUi.createOpenDialogListener(importModelDialog);
     }
 
     @Nullable
-    public EventListener addAmbilentLight() {
-        return appUi.createOpenDialogListener(ambientLightDialog);
+    public EventListener importTextureListener() {
+        return appUi.createOpenDialogListener(importTextureDialog);
     }
 
     @Nullable
-    public EventListener addSkyBox() {
-        return appUi.createOpenDialogListener(skyboxDialog);
-    }
-
-    @Nullable
-    public EventListener addIblImage() {
-        return appUi.createOpenDialogListener(iblBoxDialog);
-    }
-
-    @Nullable
-    public EventListener addFog() {
-        return appUi.createOpenDialogListener(fogDialog);
-    }
-
-    @Nullable
-    public EventListener windowsSettingsListener() {
-        return appUi.createOpenDialogListener(settingsDialog);
+    public EventListener createMaterialListener() {
+        return new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Dialogs.showInputDialog(appUi, "Create new material", "Material name",
+                        new InputDialogAdapter() {
+                            @Override
+                            public void finished(String input) {
+                                try {
+                                    var material = assetManager.createMaterialAsset(input);
+                                    eventBus.post(new AssetImportEvent(material));
+                                } catch (Exception e) {
+                                    log.error("ERROR", e);
+                                    toaster.error(e.toString());
+                                }
+                            }
+                        });
+            }
+        };
     }
 }

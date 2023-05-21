@@ -21,8 +21,6 @@ import net.nevinsky.abyssus.core.shader.DefaultShader
  */
 class PickerShader extends DefaultShader {
 
-    protected final int UNIFORM_PROJ_VIEW_MATRIX = register(new Uniform("u_projViewMatrix"))
-    protected final int UNIFORM_TRANS_MATRIX = register(new Uniform("u_transMatrix"))
     protected final int UNIFORM_COLOR = register(new Uniform("u_color"))
 
     private static final Vector3 vec3 = new Vector3()
@@ -32,47 +30,20 @@ class PickerShader extends DefaultShader {
     }
 
     @Override
-    int compareTo(net.nevinsky.abyssus.core.shader.Shader other) {
-        return 0
-    }
-
-    @Override
-    boolean canRender(Renderable instance) {
-        return true
-    }
-
-    @Override
     void begin(Camera camera, RenderContext context) {
-        this.context = context
+        super.begin(camera, context)
         this.context.setCullFace(GL20.GL_BACK)
         this.context.setDepthTest(GL20.GL_LEQUAL, 0f, 1f)
         this.context.setDepthMask(true)
-
-        program.bind()
-
-        set(UNIFORM_PROJ_VIEW_MATRIX, camera.combined)
     }
 
     @Override
     void render(Renderable renderable) {
-        set(UNIFORM_TRANS_MATRIX, renderable.worldTransform)
-
-        PickerIDAttribute goID = (PickerIDAttribute) renderable.material.get(PickerIDAttribute.TYPE)
+        def goID = renderable.material.get(PickerIDAttribute.TYPE)
         if (goID != null) {
             set(UNIFORM_COLOR, vec3.set(goID.r, goID.g, goID.b))
         }
 
-        renderable.meshPart.render(program)
+        super.render(renderable)
     }
-
-    @Override
-    void end() {
-        program.end()
-    }
-
-    @Override
-    void dispose() {
-        program.dispose()
-    }
-
 }

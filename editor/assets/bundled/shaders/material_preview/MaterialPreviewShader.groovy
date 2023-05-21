@@ -6,9 +6,10 @@ import com.badlogic.gdx.math.Matrix4
 import com.mbrlabs.mundus.commons.env.SceneEnvironment
 import com.mbrlabs.mundus.editor.shader.AppBaseShader
 import net.nevinsky.abyssus.core.Renderable
+import net.nevinsky.abyssus.core.shader.DefaultShader
 import net.nevinsky.abyssus.core.shader.Shader
 
-class MaterialPreviewShader extends AppBaseShader {
+class MaterialPreviewShader extends DefaultShader {
 
     protected final int UNIFORM_MODEL_MATRIX = register(new Uniform("u_modelMatrix"))
 
@@ -22,7 +23,7 @@ class MaterialPreviewShader extends AppBaseShader {
     void render(Renderable renderable) {
         final SceneEnvironment env = (SceneEnvironment) renderable.environment
 
-        setLights(env)
+//        setLights(env)
         set(UNIFORM_TRANS_MATRIX, renderable.worldTransform)
         set(UNIFORM_MODEL_MATRIX, modelPos)
 
@@ -31,11 +32,11 @@ class MaterialPreviewShader extends AppBaseShader {
         var diffuseColor = ((ColorAttribute) (renderable.material.get(ColorAttribute.Diffuse)))
 //
         if (diffuseTexture != null) {
-            set(UNIFORM_MATERIAL_DIFFUSE_TEXTURE, diffuseTexture.textureDescription.texture)
-            set(UNIFORM_MATERIAL_DIFFUSE_USE_TEXTURE, 1)
+//            set(UNIFORM_MATERIAL_DIFFUSE_TEXTURE, diffuseTexture.textureDescription.texture)
+//            set(UNIFORM_MATERIAL_DIFFUSE_USE_TEXTURE, 1)
         } else {
-            set(UNIFORM_MATERIAL_DIFFUSE_COLOR, diffuseColor.color)
-            set(UNIFORM_MATERIAL_DIFFUSE_USE_TEXTURE, 0)
+//            set(UNIFORM_MATERIAL_DIFFUSE_COLOR, diffuseColor.color)
+//            set(UNIFORM_MATERIAL_DIFFUSE_USE_TEXTURE, 0)
         }
 
 //        // shininess
@@ -46,21 +47,5 @@ class MaterialPreviewShader extends AppBaseShader {
 
         // bind attributes, bind mesh & render; then unbinds everything
         renderable.meshPart.render(program)
-    }
-
-    @Override
-    int compareTo(Shader other) {
-        return 0
-    }
-
-    @Override
-    boolean canRender(Renderable instance) {
-        return true
-    }
-
-    @Override
-    void dispose() {
-        program.dispose()
-        super.dispose()
     }
 }

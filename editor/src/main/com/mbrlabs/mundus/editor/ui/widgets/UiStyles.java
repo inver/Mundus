@@ -23,8 +23,8 @@ public class UiStyles {
         initStyle(styleActive, Color.WHITE);
         initStyle(styleBg, TEAL_COLOR);
         styleBg.up = VisUI.getSkin().getDrawable("menu-bg");
-        styleBg.down = VisUI.getSkin().getDrawable("menu-bg");
-
+        styleBg.down = VisUI.getSkin().getDrawable("button-over");
+        styleBg.over = VisUI.getSkin().getDrawable("button-over");
     }
 
     private void initStyle(TextButton.TextButtonStyle style, Color color) {

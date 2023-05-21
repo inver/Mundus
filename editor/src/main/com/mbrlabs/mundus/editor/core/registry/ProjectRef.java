@@ -17,6 +17,7 @@
 package com.mbrlabs.mundus.editor.core.registry;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -42,6 +43,7 @@ public class ProjectRef {
         this.path = path;
     }
 
+    @JsonIgnore
     public String getName() {
         return Path.of(path).getFileName().toString();
     }

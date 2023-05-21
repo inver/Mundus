@@ -13,6 +13,8 @@ public class FontRenderer {
     public FontRenderer(FileHandle fontFile) {
         var fontGenerator = new FreeTypeFontGenerator(fontFile);
         var generatorParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        generatorParameter.size = 24;
+        generatorParameter.padTop = 2;
         generatorParameter.characters =
                 Arrays.stream(SymbolIcon.values()).map(SymbolIcon::getSymbol).collect(Collectors.joining());
         font = fontGenerator.generateFont(generatorParameter);

@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext
-import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.utils.Array
 import com.mbrlabs.mundus.commons.env.Fog
 import com.mbrlabs.mundus.commons.env.SceneEnvironment
@@ -24,12 +23,6 @@ class ModelShader extends DefaultShader {
     protected final int UNIFORM_MATERIAL_DIFFUSE_USE_TEXTURE = register(new Uniform("u_diffuseUseTexture"))
     protected final int UNIFORM_MATERIAL_SHININESS = register(new Uniform("u_shininess"))
 
-
-    // ============================ MATRICES & CAM POSITION ============================
-    protected final int UNIFORM_PROJ_VIEW_MATRIX = register(new Uniform("u_projViewMatrix"))
-    protected final int UNIFORM_TRANS_MATRIX = register(new Uniform("u_transMatrix"))
-    protected final int UNIFORM_CAM_POS = register(new Uniform("u_camPos"))
-
     // ============================ LIGHTS ============================
     protected final int UNIFORM_AMBIENT_LIGHT_COLOR = register(new Uniform("u_ambientLight.color"))
     protected final int UNIFORM_AMBIENT_LIGHT_INTENSITY = register(new Uniform("u_ambientLight.intensity"))
@@ -44,16 +37,6 @@ class ModelShader extends DefaultShader {
 
     ModelShader(String vertexShader, String fragmentShader) {
         super(vertexShader, fragmentShader)
-    }
-
-    @Override
-    int compareTo(Shader other) {
-        return 0
-    }
-
-    @Override
-    boolean canRender(Renderable instance) {
-        return true
     }
 
     @Override
@@ -131,16 +114,6 @@ class ModelShader extends DefaultShader {
         }
 
         // TODO point lights, spot lights
-    }
-
-    @Override
-    void end() {
-        context.end()
-    }
-
-    @Override
-    void dispose() {
-        program.dispose()
     }
 }
 

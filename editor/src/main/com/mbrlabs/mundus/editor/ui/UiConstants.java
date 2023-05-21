@@ -9,4 +9,6 @@ public final class UiConstants {
 
     public static final float ASSET_BAR_PREVIEW_SIZE = 80f;
     public static final float PREVIEW_SIZE = 200f;
+
+    public static final float MENU_BAR_BUTTON_SIZE = 36f;
 }

@@ -70,7 +70,9 @@ public interface Shader extends Disposable {
     /**
      * Compare this shader against the other, used for sorting, light weight shaders are rendered first.
      */
-    int compareTo(Shader other); // TODO: probably better to add some weight value to sort on
+    default int compareTo(Shader other) { // TODO: probably better to add some weight value to sort on
+        return 0;
+    }
 
     /**
      * Checks whether this shader is intended to render the {@link Renderable}. Use this to make sure a call to the
@@ -81,7 +83,9 @@ public interface Shader extends Disposable {
      * @param instance The renderable to check against this shader.
      * @return true if this shader is intended to render the {@link Renderable}, false otherwise.
      */
-    boolean canRender(Renderable instance);
+    default boolean canRender(Renderable instance) {
+        return true;
+    }
 
     /**
      * Initializes the context for exclusive rendering by this shader. Use the {@link #render(Renderable)} method to
