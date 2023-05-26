@@ -15,6 +15,13 @@ public enum SymbolIcon {
     STAR("\ue838"),
     SMOOTH_CIRCLE("\ue57b"),
     TAG("\ue9ef"),
+    COFFEE("\uefef"),
+    LANDSCAPE("\ue3f7"),
+    LAYERS("\ue53b"),
+    TEXTURE("\ue421"),
+    CAMERA("\ue04b"),
+    LIGHT("\ue42e"),
+    DEBLUR("\ueb77"),
     IMPORT("\ue9fc");
 
     private final String symbol;
