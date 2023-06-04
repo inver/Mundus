@@ -1,3 +1,16 @@
-include 'editor'
-include 'commons'
-include 'core'
+include 'app-editor'
+include 'lib-commons'
+include 'lib-core'
+include 'lib-assets'
+
+rootProject.name = 'abyssus'
+rootProject.children.each { project ->
+    String fileBaseName = project.name.replaceAll("\\p{Upper}") { "-${it.toLowerCase()}" }
+    String projectDirName = "projects/$fileBaseName"
+
+    project.projectDir = new File(settingsDir, projectDirName)
+    project.buildFileName = "${fileBaseName}.gradle"
+    project.name = fileBaseName
+    assert project.projectDir.isDirectory()
+    assert project.buildFile.isFile()
+}

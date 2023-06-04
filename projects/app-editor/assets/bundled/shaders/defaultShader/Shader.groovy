@@ -1,4 +1,4 @@
-package testProject.bundledShaderAsset
+package bundled.shaders.defaultShader
 
 import net.nevinsky.abyssus.core.shader.DefaultShader
 

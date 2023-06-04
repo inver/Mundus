@@ -1,3 +1,5 @@
+package bundledShader
+
 import net.nevinsky.abyssus.core.shader.DefaultShader
 
 class Shader extends DefaultShader {
