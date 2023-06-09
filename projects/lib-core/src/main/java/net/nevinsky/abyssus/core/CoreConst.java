@@ -1,9 +1,9 @@
 package net.nevinsky.abyssus.core;
 
-public final class CoreConst {
+import lombok.experimental.UtilityClass;
 
-    private CoreConst() {
-    }
+@UtilityClass
+public final class CoreConst {
 
     public static final int BYTES_IN_VERTEX_COORD = 4;
 }

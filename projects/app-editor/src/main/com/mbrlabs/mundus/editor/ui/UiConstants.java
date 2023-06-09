@@ -1,5 +1,8 @@
 package com.mbrlabs.mundus.editor.ui;
 
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public final class UiConstants {
     public static final float PAD_BOTTOM = 2f;
     public static final float PAD_BOTTOM_X2 = PAD_BOTTOM * 2;

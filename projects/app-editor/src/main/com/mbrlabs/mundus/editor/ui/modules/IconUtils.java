@@ -2,7 +2,9 @@ package com.mbrlabs.mundus.editor.ui.modules;
 
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.editor.ui.widgets.Icons;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public final class IconUtils {
     public static Icons getIcon(Asset asset) {
         switch (asset.getType()) {

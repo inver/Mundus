@@ -1,5 +1,7 @@
 package net.nevinsky.abyssus.lib.assets.gltf;
 
+import lombok.experimental.UtilityClass;
+
 import java.util.AbstractMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -7,11 +9,8 @@ import java.util.Map;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+@UtilityClass
 public final class FlatMapUtil {
-
-    private FlatMapUtil() {
-        throw new AssertionError("No instances for you!");
-    }
 
     public static Map<String, Object> flatten(Map<String, Object> map) {
         return map.entrySet().stream()
