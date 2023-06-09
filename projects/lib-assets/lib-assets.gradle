@@ -1,0 +1,31 @@
+//plugins {
+//    id("jsonschema2pojo")
+//}
+
+dependencies {
+    implementation project(":lib-core")
+
+    testImplementation libs.junit_jupiter_engine
+    testImplementation 'com.google.guava:guava:32.0.0-jre'
+
+}
+
+//jsonSchema2Pojo {
+//    targetDirectory = file("$buildDir/generated-sources/js2p")
+//    targetPackage = "net.nevinsky.abyssus.lib.assets.gltf.model"
+//    generateBuilders = true
+//    includeAdditionalProperties = true
+//    includeGeneratedAnnotation = true
+//    generateBuilders = true
+//    usePrimitives = true
+//    annotationStyle = 'jackson2'
+//    includeJsr303Annotations = false
+//    includeJsr305Annotations = false
+//
+//
+//    removeOldOutput = true
+//    serializable = false
+//
+//    setSource(files("$projectDir/src/main/resources/json"))
+//    setAnnotationStyle("none")
+//}
