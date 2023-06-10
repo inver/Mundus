@@ -1,11 +1,13 @@
 package net.nevinsky.abyssus.lib.assets.gltf.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import net.nevinsky.abyssus.lib.assets.gltf.GlTFException;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -21,7 +23,7 @@ public class GlTFAccessorDto extends GlTFChildOfRootPropertyDto {
      * The index of the buffer view. When undefined, the accessor **MUST** be initialized with zeros; `sparse` property
      * or extensions **MAY** override zeros with actual values.
      */
-    private int bufferView;
+    private Integer bufferView;
     /**
      * The offset relative to the start of the buffer view in bytes.  This **MUST** be a multiple of the size of the
      * component datatype. This property **MUST NOT** be defined when `bufferView` is undefined.
@@ -71,6 +73,50 @@ public class GlTFAccessorDto extends GlTFChildOfRootPropertyDto {
      * Sparse storage of elements that deviate from their initialization value.
      */
     private GltfSparseDto sparse;
+
+    @JsonIgnore
+    public int getStrideSize() {
+        return getTypeSize() * getComponentTypeSize();
+    }
+
+    @JsonIgnore
+    public int getSize() {
+        return getStrideSize() * count;
+    }
+
+    private int getTypeSize() {
+        switch (type) {
+            case SCALAR:
+                return 1;
+            case VEC2:
+                return 2;
+            case VEC3:
+                return 3;
+            case VEC4:
+            case MAT2:
+                return 4;
+            case MAT3:
+                return 9;
+            case MAT4:
+                return 16;
+        }
+        throw new GlTFException("illegal accessor type: " + type);
+    }
+
+    private int getComponentTypeSize() {
+        switch (componentType) {
+            case UNSIGNED_BYTE:
+            case BYTE:
+                return 1;
+            case SHORT:
+            case UNSIGNED_SHORT:
+                return 2;
+            case UNSIGNED_INT:
+            case FLOAT:
+                return 4;
+        }
+        throw new GlTFException("illegal accessor component type: " + componentType);
+    }
 
     @RequiredArgsConstructor
     public enum ComponentType {

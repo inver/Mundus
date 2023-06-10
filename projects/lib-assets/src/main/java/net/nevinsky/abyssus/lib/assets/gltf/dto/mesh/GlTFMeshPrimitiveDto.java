@@ -1,5 +1,6 @@
 package net.nevinsky.abyssus.lib.assets.gltf.dto.mesh;
 
+import com.badlogic.gdx.graphics.GL20;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
@@ -31,7 +32,7 @@ public class GlTFMeshPrimitiveDto {
      * non-indexed geometry.  When defined, the accessor **MUST** have `SCALAR` type and an unsigned integer component
      * type.
      */
-    private int indices;
+    private Integer indices;
 
     /**
      * The index of the material to apply to this primitive when rendering.

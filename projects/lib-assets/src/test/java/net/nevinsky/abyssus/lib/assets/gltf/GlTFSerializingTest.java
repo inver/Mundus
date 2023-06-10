@@ -27,14 +27,7 @@ public class GlTFSerializingTest {
             "boxAnimated"
     );
 
-    private final ObjectMapper mapper = JsonMapper.builder()
-            .enable(SerializationFeature.INDENT_OUTPUT)
-            .configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true)
-            .configure(SerializationFeature.WRITE_EMPTY_JSON_ARRAYS, false)
-            .serializationInclusion(JsonInclude.Include.NON_EMPTY)
-            .serializationInclusion(JsonInclude.Include.NON_NULL)
-            .build();
-
+    private final ObjectMapper mapper = JsonUtils.createMapper();
 
     @TestFactory
     public Stream<DynamicTest> dynamicTestsForEmployeeWorkflows() {
