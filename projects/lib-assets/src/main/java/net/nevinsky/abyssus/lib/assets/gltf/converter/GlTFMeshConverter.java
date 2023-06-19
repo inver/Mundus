@@ -22,11 +22,11 @@ import net.nevinsky.abyssus.lib.assets.gltf.dto.GlTFAccessorDto;
 import net.nevinsky.abyssus.lib.assets.gltf.dto.GlTFDto;
 import net.nevinsky.abyssus.lib.assets.gltf.dto.mesh.GlTFMeshDto;
 import net.nevinsky.abyssus.lib.assets.gltf.dto.mesh.GlTFMeshPrimitiveDto;
+import net.nevinsky.abyssus.lib.assets.gltf.glb.GlTFBinary;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 
-import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,15 +38,14 @@ import static net.nevinsky.abyssus.lib.assets.gltf.dto.GlTFAccessorDto.Type.VEC3
 import static net.nevinsky.abyssus.lib.assets.gltf.dto.GlTFAccessorDto.Type.VEC4;
 
 @RequiredArgsConstructor
-public class GltfMeshConverter {
-
-
-    public void load(GlTFDto root, Node node, GlTFMeshDto meshDto, Material defaultMat, List<Material> materials) {
+public class GlTFMeshConverter {
+    public void load(GlTFDto root, GlTFBinary binary, Node node, GlTFMeshDto meshDto, Material defaultMat,
+                     List<Material> materials) {
         if (CollectionUtils.isEmpty(meshDto.getPrimitives())) {
             return;
         }
 
-        ((MorphNode) node).setMorphTargetNames(parseBlenderMorphTargets(meshDto));
+//        ((MorphNode) node).setMorphTargetNames(parseBlenderMorphTargets(meshDto));
 
         var parts = new Array<NodePart>();
 
@@ -67,11 +66,10 @@ public class GltfMeshConverter {
             boolean hasNormals = false;
             boolean hasTangent = false;
 
-            var result = fillGeneralVertexAttributes(
-                    root, primitive, vertexAttributes, glAccessors, bonesIndices, bonesWeights, hasNormals, hasTangent
-            );
+            var result = fillGeneralVertexAttributes(root, binary, primitive, vertexAttributes, glAccessors,
+                    bonesIndices, bonesWeights, hasNormals, hasTangent);
 
-            fillMorphVertexAttributes(root, (MorphNode) node, primitive, vertexAttributes, glAccessors);
+//            fillMorphVertexAttributes(root, (MorphNode) node, primitive, vertexAttributes, glAccessors);
 
             int bSize = bonesIndices.size() * 4;
 
@@ -104,8 +102,8 @@ public class GltfMeshConverter {
                         glAccessors.add(null);
                         computeTangents = true;
                         for (var attribute : vertexAttributes) {
-                            if (attribute.usage == VertexAttributes.Usage.TextureCoordinates &&
-                                    attribute.unit == normalMap.uvIndex) {
+                            if (attribute.usage == VertexAttributes.Usage.TextureCoordinates
+                                    && attribute.unit == normalMap.uvIndex) {
                                 normalMapUVs = attribute;
                             }
                         }
@@ -128,8 +126,7 @@ public class GltfMeshConverter {
                 VertexAttribute boneAttribute = bonesAttributes.get(b);
                 for (int i = 0; i < maxVertices; i++) {
                     vertices[i * vertexFloats + boneAttribute.offset / 4] = bonesIndices.get(b / 4)[i * 4 + b % 4];
-                    vertices[i * vertexFloats + boneAttribute.offset / 4 + 1] =
-                            bonesWeights.get(b / 4)[i * 4 + b % 4];
+                    vertices[i * vertexFloats + boneAttribute.offset / 4 + 1] = bonesWeights.get(b / 4)[i * 4 + b % 4];
                 }
             }
 
@@ -147,13 +144,14 @@ public class GltfMeshConverter {
 
                 var glBufferView = root.getBufferViews().get(glAccessor.getBufferView());
 
-                FloatBuffer floatBuffer = root.getBufferFloat(glAccessor);
+                FloatBuffer floatBuffer = binary.getBufferFloat(glBufferView);
 
                 int attributeFloats = glAccessor.getStrideSize() / 4;
 
                 // buffer can be interleaved, so vertex stride may be different from vertex size
-                int floatStride =
-                        glBufferView.getByteStride() == null ? attributeFloats : glBufferView.getByteStride() / 4;
+                int floatStride = glBufferView.getByteStride() == null
+                        ? attributeFloats
+                        : glBufferView.getByteStride() / 4;
 
                 for (int j = 0; j < glAccessor.getCount(); j++) {
                     floatBuffer.position(j * floatStride);
@@ -173,67 +171,33 @@ public class GltfMeshConverter {
 
                 int maxIndices = indicesAccessor.getCount();
 
+                var indicesBufferView = root.getBufferViews().get(indicesAccessor.getBufferView());
                 switch (indicesAccessor.getComponentType()) {
                     case UNSIGNED_INT: {
-                        Gdx.app.error("GLTF", "integer indices partially supported, mesh will be split");
-                        Gdx.app.error("GLTF",
-                                "splitting mesh: " + maxVertices + " vertices, " + maxIndices + " indices.");
-
-                        int verticesPerPrimitive;
-                        if (glPrimitiveType == GL20.GL_TRIANGLES) {
-                            verticesPerPrimitive = 3;
-                        } else if (glPrimitiveType == GL20.GL_LINES) {
-                            verticesPerPrimitive = 2;
-                        } else {
-                            throw new GlTFException("integer indices only supported for triangles or lines");
-                        }
-
                         int[] indices = new int[maxIndices];
-                        root.getBufferInt(indicesAccessor).get(indices);
+                        binary.getBufferInt(indicesBufferView).get(indices);
 
-                        Array<float[]> splitVertices = new Array<float[]>();
-                        Array<short[]> splitIndices = new Array<short[]>();
+                        generateParts(node, parts, material, meshDto.getName(), vertices, maxVertices, indices,
+                                attributesGroup, glPrimitiveType, computeNormals, computeTangents, normalMapUVs);
 
-                        MeshSpliter.split(splitVertices, splitIndices, vertices, attributesGroup, indices,
-                                verticesPerPrimitive);
-
-                        int stride = attributesGroup.vertexSize / 4;
-                        int groups = splitIndices.size;
-                        int totalVertices = 0;
-                        int totalIndices = 0;
-                        for (int i = 0; i < groups; i++) {
-                            float[] groupVertices = splitVertices.get(i);
-                            short[] groupIndices = splitIndices.get(i);
-                            int groupVertexCount = groupVertices.length / stride;
-
-                            totalVertices += groupVertexCount;
-                            totalIndices += groupIndices.length;
-
-                            Gdx.app.error("GLTF",
-                                    "generate mesh: " + groupVertexCount + " vertices, " + groupIndices.length +
-                                            " indices.");
-
-                            generateParts(node, parts, material, meshDto.getName(), groupVertices, groupVertexCount,
-                                    groupIndices, attributesGroup, glPrimitiveType, computeNormals, computeTangents,
-                                    normalMapUVs);
-                        }
-                        Gdx.app.error("GLTF", "mesh split: " + parts.size + " meshes generated: " + totalVertices +
-                                " vertices, " + totalIndices + " indices.");
                         break;
                     }
                     case UNSIGNED_SHORT:
                     case SHORT: {
-                        short[] indices = new short[maxIndices];
-                        root.getBufferShort(indicesAccessor).get(indices);
+                        int[] indices = new int[maxIndices];
+                        var shortBuffer = binary.getBufferShort(indicesBufferView);
+                        for (int i = 0; i < maxIndices; i++) {
+                            indices[i] = shortBuffer.get();
+                        }
                         generateParts(node, parts, material, meshDto.getName(), vertices, maxVertices, indices,
                                 attributesGroup, glPrimitiveType, computeNormals, computeTangents, normalMapUVs);
                         break;
                     }
                     case UNSIGNED_BYTE: {
-                        short[] indices = new short[maxIndices];
-                        ByteBuffer byteBuffer = root.getBufferByte(indicesAccessor);
+                        int[] indices = new int[maxIndices];
+                        var byteBuffer = binary.getBufferByte(indicesBufferView);
                         for (int i = 0; i < maxIndices; i++) {
-                            indices[i] = (short) (byteBuffer.get() & 0xFF);
+                            indices[i] = byteBuffer.get() & 0xFF;
                         }
                         generateParts(node, parts, material, meshDto.getName(), vertices, maxVertices, indices,
                                 attributesGroup, glPrimitiveType, computeNormals, computeTangents, normalMapUVs);
@@ -245,8 +209,8 @@ public class GltfMeshConverter {
 
             } else {
                 // non indexed mesh
-                generateParts(node, parts, material, meshDto.getName(), vertices, maxVertices, null, attributesGroup,
-                        glPrimitiveType, computeNormals, computeTangents, normalMapUVs);
+                generateParts(node, parts, material, meshDto.getName(), vertices, maxVertices, null,
+                        attributesGroup, glPrimitiveType, computeNormals, computeTangents, normalMapUVs);
             }
         });
 
@@ -268,30 +232,30 @@ public class GltfMeshConverter {
                     glAccessors.add(accessor);
 
                     if (attributeName.equals("POSITION")) {
-                        if (accessor.getType() != VEC3 &&
-                                accessor.getComponentType() == GlTFAccessorDto.ComponentType.FLOAT) {
+                        if (accessor.getType() != VEC3
+                                && accessor.getComponentType() == GlTFAccessorDto.ComponentType.FLOAT) {
                             throw new GlTFException("illegal morph target position attribute format");
                         }
-                        vertexAttributes.add(new VertexAttribute(PBRVertexAttributes.Usage.PositionTarget, 3,
-                                ShaderProgram.POSITION_ATTRIBUTE + unit, unit));
+                        vertexAttributes.add(new VertexAttribute(PBRVertexAttributes.Usage.PositionTarget,
+                                3, ShaderProgram.POSITION_ATTRIBUTE + unit, unit));
                         continue;
                     }
                     if (attributeName.equals("NORMAL")) {
-                        if (accessor.getType() != VEC3 &&
-                                accessor.getComponentType() == GlTFAccessorDto.ComponentType.FLOAT) {
+                        if (accessor.getType() != VEC3
+                                && accessor.getComponentType() == GlTFAccessorDto.ComponentType.FLOAT) {
                             throw new GlTFException("illegal morph target normal attribute format");
                         }
-                        vertexAttributes.add(new VertexAttribute(PBRVertexAttributes.Usage.NormalTarget, 3,
-                                ShaderProgram.NORMAL_ATTRIBUTE + unit, unit));
+                        vertexAttributes.add(new VertexAttribute(PBRVertexAttributes.Usage.NormalTarget,
+                                3, ShaderProgram.NORMAL_ATTRIBUTE + unit, unit));
                         continue;
                     }
                     if (attributeName.equals("TANGENT")) {
-                        if (accessor.getType() != VEC3 &&
-                                accessor.getComponentType() == GlTFAccessorDto.ComponentType.FLOAT) {
+                        if (accessor.getType() != VEC3
+                                && accessor.getComponentType() == GlTFAccessorDto.ComponentType.FLOAT) {
                             throw new GlTFException("illegal morph target tangent attribute format");
                         }
-                        vertexAttributes.add(new VertexAttribute(PBRVertexAttributes.Usage.TangentTarget, 3,
-                                ShaderProgram.TANGENT_ATTRIBUTE + unit, unit));
+                        vertexAttributes.add(new VertexAttribute(PBRVertexAttributes.Usage.TangentTarget,
+                                3, ShaderProgram.TANGENT_ATTRIBUTE + unit, unit));
                         continue;
                     }
 
@@ -302,11 +266,11 @@ public class GltfMeshConverter {
         }
     }
 
-    private HasNormalsAndTangents fillGeneralVertexAttributes(GlTFDto root, GlTFMeshPrimitiveDto primitive,
+    private HasNormalsAndTangents fillGeneralVertexAttributes(GlTFDto root, GlTFBinary binary,
+                                                              GlTFMeshPrimitiveDto primitive,
                                                               List<VertexAttribute> vertexAttributes,
                                                               List<GlTFAccessorDto> glAccessors,
-                                                              List<int[]> bonesIndices,
-                                                              List<float[]> bonesWeights,
+                                                              List<int[]> bonesIndices, List<float[]> bonesWeights,
                                                               boolean hasNormals, boolean hasTangent) {
         for (var entry : primitive.getAttributes().entrySet()) {
             var attributeName = entry.getKey();
@@ -346,11 +310,11 @@ public class GltfMeshConverter {
                 continue;
             }
             if (StringUtils.startsWith(attributeName, "WEIGHTS_")) {
-                addWeightsAttribute(root, bonesWeights, attributeName, accessorId, accessor);
+                addWeightsAttribute(root, binary, bonesWeights, attributeName, accessorId, accessor);
                 continue;
             }
             if (StringUtils.startsWith(attributeName, "JOINTS_")) {
-                addJointsAttribute(root, bonesIndices, attributeName, accessorId, accessor);
+                addJointsAttribute(root, binary, bonesIndices, attributeName, accessorId, accessor);
                 continue;
             }
 
@@ -363,52 +327,53 @@ public class GltfMeshConverter {
         return new HasNormalsAndTangents(hasNormals, hasTangent);
     }
 
-    private void addJointsAttribute(GlTFDto root, Array<int[]> bonesIndices, String attributeName, Integer accessorId,
-                                    GlTFAccessorDto accessor) {
+    private void addJointsAttribute(GlTFDto root, GlTFBinary binary, List<int[]> bonesIndices, String attributeName,
+                                    Integer accessorId, GlTFAccessorDto accessor) {
         if (accessor.getType() != VEC4) {
             throw new GlTFException("illegal joints attribute type: " + accessor.getType());
         }
 
         int unit = parseAttributeUnit(attributeName);
-        if (unit >= bonesIndices.size) {
-            bonesIndices.setSize(unit + 1);
+        if (unit >= bonesIndices.size()) {
+            bonesIndices.add(new int[]{});
         }
 
         if (accessor.getComponentType() == GlTFAccessorDto.ComponentType.UNSIGNED_BYTE) {
-            bonesIndices.set(unit, root.readBufferUByte(accessorId));
+            bonesIndices.set(unit, binary.readBufferUByte(root, accessorId));
             return;
         }
 
         if (accessor.getComponentType() == GlTFAccessorDto.ComponentType.UNSIGNED_SHORT) {
-            bonesIndices.set(unit, root.readBufferUShort(accessorId));
+            bonesIndices.set(unit, binary.readBufferUShort(root, accessorId));
             return;
         }
 
         throw new GlTFException("illegal type for joints: " + accessor.getComponentType());
     }
 
-    private void addWeightsAttribute(GlTFDto root, List<float[]> bonesWeights, String attributeName,
+    private void addWeightsAttribute(GlTFDto root, GlTFBinary binary, List<float[]> bonesWeights, String attributeName,
                                      Integer accessorId, GlTFAccessorDto accessor) {
         if (accessor.getType() != VEC4) {
             throw new GlTFException("illegal weight attribute type: " + accessor.getType());
         }
 
         int unit = parseAttributeUnit(attributeName);
-        if (unit >= bonesWeights.size) {
-            bonesWeights.setSize(unit + 1);
+        if (unit >= bonesWeights.size()) {
+            //increases bonesWeight list length
+            bonesWeights.add(new float[]{});
         }
 
         if (accessor.getComponentType() == GlTFAccessorDto.ComponentType.FLOAT) {
-            bonesWeights.set(unit, root.readBufferFloat(accessorId));
+            bonesWeights.set(unit, binary.readBufferFloat(root, accessorId));
             return;
         }
 
         if (accessor.getComponentType() == GlTFAccessorDto.ComponentType.UNSIGNED_SHORT) {
-            bonesWeights.set(unit, root.readBufferUShortAsFloat(accessorId));
+            bonesWeights.set(unit, binary.readBufferUShortAsFloat(root, accessorId));
             return;
         }
         if (accessor.getComponentType() == GlTFAccessorDto.ComponentType.UNSIGNED_BYTE) {
-            bonesWeights.set(unit, root.readBufferUByteAsFloat(accessorId));
+            bonesWeights.set(unit, binary.readBufferUByteAsFloat(root, accessorId));
             return;
         }
 
@@ -422,8 +387,8 @@ public class GltfMeshConverter {
 
         if (accessor.getType() == VEC4) {
             if (accessor.getComponentType() == GlTFAccessorDto.ComponentType.FLOAT) {
-                vertexAttributes.add(new VertexAttribute(VertexAttributes.Usage.ColorUnpacked, 4, GL20.GL_FLOAT,
-                        false, alias));
+                vertexAttributes.add(new VertexAttribute(VertexAttributes.Usage.ColorUnpacked, 4,
+                        GL20.GL_FLOAT, false, alias));
                 return;
             }
 
@@ -442,8 +407,8 @@ public class GltfMeshConverter {
 
         if (accessor.getType() == VEC3) {
             if (accessor.getComponentType() == GlTFAccessorDto.ComponentType.FLOAT) {
-                vertexAttributes.add(new VertexAttribute(VertexAttributes.Usage.ColorUnpacked, 3, GL20.GL_FLOAT,
-                        false, alias));
+                vertexAttributes.add(new VertexAttribute(VertexAttributes.Usage.ColorUnpacked, 3,
+                        GL20.GL_FLOAT, false, alias));
                 return;
             }
 
@@ -471,33 +436,30 @@ public class GltfMeshConverter {
             throw new GlTFException("unsigned short texture coordinate attribute not supported");
         }
         if (accessor.getComponentType() != GlTFAccessorDto.ComponentType.FLOAT) {
-            throw new GlTFException(
-                    "illegal texture coordinate component type : " + accessor.getComponentType()
-            );
+            throw new GlTFException("illegal texture coordinate component type : " + accessor.getComponentType());
         }
         vertexAttributes.add(VertexAttribute.TexCoords(parseAttributeUnit(attributeName)));
     }
 
     private static void addTangentAttribute(List<VertexAttribute> vertexAttributes, GlTFAccessorDto accessor) {
-        if (accessor.getType() == GlTFAccessorDto.Type.VEC4 &&
-                accessor.getComponentType() == GlTFAccessorDto.ComponentType.FLOAT) {
+        if (accessor.getType() != GlTFAccessorDto.Type.VEC4
+                && accessor.getComponentType() == GlTFAccessorDto.ComponentType.FLOAT) {
             throw new GlTFException("illegal tangent attribute format");
         }
-        vertexAttributes.add(new VertexAttribute(VertexAttributes.Usage.Tangent, 4,
-                ShaderProgram.TANGENT_ATTRIBUTE));
+        vertexAttributes.add(new VertexAttribute(VertexAttributes.Usage.Tangent, 4, ShaderProgram.TANGENT_ATTRIBUTE));
     }
 
     private static void addNormalAttribute(List<VertexAttribute> vertexAttributes, GlTFAccessorDto accessor) {
-        if (accessor.getType() == GlTFAccessorDto.Type.VEC3 &&
-                accessor.getComponentType() == GlTFAccessorDto.ComponentType.FLOAT) {
+        if (accessor.getType() != GlTFAccessorDto.Type.VEC3
+                && accessor.getComponentType() == GlTFAccessorDto.ComponentType.FLOAT) {
             throw new GlTFException("illegal position attribute format");
         }
         vertexAttributes.add(VertexAttribute.Normal());
     }
 
     private static void addPositionAttribute(List<VertexAttribute> vertexAttributes, GlTFAccessorDto accessor) {
-        if (accessor.getType() == GlTFAccessorDto.Type.VEC3 &&
-                accessor.getComponentType() == GlTFAccessorDto.ComponentType.FLOAT) {
+        if (accessor.getType() != GlTFAccessorDto.Type.VEC3
+                && accessor.getComponentType() == GlTFAccessorDto.ComponentType.FLOAT) {
             throw new GlTFException("illegal normal attribute format");
         }
         vertexAttributes.add(VertexAttribute.Position());

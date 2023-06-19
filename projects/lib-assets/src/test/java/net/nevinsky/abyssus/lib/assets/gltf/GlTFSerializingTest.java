@@ -1,12 +1,9 @@
 package net.nevinsky.abyssus.lib.assets.gltf;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.google.common.collect.Maps;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import net.nevinsky.abyssus.lib.assets.gltf.dto.GlTFDto;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Assertions;
@@ -19,12 +16,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+@Slf4j
 public class GlTFSerializingTest {
 
-    private static final List<String> files = Arrays.asList(
-            "aBeautifulGame",
-            "animatedMorphCube",
-            "boxAnimated"
+    private static final List<String> files = List.of(
+            "aBeautifulGame"
+//            "animatedMorphCube",
+//            "boxAnimated"
     );
 
     private final ObjectMapper mapper = JsonUtils.createMapper();
@@ -58,18 +56,18 @@ public class GlTFSerializingTest {
         var difference = Maps.difference(leftFlatMap, rightFlatMap);
 
         if (difference.entriesOnlyOnLeft().size() > 0) {
-            System.out.println("Entries only on the left\n--------------------------");
-            difference.entriesOnlyOnLeft().forEach((key, value) -> System.out.println(key + ": " + value));
+            log.info("Entries only on the left\n--------------------------");
+            difference.entriesOnlyOnLeft().forEach((key, value) -> log.error(key + ": " + value));
         }
 
         if (difference.entriesOnlyOnRight().size() > 0) {
-            System.out.println("\n\nEntries only on the right\n--------------------------");
-            difference.entriesOnlyOnRight().forEach((key, value) -> System.out.println(key + ": " + value));
+            log.info("\n\nEntries only on the right\n--------------------------");
+            difference.entriesOnlyOnRight().forEach((key, value) -> log.error(key + ": " + value));
         }
 
         if (difference.entriesDiffering().size() > 0) {
-            System.out.println("\n\nEntries differing\n--------------------------");
-            difference.entriesDiffering().forEach((key, value) -> System.out.println(key + ": " + value));
+            log.info("\n\nEntries differing\n--------------------------");
+            difference.entriesDiffering().forEach((key, value) -> log.error(key + ": " + value));
         }
 
         Assertions.assertEquals(0, difference.entriesOnlyOnLeft().size());

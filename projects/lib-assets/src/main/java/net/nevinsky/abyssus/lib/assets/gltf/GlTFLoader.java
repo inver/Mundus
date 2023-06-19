@@ -3,9 +3,9 @@ package net.nevinsky.abyssus.lib.assets.gltf;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.nevinsky.abyssus.lib.assets.gltf.converter.GltfSceneConverter;
+import net.nevinsky.abyssus.lib.assets.gltf.converter.GlTFSceneConverter;
 import net.nevinsky.abyssus.lib.assets.gltf.dto.GlTFDto;
-import net.nevinsky.abyssus.lib.assets.gltf.dto.binary.GlTFBinary;
+import net.nevinsky.abyssus.lib.assets.gltf.glb.GlTFBinary;
 import net.nevinsky.abyssus.lib.assets.gltf.scene.Scenes;
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -85,7 +85,7 @@ public class GlTFLoader {
     );
 
     private final ObjectMapper mapper;
-    private final GltfSceneConverter sceneConverter;
+    private final GlTFSceneConverter sceneConverter;
     private final GlTFBinaryReader binaryReader;
 
     /**

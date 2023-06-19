@@ -1,8 +1,11 @@
 package net.nevinsky.abyssus.lib.assets.gltf.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.nevinsky.abyssus.lib.assets.gltf.extension.Extension;
+import net.nevinsky.abyssus.lib.assets.gltf.extension.Extensions;
 
 /**
  * glTF Property
@@ -14,7 +17,7 @@ public class GlTFPropertyDto {
     /**
      * JSON object with extension-specific objects.
      */
-    protected Object extensions;
+    protected Extensions extensions;
 
     /**
      * Application-specific data.
@@ -24,4 +27,13 @@ public class GlTFPropertyDto {
      * portability.
      */
     protected Object extras;
+
+    @JsonIgnore
+    public <T extends Extension> T getExtension(Class<T> clazz) {
+        if (extensions == null) {
+            return null;
+        }
+
+        return extensions.get(clazz);
+    }
 }

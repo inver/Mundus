@@ -2,13 +2,15 @@ package net.nevinsky.abyssus.lib.assets.gltf;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
-import net.nevinsky.abyssus.lib.assets.gltf.converter.GltfMaterialConverter;
-import net.nevinsky.abyssus.lib.assets.gltf.converter.GltfMeshConverter;
-import net.nevinsky.abyssus.lib.assets.gltf.converter.GltfNodeConverter;
-import net.nevinsky.abyssus.lib.assets.gltf.converter.GltfRootNodeConverter;
-import net.nevinsky.abyssus.lib.assets.gltf.converter.GltfSceneConverter;
+import net.nevinsky.abyssus.lib.assets.gltf.converter.GlTFMaterialConverter;
+import net.nevinsky.abyssus.lib.assets.gltf.converter.GlTFMeshConverter;
+import net.nevinsky.abyssus.lib.assets.gltf.converter.GlTFRootNodeConverter;
+import net.nevinsky.abyssus.lib.assets.gltf.converter.GlTFSceneConverter;
+import net.nevinsky.abyssus.lib.assets.gltf.converter.GlTFTextureConverter;
+import net.nevinsky.abyssus.lib.assets.gltf.converter.MaterialHolder;
+import net.nevinsky.abyssus.lib.assets.gltf.converter.TextureHolder;
 import net.nevinsky.abyssus.lib.assets.gltf.dto.GlTFDto;
-import net.nevinsky.abyssus.lib.assets.gltf.dto.binary.GlTFBinary;
+import net.nevinsky.abyssus.lib.assets.gltf.glb.GlTFBinary;
 import net.nevinsky.abyssus.lib.assets.gltf.scene.AbyssusScenes;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Assertions;
@@ -20,20 +22,23 @@ import java.nio.charset.Charset;
 public class GlTFLoaderTest {
     private static final ObjectMapper mapper = JsonUtils.createMapper();
     private static GlTFLoader glTFLoader;
-    private static GltfMaterialConverter materialConverter;
-    private static GltfNodeConverter nodeConverter;
-    private static GltfMeshConverter meshConverter;
-    private static GltfRootNodeConverter modelConverter;
-    private static GltfSceneConverter sceneConverter;
+    private static GlTFMaterialConverter materialConverter;
+    private static GlTFMeshConverter meshConverter;
+    private static GlTFRootNodeConverter modelConverter;
+    private static GlTFSceneConverter sceneConverter;
+    private static GlTFTextureConverter textureConverter;
+    private static TextureHolder textureHolder;
     private static final GlTFBinaryReader binaryReader = new GlTFBinaryReader();
 
     @BeforeAll
     public static void init() {
-        meshConverter = new GltfMeshConverter();
-        nodeConverter = new GltfNodeConverter();
-        materialConverter = new GltfMaterialConverter();
-        modelConverter = new GltfRootNodeConverter(meshConverter, nodeConverter, materialConverter);
-        sceneConverter = new GltfSceneConverter(modelConverter);
+        var holder = new MaterialHolder();
+        textureHolder = new TextureHolder();
+        meshConverter = new GlTFMeshConverter();
+        textureConverter = new GlTFTextureConverter(textureHolder);
+        materialConverter = new GlTFMaterialConverter(textureConverter);
+        modelConverter = new GlTFRootNodeConverter(meshConverter, materialConverter, holder);
+        sceneConverter = new GlTFSceneConverter(modelConverter);
 
         glTFLoader = new GlTFLoader(
                 mapper,
@@ -53,7 +58,8 @@ public class GlTFLoaderTest {
         ));
 
         var dto = mapper.readValue(content, GlTFDto.class);
-        GlTFBinary binary = null;
+        var binary = new GlTFBinary(dto, getClass().getClassLoader().getResourceAsStream("gltf/aBeautifulGame/"
+                + dto.getBuffers().get(0).getUri()));
         glTFLoader.load(scenes, dto, binary);
 
         Assertions.assertEquals(dto.getScenes().size(), scenes.getScenes().size());

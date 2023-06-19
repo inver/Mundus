@@ -3,27 +3,26 @@ package net.nevinsky.abyssus.lib.assets.gltf.converter;
 import lombok.RequiredArgsConstructor;
 import net.nevinsky.abyssus.core.model.Model;
 import net.nevinsky.abyssus.core.node.Node;
-import net.nevinsky.abyssus.core.node.NodePart;
 import net.nevinsky.abyssus.lib.assets.gltf.dto.GlTFDto;
 import net.nevinsky.abyssus.lib.assets.gltf.dto.GlTFNodeDto;
-import net.nevinsky.abyssus.lib.assets.gltf.dto.binary.GlTFBinary;
+import net.nevinsky.abyssus.lib.assets.gltf.glb.GlTFBinary;
 import org.apache.commons.collections4.CollectionUtils;
 
 @RequiredArgsConstructor
-public class GltfRootNodeConverter {
+public class GlTFRootNodeConverter {
 
-    private final GltfMeshConverter meshConverter;
-    private final GltfNodeConverter nodeConverter;
-    private final GltfMaterialConverter materialConverter;
+    private final GlTFMeshConverter meshConverter;
+    private final GlTFMaterialConverter materialConverter;
+    private final MaterialHolder materialHolder;
 
     public Model convert(GlTFDto root, GlTFBinary binary, GlTFNodeDto nodeDto) {
         var res = new Model();
 
-        var node = convert(root, nodeDto);
+        var node = convertNode(root, binary, nodeDto);
         if (CollectionUtils.isNotEmpty(nodeDto.getChildren())) {
             nodeDto.getChildren().forEach(child -> {
                 var childNode = root.getNodes().get(child);
-                node.addChild(convert(root, childNode));
+                node.addChild(convertNode(root, binary, childNode));
             });
         }
         res.getNodes().add(node);
@@ -31,7 +30,7 @@ public class GltfRootNodeConverter {
         return res;
     }
 
-    public Node convert(GlTFDto root, GlTFNodeDto node) {
+    public Node convertNode(GlTFDto root, GlTFBinary binary, GlTFNodeDto node) {
         var res = new Node();
         res.id = node.getName();
         if (node.getTranslation() != null) {
@@ -49,12 +48,9 @@ public class GltfRootNodeConverter {
         }
         if (node.getMesh() != null) {
             var mesh = root.getMeshes().get(node.getMesh());
-            var part = new NodePart();
-
-
+            meshConverter.load(root, binary, res, mesh, materialHolder.getDefaultMaterial(),
+                    materialConverter.converts(root));
         }
-
-
         return res;
     }
 }

@@ -84,7 +84,8 @@ public class GlTFAccessorDto extends GlTFChildOfRootPropertyDto {
         return getStrideSize() * count;
     }
 
-    private int getTypeSize() {
+    @JsonIgnore
+    public int getTypeSize() {
         switch (type) {
             case SCALAR:
                 return 1;

@@ -636,7 +636,7 @@
         {
             "extensions" : {
                 "KHR_materials_transmission" : {
-                    "transmissionFactor" : 1
+                    "transmissionFactor" : 1.0
                 },
                 "KHR_materials_volume" : {
                     "attenuationColor" : [
@@ -683,7 +683,7 @@
         {
             "extensions" : {
                 "KHR_materials_transmission" : {
-                    "transmissionFactor" : 1
+                    "transmissionFactor" : 1.0
                 },
                 "KHR_materials_volume" : {
                     "attenuationColor" : [

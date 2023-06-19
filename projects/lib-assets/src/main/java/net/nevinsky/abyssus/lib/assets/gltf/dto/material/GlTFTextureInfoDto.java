@@ -3,6 +3,7 @@ package net.nevinsky.abyssus.lib.assets.gltf.dto.material;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.nevinsky.abyssus.lib.assets.gltf.dto.GlTFPropertyDto;
 
 /**
  * Reference to a texture.
@@ -10,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class GlTFTextureInfoDto {
+public class GlTFTextureInfoDto extends GlTFPropertyDto {
     /**
      * The index of the texture.
      */

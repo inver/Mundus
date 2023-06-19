@@ -38,6 +38,7 @@ public class GlTFSamplerDto {
         NEAREST(9728),
         LINEAR(9729);
 
+        @Getter
         @JsonValue
         private final int value;
 
@@ -60,6 +61,7 @@ public class GlTFSamplerDto {
         LINEAR_MIPMAP_LINEAR(9987);
 
         @JsonValue
+        @Getter
         private final int value;
 
         @JsonCreator
@@ -77,6 +79,7 @@ public class GlTFSamplerDto {
         MIRRORED_REPEAT(33648),
         REPEAT(10497);
 
+        @Getter
         @JsonValue
         private final int value;
 
