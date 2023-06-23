@@ -3,6 +3,10 @@ dependencies {
     implementation libs.gdx
 
     testImplementation libs.junit_jupiter_engine
+    testImplementation libs.gdx_backend_lwjgl3
+    testImplementation libs.gdx_platform
+    testImplementation libs.gdx_platform
+    testImplementation libs.mockito_core
+    testImplementation libs.logback_classic
     testImplementation 'com.google.guava:guava:32.0.0-jre'
-
 }

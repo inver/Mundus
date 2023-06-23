@@ -11,38 +11,35 @@ import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 
 import java.nio.charset.Charset;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 @Slf4j
 public class GlTFSerializingTest {
 
-    private static final List<String> files = List.of(
-            "aBeautifulGame"
+    private static final Stream<String> files = Stream.of(
+//            "aBeautifulGame",
 //            "animatedMorphCube",
-//            "boxAnimated"
+            "boxAnimated"
     );
 
     private final ObjectMapper mapper = JsonUtils.createMapper();
 
     @TestFactory
-    public Stream<DynamicTest> dynamicTestsForEmployeeWorkflows() {
-        return files.stream()
-                .map(f -> DynamicTest.dynamicTest(
-                        "Check json model for file: " + f, () -> testJsonReadAndWrite(f)
-                ));
+    public Stream<DynamicTest> testJsonSerializationAndDeserialization() {
+        return files.map(f -> DynamicTest.dynamicTest(
+                "Check json model for file: " + f, () -> testJsonReadAndWrite(f)
+        ));
     }
 
     @SuppressWarnings("unchecked")
     @SneakyThrows
     public void testJsonReadAndWrite(String file) {
         var content = String.join("", IOUtils.readLines(
-                getClass().getClassLoader().getResourceAsStream("gltf/" + file + "/file.gltf"),
+                Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("gltf/" + file + "/file.gltf")),
                 Charset.defaultCharset()
         ));
-
 
         var res = mapper.readValue(content, GlTFDto.class);
         var serialized = mapper.writeValueAsString(res);
@@ -56,7 +53,7 @@ public class GlTFSerializingTest {
         var difference = Maps.difference(leftFlatMap, rightFlatMap);
 
         if (difference.entriesOnlyOnLeft().size() > 0) {
-            log.info("Entries only on the left\n--------------------------");
+            log.info("\nEntries only on the left\n--------------------------");
             difference.entriesOnlyOnLeft().forEach((key, value) -> log.error(key + ": " + value));
         }
 

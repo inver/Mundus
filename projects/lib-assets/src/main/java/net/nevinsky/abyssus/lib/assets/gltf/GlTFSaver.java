@@ -9,8 +9,6 @@ import java.io.File;
 @RequiredArgsConstructor
 public class GlTFSaver {
 
-    //    private final GlTFValidator validator;
-    private final ObjectMapper mapper;
     private final GlTFBinaryWriter binaryWriter;
 
     public void save(Scenes scenes, File gltfResultFile) {

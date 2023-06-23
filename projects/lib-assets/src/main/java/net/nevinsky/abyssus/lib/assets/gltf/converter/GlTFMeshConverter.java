@@ -500,7 +500,8 @@ public class GlTFMeshConverter {
 
 
         var nodePart = new MorphNodePart();
-        nodePart.setMorphTargets(((MorphNode) node).getWeights());
+        //todo
+//        nodePart.setMorphTargets(((MorphNode) node).getWeights());
         nodePart.meshPart = meshPart;
         nodePart.material = material;
         parts.add(nodePart);

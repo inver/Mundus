@@ -19,6 +19,7 @@ package com.mbrlabs.mundus.editor.terrain;
 import com.badlogic.gdx.math.Interpolation;
 import com.mbrlabs.mundus.commons.terrain.TerrainObject;
 
+import java.security.SecureRandom;
 import java.util.Random;
 
 /**
@@ -27,7 +28,7 @@ import java.util.Random;
  */
 public class PerlinNoiseGenerator extends Generator<PerlinNoiseGenerator> {
 
-    private final Random rand = new Random();
+    private final Random rand = new SecureRandom();
     private long seed = 0;
     // number of noise functions
     private int octaves = 1;
