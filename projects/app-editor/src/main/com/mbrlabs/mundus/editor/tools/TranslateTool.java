@@ -39,7 +39,6 @@ import net.nevinsky.abyssus.core.ModelBuilder;
 import net.nevinsky.abyssus.core.model.Model;
 import net.nevinsky.abyssus.core.shader.ShaderProvider;
 import org.jetbrains.annotations.NotNull;
-import org.lwjgl.opengl.GL11;
 
 /**
  * @author Marcus Brummer
@@ -133,7 +132,8 @@ public class TranslateTool extends TransformTool {
         }
 
         batch.begin(getCtx().getCurrent().getCamera());
-        GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
+        //TODO
+//        GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
         xHandle.render(batch, environment, shaders, delta);
         yHandle.render(batch, environment, shaders, delta);
         zHandle.render(batch, environment, shaders, delta);

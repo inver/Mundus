@@ -1,6 +1,5 @@
 package com.mbrlabs.mundus.editor.utils;
 
-import com.mbrlabs.mundus.editor.Main;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +16,7 @@ public final class AppUtils {
 
     public static Version getAppVersion() {
         Properties prop = new Properties();
-        try (var is = Main.class.getResourceAsStream("/version.properties")) {
+        try (var is = AppUtils.class.getResourceAsStream("/version.properties")) {
             prop.load(is);
 
             return Version.builder()

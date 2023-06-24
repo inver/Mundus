@@ -40,7 +40,7 @@ import net.nevinsky.abyssus.core.ModelBuilder;
 import net.nevinsky.abyssus.core.model.Model;
 import net.nevinsky.abyssus.core.shader.ShaderProvider;
 import org.jetbrains.annotations.NotNull;
-import org.lwjgl.opengl.GL11;
+//import org.lwjgl.opengl.GL11;
 
 /**
  * Scales valid game objects.
@@ -106,7 +106,8 @@ public class ScaleTool extends TransformTool {
     public void render(ModelBatch batch, SceneEnvironment environment, ShaderProvider shaders, float delta) {
         super.render(batch, environment, shaders, delta);
 
-        GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
+        //TODO
+//        GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
         if (getCtx().getSelectedEntityId() < 0) {
             return;
         }

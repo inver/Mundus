@@ -17,8 +17,7 @@ public class OutlineTest extends BaseCtxTest {
 
     @Test
     public void testDeselect() {
-        var event = new EntitySelectedEvent(-1);
-        outline.onEntitySelected(event);
+        outline.onEntitySelected(-1);
         //NPE not raised
         assertEquals(1, 1);
     }

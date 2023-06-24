@@ -5,38 +5,34 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Files;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3NativesLoader;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.kotcrab.vis.ui.VisUI;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mockito;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class GdxTestRunner extends SpringExtension {
 
     public GdxTestRunner() {
-        Lwjgl3NativesLoader.load();
-        var gl20 = mock(GL20.class);
-        when(gl20.glCreateShader(anyInt())).thenReturn(1);
+        GdxNativesLoader.load();
+        var gl20 = Mockito.mock(GL20.class);
+        Mockito.when(gl20.glCreateShader(ArgumentMatchers.anyInt())).thenReturn(1);
 
         Gdx.gl = gl20;
         Gdx.gl20 = gl20;
-        Gdx.files = new Lwjgl3Files();
-        Gdx.app = mock(Application.class);
+        Gdx.files = new HeadlessFiles();
+        Gdx.app = Mockito.mock(Application.class);
 
-        when(Gdx.app.getPreferences(any())).thenReturn(mock(Preferences.class));
+        Mockito.when(Gdx.app.getPreferences(ArgumentMatchers.any())).thenReturn(Mockito.mock(Preferences.class));
 
-        var graphics = mock(Graphics.class);
+        var graphics = Mockito.mock(Graphics.class);
         Gdx.graphics = graphics;
 
-        when(graphics.getWidth()).thenReturn(1024);
-        when(graphics.getHeight()).thenReturn(768);
+        Mockito.when(graphics.getWidth()).thenReturn(1024);
+        Mockito.when(graphics.getHeight()).thenReturn(768);
 
-        Gdx.input = mock(Input.class);
+        Gdx.input = Mockito.mock(Input.class);
 
         //for parallel running
         if (!VisUI.isLoaded()) {

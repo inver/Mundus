@@ -19,7 +19,6 @@ package com.mbrlabs.mundus.editor.utils;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import org.lwjgl.opengl.GL11;
 
 /**
  * @author Marcus Brummer
@@ -42,11 +41,13 @@ public class GlUtils {
     public static class Unsafe {
 
         public static void polygonModeFill() {
-            GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
+            //TODO
+//            GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
         }
 
         public static void polygonModeWireframe() {
-            GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
+            //TODO
+//            GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
         }
 
     }

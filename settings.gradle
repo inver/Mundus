@@ -1,7 +1,8 @@
-include 'app-editor'
 include 'lib-commons'
 include 'lib-core'
 include 'lib-assets'
+include 'app-editor'
+include 'app-desktop'
 
 rootProject.name = 'abyssus'
 rootProject.children.each { project ->

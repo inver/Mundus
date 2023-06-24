@@ -2,7 +2,6 @@ package com.mbrlabs.mundus.editor.config;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowAdapter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -11,16 +10,18 @@ import com.kotcrab.vis.ui.VisUI;
 import com.mbrlabs.mundus.editor.Editor;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-public class InitListener extends Lwjgl3WindowAdapter implements ApplicationListener {
+public interface EditorAppListener extends ApplicationListener {
 
-    private Editor editor;
+    Editor getEditor();
+
+    void setEditor(Editor editor);
 
     @Override
-    public void create() {
+    default void create() {
         initVisUI();
         var ctx = new AnnotationConfigApplicationContext(RootConfig.class);
-        editor = ctx.getBean(Editor.class);
-        editor.create();
+        setEditor(ctx.getBean(Editor.class));
+        getEditor().create();
         var widgetsHolder = ctx.getBean(UiComponentHolder.class);
         widgetsHolder.init();
     }
@@ -58,32 +59,27 @@ public class InitListener extends Lwjgl3WindowAdapter implements ApplicationList
     }
 
     @Override
-    public void resize(int width, int height) {
-        editor.resize(width, height);
+    default void resize(int width, int height) {
+        getEditor().resize(width, height);
     }
 
     @Override
-    public void render() {
-        editor.render();
+    default void render() {
+        getEditor().render();
     }
 
     @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
+    default void pause() {
 
     }
 
     @Override
-    public void dispose() {
-        editor.dispose();
+    default void resume() {
+
     }
 
     @Override
-    public boolean closeRequested() {
-        return editor.closeRequested();
+    default void dispose() {
+        getEditor().dispose();
     }
 }

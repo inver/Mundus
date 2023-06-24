@@ -1,0 +1,60 @@
+import java.text.SimpleDateFormat
+
+project.ext.mainClassName = "net.nevinsky.abyssus.desktop.DesktopEditor"
+project.ext.assetsDir = new File("assets")
+
+tasks.register("run", JavaExec) {
+    dependsOn(classes)
+    mainClass = project.mainClassName
+    classpath = sourceSets.main.runtimeClasspath
+    standardInput = System.in
+    workingDir = project.assetsDir
+    ignoreExitValue(true)
+
+    if (System.properties['os.name'].toLowerCase().contains('mac')) {
+        jvmArgs "-XstartOnFirstThread"
+        jvmArgs "-Djava.awt.headless=true"
+    }
+}
+
+tasks.register("distEditor", Jar) {
+    archiveBaseName = project.appName
+    archiveVersion = project.appVersion
+
+    dependsOn configurations.runtimeClasspath
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
+    duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+}
+
+tasks.withType(Jar).configureEach {
+    manifest {
+        attributes 'Main-Class': project.mainClassName
+        attributes "AppName": project.appName
+        attributes "Version": project.appVersion
+    }
+}
+
+tasks.withType(ProcessResources).configureEach {
+    doLast {
+        new File("${project.buildDir}/resources/main", "version.properties").text = """
+appName=${project.appName}
+appVersion=${project.appVersion}
+buildTime=${new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date())}
+"""
+    }
+}
+
+build {
+    finalizedBy("distEditor")
+}
+
+dependencies {
+    implementation project(":app-editor")
+
+    implementation libs.gdx_backend_lwjgl3
+    implementation libs.gdx_platform
+    implementation "com.kotcrab.vis:vis-ui:$visuiVersion"
+}

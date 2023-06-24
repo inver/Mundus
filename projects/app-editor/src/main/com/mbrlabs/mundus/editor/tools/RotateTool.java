@@ -38,7 +38,6 @@ import com.mbrlabs.mundus.editor.utils.UsefulMeshs;
 import net.nevinsky.abyssus.core.ModelBatch;
 import net.nevinsky.abyssus.core.shader.ShaderProvider;
 import org.jetbrains.annotations.NotNull;
-import org.lwjgl.opengl.GL11;
 
 /**
  * Rotate tool for game objects
@@ -85,7 +84,8 @@ public class RotateTool extends TransformTool {
         }
 
         if (state == TransformState.IDLE) {
-            GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
+            //TODO
+//            GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
             batch.begin(getCtx().getCurrent().getCamera());
             xHandle.render(batch, environment, shaders, delta);
             yHandle.render(batch, environment, shaders, delta);
