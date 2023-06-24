@@ -10,6 +10,7 @@ import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
 import com.mbrlabs.mundus.commons.scene3d.HierarchyNode;
 import com.mbrlabs.mundus.editor.core.assets.AssetsStorage;
 import com.mbrlabs.mundus.editor.core.assets.EditorTerrainService;
+import com.mbrlabs.mundus.editor.core.ecs.DependenciesComponent;
 import com.mbrlabs.mundus.editor.core.light.LightService;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.project.ProjectManager;
@@ -146,7 +147,28 @@ public class OutlinePresenter {
                 return;
             }
 
-            sceneService.deleteNode(ctx.getCurrent().getCurrentScene().getRootNode(), outline.getSelectedEntityId());
+            var node = sceneService.find(
+                    ctx.getCurrent().getCurrentScene().getRootNode(), outline.getSelectedEntityId()
+            );
+            if (node == null) {
+                return;
+            }
+
+            if (node.getType() == HierarchyNode.Type.GROUP) {
+                ctx.getCurrentWorld().delete(outline.getSelectedEntityId());
+            } else {
+                ctx.getCurrentWorld().getMapper(DependenciesComponent.class)
+                        .get(outline.getSelectedEntityId())
+                        .getDependencies()
+                        .forEach(d -> ctx.getCurrentWorld().delete(d));
+            }
+            //TODO remove search of node in #sceneService.deleteNode
+            sceneService.deleteNode(
+                    ctx.getCurrent().getCurrentScene().getRootNode(), outline.getSelectedEntityId(),
+                    node.getType() == HierarchyNode.Type.GROUP
+            );
+
+
             eventBus.post(new SceneGraphChangedEvent());
             //todo
 //            val deleteCommand = DeleteCommand(selectedEntityId, tree.findNode(selectedEntityId))

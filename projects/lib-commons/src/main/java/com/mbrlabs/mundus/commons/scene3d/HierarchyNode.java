@@ -3,11 +3,13 @@ package com.mbrlabs.mundus.commons.scene3d;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+@ToString(of = {"id", "name"})
 @Getter
 public class HierarchyNode implements Serializable {
     // Entity id
@@ -39,6 +41,7 @@ public class HierarchyNode implements Serializable {
 
     public enum Type {
         NONE,
+        GROUP,
         CAMERA
     }
 }
