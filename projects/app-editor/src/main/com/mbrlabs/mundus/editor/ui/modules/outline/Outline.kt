@@ -16,19 +16,22 @@
 package com.mbrlabs.mundus.editor.ui.modules.outline
 
 //import com.mbrlabs.mundus.editor.utils.createTerrainGO
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input
+import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
+import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.Align
 import com.kotcrab.vis.ui.widget.*
 import com.mbrlabs.mundus.commons.Scene
 import com.mbrlabs.mundus.commons.scene3d.HierarchyNode
-import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.events.*
-import com.mbrlabs.mundus.editor.history.CommandHistory
 import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.utils.TextureUtils
 import mu.KotlinLogging
+import org.springframework.stereotype.Component
 import org.springframework.util.CollectionUtils
 import java.util.*
 
@@ -39,32 +42,34 @@ import java.util.*
  * @version 01-10-2016
  */
 // TODO refactor...kind of messy spaghetti code!
-@org.springframework.stereotype.Component
-class Outline(
-    private val ctx: EditorCtx,
-    private val history: CommandHistory,
-    private val eventBus: EventBus,
-    private val appUi: AppUi,
-    outlinePresenter: OutlinePresenter
-) : VisTable(),
-    ProjectChangedEvent.ProjectChangedListener,
-    SceneChangedEvent.SceneChangedListener,
-    SceneGraphChangedEvent.SceneGraphChangedListener,
-    EntitySelectedEvent.EntitySelectedListener {
+@Component
+class Outline(private val appUi: AppUi, val outlinePresenter: OutlinePresenter) : VisTable() {
 
     private val log = KotlinLogging.logger {}
 
-    private val content: VisTable
+    var selectedEntityId = -1
+
     val tree = VisTree<IdNode, Int>()
     val scrollPane: ScrollPane
     private val dragAndDrop: OutlineDragAndDrop
-    val rightClickMenu = RightClickMenu()
+
+    private val rightClickMenu = PopupMenu()
+    val rcmAddGroup = MenuItem("Add group")
+    val rcmAddCamera = MenuItem("Add camera")
+    val rcmAddTerrain = MenuItem("Add terrain")
+    private val rcmAddLight = MenuItem("Add light")
+    val rcmAddShader = MenuItem("Add Shader")
+    val rcmDuplicate = MenuItem("Duplicate")
+    val rcmRename = MenuItem("Rename")
+    val rcmDelete = MenuItem("Delete")
+
+    private val lightsPopupMenu = PopupMenu()
+    val addDirectionalLight = MenuItem("Directional Light")
 
     init {
         setBackground("window-bg")
-
-        content = VisTable()
-        content.align(Align.left or Align.top)
+        add(VisLabel("Outline")).expandX().fillX().pad(3f).row()
+        addSeparator().row()
 
 //        tree.debugAll()
         tree.style.plus = TextureUtils.load("ui/icons/expand.png", 20, 20)
@@ -76,32 +81,124 @@ class Outline(
         scrollPane = VisScrollPane(tree)
         scrollPane.setFlickScroll(false)
         scrollPane.fadeScrollBars = false
-        content.add(scrollPane).fill().expand()
 
-        add(VisLabel("Outline")).expandX().fillX().pad(3f).row()
-        addSeparator().row()
+        val content = VisTable()
+        content.align(Align.left or Align.top)
+        content.add(scrollPane).fill().expand()
         add(content).fill().expand()
+
+        initRightClickMenu()
+        initScrollPaneListener()
+        initTreeClickListener()
 
         outlinePresenter.init(this)
     }
 
+    private fun initScrollPaneListener() {
+        scrollPane.addListener(object : InputListener() {
+            override fun enter(event: InputEvent?, x: Float, y: Float, pointer: Int, fromActor: Actor?) {
+                appUi.setScrollFocus(scrollPane)
+            }
 
-    override fun onProjectChanged(event: ProjectChangedEvent) {
-        // update to new sceneGraph
-        log.trace("Project changed. Building scene graph.")
-        buildTree(ctx.current.currentScene)
+            override fun exit(event: InputEvent?, x: Float, y: Float, pointer: Int, toActor: Actor?) {
+                appUi.setScrollFocus(null)
+            }
+        })
     }
 
-    override fun onSceneChanged(event: SceneChangedEvent) {
-        // update to new sceneGraph
-        log.trace("Scene changed. Building scene graph.")
-        buildTree(ctx.current.currentScene)
+    private fun initTreeClickListener() {
+        tree.addListener(object : ClickListener() {
+            override fun clicked(event: InputEvent, x: Float, y: Float) {
+                if (tapCount != 2) {
+                    return
+                }
+                val clickedNode: IdNode = tree.getNodeAt(y) ?: return
+                val entityId = clickedNode.value
+                if (entityId < 0) {
+                    return
+                }
+                outlinePresenter.moveCameraToSelectedEntity(entityId)
+            }
+
+            override fun touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                return if (Input.Buttons.LEFT != button) {
+                    true
+                } else super.touchDown(event, x, y, pointer, button)
+            }
+
+            override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {
+                if (Input.Buttons.RIGHT != button) {
+                    super.touchUp(event, x, y, pointer, button)
+                    return
+                }
+                val node = tree.getNodeAt(y)
+                var id = -1
+                if (node != null) {
+                    id = node.value
+                }
+                show(id, Gdx.input.x.toFloat(), (Gdx.graphics.height - Gdx.input.y).toFloat())
+            }
+        })
     }
 
-    override fun onSceneGraphChanged(event: SceneGraphChangedEvent) {
-        log.trace("SceneGraph changed. Building scene graph.")
-        buildTree(ctx.current.currentScene)
+    private fun initRightClickMenu() {
+        rightClickMenu.addItem(rcmAddGroup)
+        rightClickMenu.addItem(rcmAddCamera)
+        rightClickMenu.addItem(rcmAddTerrain)
+        rightClickMenu.addItem(rcmAddLight)
+        rightClickMenu.addItem(rcmAddShader)
+        rightClickMenu.addItem(rcmDuplicate)
+        rightClickMenu.addItem(rcmRename)
+        rightClickMenu.addItem(rcmDelete)
+
+        lightsPopupMenu.addItem(addDirectionalLight)
+        rcmAddLight.subMenu = lightsPopupMenu
     }
+
+    /**
+     * Right click event opens menu and enables more options if selected
+     * game object is active.
+     *
+     * @param entityId id of entity
+     * @param x position of cursor
+     * @param y position of cursor
+     */
+    fun show(entityId: Int, x: Float, y: Float) {
+        selectedEntityId = entityId
+        rightClickMenu.showMenu(appUi, x, y)
+
+        rcmRename.isDisabled = selectedEntityId <= 0
+        rcmDelete.isDisabled = selectedEntityId <= 0
+
+        //todo
+        // terrainAsset can not be duplicated
+//            duplicate.isDisabled =
+//                selectedGO == null || ctx.current.currentScene.world.getEntity(selectedGO).getComponent()selectedGO!!.findComponentByType(Component.Type.TERRAIN) != null
+    }
+
+    fun showRenameDialog() {
+        TODO()
+//            val node = tree.findNode(selectedGO!!)
+//
+//            val renameDialog = Dialogs.showInputDialog(appUi, "Rename", "",
+//                object : InputDialogAdapter() {
+//                    override fun finished(input: String?) {
+//                        log.trace("Rename game object [{}] to [{}].", selectedGO, input)
+//                        // update sceneGraph
+//                        selectedGO!!.name = input
+//                        // update Outline
+//                        //goNode.name.setText(input + " [" + selectedGO.id + "]");
+//                        node.label.setText(input)
+//
+//                        eventBus.post(SceneGraphChangedEvent())
+//                    }
+//                })
+//            // set position of dialog to menuItem position
+//            val nodePosX = node.actor.x
+//            val nodePosY = node.actor.y
+//            renameDialog.setPosition(nodePosX, nodePosY)
+    }
+
 
     /**
      * Building tree from game objects in sceneGraph, clearing previous
@@ -138,18 +235,6 @@ class Outline(
     }
 
     /**
-     * Removing game object from tree and outline
-
-     * @param go
-     */
-//    private fun removeGo(go: GameObject) {
-//        TODO()
-//        val deleteCommand = DeleteCommand(go, tree.findNode(go))
-//        history.add(deleteCommand)
-//        deleteCommand.execute() // run delete
-//    }
-
-    /**
      * Deep copy of all game objects
 
      * @param go
@@ -177,152 +262,18 @@ class Outline(
 //        }
 //    }
 
-    override fun onEntitySelected(event: EntitySelectedEvent) {
+    fun onEntitySelected(entityId: Int) {
         tree.selection.clear()
 
-        if (event.entityId < 0) {
+        if (entityId < 0) {
             return
         }
 
-        val node = tree.findNode(event.entityId)
-        log.trace("Select game object [{}].", node?.value)
+        val node = tree.findNode(entityId)
+        log.trace("Selected game object [{}] with id {}.", node?.value, entityId)
         if (node != null) {
             tree.selection.add(node)
             node.expandTo()
         }
     }
-
-//    override fun onGameObjectSelected(event: EntitySelectedEvent) {
-//        tree.selection.clear()
-//
-//        if (event.gameObject == null) {
-//            return
-//        }
-//
-//        val node = tree.findNode(event.gameObject)
-//        log.trace("Select game object [{}].", node?.value)
-//        if (node != null) {
-//            tree.selection.add(node)
-//            node.expandTo()
-//        }
-//    }
-
-    inner class RightClickMenu : PopupMenu() {
-
-        val addGroup = MenuItem("Add group")
-        val addCamera = MenuItem("Add camera")
-        val addTerrain = MenuItem("Add terrain")
-        val addLight = MenuItem("Add light")
-        val addShader = MenuItem("Add Shader")
-        val duplicate = MenuItem("Duplicate")
-        val rename = MenuItem("Rename")
-        val delete = MenuItem("Delete")
-
-        private val lightsPopupMenu: PopupMenu = PopupMenu()
-        val addDirectionalLight: MenuItem = MenuItem("Directional Light")
-
-        var selectedEntityId = -1
-
-        init {
-            rename.addListener(object : ClickListener() {
-                override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                    if (selectedEntityId > 0) {
-                        showRenameDialog()
-                    }
-                }
-            })
-
-            // duplicate node
-            duplicate.addListener(object : ClickListener() {
-                override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                    if (selectedEntityId > 0 && !duplicate.isDisabled) {
-                        TODO()
-//                        duplicateGO(selectedGO!!, selectedGO!!.parent)
-//                        eventBus.post(SceneGraphChangedEvent())
-                    }
-                }
-            })
-
-            // delete game object
-            delete.addListener(object : ClickListener() {
-                override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                    if (selectedEntityId < 0) {
-                        return
-                    }
-
-                    eventBus.post(SceneGraphChangedEvent())
-                    if (selectedEntityId != null) {
-                        TODO()
-//                        removeGo(selectedGO!!)
-//                        eventBus.post(SceneGraphChangedEvent())
-                    }
-                }
-            })
-
-            lightsPopupMenu.addItem(addDirectionalLight)
-            addLight.subMenu = lightsPopupMenu
-
-            addItem(addGroup)
-            addItem(addCamera)
-            addItem(addTerrain)
-            addItem(addLight)
-            addItem(addShader)
-            addItem(rename)
-            addItem(duplicate)
-            addItem(delete)
-        }
-
-        /**
-         * Right click event opens menu and enables more options if selected
-         * game object is active.
-         *
-         * @param entityId
-         * @param x
-         * @param y
-         */
-        fun show(entityId: Int, x: Float, y: Float) {
-            selectedEntityId = entityId
-            showMenu(appUi, x, y)
-
-            // check if game object is selected
-            if (selectedEntityId > 0) {
-                // Activate menu options for selected game objects
-                rename.isDisabled = false
-                delete.isDisabled = false
-            } else {
-                // disable MenuItems which only works with selected item
-                rename.isDisabled = true
-                delete.isDisabled = true
-            }
-
-            //todo
-            // terrainAsset can not be duplicated
-//            duplicate.isDisabled =
-//                selectedGO == null || ctx.current.currentScene.world.getEntity(selectedGO).getComponent()selectedGO!!.findComponentByType(Component.Type.TERRAIN) != null
-        }
-
-        fun showRenameDialog() {
-            TODO()
-//            val node = tree.findNode(selectedGO!!)
-//
-//            val renameDialog = Dialogs.showInputDialog(appUi, "Rename", "",
-//                object : InputDialogAdapter() {
-//                    override fun finished(input: String?) {
-//                        log.trace("Rename game object [{}] to [{}].", selectedGO, input)
-//                        // update sceneGraph
-//                        selectedGO!!.name = input
-//                        // update Outline
-//                        //goNode.name.setText(input + " [" + selectedGO.id + "]");
-//                        node.label.setText(input)
-//
-//                        eventBus.post(SceneGraphChangedEvent())
-//                    }
-//                })
-//            // set position of dialog to menuItem position
-//            val nodePosX = node.actor.x
-//            val nodePosY = node.actor.y
-//            renameDialog.setPosition(nodePosX, nodePosY)
-        }
-    }
-
 }
