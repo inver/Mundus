@@ -16,9 +16,7 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 11
@@ -44,6 +42,7 @@ jobs:
           echo -e "ref: $GITHUB_REF \ncommit: $GITHUB_SHA\nbuild: $(date +"%Y-%m-%dT%H:%M:%SZ")" > projects/app-editor/build/libs/info.txt
       - name: Update nightly release
         uses: pyTooling/Actions/releaser@main
+        if: github.ref == 'refs/heads/develop'
         with:
           tag: nightly
           rm: true
