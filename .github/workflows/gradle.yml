@@ -12,7 +12,7 @@ on:
     branches:
       - "*"
   pull_request:
-    branches: [ master ]
+    branches: [ develop ]
 
 jobs:
   build:
@@ -41,12 +41,12 @@ jobs:
           report_paths: '**/build/test-results/test/TEST-*.xml'
       - name: Create info file
         run: |
-          echo -e "ref: $GITHUB_REF \ncommit: $GITHUB_SHA\nbuild: $(date +"%Y-%m-%dT%H:%M:%SZ")" > editor/build/libs/info.txt
+          echo -e "ref: $GITHUB_REF \ncommit: $GITHUB_SHA\nbuild: $(date +"%Y-%m-%dT%H:%M:%SZ")" > projects/editor/build/libs/info.txt
       - name: Update nightly release
         uses: eine/tip@master
         with:
           tag: nightly
           rm: true
           token: ${{ secrets.GITHUB_TOKEN }}
-          files: "editor/build/libs/Mundus.jar"
+          files: "projects/editor/build/libs/Mundus.jar"
 
