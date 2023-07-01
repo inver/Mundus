@@ -43,9 +43,7 @@ public class ImportModelPresenter {
                 }
 
                 try {
-                    var node = editorModelService.createModelEntity(importModelWidget.getImportedModel());
-                    ctx.getCurrent().getCurrentScene().getRootNode().addChild(node);
-
+                    editorModelService.createModelEntity(importModelWidget.getImportedModel());
                     projectManager.saveProject(ctx.getCurrent());
                     //todo is needed import event here?
 //                    eventBus.post(new AssetImportEvent(asset));

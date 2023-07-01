@@ -3,7 +3,6 @@ package com.mbrlabs.mundus.editor.ui.components.camera;
 import com.badlogic.gdx.math.Vector3;
 import com.mbrlabs.mundus.commons.core.ecs.component.CameraComponent;
 import com.mbrlabs.mundus.commons.core.ecs.component.TypeComponent;
-import com.mbrlabs.mundus.commons.scene3d.HierarchyNode;
 import com.mbrlabs.mundus.editor.core.ecs.EditorEcsService;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import lombok.RequiredArgsConstructor;
