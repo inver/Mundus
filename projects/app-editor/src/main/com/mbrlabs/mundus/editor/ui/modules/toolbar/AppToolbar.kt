@@ -239,9 +239,13 @@ class AppToolbar(
         arr.add(Pair(ProjectContext.MAIN_CAMERA_SELECTED, "Main camera"))
 
         val nameMapper = ctx.currentWorld.getMapper(NameComponent::class.java)
+        val typeMapper = ctx.currentWorld.getMapper(TypeComponent::class.java)
         val entities = ctx.currentWorld.aspectSubscriptionManager.get(Aspect.all(TypeComponent::class.java)).entities
-        for (i in 1..entities.size()) {
+        for (i in 1 until entities.size()) {
             val id = entities[i]
+            if (typeMapper.get(id).type != TypeComponent.Type.CAMERA) {
+                continue
+            }
             arr.add(Pair(id, nameMapper.get(id).name))
         }
         cameraSelector.items = arr
