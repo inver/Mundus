@@ -15,6 +15,7 @@ import com.mbrlabs.mundus.commons.assets.texture.TextureAssetLoader;
 import com.mbrlabs.mundus.commons.importer.CameraDeserializer;
 import com.mbrlabs.mundus.commons.importer.CameraSerializer;
 import com.mbrlabs.mundus.commons.importer.SceneConverter;
+import com.mbrlabs.mundus.editor.config.ui.TestOutline;
 import com.mbrlabs.mundus.editor.core.assets.AssetWriter;
 import com.mbrlabs.mundus.editor.core.assets.AssetsStorage;
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager;
@@ -28,7 +29,6 @@ import com.mbrlabs.mundus.editor.core.shader.ShaderClassLoader;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.ui.AppUi;
 import com.mbrlabs.mundus.editor.ui.PreviewGenerator;
-import com.mbrlabs.mundus.editor.ui.components.camera.CameraService;
 import com.mbrlabs.mundus.editor.ui.modules.outline.Outline;
 import com.mbrlabs.mundus.editor.ui.modules.outline.OutlinePresenter;
 import com.mbrlabs.mundus.editor.ui.widgets.ButtonFactory;
@@ -127,7 +127,7 @@ public class TestConfig {
     @Bean
     @Primary
     public Outline outline() {
-        return Mockito.spy(new Outline(appUi(), outlinePresenter));
+        return new TestOutline(appUi(), outlinePresenter);
     }
 
     @Bean
