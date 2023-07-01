@@ -42,7 +42,7 @@ public class Outline extends VisTable {
     private final OutlineDragAndDrop dragAndDrop;
     private final PopupMenu rightClickMenu = new PopupMenu();
     @Getter
-    final MenuItem rcmAddGroup = new MenuItem("Add group");
+    private final MenuItem rcmAddGroup = new MenuItem("Add group");
     @Getter
     private final MenuItem rcmAddCamera = new MenuItem("Add camera");
     @Getter
