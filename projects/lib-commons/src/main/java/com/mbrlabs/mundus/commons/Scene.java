@@ -24,7 +24,6 @@ import com.mbrlabs.mundus.commons.core.ecs.WorldUtils;
 import com.mbrlabs.mundus.commons.core.ecs.behavior.RenderComponentSystem;
 import com.mbrlabs.mundus.commons.core.ecs.component.CameraComponent;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
-import com.mbrlabs.mundus.commons.scene3d.HierarchyNode;
 import com.mbrlabs.mundus.commons.scene3d.components.RenderableObject;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -52,10 +51,6 @@ public class Scene implements Disposable, RenderableObject {
     private SceneEnvironment environment = new SceneEnvironment();
     @Getter
     private final List<Asset<?>> assets = new ArrayList<>();
-
-    @Setter
-    @Getter
-    private HierarchyNode rootNode = new HierarchyNode(-1, "Root");
 
     @Override
     public void render(ModelBatch batch, SceneEnvironment environment, ShaderProvider shaders, float delta) {

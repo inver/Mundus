@@ -103,8 +103,7 @@ public class OutlinePresenter {
             try {
                 log.debug("Add terrain game object in root node.");
 
-                var node = terrainService.createTerrain();
-                ctx.getCurrent().getCurrentScene().getRootNode().addChild(node);
+                terrainService.createTerrain();
 
                 projectManager.saveProject(ctx.getCurrent());
                 //todo is needed import event here?

@@ -9,7 +9,6 @@ import com.mbrlabs.mundus.commons.assets.terrain.TerrainMeta;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAssetLoader;
 import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
 import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObjectDelegate;
-import com.mbrlabs.mundus.commons.scene3d.HierarchyNode;
 import com.mbrlabs.mundus.commons.terrain.TerrainObject;
 import com.mbrlabs.mundus.commons.terrain.TerrainService;
 import com.mbrlabs.mundus.editor.core.ecs.PickableComponent;
@@ -81,7 +80,7 @@ public class EditorTerrainService extends TerrainService {
         return asset;
     }
 
-    public HierarchyNode createTerrain() {
+    public void createTerrain() {
         var world = ctx.getCurrentWorld();
 
         var id = world.create();
@@ -95,7 +94,5 @@ public class EditorTerrainService extends TerrainService {
                 .add(new PositionComponent())
                 .add(new RenderableObjectDelegate(terrain, ShaderConstants.TERRAIN).asComponent())
                 .add(PickableComponent.of(id, new RenderableObjectDelegate(terrain, ShaderConstants.PICKER)));
-
-        return new HierarchyNode(id, name);
     }
 }

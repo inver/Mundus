@@ -16,13 +16,15 @@
 
 package com.mbrlabs.mundus.editor.ui.modules.toolbar
 
+import com.artemis.Aspect
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.Array
 import com.kotcrab.vis.ui.widget.*
-import com.mbrlabs.mundus.commons.scene3d.HierarchyNode
+import com.mbrlabs.mundus.commons.core.ecs.component.NameComponent
+import com.mbrlabs.mundus.commons.core.ecs.component.TypeComponent
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.core.project.ProjectContext
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
@@ -84,7 +86,7 @@ class AppToolbar(
     private val createMaterial = MenuItem("Create material")
 
     private val sceneSelector = VisSelectBox<String>()
-    private val cameraSelector = MundusSelectBox<HierarchyNode>()
+    private val cameraSelector = MundusSelectBox<Pair<Int, String>>()
 
     init {
         eventBus.register(this)
@@ -110,11 +112,11 @@ class AppToolbar(
 
         sceneSelector.setItems("Main")
 
-        cameraSelector.setValueRenderer { it.name }
+        cameraSelector.setValueRenderer { it.second }
         cameraSelector.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                ctx.current.selectedCamera = cameraSelector.selected.id
-                eventBus.post(CameraChangedEvent(cameraSelector.selected.id))
+                ctx.current.selectedCamera = cameraSelector.selected.first
+                eventBus.post(CameraChangedEvent(cameraSelector.selected.first))
             }
         })
 
@@ -233,12 +235,15 @@ class AppToolbar(
     }
 
     private fun reloadCamerasList() {
-        val arr = Array<HierarchyNode>()
-//        arr.add(HierarchyNode(ProjectContext.MAIN_CAMERA_SELECTED, "Main", HierarchyNode.Type.CAMERA))
-//        ctx.current.currentScene.rootNode.children.filter { it.type == HierarchyNode.Type.CAMERA }.forEach {
-//            arr.add(it)
-//        }
+        val arr = Array<Pair<Int, String>>()
+        arr.add(Pair(ProjectContext.MAIN_CAMERA_SELECTED, "Main camera"))
 
+        val nameMapper = ctx.currentWorld.getMapper(NameComponent::class.java)
+        val entities = ctx.currentWorld.aspectSubscriptionManager.get(Aspect.all(TypeComponent::class.java)).entities
+        for (i in 1..entities.size()) {
+            val id = entities[i]
+            arr.add(Pair(id, nameMapper.get(id).name))
+        }
         cameraSelector.items = arr
     }
 
