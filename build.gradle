@@ -75,10 +75,22 @@ allprojects {
             csv.required = false
             html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
         }
+//        finalizedBy(jacocoTestCoverageVerification)
+    }
+
+    tasks.withType(JacocoCoverageVerification).configureEach {
+        violationRules {
+            failOnViolation = true
+            rule {
+                limit {
+                    minimum = 0.1
+                }
+            }
+        }
     }
 
     tasks.withType(Test).configureEach {
-        useJUnitPlatform{
+        useJUnitPlatform {
 
         }
         testLogging {

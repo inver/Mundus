@@ -86,25 +86,9 @@ public class MaterialAsset extends Asset<MaterialMeta> {
     }
 
     @Override
-    public void resolveDependencies(Map<String, Asset> assets) {
-
-    }
-
-    @Override
-    public void applyDependencies() {
-        // nothing to apply
-    }
-
-    @Override
     public void dispose() {
         // nothing to dispose
     }
-
-//    @Override
-//    public boolean usesAsset(Asset assetToCheck) {
-//
-//        return false;
-//    }
 
     public String getPreview() {
         return meta.getAdditional().getPreview();

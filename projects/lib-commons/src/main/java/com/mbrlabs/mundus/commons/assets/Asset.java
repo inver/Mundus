@@ -58,37 +58,6 @@ public abstract class Asset<M> implements Disposable {
         return "[" + getMeta().getType().toString() + "] " + getName();
     }
 
-    /**
-     * Loads the asset.
-     * <p>
-     * Loads the asset from disk and creates it.
-     */
-    @Deprecated
-    //todo remove this method
-    public void load() {
-        throw new UnsupportedOperationException("Load asset from asset is not supported! User Loader instead of");
-    }
-
-    /**
-     * Resolves all dependencies of this asset.
-     * <p>
-     * Before calling this method all assets must have been loaded using the load() method.
-     *
-     * @param assets map of loaded assets with asset id as key
-     */
-    @Deprecated
-    public abstract void resolveDependencies(Map<String, Asset> assets);
-
-    /**
-     * Applies dependent assets to this one.
-     * <p>
-     * If dependencies have been set, this method applies them to the asset. Note, that the asset and all it's set
-     * dependencies must have called load() before calling this method.
-     */
-    @Deprecated
-    public abstract void applyDependencies();
-
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {

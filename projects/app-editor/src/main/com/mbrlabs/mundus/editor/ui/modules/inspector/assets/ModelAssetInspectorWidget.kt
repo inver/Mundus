@@ -128,9 +128,10 @@ class ModelAssetInspectorWidget(
             )
             mw.matChangedListener = object : MaterialWidget.MaterialChangedListener {
                 override fun materialChanged(materialAsset: MaterialAsset) {
-                    modelAsset!!.defaultMaterials.put(g3dbMatID, materialAsset)
-                    modelAsset!!.applyDependencies()
-                    toolManager.modelPlacementTool.setModel(modelAsset)
+                    TODO()
+//                    modelAsset!!.defaultMaterials.put(g3dbMatID, materialAsset)
+//                    modelAsset!!.applyDependencies()
+//                    toolManager.modelPlacementTool.setModel(modelAsset)
 //                    assetManager.dirty(modelAsset!!)
                 }
             }

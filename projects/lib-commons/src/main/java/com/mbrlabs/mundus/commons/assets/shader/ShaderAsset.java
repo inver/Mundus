@@ -19,21 +19,6 @@ public class ShaderAsset extends Asset<ShaderMeta> {
     }
 
     @Override
-    public void load() {
-
-    }
-
-    @Override
-    public void resolveDependencies(Map<String, Asset> assets) {
-
-    }
-
-    @Override
-    public void applyDependencies() {
-
-    }
-
-    @Override
     public void dispose() {
 
     }

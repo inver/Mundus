@@ -121,12 +121,6 @@ public class TerrainAsset extends Asset<TerrainMeta> {
         }
     }
 
-    @Override
-    public void load() {
-        throw new RuntimeException("Unable to load asset");
-    }
-
-    @Override
     public void resolveDependencies(Map<String, Asset> assets) {
         // splatmap
         String id = meta.getAdditional().getSplatMap();
@@ -165,7 +159,6 @@ public class TerrainAsset extends Asset<TerrainMeta> {
         }
     }
 
-    @Override
     public void applyDependencies() {
         //todo
 //        TerrainTexture terrainTexture = terrain.getTerrainTexture();

@@ -4,6 +4,7 @@
   "type": "TEXTURE",
   "additional": {
     "file": "chessboard.png",
-    "generateMipMaps": false
+    "tileable": true,
+    "generateMipMaps": true
   }
 }
