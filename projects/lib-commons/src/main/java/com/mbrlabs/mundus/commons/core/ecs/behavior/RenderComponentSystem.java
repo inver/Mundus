@@ -19,7 +19,9 @@ public class RenderComponentSystem extends IteratingSystem {
 
     @Override
     protected void process(int entityId) {
-        mapper.get(entityId).getRenderable().render(batch, environment, shaders, world.getDelta());
+        if (batch != null) {
+            mapper.get(entityId).getRenderable().render(batch, environment, shaders, world.getDelta());
+        }
     }
 
     public void setRenderData(ModelBatch batch, SceneEnvironment environment, ShaderProvider shaders) {

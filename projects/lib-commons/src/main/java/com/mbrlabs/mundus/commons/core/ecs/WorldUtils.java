@@ -3,12 +3,14 @@ package com.mbrlabs.mundus.commons.core.ecs;
 import com.artemis.Aspect;
 import com.artemis.Component;
 import com.artemis.World;
+import lombok.experimental.UtilityClass;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
 
+@UtilityClass
 public final class WorldUtils {
     public static <R, I extends Component> List<R> getFromWorld(World world, Class<I> clazz,
                                                                 BiFunction<Integer, I, R> converter) {
@@ -25,4 +27,5 @@ public final class WorldUtils {
         }
         return res;
     }
+
 }

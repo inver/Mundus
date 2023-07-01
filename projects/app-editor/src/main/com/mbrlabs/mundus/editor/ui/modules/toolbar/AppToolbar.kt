@@ -234,10 +234,10 @@ class AppToolbar(
 
     private fun reloadCamerasList() {
         val arr = Array<HierarchyNode>()
-        arr.add(HierarchyNode(ProjectContext.MAIN_CAMERA_SELECTED, "Main", HierarchyNode.Type.CAMERA))
-        ctx.current.currentScene.rootNode.children.filter { it.type == HierarchyNode.Type.CAMERA }.forEach {
-            arr.add(it)
-        }
+//        arr.add(HierarchyNode(ProjectContext.MAIN_CAMERA_SELECTED, "Main", HierarchyNode.Type.CAMERA))
+//        ctx.current.currentScene.rootNode.children.filter { it.type == HierarchyNode.Type.CAMERA }.forEach {
+//            arr.add(it)
+//        }
 
         cameraSelector.items = arr
     }

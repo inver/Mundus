@@ -1,16 +1,18 @@
 package com.mbrlabs.mundus.editor.ui.modules.outline;
 
+import com.artemis.Aspect;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.widget.MenuItem;
+import com.mbrlabs.mundus.commons.core.ecs.component.ParentComponent;
 import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
-import com.mbrlabs.mundus.commons.scene3d.HierarchyNode;
+import com.mbrlabs.mundus.commons.core.ecs.component.TypeComponent;
 import com.mbrlabs.mundus.editor.core.assets.AssetsStorage;
 import com.mbrlabs.mundus.editor.core.assets.EditorTerrainService;
-import com.mbrlabs.mundus.editor.core.ecs.DependenciesComponent;
+import com.mbrlabs.mundus.editor.core.ecs.EditorEcsService;
 import com.mbrlabs.mundus.editor.core.light.LightService;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.project.ProjectManager;
@@ -42,7 +44,7 @@ public class OutlinePresenter {
     private final EditorTerrainService terrainService;
     private final ProjectManager projectManager;
     private final LightService lightService;
-    private final SceneService sceneService;
+    private final EditorEcsService editorEcsService;
 
     public void init(@NotNull Outline outline) {
         eventBus.register((ProjectChangedEvent.ProjectChangedListener) event -> {
@@ -78,11 +80,11 @@ public class OutlinePresenter {
             }
         });
 
-        initAddShaderButton(outline.getRcmAddShader());
+        initAddShaderButton(outline);
         initAddGroupButton(outline);
-        initAddCameraButton(outline.getRcmAddCamera());
+        initAddCameraButton(outline);
         initAddTerrainButton(outline.getRcmAddTerrain());
-        initAddDirectionLightButton(outline.getAddDirectionalLight());
+        initAddDirectionLightButton(outline);
         initDeleteButton(outline);
         initRenameButton(outline);
         initDuplicateButton(outline);
@@ -90,9 +92,11 @@ public class OutlinePresenter {
 
     public void moveCameraToSelectedEntity(int entityId) {
         var pos = new Vector3();
-        ctx.getCurrentWorld().getEntity(entityId)
-                .getComponent(PositionComponent.class)
-                .getTransform().getTranslation(pos);
+        var positionComponent = ctx.getCurrentWorld().getEntity(entityId).getComponent(PositionComponent.class);
+        if (positionComponent == null) {
+            return;
+        }
+        positionComponent.getTransform().getTranslation(pos);
         var cam = ctx.getCurrent().getCamera();
         // just lerp in the direction of the object if certain distance away
         if (pos.dst(cam.position) > 100) {
@@ -147,34 +151,15 @@ public class OutlinePresenter {
                 return;
             }
 
-            var node = sceneService.find(
-                    ctx.getCurrent().getCurrentScene().getRootNode(), outline.getSelectedEntityId()
-            );
-            if (node == null) {
-                return;
-            }
-
-            if (node.getType() == HierarchyNode.Type.GROUP) {
-                ctx.getCurrentWorld().delete(outline.getSelectedEntityId());
-            } else {
-                ctx.getCurrentWorld().getMapper(DependenciesComponent.class)
-                        .get(outline.getSelectedEntityId())
-                        .getDependencies()
-                        .forEach(d -> ctx.getCurrentWorld().delete(d));
-            }
-            //TODO remove search of node in #sceneService.deleteNode
-            sceneService.deleteNode(
-                    ctx.getCurrent().getCurrentScene().getRootNode(), outline.getSelectedEntityId(),
-                    node.getType() == HierarchyNode.Type.GROUP
-            );
-
+            log.trace("Delete entity with id {}", outline.getSelectedEntityId());
+            int selectedParent = editorEcsService.removeEntity(ctx.getCurrentWorld(), outline.getSelectedEntityId());
 
             eventBus.post(new SceneGraphChangedEvent());
-            //todo
-//            val deleteCommand = DeleteCommand(selectedEntityId, tree.findNode(selectedEntityId))
-//            history.add(deleteCommand)
+            eventBus.post(new EntitySelectedEvent(selectedParent));
         }));
     }
+
+
 
 //    fun createTerrainGO(
 //            shader:BaseShader,
@@ -198,57 +183,54 @@ public class OutlinePresenter {
 //        return terrainGO
 //    }
 
-    private void initAddCameraButton(MenuItem addCamera) {
-        addCamera.addListener(new ClickListener() {
+    private void initAddCameraButton(Outline outline) {
+        outline.getRcmAddCamera().addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                var cameraNode = cameraService.createEcsCamera();
-                ctx.getCurrent().getCurrentScene().getRootNode().addChild(cameraNode);
+                var createdId = cameraService.createEcsCamera(getParentEntity(outline));
                 eventBus.post(new SceneGraphChangedEvent());
+                eventBus.post(new EntitySelectedEvent(createdId));
             }
         });
     }
 
-    private void initAddShaderButton(MenuItem menuItem) {
-        menuItem.addListener(new ClickButtonListener(() -> {
+    private void initAddShaderButton(Outline outline) {
+        outline.getRcmAddShader().addListener(new ClickButtonListener(() -> {
             var asset = assetsStorage.createShader();
             ctx.getCurrent().getCurrentScene().getAssets().add(asset);
             eventBus.post(new SceneGraphChangedEvent());
         }));
     }
 
-    private void initAddDirectionLightButton(MenuItem menuItem) {
-        menuItem.addListener(new ClickButtonListener(() -> {
-            var node = lightService.createDirectionLight();
-            ctx.getCurrent().getCurrentScene().getRootNode().addChild(node);
+    private int getParentEntity(Outline outline) {
+        if (outline.getSelectedEntityId() < 0) {
+            return -1;
+        }
+        var typeComponent = ctx.getCurrentWorld().getEntity(outline.getSelectedEntityId())
+                .getComponent(TypeComponent.class);
+        if (typeComponent != null && typeComponent.getType() == TypeComponent.Type.GROUP) {
+            return outline.getSelectedEntityId();
+        }
+
+        return -1;
+    }
+
+    private void initAddDirectionLightButton(Outline outline) {
+        outline.getAddDirectionalLight().addListener(new ClickButtonListener(() -> {
+            var createdId = lightService.createDirectionLight(getParentEntity(outline));
             eventBus.post(new SceneGraphChangedEvent());
+            eventBus.post(new EntitySelectedEvent(createdId));
         }));
     }
 
     private void initAddGroupButton(Outline outline) {
         outline.getRcmAddGroup().addListener(new ClickButtonListener(() -> {
-            var node = new HierarchyNode(-1, "Group");
-            throw new NotImplementedException();
-            // the new game object
-//                var go = new GameObject(GameObject.DEFAULT_NAME, ctx.getCurrent().obtainID());
-            // update outline
-//                var selectedGO = outline.getRightClickMenu().getSelectedEntityId();
-//                if (selectedGO == -1) {
-//                    // update sceneGraph
-////                    log.trace("Add empty game object [{}] in root node.", go);
-////                    ctx.getCurrent().getCurrentScene().getSceneGraph().addGameObject(go);
-//                    // update outline
-//                    ctx.getCurrent().getCurrentScene().getRootNode().addChild(node);
-//                } else {
-//                    throw new NotImplementedException();
-////                    log.trace("Add empty game object [{}] child in node [{}].", go, selectedGO);
-////                    // update sceneGraph
-////                    selectedGO.addChild(go);
-////                    // update outline
-////                    var n = outline.getTree().findNode(selectedGO);
-////                    outline.addGoToTree(n, go);
-//                }
-//                eventBus.post(new SceneGraphChangedEvent());
+            var id = ctx.getCurrentWorld().create();
+            editorEcsService.addEntityBaseComponents(ctx.getCurrentWorld(), id, getParentEntity(outline),
+                    "Group " + id, new TypeComponent(TypeComponent.Type.GROUP));
+
+            eventBus.post(new SceneGraphChangedEvent());
+            eventBus.post(new EntitySelectedEvent(id));
         }));
     }
 
@@ -258,6 +240,7 @@ public class OutlinePresenter {
         return new OutlineDragAndDrop.DropListener() {
             @Override
             public void movedToRoot(int entityId) {
+                throw new NotImplementedException();
 //                ctx.getCurrent().getCurrentScene().getSceneGraph().addGameObject(obj);
             }
 

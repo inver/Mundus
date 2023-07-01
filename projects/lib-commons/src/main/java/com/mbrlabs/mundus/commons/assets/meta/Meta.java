@@ -22,7 +22,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mbrlabs.mundus.commons.assets.AssetType;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -45,7 +44,7 @@ public class Meta<M> {
     @JsonIgnore
     private FileHandle file;
 
-    public Meta withFile(FileHandle file) {
+    public Meta<M> withFile(FileHandle file) {
         this.file = file;
         return this;
     }
