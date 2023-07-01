@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.widget.MenuItem;
 import com.kotcrab.vis.ui.widget.PopupMenu;
 import com.kotcrab.vis.ui.widget.VisLabel;
@@ -39,7 +40,8 @@ public class Outline extends VisTable {
     @Getter
     private final VisTree<IdNode, Integer> tree = new VisTree<>();
     private final ScrollPane scrollPane = new ScrollPane(tree);
-    private final OutlineDragAndDrop dragAndDrop;
+
+    final OutlineDragAndDropController dragAndDrop;
     private final PopupMenu rightClickMenu = new PopupMenu();
     @Getter
     private final MenuItem rcmAddGroup = new MenuItem("Add group");
@@ -76,7 +78,7 @@ public class Outline extends VisTable {
         tree.getStyle().minus = TextureUtils.load("ui/icons/collapse.png", 20, 20);
         tree.getSelection().setProgrammaticChangeEvents(false);
 
-        dragAndDrop = new OutlineDragAndDrop(tree, outlinePresenter.getDropListener(this));
+        dragAndDrop = outlinePresenter.initDragAndDropController(tree);
 
         scrollPane.setFlickScroll(false);
         scrollPane.setFadeScrollBars(false);
@@ -89,6 +91,21 @@ public class Outline extends VisTable {
         initRightClickMenu();
         initScrollPaneListener();
         initTreeClickListener();
+
+        addDirectionalLight.addListener(new ClickButtonListener(outlinePresenter.addDirectionLightAction(this)));
+        rcmAddGroup.addListener(new ClickButtonListener(outlinePresenter.addGroupAction(this)));
+        rcmAddShader.addListener(new ClickButtonListener(outlinePresenter.addShaderAction(this)));
+        rcmAddCamera.addListener(new ClickButtonListener(outlinePresenter.addCameraAction(this)));
+        rcmDelete.addListener(new ClickButtonListener(outlinePresenter.deleteAction(this)));
+        rcmDuplicate.addListener(new ClickButtonListener(outlinePresenter.duplicateAction(this)));
+        rcmAddTerrain.addListener(new ClickButtonListener(outlinePresenter.addTerrainAction()));
+        rcmRename.addListener(new ClickButtonListener(() -> {
+            if (selectedEntityId >= 0) {
+                var dialog = Dialogs.showInputDialog(appUi, "Rename", "", outlinePresenter.renameListener(this));
+                var node = tree.findNode(selectedEntityId);
+                dialog.setPosition(node.getActor().getX(), node.getActor().getY());
+            }
+        }));
 
         outlinePresenter.init(this);
     }
@@ -124,7 +141,7 @@ public class Outline extends VisTable {
                     return;
                 }
                 var node = tree.getNodeAt(y);
-                show(node, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
+                showRightClickMenu(node, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
             }
 
             @Override
@@ -160,7 +177,7 @@ public class Outline extends VisTable {
     }
 
 
-    void show(IdNode node, float x, float y) {
+    void showRightClickMenu(IdNode node, float x, float y) {
         var entityId = -1;
         if (node != null) {
             entityId = node.getValue();
@@ -254,29 +271,6 @@ public class Outline extends VisTable {
             tree.getSelection().add(node);
             node.expandTo();
         }
-    }
-
-    void showRenameDialog() {
-        //TODO
-//            val node = tree.findNode(selectedGO!!)
-//
-//            val renameDialog = Dialogs.showInputDialog(appUi, "Rename", "",
-//                object : InputDialogAdapter() {
-//                    override fun finished(input: String?) {
-//                        log.trace("Rename game object [{}] to [{}].", selectedGO, input)
-//                        // update sceneGraph
-//                        selectedGO!!.name = input
-//                        // update Outline
-//                        //goNode.name.setText(input + " [" + selectedGO.id + "]");
-//                        node.label.setText(input)
-//
-//                        eventBus.post(SceneGraphChangedEvent())
-//                    }
-//                })
-//            // set position of dialog to menuItem position
-//            val nodePosX = node.actor.x
-//            val nodePosY = node.actor.y
-//            renameDialog.setPosition(nodePosX, nodePosY)
     }
 
     /**

@@ -12,8 +12,7 @@ public class TestOutline extends Outline {
     @Getter
     private final AtomicInteger getSelectedItemCount = new AtomicInteger(0);
 
-    public TestOutline(AppUi appUi,
-                       OutlinePresenter outlinePresenter) {
+    public TestOutline(AppUi appUi, OutlinePresenter outlinePresenter) {
         super(appUi, outlinePresenter);
     }
 

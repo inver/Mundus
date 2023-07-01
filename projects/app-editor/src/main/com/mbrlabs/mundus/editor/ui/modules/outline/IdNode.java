@@ -9,7 +9,6 @@ import com.mbrlabs.mundus.editor.utils.TextureUtils;
 import lombok.Getter;
 import lombok.ToString;
 
-@ToString(of = {"value", "label"})
 public class IdNode extends Tree.Node<IdNode, Integer, VisTable> {
 
     @Getter
