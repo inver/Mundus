@@ -43,7 +43,7 @@ import java.util.*
  */
 // TODO refactor...kind of messy spaghetti code!
 @Component
-class Outline(private val appUi: AppUi, val outlinePresenter: OutlinePresenter) : VisTable() {
+open class Outline(private val appUi: AppUi, val outlinePresenter: OutlinePresenter) : VisTable() {
 
     private val log = KotlinLogging.logger {}
 
