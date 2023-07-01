@@ -88,6 +88,8 @@ dependencies {
     testImplementation libs.junit_jupiter_engine
     testImplementation libs.mockito_core
     testImplementation 'org.springframework:spring-test:5.3.23'
+    testImplementation 'com.badlogicgames.gdx:gdx-backend-headless:1.11.0'
+
 }
 
 build {

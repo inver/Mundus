@@ -46,7 +46,8 @@ public class EditorEcsService extends EcsService {
         var rootEdit = world.edit(rootId)
                 .add(new PositionComponent(rootPosition, handleId))
                 .add(renderableDelegate.asComponent())
-                .add(PickableComponent.of(rootId, renderableDelegate));
+                .add(PickableComponent.of(rootId, renderableDelegate))
+                .add(new DependenciesComponent(lineId, rootId));
         for (var c : rootComponents) {
             rootEdit.add(c);
         }

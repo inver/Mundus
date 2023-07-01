@@ -37,13 +37,11 @@ class ImportModelDialog(
     shaderStorage: ShaderStorage
 ) : BaseDialog("Import Mesh") {
 
-    private val importWidget =
-        ImportModelWidget(
-            RenderWidget(appUi),
-            importModelPresenter,
-            shaderStorage,
-            fileChooserFieldPresenter
-        ) { close() }
+    private val importWidget = ImportModelWidget(
+        RenderWidget(appUi),
+        importModelPresenter,
+        shaderStorage
+    ) { close() }
 
     init {
         isModal = true

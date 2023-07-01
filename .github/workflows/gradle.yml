@@ -11,14 +11,10 @@ on:
   push:
     branches:
       - "*"
-  pull_request:
-    branches: [ master ]
-
+      
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 11
@@ -34,6 +30,12 @@ jobs:
         uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
         with:
           arguments: check
+      - name: Coveralls
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          format: jacoco
+          base-path: projects
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v3
         if: always() # always run even if the previous step fails
@@ -41,12 +43,13 @@ jobs:
           report_paths: '**/build/test-results/test/TEST-*.xml'
       - name: Create info file
         run: |
-          echo -e "ref: $GITHUB_REF \ncommit: $GITHUB_SHA\nbuild: $(date +"%Y-%m-%dT%H:%M:%SZ")" > editor/build/libs/info.txt
+          echo -e "ref: $GITHUB_REF \ncommit: $GITHUB_SHA\nbuild: $(date +"%Y-%m-%dT%H:%M:%SZ")" > projects/app-editor/build/libs/info.txt
       - name: Update nightly release
-        uses: eine/tip@master
+        uses: pyTooling/Actions/releaser@main
+        if: github.ref == 'refs/heads/develop'
         with:
           tag: nightly
           rm: true
           token: ${{ secrets.GITHUB_TOKEN }}
-          files: "editor/build/libs/Mundus.jar"
+          files: "projects/app-editor/build/libs/Abyssus-0.3.0.jar"
 

@@ -22,6 +22,7 @@ public enum SymbolIcon {
     CAMERA("\ue04b"),
     LIGHT("\ue42e"),
     DEBLUR("\ueb77"),
+    CHEVRON_RIGHT("\ue5cc"),
     IMPORT("\ue9fc");
 
     private final String symbol;
