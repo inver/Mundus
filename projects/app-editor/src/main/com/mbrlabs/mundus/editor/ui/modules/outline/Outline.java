@@ -1,5 +1,7 @@
 package com.mbrlabs.mundus.editor.ui.modules.outline;
 
+import com.artemis.Aspect;
+import com.artemis.ComponentMapper;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -14,15 +16,16 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTree;
 import com.mbrlabs.mundus.commons.Scene;
-import com.mbrlabs.mundus.commons.scene3d.HierarchyNode;
+import com.mbrlabs.mundus.commons.core.ecs.component.NameComponent;
+import com.mbrlabs.mundus.commons.core.ecs.component.ParentComponent;
 import com.mbrlabs.mundus.editor.ui.AppUi;
 import com.mbrlabs.mundus.editor.utils.TextureUtils;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
 
 @Slf4j
 @Component
@@ -32,14 +35,14 @@ public class Outline extends VisTable {
 
     @Setter
     @Getter
-    int selectedEntityId = -1;
+    private int selectedEntityId = -1;
     @Getter
     private final VisTree<IdNode, Integer> tree = new VisTree<>();
     private final ScrollPane scrollPane = new ScrollPane(tree);
     private final OutlineDragAndDrop dragAndDrop;
     private final PopupMenu rightClickMenu = new PopupMenu();
     @Getter
-    final MenuItem rcmAddGroup = new MenuItem("Add group");
+    private final MenuItem rcmAddGroup = new MenuItem("Add group");
     @Getter
     private final MenuItem rcmAddCamera = new MenuItem("Add camera");
     @Getter
@@ -121,11 +124,7 @@ public class Outline extends VisTable {
                     return;
                 }
                 var node = tree.getNodeAt(y);
-                var id = -1;
-                if (node != null) {
-                    id = node.getValue();
-                }
-                show(id, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
+                show(node, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
             }
 
             @Override
@@ -161,12 +160,20 @@ public class Outline extends VisTable {
     }
 
 
-    void show(int entityId, float x, float y) {
-        selectedEntityId = entityId;
+    void show(IdNode node, float x, float y) {
+        var entityId = -1;
+        if (node != null) {
+            entityId = node.getValue();
+            tree.getSelection().clear();
+            tree.getSelection().add(node);
+        }
+
+        selectedEntityId = Math.max(entityId, -1);
         rightClickMenu.showMenu(appUi, x, y);
 
-        rcmRename.setDisabled(selectedEntityId <= 0);
-        rcmDelete.setDisabled(selectedEntityId <= 0);
+        rcmRename.setDisabled(selectedEntityId < 0);
+        rcmDelete.setDisabled(selectedEntityId < 0);
+
 
         //todo
         // terrainAsset can not be duplicated
@@ -186,23 +193,52 @@ public class Outline extends VisTable {
         var rootNode = new IdNode.RootNode();
         tree.add(rootNode);
 
-        scene.getRootNode().getChildren().forEach(n -> addNodeToTree(rootNode.getHierarchy(), n));
-    }
+        var world = scene.getWorld();
+        //process world for update all entities
+        world.process();
 
-    private void addNodeToTree(IdNode treeParentNode, HierarchyNode node) {
-        var leaf = new IdNode(node.getId(), node.getName());
-        if (treeParentNode == null) {
-            tree.add(leaf);
-        } else {
-            treeParentNode.add(leaf);
-        }
-        // Always expand after adding new node
-        leaf.expandTo();
-        if (CollectionUtils.isEmpty(node.getChildren())) {
+        var entityIds = world.getAspectSubscriptionManager().get(Aspect.all(ParentComponent.class)).getEntities();
+        if (entityIds.isEmpty()) {
             return;
         }
+        var parentMapper = world.getMapper(ParentComponent.class);
+        var nameMapper = world.getMapper(NameComponent.class);
 
-        node.getChildren().forEach(n -> addNodeToTree(leaf, n));
+        var nodeMap = new HashMap<Integer, IdNode>();
+        nodeMap.put(-1, rootNode.getHierarchy());
+
+        for (int i = 0; i < entityIds.size(); i++) {
+            var entityId = entityIds.get(i);
+            var node = nodeMap.get(entityId);
+            if (node != null) {
+                node.setName(nameMapper.get(entityId).getName());
+                addToParent(parentMapper, nodeMap, entityId, node);
+                continue;
+            } else {
+                node = new IdNode(entityId, nameMapper.get(entityId).getName(), IdNode.Type.NONE);
+                nodeMap.put(entityId, node);
+            }
+
+            addToParent(parentMapper, nodeMap, entityId, node);
+
+            if (entityId == selectedEntityId) {
+                node.expandTo();
+                node.setExpanded(true);
+            }
+        }
+    }
+
+    private void addToParent(ComponentMapper<ParentComponent> parentMapper, HashMap<Integer, IdNode> nodeMap,
+                             int entityId, IdNode existNode) {
+        var parentId = parentMapper.get(entityId).getParentEntityId();
+        var parent = nodeMap.get(parentId);
+        if (parent != null) {
+            parent.add(existNode);
+        } else {
+            parent = new IdNode(parentId, "UNKNOWN NAME", IdNode.Type.NONE);
+            nodeMap.put(parentId, parent);
+            parent.add(existNode);
+        }
     }
 
     public void onEntitySelected(int entityId) {

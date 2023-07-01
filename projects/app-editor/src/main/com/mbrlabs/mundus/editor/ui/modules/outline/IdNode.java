@@ -7,14 +7,19 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.mbrlabs.mundus.editor.ui.widgets.Icons;
 import com.mbrlabs.mundus.editor.utils.TextureUtils;
 import lombok.Getter;
+import lombok.ToString;
 
+@ToString(of = {"value", "label"})
 public class IdNode extends Tree.Node<IdNode, Integer, VisTable> {
 
     @Getter
     private final VisLabel label = new VisLabel();
+    @Getter
+    private final Type type;
 
-    public IdNode(int id, String name, Icons icon) {
+    public IdNode(int id, String name, Icons icon, Type type) {
         super(new VisTable());
+        this.type = type;
         setValue(id);
         if (icon != null) {
             //todo add icons to cache with asset
@@ -25,24 +30,28 @@ public class IdNode extends Tree.Node<IdNode, Integer, VisTable> {
         label.setText(name);
     }
 
-    public IdNode(int id, String name) {
-        this(id, name, null);
+    public IdNode(int id, String name, Type type) {
+        this(id, name, null, type);
+    }
+
+    public void setName(String name) {
+        label.setText(name);
     }
 
     public static class RootNode extends IdNode {
 
-        private final IdNode hierarchy = new IdNode(-100, "Hierarchy", Icons.HIERARCHY);
-        private final IdNode shaders = new IdNode(-101, "Shaders", Icons.SHADER);
-        private final IdNode terrains = new IdNode(-102, "Terrains", Icons.TERRAIN);
-        private final IdNode materials = new IdNode(-103, "Materials", Icons.MATERIAL);
-        private final IdNode textures = new IdNode(-104, "Textures", Icons.TEXTURE);
-        private final IdNode models = new IdNode(-105, "Models", Icons.MODEL);
-        private final IdNode cameras = new IdNode(-106, "Cameras", Icons.CAMERA);
-        private final IdNode lights = new IdNode(-107, "Lights", Icons.LIGHT);
-        private final IdNode skybox = new IdNode(-108, "Skybox", Icons.SKYBOX);
+        private final IdNode hierarchy = new IdNode(-1, "Hierarchy", Icons.HIERARCHY, Type.ROOT);
+        private final IdNode shaders = new IdNode(-101, "Shaders", Icons.SHADER, Type.NONE);
+        private final IdNode terrains = new IdNode(-102, "Terrains", Icons.TERRAIN, Type.NONE);
+        private final IdNode materials = new IdNode(-103, "Materials", Icons.MATERIAL, Type.NONE);
+        private final IdNode textures = new IdNode(-104, "Textures", Icons.TEXTURE, Type.NONE);
+        private final IdNode models = new IdNode(-105, "Models", Icons.MODEL, Type.NONE);
+        private final IdNode cameras = new IdNode(-106, "Cameras", Icons.CAMERA, Type.NONE);
+        private final IdNode lights = new IdNode(-107, "Lights", Icons.LIGHT, Type.NONE);
+        private final IdNode skybox = new IdNode(-108, "Skybox", Icons.SKYBOX, Type.NONE);
 
         public RootNode() {
-            super(-100500, "Scene", Icons.SCENE);
+            super(-100500, "Scene", Icons.SCENE, Type.ROOT);
 
             add(hierarchy);
             add(models);
@@ -83,5 +92,13 @@ public class IdNode extends Tree.Node<IdNode, Integer, VisTable> {
         public IdNode getSkybox() {
             return skybox;
         }
+    }
+
+    public enum Type {
+        NONE,
+        ROOT,
+        OBJECT,
+        GROUP,
+        CAMERA
     }
 }

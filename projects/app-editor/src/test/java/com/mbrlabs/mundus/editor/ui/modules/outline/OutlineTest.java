@@ -1,10 +1,13 @@
 package com.mbrlabs.mundus.editor.ui.modules.outline;
 
+import com.artemis.Aspect;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.kotcrab.vis.ui.widget.MenuItem;
 import com.mbrlabs.mundus.editor.config.BaseCtxTest;
 import com.mbrlabs.mundus.editor.config.ui.TestOutline;
+import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.ui.AppUi;
 import org.junit.jupiter.api.Assertions;
@@ -21,6 +24,8 @@ public class OutlineTest extends BaseCtxTest {
     private EventBus eventBus;
     @Autowired
     private AppUi appUi;
+    @Autowired
+    private EditorCtx ctx;
 
     @Test
     public void testDeselect() {
@@ -31,8 +36,7 @@ public class OutlineTest extends BaseCtxTest {
 
     @Test
     public void testClickDeleteWithoutSelect() {
-        outline.getRcmDelete().notify(createEvent(outline.getRcmDelete(), InputEvent.Type.touchDown), false);
-        outline.getRcmDelete().notify(createEvent(outline.getRcmDelete(), InputEvent.Type.touchUp), false);
+        clickMenuItem(outline.getRcmDelete());
 
         Assertions.assertEquals(1, ((TestOutline) outline).getGetSelectedItemCount().get());
     }
@@ -45,6 +49,21 @@ public class OutlineTest extends BaseCtxTest {
     @Test
     public void testDeleteComplexObject() {
 
+    }
+
+    @Test
+    public void testAddGroup() {
+        var entitiesCount = ctx.getCurrentWorld().getAspectSubscriptionManager().get(Aspect.all()).getEntities().size();
+
+        clickMenuItem(outline.getRcmAddGroup());
+
+        var entitiesWithGroup = ctx.getCurrentWorld().getAspectSubscriptionManager().get(Aspect.all());
+        Assertions.assertEquals(entitiesCount + 1, entitiesWithGroup.getEntities().size());
+    }
+
+    private void clickMenuItem(MenuItem item) {
+        item.notify(createEvent(item, InputEvent.Type.touchDown), false);
+        item.notify(createEvent(item, InputEvent.Type.touchUp), false);
     }
 
     private Event createEvent(Actor target, InputEvent.Type type) {
