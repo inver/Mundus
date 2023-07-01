@@ -78,7 +78,7 @@ public class OutlinePresenter {
         });
     }
 
-    OutlineDragAndDropController initDragAndDropController(VisTree<IdNode, Integer> tree) {
+    OutlineDragAndDropController initDragAndDropController(@NotNull VisTree<IdNode, Integer> tree) {
         return new OutlineDragAndDropController(ctx, eventBus, tree);
     }
 

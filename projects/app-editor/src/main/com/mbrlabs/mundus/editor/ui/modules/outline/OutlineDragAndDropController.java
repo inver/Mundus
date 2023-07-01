@@ -42,8 +42,7 @@ public class OutlineDragAndDropController extends DragAndDrop {
         });
     }
 
-    private Payload doDragStart(IdNode node) {
-
+    Payload doDragStart(IdNode node) {
         if (node == null) {
             return null;
         }
@@ -62,7 +61,7 @@ public class OutlineDragAndDropController extends DragAndDrop {
         }
     }
 
-    private void doDrop(Payload payload, IdNode newParentNode) {
+    void doDrop(Payload payload, IdNode newParentNode) {
         var draggedNode = (IdNode) payload.getObject();
         if (draggedNode == null || newParentNode == null || newParentNode.getValue() < 0) {
             return;
@@ -78,6 +77,5 @@ public class OutlineDragAndDropController extends DragAndDrop {
         draggedParentComponent.setParentEntityId(newParentNode.getValue());
         eventBus.post(new SceneGraphChangedEvent());
         eventBus.post(new EntitySelectedEvent(draggedNode.getValue()));
-
     }
 }

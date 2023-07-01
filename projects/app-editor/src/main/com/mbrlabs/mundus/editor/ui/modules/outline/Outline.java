@@ -40,7 +40,8 @@ public class Outline extends VisTable {
     @Getter
     private final VisTree<IdNode, Integer> tree = new VisTree<>();
     private final ScrollPane scrollPane = new ScrollPane(tree);
-    private final OutlineDragAndDropController dragAndDrop;
+
+    final OutlineDragAndDropController dragAndDrop;
     private final PopupMenu rightClickMenu = new PopupMenu();
     @Getter
     private final MenuItem rcmAddGroup = new MenuItem("Add group");
@@ -140,7 +141,7 @@ public class Outline extends VisTable {
                     return;
                 }
                 var node = tree.getNodeAt(y);
-                show(node, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
+                showRightClickMenu(node, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
             }
 
             @Override
@@ -176,7 +177,7 @@ public class Outline extends VisTable {
     }
 
 
-    void show(IdNode node, float x, float y) {
+    void showRightClickMenu(IdNode node, float x, float y) {
         var entityId = -1;
         if (node != null) {
             entityId = node.getValue();
@@ -270,10 +271,6 @@ public class Outline extends VisTable {
             tree.getSelection().add(node);
             node.expandTo();
         }
-    }
-
-    void showRenameDialog() {
-
     }
 
     /**
