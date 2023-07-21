@@ -23,7 +23,7 @@ public class ShaderConfig {
      */
     private int numPointLights = 5;
     /**
-     * The number of spot lights to use
+     * The number of spotlights to use
      */
     private int numSpotLights = 0;
     /**

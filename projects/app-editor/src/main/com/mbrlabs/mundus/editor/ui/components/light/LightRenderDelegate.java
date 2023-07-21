@@ -14,6 +14,8 @@ import net.nevinsky.abyssus.core.ModelInstance;
 import net.nevinsky.abyssus.core.builder.ConeShapeBuilder;
 import net.nevinsky.abyssus.core.shader.ShaderProvider;
 
+import static net.nevinsky.abyssus.core.shader.ShaderProvider.DEFAULT_SHADER;
+
 public class LightRenderDelegate implements RenderableDelegate {
 
     private static final long ATTRIBUTES =
@@ -35,7 +37,7 @@ public class LightRenderDelegate implements RenderableDelegate {
 
     @Override
     public void render(ModelBatch batch, SceneEnvironment environment, ShaderProvider shaders, float delta) {
-        batch.render(instance, shaders.get());
+        batch.render(instance, DEFAULT_SHADER);
     }
 
     @Override

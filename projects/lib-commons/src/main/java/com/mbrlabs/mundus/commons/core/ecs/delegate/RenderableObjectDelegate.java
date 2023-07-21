@@ -20,7 +20,7 @@ public class RenderableObjectDelegate implements RenderableDelegate {
 
     @Override
     public void render(ModelBatch batch, SceneEnvironment environment, ShaderProvider shaders, float delta) {
-        batch.render(asset, environment, shaders.get(shaderName));
+        batch.render(asset, environment, shaderName);
     }
 
     @Override

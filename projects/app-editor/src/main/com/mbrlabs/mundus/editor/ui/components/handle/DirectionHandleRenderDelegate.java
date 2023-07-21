@@ -40,7 +40,7 @@ public class DirectionHandleRenderDelegate implements RenderableDelegate {
     @Override
     public void render(ModelBatch batch, SceneEnvironment environment, ShaderProvider shaders, float delta) {
         if (!hidden) {
-            batch.render(instance, shaders.get(shaderKey));
+            batch.render(instance, shaderKey);
         }
     }
 

@@ -15,6 +15,8 @@ import net.nevinsky.abyssus.core.builder.BoxShapeBuilder;
 import net.nevinsky.abyssus.core.builder.ConeShapeBuilder;
 import net.nevinsky.abyssus.core.shader.ShaderProvider;
 
+import static net.nevinsky.abyssus.core.shader.ShaderProvider.DEFAULT_SHADER;
+
 public class CameraBodyRenderDelegate implements RenderableDelegate {
     private static final long ATTRIBUTES =
             VertexAttributes.Usage.Position | VertexAttributes.Usage.ColorUnpacked | VertexAttributes.Usage.Normal;
@@ -50,6 +52,6 @@ public class CameraBodyRenderDelegate implements RenderableDelegate {
             return;
         }
 
-        batch.render(instance, shaders.get());
+        batch.render(instance, DEFAULT_SHADER);
     }
 }

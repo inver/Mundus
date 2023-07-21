@@ -22,6 +22,7 @@ import com.mbrlabs.mundus.editor.core.ecs.EditorEcsService;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.project.ProjectStorage;
 import com.mbrlabs.mundus.editor.core.registry.Registry;
+import com.mbrlabs.mundus.editor.core.shader.ShaderStorage;
 import com.mbrlabs.mundus.editor.ui.components.camera.CameraService;
 import net.nevinsky.abyssus.core.ModelBatch;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,8 @@ import static com.fasterxml.jackson.core.JsonParser.Feature.ALLOW_NON_NUMERIC_NU
 public class RootConfig {
     @Autowired
     private EditorEcsService ecsService;
+    @Autowired
+    private ShaderStorage shaderStorage;
 
     @Bean
     public ObjectMapper mapper() {
@@ -65,7 +68,7 @@ public class RootConfig {
 
     @Bean
     public ModelBatch modelBatch() {
-        return new ModelBatch();
+        return new ModelBatch(shaderStorage);
     }
 
     @Bean

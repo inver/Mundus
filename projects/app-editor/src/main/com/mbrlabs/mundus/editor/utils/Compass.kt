@@ -25,7 +25,6 @@ import net.nevinsky.abyssus.core.ModelBuilder
 import net.nevinsky.abyssus.core.ModelInstance
 import net.nevinsky.abyssus.core.builder.ArrowShapeBuilder
 import net.nevinsky.abyssus.core.model.Model
-import net.nevinsky.abyssus.core.shader.Shader
 
 /**
  * @author Marcus Brummer
@@ -103,10 +102,10 @@ class Compass(private var worldCam: Camera?) : Disposable {
         this.worldCam = cam
     }
 
-    fun render(batch: ModelBatch, shader: Shader) {
+    fun render(batch: ModelBatch, shaderKey: String) {
         update()
         batch.begin(ownCam)
-        batch.render(compassInstance, shader)
+        batch.render(compassInstance, shaderKey)
         batch.end()
     }
 

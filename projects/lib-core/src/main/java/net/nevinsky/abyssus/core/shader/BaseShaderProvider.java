@@ -17,34 +17,42 @@
 package net.nevinsky.abyssus.core.shader;
 
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import lombok.extern.slf4j.Slf4j;
+import net.nevinsky.abyssus.core.Renderable;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 public abstract class BaseShaderProvider implements ShaderProvider {
     protected final Map<String, ShaderHolder> shaders = new ConcurrentHashMap<>();
     protected ShaderHolder defaultShader;
 
     protected void init() {
-        defaultShader = loadShaderAndCache(DEFAULT_SHADER);
+        defaultShader = loadShaderAndCache(DEFAULT_SHADER, null);
         if (defaultShader == null) {
             throw new GdxRuntimeException("Failed to load Default Shader!");
         }
     }
 
     @Override
-    public <T extends BaseShader> T get(String key) {
-        var res = loadShaderAndCache(key);
-        if (res != null) {
-            return getInstance(res);
+    public Shader get(String key, Renderable renderable) {
+        var suggestedShader = renderable.shader;
+        if (suggestedShader != null && suggestedShader.canRender(renderable)) {
+            return suggestedShader;
         }
 
-        return getInstance(defaultShader);
+        var res = loadShaderAndCache(key, renderable);
+        if (res != null) {
+            return res.defaultInstance;
+        }
+
+        return defaultShader.defaultInstance;
     }
 
     @SuppressWarnings("unchecked")
-    protected <T extends BaseShader> T getInstance(ShaderHolder wrapper) {
-        wrapper.init();
+    protected <T extends BaseShader> T getInstance(ShaderHolder wrapper, Renderable renderable) {
+        wrapper.init(renderable);
         return (T) wrapper.getDefaultInstance();
     }
 
@@ -54,7 +62,14 @@ public abstract class BaseShaderProvider implements ShaderProvider {
      * @param key the name of shader
      * @return cached holder with shader
      */
-    protected abstract ShaderHolder loadShaderAndCache(String key);
+    protected abstract ShaderHolder loadShaderAndCache(String key, Renderable renderable);
+
+    protected String createCompositeKey(String baseKey, Renderable renderable) {
+        if (renderable == null) {
+            return baseKey;
+        }
+        return baseKey + "_" + renderable.getRenderMask();
+    }
 
     @Override
     public void dispose() {

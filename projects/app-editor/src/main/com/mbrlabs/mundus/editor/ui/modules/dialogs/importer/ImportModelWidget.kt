@@ -62,7 +62,7 @@ class ImportModelWidget(
             previewInstance!!.transform.rotate(0f, 1f, 0f, -1f)
 
             modelBatch?.begin(camera)
-            modelBatch?.render(previewInstance!!, env, shaderStorage.get(ShaderProvider.DEFAULT_SHADER))
+            modelBatch?.render(previewInstance!!, env, ShaderProvider.DEFAULT_SHADER)
             modelBatch?.end()
         }
 
@@ -103,7 +103,7 @@ class ImportModelWidget(
     private fun showPreview() {
         val config = OldDefaultShader.Config()
         config.numBones = 600 // TODO get max bones from model
-        modelBatch = ModelBatch()
+        modelBatch = ModelBatch(shaderStorage)
 
         // scale to 2 open gl units
         val boundingBox = previewInstance!!.calculateBoundingBox(BoundingBox())

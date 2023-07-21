@@ -18,6 +18,7 @@ package net.nevinsky.abyssus.core.shader;
 
 import com.badlogic.gdx.files.FileHandle;
 import lombok.Getter;
+import net.nevinsky.abyssus.core.Renderable;
 
 public class DefaultShaderProvider extends BaseShaderProvider {
     @Getter
@@ -41,8 +42,19 @@ public class DefaultShaderProvider extends BaseShaderProvider {
     }
 
     @Override
-    protected ShaderHolder loadShaderAndCache(String key) {
-        var res = new ShaderHolder(new DefaultShader(config.getVertexShader(), config.getFragmentShader()));
+    protected ShaderHolder loadShaderAndCache(String key, Renderable renderable) {
+        var holder = shaders.get(key);
+        if (holder != null && holder.getDefaultInstance().canRender(renderable)) {
+            return holder;
+        }
+
+        var shader = new DefaultShader(config.getVertexShader(), config.getFragmentShader());
+        shader.init(renderable);
+        if (!shader.canRender(renderable)) {
+            return null;
+        }
+
+        var res = new ShaderHolder(shader);
         shaders.put(key, res);
         return res;
     }

@@ -20,6 +20,12 @@ public class EditorShaderHolder extends ShaderHolder {
     }
 
     @Override
+    public EditorShaderHolder clone() {
+        var res = new EditorShaderHolder(shaderClassLoader, defaultInstance.clone());
+        return res;
+    }
+
+    @Override
     public BaseShader getDefaultInstance() {
         if (overrideInstance != null) {
             return overrideInstance;

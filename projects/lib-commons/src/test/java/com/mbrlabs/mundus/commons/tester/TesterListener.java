@@ -16,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import net.nevinsky.abyssus.core.ModelBatch;
 import net.nevinsky.abyssus.core.ModelInstance;
 import net.nevinsky.abyssus.core.shader.DefaultShader;
+import net.nevinsky.abyssus.core.shader.DefaultShaderProvider;
+import net.nevinsky.abyssus.core.shader.ShaderProvider;
 
 @Slf4j
 public class TesterListener extends Lwjgl3WindowAdapter implements ApplicationListener {
@@ -35,7 +37,7 @@ public class TesterListener extends Lwjgl3WindowAdapter implements ApplicationLi
         createCamera();
 //        createCube();
 
-        modelBatch = new ModelBatch();
+        modelBatch = new ModelBatch(new DefaultShaderProvider());
 
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
         environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
@@ -85,7 +87,7 @@ public class TesterListener extends Lwjgl3WindowAdapter implements ApplicationLi
         camController.update();
 
         modelBatch.begin(camera);
-        modelBatch.render(modelInstance, environment, new DefaultShader("", ""));
+        modelBatch.render(modelInstance, environment, ShaderProvider.DEFAULT_SHADER);
 //        modelBatch.render(cubeInstance, environment);
         modelBatch.end();
     }

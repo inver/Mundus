@@ -22,6 +22,7 @@ import net.nevinsky.abyssus.core.ModelBatch;
 import net.nevinsky.abyssus.core.ModelBuilder;
 import net.nevinsky.abyssus.core.ModelInstance;
 import net.nevinsky.abyssus.core.shader.DefaultShaderProvider;
+import net.nevinsky.abyssus.core.shader.ShaderProvider;
 
 public class ModelTest extends Lwjgl3WindowAdapter implements ApplicationListener, InputProcessor {
     private PerspectiveCamera camera;
@@ -53,7 +54,7 @@ public class ModelTest extends Lwjgl3WindowAdapter implements ApplicationListene
         // Near and Far (plane) represent the minimum and maximum ranges of the camera in, um, units
         // camera.near = 0.1f;           camera.far = 300.0f;
         // A ModelBatch is like a SpriteBatch, just for models.  Use it to batch up geometry for OpenGL
-        modelBatch = new ModelBatch();
+        modelBatch = new ModelBatch(new DefaultShaderProvider());
         var builder = new ModelBuilder();
         var sphere = builder.createSphere(1.2f, 1.2f, 1.2f, 20, 20,
                 new Material(), VertexAttributes.Usage.Position);
@@ -113,7 +114,7 @@ public class ModelTest extends Lwjgl3WindowAdapter implements ApplicationListene
 
         // Like spriteBatch, just with models!  pass in the box Instance and the environment
         modelBatch.begin(camera);
-        modelBatch.render(modelInstance, environment, shaderProvider.get());
+        modelBatch.render(modelInstance, environment, ShaderProvider.DEFAULT_SHADER);
         modelBatch.end();
         // Now tell OpenGL that we are done sending graphics to the framebuffer
         if (screenShot) {

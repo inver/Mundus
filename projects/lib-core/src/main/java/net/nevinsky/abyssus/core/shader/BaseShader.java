@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p>
  *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -37,10 +37,12 @@ import net.nevinsky.abyssus.core.Renderable;
 import net.nevinsky.abyssus.core.mesh.Mesh;
 
 /**
- * @author Xoppa A BaseShader is a wrapper around a ShaderProgram that keeps track of the uniform and attribute
+ * @author Xoppa
+ * <p>
+ * A BaseShader is a wrapper around a ShaderProgram that keeps track of the uniform and attribute
  * locations. It does not manage the ShaderPogram, you are still responsible for disposing the ShaderProgram.
  */
-public abstract class BaseShader implements Shader {
+public abstract class BaseShader implements Shader, Cloneable {
     public interface Validator {
         /**
          * @return True if the input is valid for the renderable, false otherwise.
@@ -109,9 +111,9 @@ public abstract class BaseShader implements Shader {
         }
     }
 
-    private final Array<String> uniforms = new Array<String>();
-    private final Array<Validator> validators = new Array<Validator>();
-    private final Array<Setter> setters = new Array<Setter>();
+    private final Array<String> uniforms = new Array<>();
+    private final Array<Validator> validators = new Array<>();
+    private final Array<Setter> setters = new Array<>();
     private int[] locations;
     private final IntArray globalUniforms = new IntArray();
     private final IntArray localUniforms = new IntArray();
@@ -121,6 +123,9 @@ public abstract class BaseShader implements Shader {
     protected RenderContext context;
     protected Camera camera;
     private Mesh currentMesh;
+
+    @Override
+    public abstract BaseShader clone();
 
     /**
      * Register an uniform which might be used by this shader. Only possible prior to the call to init().
@@ -423,7 +428,7 @@ public abstract class BaseShader implements Shader {
         return true;
     }
 
-    public final boolean set(final int uniform, final TextureDescriptor textureDesc) {
+    public final boolean set(final int uniform, final TextureDescriptor<?> textureDesc) {
         if (locations[uniform] < 0) {
             return false;
         }
@@ -438,4 +443,6 @@ public abstract class BaseShader implements Shader {
         program.setUniformi(locations[uniform], context.textureBinder.bind(texture));
         return true;
     }
+
+
 }

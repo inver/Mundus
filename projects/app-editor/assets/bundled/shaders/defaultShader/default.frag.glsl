@@ -32,13 +32,14 @@ varying vec4 v_lighting;
 // diffuse material
 uniform sampler2D u_diffuseTexture;
 uniform vec4 u_diffuseColor;
-uniform int u_diffuseUseTexture;
+
+//uniform int u_diffuseUseTexture;
 
 // enviroment
 uniform vec4 u_fogColor;
 
 void main(void) {
-    #if u_diffuseUseTexture == 1
+    #ifdef u_diffuseUseTexture
         gl_FragColor = texture2D(u_diffuseTexture, v_texCoord0);
         if(gl_FragColor.a < 0.5) {
             discard;
@@ -51,5 +52,5 @@ void main(void) {
     gl_FragColor *= v_lighting;
     gl_FragColor = mix(gl_FragColor, u_fogColor, v_fog);
 
-    gl_FragColor = vec4(1.0, 0.2, 1.0,1.0);
+//    gl_FragColor = vec4(1.0, 0.2, 1.0, 1.0);
 }

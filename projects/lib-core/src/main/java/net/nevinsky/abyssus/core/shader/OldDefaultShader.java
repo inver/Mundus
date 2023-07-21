@@ -46,6 +46,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import net.nevinsky.abyssus.core.Renderable;
+import org.apache.commons.lang3.NotImplementedException;
 
 @Deprecated
 public class OldDefaultShader extends BaseShader {
@@ -474,6 +475,12 @@ public class OldDefaultShader extends BaseShader {
         return defaultFragmentShader;
     }
 
+
+    @Override
+    public void init(Renderable renderable) {
+        throw new NotImplementedException();
+    }
+
     protected static long implementedFlags = BlendingAttribute.Type | TextureAttribute.Diffuse | ColorAttribute.Diffuse
             | ColorAttribute.Specular | FloatAttribute.Shininess;
 
@@ -724,6 +731,11 @@ public class OldDefaultShader extends BaseShader {
         }
     }
 
+    @Override
+    public OldDefaultShader clone() {
+        return null;
+    }
+
     private static boolean and(final long mask, final long flag) {
         return (mask & flag) == flag;
     }
@@ -746,7 +758,7 @@ public class OldDefaultShader extends BaseShader {
         return tmpAttributes;
     }
 
-    private static final long combineAttributeMasks(final Renderable renderable) {
+    private long combineAttributeMasks(final Renderable renderable) {
         long mask = 0;
         if (renderable.environment != null) {
             mask |= renderable.environment.getMask();

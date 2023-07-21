@@ -12,6 +12,16 @@ public class IBLBoxShader extends BaseShader {
     }
 
     @Override
+    public void init(Renderable renderable) {
+
+    }
+
+    @Override
+    public IBLBoxShader clone() {
+        return null;
+    }
+
+    @Override
     public int compareTo(Shader other) {
         return 0;
     }

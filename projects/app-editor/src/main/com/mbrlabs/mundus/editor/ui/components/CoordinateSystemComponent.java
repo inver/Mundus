@@ -12,6 +12,8 @@ import net.nevinsky.abyssus.core.ModelInstance;
 import net.nevinsky.abyssus.core.builder.ArrowShapeBuilder;
 import net.nevinsky.abyssus.core.shader.ShaderProvider;
 
+import static net.nevinsky.abyssus.core.shader.ShaderProvider.DEFAULT_SHADER;
+
 public class CoordinateSystemComponent implements RenderableObject {
     private static final int START_CONST = 10;
     private static final int LINE_COUNT = 20;
@@ -49,6 +51,6 @@ public class CoordinateSystemComponent implements RenderableObject {
 
     @Override
     public void render(ModelBatch batch, SceneEnvironment environment, ShaderProvider shaders, float delta) {
-        batch.render(instance, shaders.get());
+        batch.render(instance, DEFAULT_SHADER);
     }
 }
