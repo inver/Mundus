@@ -34,7 +34,7 @@ public class DirectionHandleRenderDelegate implements RenderableDelegate {
     }
 
     public DirectionHandleRenderDelegate() {
-        this(ShaderProvider.DEFAULT_SHADER);
+        this(ShaderProvider.DEFAULT_SHADER_KEY);
     }
 
     @Override

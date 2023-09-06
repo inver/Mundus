@@ -41,7 +41,7 @@ import net.nevinsky.abyssus.core.shader.ShaderProvider;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;
 
-import static net.nevinsky.abyssus.core.shader.ShaderProvider.DEFAULT_SHADER;
+import static net.nevinsky.abyssus.core.shader.ShaderProvider.DEFAULT_SHADER_KEY;
 
 /**
  * @author Marcus Brummer
@@ -315,7 +315,7 @@ public class TranslateTool extends TransformTool {
 
         @Override
         public void render(ModelBatch batch, SceneEnvironment environment, ShaderProvider shaders, float delta) {
-            batch.render(modelInstance, DEFAULT_SHADER);
+            batch.render(modelInstance, DEFAULT_SHADER_KEY);
         }
 
         @Override

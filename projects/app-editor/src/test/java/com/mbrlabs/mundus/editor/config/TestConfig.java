@@ -1,30 +1,17 @@
 package com.mbrlabs.mundus.editor.config;
 
-import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.kotcrab.vis.ui.widget.VisTextButton;
-import com.mbrlabs.mundus.commons.assets.shader.ShaderAsset;
-import com.mbrlabs.mundus.commons.assets.shader.ShaderAssetLoader;
-import com.mbrlabs.mundus.commons.assets.texture.TextureAssetLoader;
-import com.mbrlabs.mundus.commons.importer.CameraDeserializer;
-import com.mbrlabs.mundus.commons.importer.CameraSerializer;
+import com.mbrlabs.mundus.commons.assets.meta.MetaService;
 import com.mbrlabs.mundus.commons.importer.SceneConverter;
 import com.mbrlabs.mundus.editor.config.ui.TestOutline;
-import com.mbrlabs.mundus.editor.core.assets.AssetWriter;
-import com.mbrlabs.mundus.editor.core.assets.AssetsStorage;
-import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager;
-import com.mbrlabs.mundus.editor.core.assets.EditorModelService;
-import com.mbrlabs.mundus.editor.core.assets.EditorTerrainService;
-import com.mbrlabs.mundus.editor.core.ecs.EditorEcsService;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
-import com.mbrlabs.mundus.editor.core.scene.SceneStorage;
-import com.mbrlabs.mundus.editor.core.shader.EditorShaderHolder;
+import com.mbrlabs.mundus.editor.core.project.ProjectStorage;
+import com.mbrlabs.mundus.editor.core.registry.Registry;
 import com.mbrlabs.mundus.editor.core.shader.ShaderClassLoader;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.ui.AppUi;
@@ -32,41 +19,37 @@ import com.mbrlabs.mundus.editor.ui.PreviewGenerator;
 import com.mbrlabs.mundus.editor.ui.modules.outline.Outline;
 import com.mbrlabs.mundus.editor.ui.modules.outline.OutlinePresenter;
 import com.mbrlabs.mundus.editor.ui.widgets.ButtonFactory;
+import lombok.RequiredArgsConstructor;
 import net.nevinsky.abyssus.core.ModelBatch;
-import net.nevinsky.abyssus.core.shader.ShaderHolder;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 
 import java.io.File;
 import java.util.UUID;
 
-import static com.fasterxml.jackson.core.JsonParser.Feature.ALLOW_NON_NUMERIC_NUMBERS;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @Configuration
 @ComponentScan({
-        "com.mbrlabs.mundus.editor",
+        "com.mbrlabs.mundus.editor.core",
         "com.mbrlabs.mundus.editor.events",
         "com.mbrlabs.mundus.editor.assets",
         "com.mbrlabs.mundus.editor.ui",
         "com.mbrlabs.mundus.editor.utils",
         "com.mbrlabs.mundus.editor.tools",
         "com.mbrlabs.mundus.editor.input",
-        "com.mbrlabs.mundus.editor.core.assets",
+        "com.mbrlabs.mundus.editor.history",
 })
-@Import({
-        UiConfig.class,
-})
+@RequiredArgsConstructor
 public class TestConfig {
 
     @Bean
+    @Primary
     public AppEnvironment appEnvironment() {
         var homeDir = "/tmp/" + UUID.randomUUID() + ".mundus";
         new File(homeDir).mkdirs();
@@ -79,70 +62,19 @@ public class TestConfig {
     }
 
     @Bean
-    public ObjectMapper mapper() {
-        var res = new ObjectMapper();
-        res.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        res.configure(ALLOW_NON_NUMERIC_NUMBERS, true);
-
-        var appModule = new SimpleModule();
-        appModule.addSerializer(PerspectiveCamera.class, new CameraSerializer());
-        appModule.addDeserializer(PerspectiveCamera.class, new CameraDeserializer());
-
-        res.registerModule(appModule);
-        return res;
-    }
-
-    @Bean
-    public EditorCtx editorCtx() {
-        return new EditorCtx();
-    }
-
-
-    @Bean
-    public TextureAssetLoader textureService() {
-        return new TextureAssetLoader();
-    }
-
-    @Autowired
-    private AssetWriter assetWriter;
-    @Autowired
-    private EditorAssetManager editorAssetManager;
-    @Autowired
-    private EditorTerrainService terrainService;
-    @Autowired
-    private EditorModelService modelService;
-    @Autowired
-    private OutlinePresenter outlinePresenter;
-
-    @Bean
-    public ShaderAssetLoader shaderAssetLoader() {
-        return new ShaderAssetLoader();
-    }
-
-    @Bean
-    public AssetsStorage assetsStorage() {
-        return new AssetsStorage(assetWriter, shaderAssetLoader(), editorCtx());
-    }
-
-    @Bean
     @Primary
-    public Outline outline() {
+    public Outline outline(OutlinePresenter outlinePresenter) {
         return new TestOutline(appUi(), outlinePresenter);
     }
 
     @Bean
-    public SceneConverter sceneConverter() {
-        return new SceneConverter(mapper());
+    public SceneConverter sceneConverter(ObjectMapper mapper) {
+        return new SceneConverter(mapper);
     }
 
     @Bean
-    public EditorEcsService ecsService() {
-        return new EditorEcsService(editorAssetManager, terrainService, modelService);
-    }
-
-    @Bean
-    public SceneStorage sceneStorage() {
-        return new SceneStorage(mapper(), assetsStorage(), editorAssetManager, sceneConverter(), ecsService());
+    public MetaService metaService(ObjectMapper mapper) {
+        return new MetaService(mapper);
     }
 
     @Bean
@@ -151,6 +83,7 @@ public class TestConfig {
     }
 
     @Bean
+    @Primary
     public AppUi appUi() {
         var res = mock(AppUi.class);
         when(res.createOpenDialogListener(any())).thenReturn(mock(ClickListener.class));
@@ -175,10 +108,10 @@ public class TestConfig {
     @Bean
     public ShaderClassLoader shaderClassLoader() {
         return new ShaderClassLoader() {
-            @Override
-            public EditorShaderHolder reloadShader(ShaderAsset asset, ShaderHolder holder) {
-                return mock(EditorShaderHolder.class);
-            }
+//            @Override
+//            public EditorShaderHolder reloadShader(ShaderAsset asset, ShaderHolder holder) {
+//                return mock(EditorShaderHolder.class);
+//            }
         };
     }
 
@@ -194,5 +127,10 @@ public class TestConfig {
         var res = mock(UiComponentHolder.class);
         when(res.getButtonFactory()).thenReturn(buttonFactoryMock);
         return res;
+    }
+
+    @Bean
+    public Registry registry(ProjectStorage projectStorage) {
+        return projectStorage.loadRegistry();
     }
 }

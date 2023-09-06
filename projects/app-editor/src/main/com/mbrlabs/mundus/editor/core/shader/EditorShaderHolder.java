@@ -1,35 +1,17 @@
 package com.mbrlabs.mundus.editor.core.shader;
 
-import groovy.lang.GroovyClassLoader;
 import lombok.Getter;
-import lombok.Setter;
 import net.nevinsky.abyssus.core.shader.BaseShader;
 import net.nevinsky.abyssus.core.shader.ShaderHolder;
 
 public class EditorShaderHolder extends ShaderHolder {
 
-    @Setter
-    private BaseShader overrideInstance;
-
     @Getter
-    private final GroovyClassLoader shaderClassLoader;
+    private final Class<?> shaderClass;
 
-    public EditorShaderHolder(GroovyClassLoader shaderClassLoader, BaseShader instance) {
-        super(instance);
-        this.shaderClassLoader = shaderClassLoader;
+    public EditorShaderHolder(String key, Class<?> shaderClass) {
+        super(key);
+        this.shaderClass = shaderClass;
     }
 
-    @Override
-    public EditorShaderHolder clone() {
-        var res = new EditorShaderHolder(shaderClassLoader, defaultInstance.clone());
-        return res;
-    }
-
-    @Override
-    public BaseShader getDefaultInstance() {
-        if (overrideInstance != null) {
-            return overrideInstance;
-        }
-        return super.getDefaultInstance();
-    }
 }

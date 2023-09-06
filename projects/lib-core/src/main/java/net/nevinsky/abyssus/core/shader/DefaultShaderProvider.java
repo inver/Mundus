@@ -1,32 +1,15 @@
-/*******************************************************************************
- * Copyright 2011 See AUTHORS file.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
-
 package net.nevinsky.abyssus.core.shader;
 
 import com.badlogic.gdx.files.FileHandle;
 import lombok.Getter;
 import net.nevinsky.abyssus.core.Renderable;
 
-public class DefaultShaderProvider extends BaseShaderProvider {
+public class DefaultShaderProvider extends AbstractShaderProvider<ShaderHolder> {
     @Getter
     private final ShaderConfig config;
 
     public DefaultShaderProvider(final ShaderConfig config) {
         this.config = (config == null) ? new ShaderConfig() : config;
-        init();
     }
 
     public DefaultShaderProvider(final String vertexShader, final String fragmentShader) {
@@ -42,20 +25,22 @@ public class DefaultShaderProvider extends BaseShaderProvider {
     }
 
     @Override
-    protected ShaderHolder loadShaderAndCache(String key, Renderable renderable) {
-        var holder = shaders.get(key);
-        if (holder != null && holder.getDefaultInstance().canRender(renderable)) {
-            return holder;
+    public Shader get(String key, Renderable renderable) {
+        var res = super.get(key, renderable);
+        if (res != null) {
+            return res;
         }
 
-        var shader = new DefaultShader(config.getVertexShader(), config.getFragmentShader());
-        shader.init(renderable);
-        if (!shader.canRender(renderable)) {
-            return null;
+        res = shaderCache.get(DEFAULT_SHADER_KEY).getForRenderable(renderable);
+        if (res != null) {
+            return res;
         }
 
-        var res = new ShaderHolder(shader);
-        shaders.put(key, res);
-        return res;
+        throw new RuntimeException("Could not find shader for renderable. Even default shader doesn't accept it.");
+    }
+
+    @Override
+    protected Shader createShader(ShaderHolder holder, Renderable renderable) {
+        return new DefaultShader(config.getVertexShader(), config.getFragmentShader());
     }
 }

@@ -11,6 +11,7 @@ import com.mbrlabs.mundus.commons.assets.shader.ShaderMeta;
 import com.mbrlabs.mundus.editor.core.project.AssetKey;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.project.ProjectContext;
+import com.mbrlabs.mundus.editor.core.project.ProjectManager;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatcher;
 
-import static net.nevinsky.abyssus.core.shader.ShaderProvider.DEFAULT_SHADER;
+import static net.nevinsky.abyssus.core.shader.ShaderProvider.DEFAULT_SHADER_KEY;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
@@ -43,17 +44,19 @@ public class ShaderStorageTest {
     private final BaseShader projectBundledShader = mock(BaseShader.class);
     private final BaseShader projectShader = mock(BaseShader.class);
 
+    private final ProjectManager projectManager = mock(ProjectManager.class);
+
     @BeforeEach
     public void init() {
-        initShaderClassLoader(DEFAULT_SHADER, defaultShader);
+        initShaderClassLoader(DEFAULT_SHADER_KEY, defaultShader);
         initShaderClassLoader(BUNDLED_SHADER, bundledShader);
 
         var meta = createShaderMeta("./" + BUNDLED_SHADER);
         ctx.getAssetLibrary().put(new AssetKey(AssetType.SHADER, BUNDLED_SHADER), shaderAssetLoader.load(meta));
-        meta = createShaderMeta("./" + DEFAULT_SHADER);
-        ctx.getAssetLibrary().put(new AssetKey(AssetType.SHADER, DEFAULT_SHADER), shaderAssetLoader.load(meta));
+        meta = createShaderMeta("./" + DEFAULT_SHADER_KEY);
+        ctx.getAssetLibrary().put(new AssetKey(AssetType.SHADER, DEFAULT_SHADER_KEY), shaderAssetLoader.load(meta));
 
-        shaderStorage = new ShaderStorage(ctx, eventBus, shaderAssetLoader, shaderClassLoader);
+        shaderStorage = new ShaderStorage(ctx, shaderClassLoader, eventBus, projectManager);
     }
 
     @Test
@@ -128,9 +131,9 @@ public class ShaderStorageTest {
 
     private void initShaderClassLoader(String shaderName, BaseShader shader) {
         var projectHolder = mock(EditorShaderHolder.class);
-        when(projectHolder.getDefaultInstance()).thenReturn(shader);
-        when(shaderClassLoader.reloadShader(argThat(new AssetNameMatcher(shaderName)), any())).thenReturn(
-                projectHolder);
+//        when(projectHolder.getDefaultInstance()).thenReturn(shader);
+//        when(shaderClassLoader.reloadShader(argThat(new AssetNameMatcher(shaderName)), any())).thenReturn(
+//                projectHolder);
     }
 
     @RequiredArgsConstructor

@@ -114,7 +114,7 @@ public class ModelTest extends Lwjgl3WindowAdapter implements ApplicationListene
 
         // Like spriteBatch, just with models!  pass in the box Instance and the environment
         modelBatch.begin(camera);
-        modelBatch.render(modelInstance, environment, ShaderProvider.DEFAULT_SHADER);
+        modelBatch.render(modelInstance, environment, ShaderProvider.DEFAULT_SHADER_KEY);
         modelBatch.end();
         // Now tell OpenGL that we are done sending graphics to the framebuffer
         if (screenShot) {

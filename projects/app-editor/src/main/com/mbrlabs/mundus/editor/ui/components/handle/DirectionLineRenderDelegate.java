@@ -13,7 +13,7 @@ import net.nevinsky.abyssus.core.ModelBuilder;
 import net.nevinsky.abyssus.core.ModelInstance;
 import net.nevinsky.abyssus.core.shader.ShaderProvider;
 
-import static net.nevinsky.abyssus.core.shader.ShaderProvider.DEFAULT_SHADER;
+import static net.nevinsky.abyssus.core.shader.ShaderProvider.DEFAULT_SHADER_KEY;
 
 public class DirectionLineRenderDelegate implements RenderableDelegate {
     private static final long ATTRIBUTES = VertexAttributes.Usage.Position | VertexAttributes.Usage.ColorUnpacked;
@@ -37,7 +37,7 @@ public class DirectionLineRenderDelegate implements RenderableDelegate {
     @Override
     public void render(ModelBatch batch, SceneEnvironment environment, ShaderProvider shaders, float delta) {
         if (!hidden) {
-            batch.render(instance, DEFAULT_SHADER);
+            batch.render(instance, DEFAULT_SHADER_KEY);
         }
     }
 

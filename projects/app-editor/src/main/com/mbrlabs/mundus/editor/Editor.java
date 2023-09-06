@@ -189,7 +189,7 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
                 batch.end();
 
                 toolManager.render(batch, scene.getEnvironment(), shaderStorage, Gdx.graphics.getDeltaTime());
-                compass.render(batch, ShaderProvider.DEFAULT_SHADER);
+                compass.render(batch, ShaderProvider.DEFAULT_SHADER_KEY);
             } catch (Exception e) {
                 log.error("ERROR", e);
             }

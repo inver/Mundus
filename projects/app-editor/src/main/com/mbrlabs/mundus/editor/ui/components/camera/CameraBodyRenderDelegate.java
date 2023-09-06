@@ -15,7 +15,7 @@ import net.nevinsky.abyssus.core.builder.BoxShapeBuilder;
 import net.nevinsky.abyssus.core.builder.ConeShapeBuilder;
 import net.nevinsky.abyssus.core.shader.ShaderProvider;
 
-import static net.nevinsky.abyssus.core.shader.ShaderProvider.DEFAULT_SHADER;
+import static net.nevinsky.abyssus.core.shader.ShaderProvider.DEFAULT_SHADER_KEY;
 
 public class CameraBodyRenderDelegate implements RenderableDelegate {
     private static final long ATTRIBUTES =
@@ -52,6 +52,6 @@ public class CameraBodyRenderDelegate implements RenderableDelegate {
             return;
         }
 
-        batch.render(instance, DEFAULT_SHADER);
+        batch.render(instance, DEFAULT_SHADER_KEY);
     }
 }

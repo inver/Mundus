@@ -15,7 +15,6 @@ import com.mbrlabs.mundus.commons.loader.AssimpWorker;
 import lombok.extern.slf4j.Slf4j;
 import net.nevinsky.abyssus.core.ModelBatch;
 import net.nevinsky.abyssus.core.ModelInstance;
-import net.nevinsky.abyssus.core.shader.DefaultShader;
 import net.nevinsky.abyssus.core.shader.DefaultShaderProvider;
 import net.nevinsky.abyssus.core.shader.ShaderProvider;
 
@@ -87,7 +86,7 @@ public class TesterListener extends Lwjgl3WindowAdapter implements ApplicationLi
         camController.update();
 
         modelBatch.begin(camera);
-        modelBatch.render(modelInstance, environment, ShaderProvider.DEFAULT_SHADER);
+        modelBatch.render(modelInstance, environment, ShaderProvider.DEFAULT_SHADER_KEY);
 //        modelBatch.render(cubeInstance, environment);
         modelBatch.end();
     }

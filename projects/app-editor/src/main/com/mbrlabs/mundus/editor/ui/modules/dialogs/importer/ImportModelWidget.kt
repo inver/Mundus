@@ -62,7 +62,7 @@ class ImportModelWidget(
             previewInstance!!.transform.rotate(0f, 1f, 0f, -1f)
 
             modelBatch?.begin(camera)
-            modelBatch?.render(previewInstance!!, env, ShaderProvider.DEFAULT_SHADER)
+            modelBatch?.render(previewInstance!!, env, ShaderProvider.DEFAULT_SHADER_KEY)
             modelBatch?.end()
         }
 

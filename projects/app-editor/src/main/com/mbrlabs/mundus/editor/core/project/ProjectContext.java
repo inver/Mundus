@@ -137,4 +137,8 @@ public class ProjectContext implements Disposable {
     public String getName() {
         return Path.of(path).getFileName().toString();
     }
+
+    public <T extends Asset<?>> T getAsset(AssetKey key) {
+        return (T) projectAssets.get(key);
+    }
 }

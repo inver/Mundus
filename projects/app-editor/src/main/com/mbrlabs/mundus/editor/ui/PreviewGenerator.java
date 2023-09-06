@@ -49,7 +49,7 @@ public class PreviewGenerator {
 
                 Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT);
                 modelBatch.begin(camera);
-                modelBatch.render(instance, environment, ShaderProvider.DEFAULT_SHADER);
+                modelBatch.render(instance, environment, ShaderProvider.DEFAULT_SHADER_KEY);
                 modelBatch.end();
 
                 fb.end();
@@ -105,7 +105,7 @@ public class PreviewGenerator {
             widget.setRenderer(cam -> {
                 Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT);
                 modelBatch.begin(cam);
-                modelBatch.render(instance, environment, ShaderProvider.DEFAULT_SHADER);
+                modelBatch.render(instance, environment, ShaderProvider.DEFAULT_SHADER_KEY);
                 modelBatch.end();
             });
             return widget;
