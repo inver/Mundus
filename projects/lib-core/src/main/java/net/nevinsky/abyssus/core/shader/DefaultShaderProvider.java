@@ -41,6 +41,9 @@ public class DefaultShaderProvider extends AbstractShaderProvider<ShaderHolder> 
 
     @Override
     protected Shader createShader(ShaderHolder holder, Renderable renderable) {
+        if (!DEFAULT_SHADER_KEY.equals(holder.getKey())) {
+            return null;
+        }
         return new DefaultShader(config.getVertexShader(), config.getFragmentShader());
     }
 }

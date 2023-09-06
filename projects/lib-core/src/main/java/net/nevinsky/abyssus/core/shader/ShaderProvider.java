@@ -35,20 +35,11 @@ public interface ShaderProvider extends Disposable {
     /**
      * Method returns default shader
      *
+     * @param renderable the renderable for shader initialization
      * @return default shader instance
      */
-    default Shader get() {
-        return get(DEFAULT_SHADER_KEY);
-    }
-
-    /**
-     * Returns a {@link Shader} for the given {@link String}.
-     *
-     * @param key the key of shader
-     * @return the Shader to be used for the RenderInstance
-     */
-    default Shader get(String key) {
-        return get(key, null);
+    default Shader get(Renderable renderable) {
+        return get(DEFAULT_SHADER_KEY, renderable);
     }
 
     /**
