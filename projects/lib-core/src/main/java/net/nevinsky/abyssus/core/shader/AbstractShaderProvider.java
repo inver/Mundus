@@ -35,7 +35,7 @@ public abstract class AbstractShaderProvider<T extends ShaderHolder> implements 
         }
 
         res = createShader(holderByKey, renderable);
-        if (res.canRender(renderable)) {
+        if (res != null && res.canRender(renderable)) {
             res.init(renderable);
             holderByKey.addShader(res);
             return res;

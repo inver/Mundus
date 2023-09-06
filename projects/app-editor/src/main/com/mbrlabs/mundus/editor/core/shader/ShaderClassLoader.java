@@ -18,11 +18,10 @@ public class ShaderClassLoader {
      * @param asset shader asset with class
      * @return class
      */
-    public Class<?> createShaderClass(ShaderAsset asset) {
+    public Class createShaderClass(ShaderAsset asset) {
         var classPath = asset.getMeta().getFile().child(asset.getMeta().getAdditional().getShaderClass());
 
         try (var loader = new GroovyClassLoader(this.getClass().getClassLoader())) {
-            Class<?> clazz;
             if (classPath.type() == Files.FileType.Classpath) {
                 //todo may be use recompile method from loader?
                 return loader.parseClass(new File(

@@ -25,7 +25,6 @@ public class EditorShaderProvider extends AbstractShaderProvider<EditorShaderHol
         return new EditorShaderHolder(key, shaderClassLoader.createShaderClass(asset));
     }
 
-
     @Override
     protected Shader createShader(EditorShaderHolder holder, Renderable renderable) {
         var asset = shaderAssetGetter.apply(holder.getKey());

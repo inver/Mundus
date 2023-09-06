@@ -42,7 +42,7 @@ import net.nevinsky.abyssus.core.mesh.Mesh;
  * A BaseShader is a wrapper around a ShaderProgram that keeps track of the uniform and attribute
  * locations. It does not manage the ShaderPogram, you are still responsible for disposing the ShaderProgram.
  */
-public abstract class BaseShader implements Shader, Cloneable {
+public abstract class BaseShader implements Shader {
     public interface Validator {
         /**
          * @return True if the input is valid for the renderable, false otherwise.
@@ -123,9 +123,6 @@ public abstract class BaseShader implements Shader, Cloneable {
     protected RenderContext context;
     protected Camera camera;
     private Mesh currentMesh;
-
-    @Override
-    public abstract BaseShader clone();
 
     /**
      * Register an uniform which might be used by this shader. Only possible prior to the call to init().
