@@ -18,8 +18,6 @@ public class EditorShaderProvider extends AbstractShaderProvider<EditorShaderHol
     private final Function<String, ShaderAsset> shaderAssetGetter;
 
     protected EditorShaderHolder createHolder(String key) {
-//        var assetKey = new AssetKey(AssetType.SHADER, key);
-//        var asset = (ShaderAsset) ctx.getAsset(assetKey);
         var asset = shaderAssetGetter.apply(key);
         if (asset == null) {
             return null;
@@ -30,9 +28,6 @@ public class EditorShaderProvider extends AbstractShaderProvider<EditorShaderHol
 
     @Override
     protected Shader createShader(EditorShaderHolder holder, Renderable renderable) {
-//        var assetKey = new AssetKey(AssetType.SHADER, holder.getKey());
-//        var asset = (ShaderAsset) ctx.getAsset(assetKey);
-
         var asset = shaderAssetGetter.apply(holder.getKey());
         var clazz = holder.getShaderClass();
         try {

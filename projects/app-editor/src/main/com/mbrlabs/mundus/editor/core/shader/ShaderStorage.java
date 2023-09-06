@@ -1,5 +1,6 @@
 package com.mbrlabs.mundus.editor.core.shader;
 
+import com.badlogic.gdx.files.FileHandle;
 import com.mbrlabs.mundus.commons.assets.AssetType;
 import com.mbrlabs.mundus.editor.core.project.AssetKey;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
@@ -42,20 +43,17 @@ public class ShaderStorage implements ShaderProvider {
 
     @PostConstruct
     public void init() {
-//        loadAllBundledShaders();
         eventBus.register((ProjectChangedEvent.ProjectChangedListener) event -> {
             projectShaderProvider.clear();
         });
         eventBus.register((ProjectFileChangedEvent.ProjectFileChangedListener) event -> {
             var assetFolderPath = event.getPath().getParent();
-            if (!assetFolderPath.toFile().exists()) {
-                log.debug("Remove shader '{}'", assetFolderPath.getFileName().toString());
+            projectShaderProvider.remove(assetFolderPath.getFileName().toString());
 
-                projectShaderProvider.remove(assetFolderPath.getFileName().toString());
-                return;
-            }
-
-            projectManager.reloadAsset(new AssetKey(AssetType.SHADER, assetFolderPath.getFileName().toString()));
+            projectManager.reloadAsset(
+                    new AssetKey(AssetType.SHADER, assetFolderPath.getFileName().toString()),
+                    new FileHandle(assetFolderPath.toFile())
+            );
         });
     }
 

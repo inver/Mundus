@@ -60,7 +60,7 @@ public class AssetManager {
         throw new NotImplementedException("errm, needed path of project/game/etc");
     }
 
-    public Asset<?> loadAsset(Meta meta) throws MetaFileParseException, AssetNotFoundException {
+    private Asset<?> loadAsset(Meta meta) throws MetaFileParseException, AssetNotFoundException {
         var assetFile = meta.getFile().sibling(meta.getFile().nameWithoutExtension());
 
         // check if asset exists

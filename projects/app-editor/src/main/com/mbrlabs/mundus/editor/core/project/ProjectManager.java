@@ -17,6 +17,7 @@
 package com.mbrlabs.mundus.editor.core.project;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.utils.Disposable;
 import com.mbrlabs.mundus.commons.Scene;
@@ -315,13 +316,9 @@ public class ProjectManager implements Disposable {
         return null;
     }
 
-    public void reloadAsset(AssetKey assetKey) {
-        var asset = editorCtx.getCurrent().getAsset(assetKey);
-        if (asset != null) {
-            asset = assetManager.loadAsset(asset.getMeta());
-            // put updated content of shader to project assets
-            editorCtx.getCurrent().getProjectAssets().put(assetKey, asset);
-//                loadShaderAssetAndCache(projectShaders, asset);
-        }
+    public void reloadAsset(AssetKey assetKey, FileHandle assetFolderPath) {
+        var asset = assetManager.loadAsset(assetFolderPath);
+        // put updated content of shader to project assets
+        editorCtx.getCurrent().getProjectAssets().put(assetKey, asset);
     }
 }

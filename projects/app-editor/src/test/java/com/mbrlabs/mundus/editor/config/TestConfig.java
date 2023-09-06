@@ -106,16 +106,6 @@ public class TestConfig {
     }
 
     @Bean
-    public ShaderClassLoader shaderClassLoader() {
-        return new ShaderClassLoader() {
-//            @Override
-//            public EditorShaderHolder reloadShader(ShaderAsset asset, ShaderHolder holder) {
-//                return mock(EditorShaderHolder.class);
-//            }
-        };
-    }
-
-    @Bean
     public UiComponentHolder uiComponentHolder() {
         var buttonMock = mock(VisTextButton.class);
         when(buttonMock.getStyle()).thenReturn(mock(TextButton.TextButtonStyle.class));
