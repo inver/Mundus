@@ -12,7 +12,6 @@ import com.mbrlabs.mundus.commons.loader.AssimpWorker;
 import com.mbrlabs.mundus.commons.loader.ModelImporter;
 import com.mbrlabs.mundus.commons.model.ImportedModel;
 import com.mbrlabs.mundus.commons.model.ModelService;
-import com.mbrlabs.mundus.commons.scene3d.HierarchyNode;
 import com.mbrlabs.mundus.editor.core.ecs.PickableComponent;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
@@ -65,7 +64,7 @@ public class EditorModelService extends ModelService {
         return modelAssetLoader.load(meta);
     }
 
-    public HierarchyNode createModelEntity(ImportedModel importedModel) {
+    public void createModelEntity(ImportedModel importedModel) {
         var world = ctx.getCurrentWorld();
 
         var id = world.create();
@@ -79,8 +78,6 @@ public class EditorModelService extends ModelService {
                 .add(new PositionComponent())
                 .add(PickableComponent.of(id, new RenderableObjectDelegate(model, ShaderConstants.PICKER)))
                 .add(new RenderableObjectDelegate(model, ShaderConstants.MODEL).asComponent());
-
-        return new HierarchyNode(id, name);
     }
 
 }

@@ -16,7 +16,6 @@
 
 package com.mbrlabs.mundus.commons.dto;
 
-import com.mbrlabs.mundus.commons.scene3d.HierarchyNode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -35,10 +34,6 @@ public class SceneDto {
     @Setter
     private Object ecs;
 
-    @Getter
-    @Setter
-    private HierarchyNode rootNode;
-
     public long getId() {
         return id;
     }
@@ -54,54 +49,6 @@ public class SceneDto {
     public void setName(String name) {
         this.name = name;
     }
-//
-//    public float getCamPosX() {
-//        return camPosX;
-//    }
-//
-//    public void setCamPosX(float camPosX) {
-//        this.camPosX = camPosX;
-//    }
-//
-//    public float getCamPosY() {
-//        return camPosY;
-//    }
-//
-//    public void setCamPosY(float camPosY) {
-//        this.camPosY = camPosY;
-//    }
-//
-//    public float getCamPosZ() {
-//        return camPosZ;
-//    }
-//
-//    public void setCamPosZ(float camPosZ) {
-//        this.camPosZ = camPosZ;
-//    }
-//
-//    public float getCamDirX() {
-//        return camDirX;
-//    }
-//
-//    public void setCamDirX(float camDirX) {
-//        this.camDirX = camDirX;
-//    }
-//
-//    public float getCamDirY() {
-//        return camDirY;
-//    }
-//
-//    public void setCamDirY(float camDirY) {
-//        this.camDirY = camDirY;
-//    }
-//
-//    public float getCamDirZ() {
-//        return camDirZ;
-//    }
-//
-//    public void setCamDirZ(float camDirZ) {
-//        this.camDirZ = camDirZ;
-//    }
 
     public FogDTO getFog() {
         return fog;
