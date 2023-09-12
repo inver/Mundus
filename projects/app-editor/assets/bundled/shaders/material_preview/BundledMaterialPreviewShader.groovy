@@ -4,19 +4,18 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute
 import com.badlogic.gdx.math.Matrix4
 import com.mbrlabs.mundus.commons.env.SceneEnvironment
-import com.mbrlabs.mundus.editor.shader.AppBaseShader
 import net.nevinsky.abyssus.core.Renderable
 import net.nevinsky.abyssus.core.shader.DefaultShader
-import net.nevinsky.abyssus.core.shader.Shader
+import net.nevinsky.abyssus.core.shader.ShaderConfig
 
-class MaterialPreviewShader extends DefaultShader {
+class BundledMaterialPreviewShader extends DefaultShader {
 
     protected final int UNIFORM_MODEL_MATRIX = register(new Uniform("u_modelMatrix"))
 
     private final Matrix4 modelPos = new Matrix4()
 
-    MaterialPreviewShader(String vertexShaderPath, String fragmentShaderPath) {
-        super(vertexShaderPath, fragmentShaderPath)
+    BundledMaterialPreviewShader(ShaderConfig config, Renderable renderable) {
+        super(config, renderable)
     }
 
     @Override

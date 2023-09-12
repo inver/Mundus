@@ -1,8 +1,13 @@
 package com.mbrlabs.mundus.editor.core.shader;
 
+import com.badlogic.gdx.graphics.VertexAttribute;
+import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.mbrlabs.mundus.commons.assets.shader.ShaderAsset;
 import lombok.SneakyThrows;
 import net.nevinsky.abyssus.core.Renderable;
+import net.nevinsky.abyssus.core.mesh.Mesh;
+import net.nevinsky.abyssus.core.mesh.MeshPart;
 import net.nevinsky.abyssus.core.shader.AbstractShaderProvider;
 import net.nevinsky.abyssus.core.shader.Shader;
 import net.nevinsky.abyssus.core.shader.ShaderProvider;
@@ -23,7 +28,7 @@ public class EditorShaderProviderTest {
     private static final ShaderClassLoader loader = mock(ShaderClassLoader.class);
     private static final ShaderAsset asset = mock(ShaderAsset.class);
     private static final ShaderAsset asset2 = mock(ShaderAsset.class);
-    private final Renderable renderable = mock(Renderable.class);
+    private static final Renderable renderable = new Renderable();
 
     @BeforeAll
     public static void init() {
@@ -40,6 +45,12 @@ public class EditorShaderProviderTest {
             }
             return null;
         });
+
+        var vertexAttributes = new VertexAttributes(
+                new VertexAttribute(VertexAttributes.Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE));
+        var mesh = mock(Mesh.class);
+        renderable.meshPart.mesh = mesh;
+        when(mesh.getVertexAttributes()).thenReturn(vertexAttributes);
     }
 
     @Test

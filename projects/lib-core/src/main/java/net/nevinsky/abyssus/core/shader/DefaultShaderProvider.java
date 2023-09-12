@@ -44,6 +44,6 @@ public class DefaultShaderProvider extends AbstractShaderProvider<ShaderHolder> 
         if (!DEFAULT_SHADER_KEY.equals(holder.getKey())) {
             return null;
         }
-        return new DefaultShader(config.getVertexShader(), config.getFragmentShader());
+        return new DefaultShader(config, renderable);
     }
 }

@@ -5,6 +5,6 @@
   "additional": {
     "vertex": "terrain.vert.glsl",
     "fragment": "terrain.frag.glsl",
-    "shaderClass": "TerrainShader.groovy"
+    "shaderClass": "BundledTerrainShader.groovy"
   }
 }

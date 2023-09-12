@@ -7,6 +7,7 @@ import net.nevinsky.abyssus.core.Renderable;
 import net.nevinsky.abyssus.core.shader.AbstractShaderProvider;
 import net.nevinsky.abyssus.core.shader.BaseShader;
 import net.nevinsky.abyssus.core.shader.Shader;
+import net.nevinsky.abyssus.core.shader.ShaderConfig;
 
 import java.util.function.Function;
 
@@ -28,10 +29,15 @@ public class EditorShaderProvider extends AbstractShaderProvider<EditorShaderHol
     @Override
     protected Shader createShader(EditorShaderHolder holder, Renderable renderable) {
         var asset = shaderAssetGetter.apply(holder.getKey());
+
+        var shaderConfig = new ShaderConfig();
+        shaderConfig.setFragmentShader(asset.getFragmentShader());
+        shaderConfig.setVertexShader(asset.getVertexShader());
+
         var clazz = holder.getShaderClass();
         try {
-            var constructor = clazz.getDeclaredConstructor(String.class, String.class);
-            var shader = (BaseShader) constructor.newInstance(asset.getVertexShader(), asset.getFragmentShader());
+            var constructor = clazz.getDeclaredConstructor(ShaderConfig.class, Renderable.class);
+            var shader = (BaseShader) constructor.newInstance(shaderConfig, renderable);
             log.info("Loaded shader for {}", asset.getName());
 
             return shader;

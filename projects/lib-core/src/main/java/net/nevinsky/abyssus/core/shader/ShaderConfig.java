@@ -35,13 +35,13 @@ public class ShaderConfig {
      */
     private boolean ignoreUnimplemented = true;
     /**
-     * Set to 0 to disable culling, -1 to inherit from {@link OldDefaultShader#defaultCullFace}
+     * Set to 0 to disable culling
      */
-    private int defaultCullFace = -1;
+    private int defaultCullFace = 0;
     /**
-     * Set to 0 to disable depth test, -1 to inherit from {@link OldDefaultShader#defaultDepthFunc}
+     * Set to 0 to disable depth test
      */
-    private int defaultDepthFunc = -1;
+    private int defaultDepthFunc = 0;
 
     public ShaderConfig() {
     }

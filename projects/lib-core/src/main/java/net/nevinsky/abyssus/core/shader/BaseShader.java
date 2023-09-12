@@ -33,6 +33,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.IntIntMap;
+import lombok.RequiredArgsConstructor;
 import net.nevinsky.abyssus.core.Renderable;
 import net.nevinsky.abyssus.core.mesh.Mesh;
 
@@ -50,22 +51,26 @@ public abstract class BaseShader implements Shader {
         boolean validate(final BaseShader shader, final int inputID, final Renderable renderable);
     }
 
+    /**
+     * Setter interface. By default all setters are global.
+     */
     public interface Setter {
         /**
          * @return True if the uniform only has to be set once per render call, false if the uniform must be set for
          * each renderable.
          */
-        boolean isGlobal(final BaseShader shader, final int inputID);
+        default boolean isGlobal(final BaseShader shader, final int inputID) {
+            return true;
+        }
 
         void set(final BaseShader shader, final int inputID, final Renderable renderable,
                  final Attributes combinedAttributes);
     }
 
-    public abstract static class GlobalSetter implements Setter {
-        @Override
-        public boolean isGlobal(final BaseShader shader, final int inputID) {
-            return true;
-        }
+    @FunctionalInterface
+    public interface SetterFunction {
+        void set(final BaseShader shader, final int inputID, final Renderable renderable,
+                 final Attributes combinedAttributes);
     }
 
     public abstract static class LocalSetter implements Setter {
@@ -75,19 +80,12 @@ public abstract class BaseShader implements Shader {
         }
     }
 
+    @RequiredArgsConstructor
     public static class Uniform implements Validator {
         public final String alias;
         public final long materialMask;
         public final long environmentMask;
         public final long overallMask;
-
-        public Uniform(final String alias, final long materialMask, final long environmentMask,
-                       final long overallMask) {
-            this.alias = alias;
-            this.materialMask = materialMask;
-            this.environmentMask = environmentMask;
-            this.overallMask = overallMask;
-        }
 
         public Uniform(final String alias, final long materialMask, final long environmentMask) {
             this(alias, materialMask, environmentMask, 0);

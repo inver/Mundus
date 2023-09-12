@@ -2,9 +2,9 @@ package bundled.shaders.defaultShader
 
 import net.nevinsky.abyssus.core.shader.DefaultShader
 
-class Shader extends DefaultShader {
+class BundledDefaultShader extends DefaultShader {
 
-    Shader(String vertexShader, String fragmentShader) {
+    BundledDefaultShader(String vertexShader, String fragmentShader) {
         super(vertexShader, fragmentShader)
     }
 }

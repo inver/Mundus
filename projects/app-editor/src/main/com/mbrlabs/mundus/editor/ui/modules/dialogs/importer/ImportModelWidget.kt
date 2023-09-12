@@ -20,7 +20,7 @@ import com.mbrlabs.mundus.editor.ui.widgets.FileChooserField
 import com.mbrlabs.mundus.editor.ui.widgets.RenderWidget
 import net.nevinsky.abyssus.core.ModelBatch
 import net.nevinsky.abyssus.core.ModelInstance
-import net.nevinsky.abyssus.core.shader.OldDefaultShader
+import net.nevinsky.abyssus.core.shader.ShaderConfig
 import net.nevinsky.abyssus.core.shader.ShaderProvider
 
 class ImportModelWidget(
@@ -101,7 +101,7 @@ class ImportModelWidget(
     }
 
     private fun showPreview() {
-        val config = OldDefaultShader.Config()
+        val config = ShaderConfig()
         config.numBones = 600 // TODO get max bones from model
         modelBatch = ModelBatch(shaderStorage)
 

@@ -15,7 +15,7 @@ import net.nevinsky.abyssus.core.Renderable
 import net.nevinsky.abyssus.core.shader.DefaultShader
 import net.nevinsky.abyssus.core.shader.Shader
 
-class ModelShader extends DefaultShader {
+class BundledModelShader extends DefaultShader {
 
     // ============================ MATERIALS ============================
     protected final int UNIFORM_MATERIAL_DIFFUSE_TEXTURE = register(new Uniform("u_diffuseTexture"))
@@ -35,7 +35,7 @@ class ModelShader extends DefaultShader {
     protected final int UNIFORM_FOG_GRADIENT = register(new Uniform("u_fogGradient"))
     protected final int UNIFORM_FOG_COLOR = register(new Uniform("u_fogColor"))
 
-    ModelShader(String vertexShader, String fragmentShader) {
+    BundledModelShader(String vertexShader, String fragmentShader) {
         super(vertexShader, fragmentShader)
     }
 
