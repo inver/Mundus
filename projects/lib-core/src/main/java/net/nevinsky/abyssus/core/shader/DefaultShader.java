@@ -742,13 +742,6 @@ public class DefaultShader extends BaseShader {
     }
 
     @Override
-    public void end() {
-        if (context != null) {
-            context.end();
-        }
-    }
-
-    @Override
     public void dispose() {
         if (program != null) {
             program.dispose();
