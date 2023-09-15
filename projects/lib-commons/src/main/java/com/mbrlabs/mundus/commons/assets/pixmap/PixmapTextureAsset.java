@@ -47,22 +47,6 @@ public class PixmapTextureAsset extends Asset<PixmapMeta> {
     }
 
     @Override
-    public void load() {
-        pixmap = new Pixmap(meta.getFile());
-        texture = new Texture(pixmap);
-    }
-
-    @Override
-    public void resolveDependencies(Map<String, Asset> assets) {
-        // no dependencies here
-    }
-
-    @Override
-    public void applyDependencies() {
-        // no dependencies here
-    }
-
-    @Override
     public void dispose() {
         pixmap.dispose();
         texture.dispose();

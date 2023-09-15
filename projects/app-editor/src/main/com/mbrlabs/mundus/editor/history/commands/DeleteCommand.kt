@@ -27,13 +27,13 @@ import org.slf4j.LoggerFactory
  * @author codenigma
  * @version 28-09-2016
  */
-class DeleteCommand(private var entityId: Int?, private var node: IdNode) : Command {
+class DeleteCommand(var entityId: Int, private var node: IdNode) : Command {
 
     companion object {
         private val log = LoggerFactory.getLogger(DeleteCommand::class.java)
     }
 
-//    private var parentGO: GameObject? = null
+    //    private var parentGO: GameObject? = null
     private var parentNode: Tree.Node<IdNode, Int, VisTable>? = null
     private var tree: Tree<IdNode, Int>? = null
 
@@ -44,8 +44,8 @@ class DeleteCommand(private var entityId: Int?, private var node: IdNode) : Comm
     }
 
     override fun execute() {
-        TODO()
-//        log.trace("Remove game object [{}]", entityId)
+        log.trace("Remove game object [{}]", entityId)
+
         // remove go from sceneGraph
 //        entityId!!.remove()
         // remove from outline tree

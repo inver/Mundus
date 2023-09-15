@@ -48,21 +48,6 @@ public class TextureAsset extends Asset<TextureMeta> implements TextureProvider 
     }
 
     @Override
-    public void load() {
-        throw new UnsupportedOperationException("Load asset from asset is not supported! User Loader instead of");
-    }
-
-    @Override
-    public void resolveDependencies(Map<String, Asset> assets) {
-        // no dependencies here
-    }
-
-    @Override
-    public void applyDependencies() {
-        // no dependencies here
-    }
-
-    @Override
     public void dispose() {
         if (texture != null) {
             texture.dispose();

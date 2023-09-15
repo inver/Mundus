@@ -32,10 +32,8 @@ import com.mbrlabs.mundus.editor.utils.formatFloat
  * @author Marcus Brummer
  * @version 16-01-2016
  */
-class TransformWidget(
-    uiComponentHolder: UiComponentHolder,
-    private val ctx: EditorCtx
-) : BaseInspectorWidget(uiComponentHolder, "Transformation") {
+class TransformWidget(uiComponentHolder: UiComponentHolder, private val ctx: EditorCtx) :
+    BaseInspectorWidget(uiComponentHolder, "Transformation") {
 
     companion object {
         private val tempV3 = Vector3()
@@ -225,7 +223,7 @@ class TransformWidget(
     }
 
     override fun setValues(entityId: Int) {
-        val position = ctx.currentWorld.getEntity(entityId).getComponent(PositionComponent::class.java)
+        val position = ctx.currentWorld.getEntity(entityId).getComponent(PositionComponent::class.java) ?: return
 
         val pos = position.localPosition
         posX.text = formatFloat(pos.x, 2)

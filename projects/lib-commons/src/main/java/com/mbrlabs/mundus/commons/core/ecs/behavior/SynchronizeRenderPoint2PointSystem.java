@@ -8,7 +8,6 @@ import com.mbrlabs.mundus.commons.core.ecs.component.Point2PointPositionComponen
 import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @All(Point2PointPositionComponent.class)
 public class SynchronizeRenderPoint2PointSystem extends IteratingSystem {
 

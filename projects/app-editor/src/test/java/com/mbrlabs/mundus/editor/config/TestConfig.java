@@ -15,6 +15,7 @@ import com.mbrlabs.mundus.commons.assets.texture.TextureAssetLoader;
 import com.mbrlabs.mundus.commons.importer.CameraDeserializer;
 import com.mbrlabs.mundus.commons.importer.CameraSerializer;
 import com.mbrlabs.mundus.commons.importer.SceneConverter;
+import com.mbrlabs.mundus.editor.config.ui.TestOutline;
 import com.mbrlabs.mundus.editor.core.assets.AssetWriter;
 import com.mbrlabs.mundus.editor.core.assets.AssetsStorage;
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager;
@@ -28,7 +29,8 @@ import com.mbrlabs.mundus.editor.core.shader.ShaderClassLoader;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.ui.AppUi;
 import com.mbrlabs.mundus.editor.ui.PreviewGenerator;
-import com.mbrlabs.mundus.editor.ui.components.camera.CameraService;
+import com.mbrlabs.mundus.editor.ui.modules.outline.Outline;
+import com.mbrlabs.mundus.editor.ui.modules.outline.OutlinePresenter;
 import com.mbrlabs.mundus.editor.ui.widgets.ButtonFactory;
 import net.nevinsky.abyssus.core.ModelBatch;
 import net.nevinsky.abyssus.core.shader.ShaderHolder;
@@ -38,6 +40,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Primary;
 
 import java.io.File;
 import java.util.UUID;
@@ -62,9 +65,6 @@ import static org.mockito.Mockito.when;
         UiConfig.class,
 })
 public class TestConfig {
-
-    @Autowired
-    private CameraService cameraService;
 
     @Bean
     public AppEnvironment appEnvironment() {
@@ -111,6 +111,8 @@ public class TestConfig {
     private EditorTerrainService terrainService;
     @Autowired
     private EditorModelService modelService;
+    @Autowired
+    private OutlinePresenter outlinePresenter;
 
     @Bean
     public ShaderAssetLoader shaderAssetLoader() {
@@ -120,6 +122,12 @@ public class TestConfig {
     @Bean
     public AssetsStorage assetsStorage() {
         return new AssetsStorage(assetWriter, shaderAssetLoader(), editorCtx());
+    }
+
+    @Bean
+    @Primary
+    public Outline outline() {
+        return new TestOutline(appUi(), outlinePresenter);
     }
 
     @Bean
@@ -163,11 +171,6 @@ public class TestConfig {
     public ShapeRenderer shapeRenderer() {
         return mock(ShapeRenderer.class);
     }
-
-//    @Bean
-//    public ShaderStorage shaderStorage() {
-//        return new ShaderStorage(editorCtx(), eventBus(), shaderAssetLoader());
-//    }
 
     @Bean
     public ShaderClassLoader shaderClassLoader() {

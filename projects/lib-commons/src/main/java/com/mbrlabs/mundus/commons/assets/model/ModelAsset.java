@@ -54,42 +54,6 @@ public class ModelAsset extends Asset<ModelMeta> implements RenderableProvider {
     }
 
     @Override
-    public void resolveDependencies(Map<String, Asset> assets) {
-        try {
-            // materials
-//            var metaModel = meta.getAdditional();
-//            if (metaModel == null) {
-//                return;
-//            }
-//
-//            for (var g3dbMatID : metaModel.getMaterials().keySet()) {
-//                String uuid = metaModel.getMaterials().get(g3dbMatID);
-//                defaultMaterials.put(g3dbMatID, (MaterialAsset) assets.get(uuid));
-//            }
-        } catch (Exception e) {
-            //todo display error
-            log.error("ERROR", e);
-        }
-    }
-
-    @Override
-    public void applyDependencies() {
-        if (model == null) {
-            return;
-        }
-
-        //TODO use materials from nodes
-        // materials
-//        for (Material mat : model.materials) {
-//            MaterialAsset materialAsset = defaultMaterials.get(mat.id);
-//            if (materialAsset == null) {
-//                continue;
-//            }
-//            materialAsset.applyToMaterial(mat);
-//        }
-    }
-
-    @Override
     public void dispose() {
         if (model != null) {
             model.dispose();

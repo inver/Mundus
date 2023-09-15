@@ -18,10 +18,8 @@ import com.mbrlabs.mundus.commons.model.ImportedModel
 import com.mbrlabs.mundus.editor.core.shader.ShaderStorage
 import com.mbrlabs.mundus.editor.ui.widgets.FileChooserField
 import com.mbrlabs.mundus.editor.ui.widgets.RenderWidget
-import com.mbrlabs.mundus.editor.ui.widgets.presenter.FileChooserFieldPresenter
 import net.nevinsky.abyssus.core.ModelBatch
 import net.nevinsky.abyssus.core.ModelInstance
-import net.nevinsky.abyssus.core.shader.DefaultShaderProvider
 import net.nevinsky.abyssus.core.shader.OldDefaultShader
 import net.nevinsky.abyssus.core.shader.ShaderProvider
 
@@ -29,11 +27,10 @@ class ImportModelWidget(
     private val renderWidget: RenderWidget,
     private val importModelPresenter: ImportModelPresenter,
     private val shaderStorage: ShaderStorage,
-    fileChooserFieldPresenter: FileChooserFieldPresenter,
     closeListener: Runnable
 ) : VisTable(), Disposable {
 
-    private val modelInput = FileChooserField(300)
+    val modelInput = FileChooserField(300)
 
     private val env = Environment()
     private val cam = PerspectiveCamera()
@@ -71,7 +68,7 @@ class ImportModelWidget(
 
         setupUI()
         importModelPresenter.initImportButton(this, closeListener)
-        fileChooserFieldPresenter.initFileChooserField(modelInput)
+        importModelPresenter.initFileChooserField(this)
     }
 
     private fun setupUI() {

@@ -26,6 +26,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -69,8 +70,8 @@ public class AssetManagerTest {
     }
 
     @Test
-    public void testLoadTexture() {
-        var file = new AppFileHandle("assets/chessboard", Files.FileType.Classpath);
+    public void testLoadTextureWithMipmap() {
+        var file = new AppFileHandle("assets/chessboard_mipmaps", Files.FileType.Classpath);
         var asset = (TextureAsset) assetManager.loadAsset(file);
         assertNotNull(asset);
         assertEquals(Files.FileType.Classpath, asset.meta.getFile().type());
@@ -79,6 +80,22 @@ public class AssetManagerTest {
         assertEquals(Texture.TextureFilter.MipMapLinearLinear, asset.getTexture().getMinFilter());
         assertTrue(asset.isTileable());
         assertTrue(asset.isGenerateMipMaps());
+        assertEquals(1, asset.meta.getVersion());
+        assertEquals(1663444124794L, asset.meta.getLastModified());
+        assertEquals(AssetType.TEXTURE, asset.meta.getType());
+        assertEquals("assets/chessboard_mipmaps", asset.meta.getFile().path());
+        assertEquals("chessboard.png", asset.meta.getAdditional().getFile());
+    }
+
+    @Test
+    public void testLoadTexture() {
+        var file = new AppFileHandle("assets/chessboard", Files.FileType.Classpath);
+        var asset = (TextureAsset) assetManager.loadAsset(file);
+        assertNotNull(asset);
+        assertEquals(Files.FileType.Classpath, asset.meta.getFile().type());
+        assertNotNull(asset.getTexture());
+        assertFalse(asset.isTileable());
+        assertFalse(asset.isGenerateMipMaps());
         assertEquals(1, asset.meta.getVersion());
         assertEquals(1663444124794L, asset.meta.getLastModified());
         assertEquals(AssetType.TEXTURE, asset.meta.getType());

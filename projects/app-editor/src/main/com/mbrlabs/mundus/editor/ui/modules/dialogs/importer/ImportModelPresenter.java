@@ -11,6 +11,7 @@ import com.mbrlabs.mundus.editor.core.project.ProjectManager;
 import com.mbrlabs.mundus.editor.core.registry.Registry;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.SceneGraphChangedEvent;
+import com.mbrlabs.mundus.editor.ui.widgets.presenter.FileChooserFieldPresenter;
 import com.mbrlabs.mundus.editor.utils.Toaster;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,7 @@ public class ImportModelPresenter {
     private final EventBus eventBus;
     private final ModelImporter modelImporter;
     private final Registry registry;
+    private final FileChooserFieldPresenter fileChooserFieldPresenter;
 
     public void initImportButton(@NotNull ImportModelWidget importModelWidget, Runnable closeRunnable) {
         importModelWidget.getImportBtn().addListener(new ClickListener() {
@@ -41,9 +43,7 @@ public class ImportModelPresenter {
                 }
 
                 try {
-                    var node = editorModelService.createModelEntity(importModelWidget.getImportedModel());
-                    ctx.getCurrent().getCurrentScene().getRootNode().addChild(node);
-
+                    editorModelService.createModelEntity(importModelWidget.getImportedModel());
                     projectManager.saveProject(ctx.getCurrent());
                     //todo is needed import event here?
 //                    eventBus.post(new AssetImportEvent(asset));
@@ -62,10 +62,13 @@ public class ImportModelPresenter {
         });
     }
 
+    public void initFileChooserField(@NotNull ImportModelWidget importModelWidget) {
+        fileChooserFieldPresenter.initFileChooserField(importModelWidget.getModelInput());
+    }
+
     @Nullable
     public ImportedModel importModelFromFile(@Nullable FileHandle fileHandle) {
         var tmpFolder = registry.createTempFolder();
-        var res = modelImporter.importAndConvertToTmpFolder(tmpFolder, fileHandle);
-        return res;
+        return modelImporter.importAndConvertToTmpFolder(tmpFolder, fileHandle);
     }
 }

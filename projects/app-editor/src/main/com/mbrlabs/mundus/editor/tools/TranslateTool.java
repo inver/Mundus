@@ -198,7 +198,8 @@ public class TranslateTool extends TransformTool {
 
     @Override
     protected void scaleHandles() {
-        if (getCtx().getSelectedEntityId() < 0) {
+        if (getCtx().getSelectedEntityId() < 0 ||
+                getCtx().getSelectedEntity().getComponent(PositionComponent.class) == null) {
             return;
         }
 
@@ -219,7 +220,8 @@ public class TranslateTool extends TransformTool {
 
     @Override
     protected void translateHandles() {
-        if (getCtx().getSelectedEntityId() < 0) {
+        if (getCtx().getSelectedEntityId() < 0 ||
+                getCtx().getSelectedEntity().getComponent(PositionComponent.class) == null) {
             return;
         }
 

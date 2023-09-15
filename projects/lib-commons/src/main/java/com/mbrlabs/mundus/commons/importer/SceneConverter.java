@@ -50,8 +50,6 @@ public class SceneConverter {
         dto.setName(scene.getName());
         dto.setSkyboxName(scene.getEnvironment().getSkyboxName());
 
-        dto.setRootNode(scene.getRootNode());
-
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         scene.getWorld().getSystem(WorldSerializationManager.class).save(baos, new SaveFileFormat(
                 scene.getWorld().getAspectSubscriptionManager().get(Aspect.all()).getEntities()
@@ -76,9 +74,6 @@ public class SceneConverter {
                     .load(new ByteArrayInputStream(str), SaveFileFormat.class);
         }
 
-        if (dto.getRootNode() != null) {
-            scene.setRootNode(dto.getRootNode());
-        }
         // getEnvironment() stuff
         scene.getEnvironment().setFog(FogConverter.convert(dto.getFog()));
         scene.getEnvironment().setSkyboxName(dto.getSkyboxName());
