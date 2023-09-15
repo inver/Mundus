@@ -77,7 +77,7 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
     private CoordinateSystemComponent wirePlane;
 
     public void create() {
-        var homeDirFile = new File(appEnvironment.getHomeDir());
+        var homeDirFile = new File(appEnvironment.getConfigDir());
         if (!homeDirFile.exists()) {
             homeDirFile.mkdirs();
         }

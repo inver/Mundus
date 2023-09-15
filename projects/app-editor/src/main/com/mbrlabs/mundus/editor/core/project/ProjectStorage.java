@@ -59,7 +59,7 @@ public class ProjectStorage {
      * @return mundus registry
      */
     public Registry loadRegistry() {
-        try (var fis = new FileInputStream(appEnvironment.getHomeDataFile())) {
+        try (var fis = new FileInputStream(appEnvironment.getRegistryFile())) {
             return mapper.readValue(fis, Registry.class);
         } catch (Exception e) {
             log.error("ERROR", e);
@@ -74,7 +74,7 @@ public class ProjectStorage {
      * @param registry mundus registry
      */
     public void saveRegistry(Registry registry) {
-        try (var fos = new FileOutputStream(appEnvironment.getHomeDataFile())) {
+        try (var fos = new FileOutputStream(appEnvironment.getRegistryFile())) {
             mapper.writeValue(fos, registry);
         } catch (Exception e) {
             log.error("ERROR", e);
