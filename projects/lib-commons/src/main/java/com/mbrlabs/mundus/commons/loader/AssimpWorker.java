@@ -35,7 +35,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import static com.badlogic.gdx.graphics.g3d.model.data.ModelTexture.USAGE_DIFFUSE;
-import static org.lwjgl.assimp.Assimp.AI_MATKEY_COLOR_DIFFUSE;
+import static com.badlogic.gdx.graphics.g3d.model.data.ModelTexture.USAGE_UNKNOWN;
 import static org.lwjgl.assimp.Assimp.aiGetMaterialColor;
 import static org.lwjgl.assimp.Assimp.aiGetMaterialTexture;
 import static org.lwjgl.assimp.Assimp.aiProcess_CalcTangentSpace;
@@ -155,28 +155,62 @@ public class AssimpWorker {
 
         try (MemoryStack stack = MemoryStack.stackPush()) {
             var color = AIColor4D.create();
-
-            //todo add more types of colors
-            int result = aiGetMaterialColor(aiMaterial, AI_MATKEY_COLOR_DIFFUSE, aiTextureType_NONE, 0, color);
-            if (result == aiReturn_SUCCESS) {
-                material.diffuse = new Color(color.r(), color.g(), color.b(), color.a());
-            }
+            processMaterialColors(aiMaterial, color, material);
 
             var aiTexturePath = AIString.calloc(stack);
-            //todo add more types of textures
-            aiGetMaterialTexture(aiMaterial, aiTextureType_DIFFUSE, 0, aiTexturePath, (IntBuffer) null,
-                    null, null, null, null, null);
-            var texturePath = aiTexturePath.dataString();
-            if (texturePath.length() > 0) {
-                var texture = new ModelTexture();
-                texture.id = UUID.randomUUID().toString();
-                texture.usage = USAGE_DIFFUSE;
-                texture.fileName =
-                        modelDir + File.separator + new File(texturePath).getName().replace("\\", "/");
-                material.textures.add(texture);
-            }
+            processMaterialTexture(aiMaterial, modelDir, aiTexturePath, material);
 
             return material;
+        }
+    }
+
+    private static void processMaterialTexture(AIMaterial aiMaterial, String modelDir, AIString aiTexturePath,
+                                               ModelMaterial material) {
+        for (var type : TextureType.values()) {
+            if (type.getTextureUsage() == USAGE_UNKNOWN) {
+                continue;
+            }
+
+            var res = aiGetMaterialTexture(aiMaterial, type.getValue(), 0, aiTexturePath, (IntBuffer) null,
+                    null, null, null, null, null);
+            if (res != aiReturn_SUCCESS) {
+                continue;
+            }
+
+            var texturePath = aiTexturePath.dataString();
+            if (!texturePath.isEmpty()) {
+                var texture = new ModelTexture();
+                texture.id = UUID.randomUUID().toString();
+                texture.usage = type.getTextureUsage();
+                texture.fileName = modelDir + File.separator + new File(texturePath).getName().replace("\\", "/");
+                material.textures.add(texture);
+            }
+        }
+    }
+
+    private static void processMaterialColors(AIMaterial aiMaterial, AIColor4D color, ModelMaterial material) {
+        for (var type : ColorType.values()) {
+            int result = aiGetMaterialColor(aiMaterial, type.getValue(), aiTextureType_NONE, 0, color);
+            if (result != aiReturn_SUCCESS) {
+                continue;
+            }
+            var matColor = new Color(color.r(), color.g(), color.b(), color.a());
+            switch (type) {
+                case DIFFUSE:
+                    material.diffuse = matColor;
+                    continue;
+                case AMBIENT:
+                    material.ambient = matColor;
+                    continue;
+                case SPECULAR:
+                    material.specular = matColor;
+                    continue;
+                case EMISSIVE:
+                    material.emissive = matColor;
+                    continue;
+                case REFLECTIVE:
+                    material.reflection = matColor;
+            }
         }
     }
 
@@ -204,7 +238,7 @@ public class AssimpWorker {
         mesh.attributes = attributes.toArray(new VertexAttribute[]{});
         mesh.parts = new ModelMeshPart[]{processParts(aiMesh)};
 
-        String materialId = modelData.materials.get(aiMesh.mMaterialIndex()).id;
+        var materialId = modelData.materials.get(aiMesh.mMaterialIndex()).id;
         node.parts = new ModelNodePart[mesh.parts.length];
         for (int i = 0; i < mesh.parts.length; i++) {
             var nodePart = new ModelNodePart();
