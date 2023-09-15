@@ -51,11 +51,7 @@ public class ModelBatch {
         @Override
         public Renderable obtain() {
             Renderable renderable = super.obtain();
-            renderable.environment = null;
-            renderable.material = null;
-            renderable.meshPart.set("", null, 0, 0, 0);
-            renderable.shader = null;
-            renderable.userData = null;
+            renderable.cleanup();
             return renderable;
         }
     }
@@ -76,41 +72,47 @@ public class ModelBatch {
      **/
     protected final RenderableSorter sorter;
 
-    public ModelBatch() {
-        this(null, null);
+    protected final ShaderProvider shaderProvider;
+
+    public ModelBatch(ShaderProvider shaderProvider) {
+        this(null, null, shaderProvider);
     }
 
     /**
      * Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and
      * context.end() yourself.
      *
-     * @param context The {@link RenderContext} to use.
-     * @param sorter  The {@link RenderableSorter} to use.
+     * @param context        The {@link RenderContext} to use.
+     * @param sorter         The {@link RenderableSorter} to use.
+     * @param shaderProvider
      */
-    public ModelBatch(final RenderContext context, final RenderableSorter sorter) {
+    public ModelBatch(final RenderContext context, final RenderableSorter sorter, ShaderProvider shaderProvider) {
         this.sorter = (sorter == null) ? new DefaultRenderableSorter() : sorter;
         this.ownContext = (context == null);
         this.context =
                 (context == null) ? new RenderContext(new DefaultTextureBinder(DefaultTextureBinder.LRU, 1)) : context;
+        this.shaderProvider = shaderProvider;
     }
 
     /**
      * Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and
      * context.end() yourself.
      *
-     * @param context The {@link RenderContext} to use.
+     * @param context        The {@link RenderContext} to use.
+     * @param shaderProvider
      */
-    public ModelBatch(final RenderContext context) {
-        this(context, null);
+    public ModelBatch(final RenderContext context, ShaderProvider shaderProvider) {
+        this(context, null, shaderProvider);
     }
 
     /**
      * Construct a ModelBatch
      *
-     * @param sorter The {@link RenderableSorter} to use.
+     * @param sorter         The {@link RenderableSorter} to use.
+     * @param shaderProvider
      */
-    public ModelBatch(final RenderableSorter sorter) {
-        this(null, sorter);
+    public ModelBatch(final RenderableSorter sorter, ShaderProvider shaderProvider) {
+        this(null, sorter, shaderProvider);
     }
 
     /**
@@ -226,14 +228,14 @@ public class ModelBatch {
      * {@link Shader}. Can only be called after a call to {@link #begin(Camera)} and before a call to {@link #end()}.
      *
      * @param renderableProvider the renderable provider
-     * @param shader             the shader to use for the renderables
+     * @param shaderKey          the shader key to get shader to use for the renderables
      */
-    public void render(final RenderableProvider renderableProvider, final Shader shader) {
+    public void render(final RenderableProvider renderableProvider, String shaderKey) {
         final int offset = renderables.size;
         renderableProvider.getRenderables(renderables, renderablesPool);
         for (int i = offset; i < renderables.size; i++) {
             Renderable renderable = renderables.get(i);
-            renderable.shader = shader;
+            renderable.shader = shaderProvider.get(shaderKey, renderable);
         }
     }
 
@@ -243,11 +245,11 @@ public class ModelBatch {
      * {@link Shader}. Can only be called after a call to {@link #begin(Camera)} and before a call to {@link #end()}.
      *
      * @param renderableProviders one or more renderable providers
-     * @param shader              the shader to use for the renderables
+     * @param shaderKey           the shader key to get shader to use for the renderables
      */
-    public <T extends RenderableProvider> void render(final Iterable<T> renderableProviders, final Shader shader) {
+    public <T extends RenderableProvider> void render(final Iterable<T> renderableProviders, String shaderKey) {
         for (final RenderableProvider renderableProvider : renderableProviders) {
-            render(renderableProvider, shader);
+            render(renderableProvider, shaderKey);
         }
     }
 
@@ -259,16 +261,16 @@ public class ModelBatch {
      *
      * @param renderableProvider the renderable provider
      * @param environment        the {@link Environment} to use for the renderables
-     * @param shader             the shader to use for the renderables
+     * @param shaderKey          the shader key to get shader to use for the renderables
      */
     public void render(final RenderableProvider renderableProvider, final Environment environment,
-                       final Shader shader) {
-        final int offset = renderables.size;
+                       final String shaderKey) {
+        final int offset =renderables.size;
         renderableProvider.getRenderables(renderables, renderablesPool);
         for (int i = offset; i < renderables.size; i++) {
             Renderable renderable = renderables.get(i);
             renderable.environment = environment;
-            renderable.shader = shader;
+            renderable.shader = shaderProvider.get(shaderKey, renderable);
         }
     }
 
@@ -280,13 +282,13 @@ public class ModelBatch {
      *
      * @param renderableProviders one or more renderable providers
      * @param environment         the {@link Environment} to use for the renderables
-     * @param shader              the shader to use for the renderables
+     * @param shaderKey           the shader key to get shader to use for the renderables
      */
     public <T extends RenderableProvider> void render(final Iterable<T> renderableProviders,
                                                       final Environment environment,
-                                                      final Shader shader) {
+                                                      final String shaderKey) {
         for (final RenderableProvider renderableProvider : renderableProviders) {
-            render(renderableProvider, environment, shader);
+            render(renderableProvider, environment, shaderKey);
         }
     }
 }

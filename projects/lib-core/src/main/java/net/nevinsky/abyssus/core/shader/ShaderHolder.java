@@ -2,29 +2,35 @@ package net.nevinsky.abyssus.core.shader;
 
 import com.badlogic.gdx.utils.Disposable;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
+import net.nevinsky.abyssus.core.Renderable;
 
-@Slf4j
-@Getter
+import java.util.ArrayList;
+import java.util.List;
+
+@RequiredArgsConstructor
 public class ShaderHolder implements Disposable {
 
-    protected final BaseShader defaultInstance;
-    private boolean initialized = false;
+    @Getter
+    protected final String key;
+    protected final List<Shader> shaders = new ArrayList<>();
 
-    public ShaderHolder(BaseShader instance) {
-        this.defaultInstance = instance;
+    public Shader getForRenderable(Renderable renderable) {
+        for (var shader : shaders) {
+            if (shader.canRender(renderable)) {
+                return shader;
+            }
+        }
+        return null;
     }
 
-    public void init() {
-        if (!initialized) {
-            log.debug("Compile shader");
-            defaultInstance.init();
-            initialized = true;
-        }
+    public void addShader(Shader shader) {
+        shaders.add(shader);
     }
 
     @Override
     public void dispose() {
-        defaultInstance.dispose();
+        shaders.forEach(Disposable::dispose);
+        shaders.clear();
     }
 }

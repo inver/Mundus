@@ -17,12 +17,14 @@
 package com.mbrlabs.mundus.editor.core.project;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.utils.Disposable;
 import com.mbrlabs.mundus.commons.Scene;
 import com.mbrlabs.mundus.commons.assets.AssetType;
 import com.mbrlabs.mundus.commons.core.ecs.EcsService;
 import com.mbrlabs.mundus.commons.importer.SceneConverter;
+import com.mbrlabs.mundus.editor.config.AppEnvironment;
 import com.mbrlabs.mundus.editor.core.ProjectConstants;
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager;
 import com.mbrlabs.mundus.editor.core.registry.ProjectRef;
@@ -36,7 +38,6 @@ import com.mbrlabs.mundus.editor.utils.AppUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
@@ -65,6 +66,7 @@ public class ProjectManager implements Disposable {
     private final EventBus eventBus;
     private final SceneStorage sceneStorage;
     private final EcsService ecsService;
+    private final AppEnvironment appEnvironment;
 
     /**
      * Saves the active project
@@ -305,12 +307,18 @@ public class ProjectManager implements Disposable {
     }
 
     public ProjectContext createDefaultProject() {
-        if (registry.getLastProject() == null || registry.getProjects().size() == 0) {
-            var path = FilenameUtils.concat(FileUtils.getUserDirectoryPath(), "MundusProjects");
+        if (registry.getLastProject() == null || registry.getProjects().isEmpty()) {
+            var path = FilenameUtils.concat(appEnvironment.getHomeDir(), "MundusProjects");
 
             return createProject(path);
         }
 
         return null;
+    }
+
+    public void reloadAsset(AssetKey assetKey, FileHandle assetFolderPath) {
+        var asset = assetManager.loadAsset(assetFolderPath);
+        // put updated content of shader to project assets
+        editorCtx.getCurrent().getProjectAssets().put(assetKey, asset);
     }
 }

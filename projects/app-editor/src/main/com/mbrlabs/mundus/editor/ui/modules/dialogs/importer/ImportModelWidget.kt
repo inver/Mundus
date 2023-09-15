@@ -20,7 +20,7 @@ import com.mbrlabs.mundus.editor.ui.widgets.FileChooserField
 import com.mbrlabs.mundus.editor.ui.widgets.RenderWidget
 import net.nevinsky.abyssus.core.ModelBatch
 import net.nevinsky.abyssus.core.ModelInstance
-import net.nevinsky.abyssus.core.shader.OldDefaultShader
+import net.nevinsky.abyssus.core.shader.ShaderConfig
 import net.nevinsky.abyssus.core.shader.ShaderProvider
 
 class ImportModelWidget(
@@ -62,7 +62,7 @@ class ImportModelWidget(
             previewInstance!!.transform.rotate(0f, 1f, 0f, -1f)
 
             modelBatch?.begin(camera)
-            modelBatch?.render(previewInstance!!, env, shaderStorage.get(ShaderProvider.DEFAULT_SHADER))
+            modelBatch?.render(previewInstance!!, env, ShaderProvider.DEFAULT_SHADER_KEY)
             modelBatch?.end()
         }
 
@@ -101,9 +101,9 @@ class ImportModelWidget(
     }
 
     private fun showPreview() {
-        val config = OldDefaultShader.Config()
+        val config = ShaderConfig()
         config.numBones = 600 // TODO get max bones from model
-        modelBatch = ModelBatch()
+        modelBatch = ModelBatch(shaderStorage)
 
         // scale to 2 open gl units
         val boundingBox = previewInstance!!.calculateBoundingBox(BoundingBox())

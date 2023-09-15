@@ -84,7 +84,7 @@ public class ModelPlacementTool extends Tool {
     public void render(ModelBatch batch, SceneEnvironment environment, ShaderProvider shaders, float delta) {
         if (modelInstance != null) {
             batch.begin(getCtx().getCurrent().getCamera());
-            batch.render(modelInstance, environment, shaders.get(getShaderKey()));
+            batch.render(modelInstance, environment, getShaderKey());
             batch.end();
         }
     }

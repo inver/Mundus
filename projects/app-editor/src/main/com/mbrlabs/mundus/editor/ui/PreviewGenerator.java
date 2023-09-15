@@ -20,6 +20,7 @@ import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.env.lights.SpotLight;
 import com.mbrlabs.mundus.editor.core.shader.ShaderStorage;
 import com.mbrlabs.mundus.editor.ui.widgets.RenderWidget;
+import lombok.RequiredArgsConstructor;
 import net.nevinsky.abyssus.core.ModelBatch;
 import net.nevinsky.abyssus.core.ModelBuilder;
 import net.nevinsky.abyssus.core.ModelInstance;
@@ -28,23 +29,12 @@ import net.nevinsky.abyssus.core.shader.ShaderProvider;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class PreviewGenerator {
 
     private final float previewWidth = 80;
     private final float previewHeight = 80;
-
     private final ShaderStorage shaderStorage;
-
-//    private final BaseShader shader;
-
-    public PreviewGenerator(ShaderStorage shaderStorage) {
-        this.shaderStorage = shaderStorage;
-//        shader = new MaterialPreviewShader(
-//                "bundled/shaders/material_preview.vert.glsl",
-//                "bundled/shaders/material_preview.frag.glsl"
-//        );
-//        shader.init();
-    }
 
     public Actor generate(Asset asset) {
         if (asset instanceof TextureAsset) {
@@ -59,7 +49,7 @@ public class PreviewGenerator {
 
                 Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT);
                 modelBatch.begin(camera);
-                modelBatch.render(instance, environment, shaderStorage.get(ShaderProvider.DEFAULT_SHADER));
+                modelBatch.render(instance, environment, ShaderProvider.DEFAULT_SHADER_KEY);
                 modelBatch.end();
 
                 fb.end();
@@ -89,7 +79,7 @@ public class PreviewGenerator {
         var config = new ShaderConfig();
         config.setNumBones(0);
 
-        var modelBatch = new ModelBatch();
+        var modelBatch = new ModelBatch(shaderStorage);
 
 
         var sunLight = new SpotLight();
@@ -115,7 +105,7 @@ public class PreviewGenerator {
             widget.setRenderer(cam -> {
                 Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT);
                 modelBatch.begin(cam);
-                modelBatch.render(instance, environment, shaderStorage.get(ShaderProvider.DEFAULT_SHADER));
+                modelBatch.render(instance, environment, ShaderProvider.DEFAULT_SHADER_KEY);
                 modelBatch.end();
             });
             return widget;

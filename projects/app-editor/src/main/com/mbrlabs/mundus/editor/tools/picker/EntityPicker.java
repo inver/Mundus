@@ -25,7 +25,7 @@ public class EntityPicker extends BasePicker {
         begin(ctx.getViewport());
         renderPickableScene(scene);
         end();
-        Pixmap pm = getFrameBufferPixmap(ctx.getViewport());
+        var pm = getFrameBufferPixmap(ctx.getViewport());
 
         int x = screenX - ctx.getViewport().getScreenX();
         int y = screenY -
@@ -40,8 +40,8 @@ public class EntityPicker extends BasePicker {
             //ignore
         }
 
-        PixmapIO.writePNG(new FileHandle("/home/inv3r/Development/gamedev/Mundus/editor/src/main/" +
-                "com/mbrlabs/mundus/editor/tools/picker/image.png"), pm);
+//        PixmapIO.writePNG(new FileHandle("/home/inv3r/Development/gamedev/Mundus/editor/src/main/" +
+//                "com/mbrlabs/mundus/editor/tools/picker/image.png"), pm);
 
         pm.dispose();
         return -1;

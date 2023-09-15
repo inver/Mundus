@@ -27,18 +27,28 @@ import net.nevinsky.abyssus.core.Renderable;
  */
 public interface ShaderProvider extends Disposable {
 
-    String DEFAULT_SHADER = "defaultShader";
+    /**
+     * The key for default shader, which should be bundle with 3d editor
+     */
+    String DEFAULT_SHADER_KEY = "defaultShader";
+
+    /**
+     * Method returns default shader
+     *
+     * @param renderable the renderable for shader initialization
+     * @return default shader instance
+     */
+    default Shader get(Renderable renderable) {
+        return get(DEFAULT_SHADER_KEY, renderable);
+    }
 
     /**
      * Returns a {@link Shader} for the given {@link String}. The RenderInstance may already contain a Shader, in
      * which case the provider may decide to return that.
      *
-     * @param key the key of shader
+     * @param key        the key of shader
+     * @param renderable the renderable for shader initialization
      * @return the Shader to be used for the RenderInstance
      */
-    <T extends BaseShader> T get(String key);
-
-    default DefaultShader get() {
-        return get(DEFAULT_SHADER);
-    }
+    Shader get(String key, Renderable renderable);
 }
