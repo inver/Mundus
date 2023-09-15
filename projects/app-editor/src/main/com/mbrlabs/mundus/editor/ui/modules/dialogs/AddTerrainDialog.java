@@ -14,7 +14,9 @@
 // * limitations under the License.
 // */
 //
-//package com.mbrlabs.mundus.editor.ui.modules.dialogs;
+
+package com.mbrlabs.mundus.editor.ui.modules.dialogs;
+
 //
 //import com.badlogic.gdx.scenes.scene2d.ui.Table;
 //import com.kotcrab.vis.ui.widget.VisLabel;
@@ -30,8 +32,8 @@
 // * @author Marcus Brummer
 // * @version 01-12-2015
 // */
-//public class AddTerrainDialog extends BaseDialog {
-//
+public class AddTerrainDialog extends BaseDialog {
+    //
 //    // UI elements
 //    private VisTextField name = new VisTextField("Terrain");
 //
@@ -49,13 +51,13 @@
 //    @Inject
 //    private ProjectManager projectManager;
 //
-//    public AddTerrainDialog() {
-//        super("Add Terrain");
+    public AddTerrainDialog() {
+        super("Add Terrain");
 //        Mundus.inject(this);
 //        setResizable(true);
 //        setupUI();
 //        setupListeners();
-//    }
+    }
 //
 //    private void setupUI() {
 //        Table root = new Table();
@@ -120,4 +122,4 @@
 //
 //    }
 //
-//}
+}

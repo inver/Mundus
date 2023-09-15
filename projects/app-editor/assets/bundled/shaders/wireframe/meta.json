@@ -5,6 +5,6 @@
   "additional": {
     "vertex": "wire.vert.glsl",
     "fragment": "wire.frag.glsl",
-    "shaderClass": "WireframeShader.groovy"
+    "shaderClass": "BundledWireframeShader.groovy"
   }
 }

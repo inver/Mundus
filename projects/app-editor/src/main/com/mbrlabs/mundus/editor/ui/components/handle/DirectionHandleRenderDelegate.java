@@ -34,13 +34,13 @@ public class DirectionHandleRenderDelegate implements RenderableDelegate {
     }
 
     public DirectionHandleRenderDelegate() {
-        this(ShaderProvider.DEFAULT_SHADER);
+        this(ShaderProvider.DEFAULT_SHADER_KEY);
     }
 
     @Override
     public void render(ModelBatch batch, SceneEnvironment environment, ShaderProvider shaders, float delta) {
         if (!hidden) {
-            batch.render(instance, shaders.get(shaderKey));
+            batch.render(instance, shaderKey);
         }
     }
 

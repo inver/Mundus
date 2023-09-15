@@ -60,61 +60,31 @@ public class AssetManager {
         throw new NotImplementedException("errm, needed path of project/game/etc");
     }
 
-    public void addAsset(Asset asset) {
-        if (asset == null) {
-            log.debug("Skip added null asset");
-        }
-//        if (assetIndex.get(asset.getID()) == null) {
-//            assets.add(asset);
-//            assetIndex.put(asset.getID(), asset);
-//        } else {
-//            log.debug("Asset with id '{}' already added", asset.getID());
-//        }
-    }
-
-//    public List<Asset> getAssetsByType(AssetType type) {
-////        return assets.stream()
-////                .filter(asset -> asset.getType() == type)
-////                .collect(Collectors.toList());
-//    }
-
-    private Asset loadAsset(Meta meta) throws MetaFileParseException, AssetNotFoundException {
-        // get handle to asset
-        //   String assetPath = meta.getFile().pathWithoutExtension();
-        FileHandle assetFile = meta.getFile().sibling(meta.getFile().nameWithoutExtension());
+    private Asset<?> loadAsset(Meta meta) throws MetaFileParseException, AssetNotFoundException {
+        var assetFile = meta.getFile().sibling(meta.getFile().nameWithoutExtension());
 
         // check if asset exists
         if (!assetFile.exists()) {
             throw new AssetNotFoundException("Meta file found, but asset does not exist: " + meta.getFile().path());
         }
 
-        // load actual asset
-        Asset asset;
         switch (meta.getType()) {
             case TEXTURE:
-                asset = textureService.load(meta);
-                break;
+                return textureService.load(meta);
             case PIXMAP_TEXTURE:
-                asset = pixmapTextureService.load(meta);
-                break;
+                return pixmapTextureService.load(meta);
             case TERRAIN:
-                asset = terrainAssetLoader.load(meta);
-                break;
+                return terrainAssetLoader.load(meta);
             case MODEL:
-                asset = modelService.load(meta);
-                break;
+                return modelService.load(meta);
             case MATERIAL:
-                asset = materialService.load(meta);
-                break;
-            case SKYBOX_HDR:
+                return materialService.load(meta);
             case SKYBOX:
-                throw new NotImplementedException();
+                return skyboxAssetLoader.load(meta);
+            case SKYBOX_HDR:
             default:
-                return null;
+                throw new NotImplementedException();
         }
-
-        addAsset(asset);
-        return asset;
     }
 
 

@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector3
 import com.mbrlabs.mundus.editor.tools.picker.PickerIDAttribute
 import net.nevinsky.abyssus.core.Renderable
 import net.nevinsky.abyssus.core.shader.DefaultShader
+import net.nevinsky.abyssus.core.shader.ShaderConfig
 
 /**
  * Used to render game objects in only one color.
@@ -19,14 +20,14 @@ import net.nevinsky.abyssus.core.shader.DefaultShader
  * @author Marcus Brummer
  * @version 20-02-2016
  */
-class PickerShader extends DefaultShader {
+class BundledPickerShader extends DefaultShader {
 
     protected final int UNIFORM_COLOR = register(new Uniform("u_color"))
 
     private static final Vector3 vec3 = new Vector3()
 
-    PickerShader(String vertexShader, String fragmentShader) {
-        super(vertexShader, fragmentShader)
+    BundledPickerShader(ShaderConfig config, Renderable renderable) {
+        super(config, renderable)
     }
 
     @Override

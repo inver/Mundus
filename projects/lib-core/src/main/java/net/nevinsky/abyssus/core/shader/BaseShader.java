@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p>
  *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,11 +33,14 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.IntIntMap;
+import lombok.RequiredArgsConstructor;
 import net.nevinsky.abyssus.core.Renderable;
 import net.nevinsky.abyssus.core.mesh.Mesh;
 
 /**
- * @author Xoppa A BaseShader is a wrapper around a ShaderProgram that keeps track of the uniform and attribute
+ * @author Xoppa
+ * <p>
+ * A BaseShader is a wrapper around a ShaderProgram that keeps track of the uniform and attribute
  * locations. It does not manage the ShaderPogram, you are still responsible for disposing the ShaderProgram.
  */
 public abstract class BaseShader implements Shader {
@@ -48,22 +51,26 @@ public abstract class BaseShader implements Shader {
         boolean validate(final BaseShader shader, final int inputID, final Renderable renderable);
     }
 
+    /**
+     * Setter interface. By default all setters are global.
+     */
     public interface Setter {
         /**
          * @return True if the uniform only has to be set once per render call, false if the uniform must be set for
          * each renderable.
          */
-        boolean isGlobal(final BaseShader shader, final int inputID);
+        default boolean isGlobal(final BaseShader shader, final int inputID) {
+            return true;
+        }
 
         void set(final BaseShader shader, final int inputID, final Renderable renderable,
                  final Attributes combinedAttributes);
     }
 
-    public abstract static class GlobalSetter implements Setter {
-        @Override
-        public boolean isGlobal(final BaseShader shader, final int inputID) {
-            return true;
-        }
+    @FunctionalInterface
+    public interface SetterFunction {
+        void set(final BaseShader shader, final int inputID, final Renderable renderable,
+                 final Attributes combinedAttributes);
     }
 
     public abstract static class LocalSetter implements Setter {
@@ -73,19 +80,12 @@ public abstract class BaseShader implements Shader {
         }
     }
 
+    @RequiredArgsConstructor
     public static class Uniform implements Validator {
         public final String alias;
         public final long materialMask;
         public final long environmentMask;
         public final long overallMask;
-
-        public Uniform(final String alias, final long materialMask, final long environmentMask,
-                       final long overallMask) {
-            this.alias = alias;
-            this.materialMask = materialMask;
-            this.environmentMask = environmentMask;
-            this.overallMask = overallMask;
-        }
 
         public Uniform(final String alias, final long materialMask, final long environmentMask) {
             this(alias, materialMask, environmentMask, 0);
@@ -109,9 +109,9 @@ public abstract class BaseShader implements Shader {
         }
     }
 
-    private final Array<String> uniforms = new Array<String>();
-    private final Array<Validator> validators = new Array<Validator>();
-    private final Array<Setter> setters = new Array<Setter>();
+    private final Array<String> uniforms = new Array<>();
+    private final Array<Validator> validators = new Array<>();
+    private final Array<Setter> setters = new Array<>();
     private int[] locations;
     private final IntArray globalUniforms = new IntArray();
     private final IntArray localUniforms = new IntArray();
@@ -423,7 +423,7 @@ public abstract class BaseShader implements Shader {
         return true;
     }
 
-    public final boolean set(final int uniform, final TextureDescriptor textureDesc) {
+    public final boolean set(final int uniform, final TextureDescriptor<?> textureDesc) {
         if (locations[uniform] < 0) {
             return false;
         }
@@ -438,4 +438,6 @@ public abstract class BaseShader implements Shader {
         program.setUniformi(locations[uniform], context.textureBinder.bind(texture));
         return true;
     }
+
+
 }

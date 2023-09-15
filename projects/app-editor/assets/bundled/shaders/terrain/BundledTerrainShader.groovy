@@ -16,12 +16,13 @@ import com.mbrlabs.mundus.commons.terrain.TerrainTextureAttribute
 import net.nevinsky.abyssus.core.Renderable
 import net.nevinsky.abyssus.core.shader.DefaultShader
 import net.nevinsky.abyssus.core.shader.Shader
+import net.nevinsky.abyssus.core.shader.ShaderConfig
 
 /**
  * @author Marcus Brummer
  * @version 22-11-2015
  */
-class TerrainShader extends DefaultShader {
+class BundledTerrainShader extends DefaultShader {
 
     // ============================ MATRICES & CAM POSITION ============================
     protected final int UNIFORM_PROJ_VIEW_MATRIX = register(new Uniform("u_projViewMatrix"))
@@ -53,8 +54,8 @@ class TerrainShader extends DefaultShader {
 
     private final Vector2 terrainSize = new Vector2()
 
-    TerrainShader(String vertexShader, String fragmentShader) {
-        super(vertexShader, fragmentShader)
+    BundledTerrainShader(ShaderConfig config, Renderable renderable) {
+        super(config, renderable)
     }
 
     @Override

@@ -22,6 +22,9 @@ import java.io.File;
 
 @ExtendWith(GdxTestRunner.class)
 @ContextConfiguration(classes = {
+        MapperConfig.class,
+        CommonConfig.class,
+        UiConfig.class,
         TestConfig.class
 })
 public abstract class BaseCtxTest {

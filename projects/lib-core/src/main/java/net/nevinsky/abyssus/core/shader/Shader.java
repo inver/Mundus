@@ -61,11 +61,20 @@ import net.nevinsky.abyssus.core.Renderable;
  * @author Xoppa
  */
 public interface Shader extends Disposable {
+
     /**
      * Initializes the Shader, must be called before the Shader can be used. This typically compiles a
      * {@link ShaderProgram}, fetches uniform locations and performs other preparations for usage of the Shader.
      */
-    void init();
+    void init(Renderable renderable);
+
+    /**
+     * Initializes the Shader, must be called before the Shader can be used. This typically compiles a
+     * {@link ShaderProgram}, fetches uniform locations and performs other preparations for usage of the Shader.
+     */
+    default void init() {
+        init(null);
+    }
 
     /**
      * Compare this shader against the other, used for sorting, light weight shaders are rendered first.

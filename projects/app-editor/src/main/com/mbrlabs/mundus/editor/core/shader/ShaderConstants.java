@@ -1,5 +1,8 @@
 package com.mbrlabs.mundus.editor.core.shader;
 
+/**
+ * Class holds default shader names
+ */
 import lombok.experimental.UtilityClass;
 
 @UtilityClass

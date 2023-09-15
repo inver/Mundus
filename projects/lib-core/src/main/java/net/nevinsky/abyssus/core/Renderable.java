@@ -25,6 +25,8 @@ import net.nevinsky.abyssus.core.mesh.MeshPart;
 import net.nevinsky.abyssus.core.shader.Shader;
 import net.nevinsky.abyssus.core.shader.ShaderProvider;
 
+import java.util.UUID;
+
 /**
  * A Renderable contains all information about a single render instruction (typically a draw call).
  * </p>
@@ -117,6 +119,15 @@ public class Renderable {
      */
     public Object userData;
 
+    /**
+     * Mask for fast search of shader
+     *
+     * @return mask for shader search
+     */
+    public String getRenderMask() {
+        return "DUMMY_MASK";
+    }
+
     public Renderable set(Renderable renderable) {
         worldTransform.set(renderable.worldTransform);
         material = renderable.material;
@@ -126,5 +137,13 @@ public class Renderable {
         shader = renderable.shader;
         userData = renderable.userData;
         return this;
+    }
+
+    public void cleanup() {
+        environment = null;
+        material = null;
+        meshPart.set("", null, 0, 0, 0);
+        shader = null;
+        userData = null;
     }
 }

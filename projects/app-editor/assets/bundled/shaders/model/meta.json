@@ -5,6 +5,6 @@
   "additional": {
     "vertex": "model.vert.glsl",
     "fragment": "model.frag.glsl",
-    "shaderClass": "ModelShader.groovy"
+    "shaderClass": "BundledModelShader.groovy"
   }
 }

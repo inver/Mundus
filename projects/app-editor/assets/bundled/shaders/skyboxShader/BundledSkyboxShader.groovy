@@ -7,8 +7,9 @@ import com.badlogic.gdx.math.Matrix4
 import com.mbrlabs.mundus.commons.env.SceneEnvironment
 import net.nevinsky.abyssus.core.Renderable
 import net.nevinsky.abyssus.core.shader.DefaultShader
+import net.nevinsky.abyssus.core.shader.ShaderConfig
 
-class SkyboxShader extends DefaultShader {
+class BundledSkyboxShader extends DefaultShader {
 
     private final int UNIFORM_PROJ_VIEW_MATRIX = register(new Uniform("u_projViewMatrix"))
     private final int UNIFORM_TRANS_MATRIX = register(new Uniform("u_transMatrix"))
@@ -18,8 +19,8 @@ class SkyboxShader extends DefaultShader {
 
     private final Matrix4 transform = new Matrix4()
 
-    SkyboxShader(String vertexShader, String fragmentShader) {
-        super(vertexShader, fragmentShader)
+    BundledSkyboxShader(ShaderConfig config, Renderable renderable) {
+        super(config, renderable)
     }
 
     @Override

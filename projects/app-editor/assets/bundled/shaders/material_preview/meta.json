@@ -5,6 +5,6 @@
   "additional": {
     "vertex": "material_preview.vert.glsl",
     "fragment": "material_preview.frag.glsl",
-    "shaderClass": "MaterialPreviewShader.groovy"
+    "shaderClass": "BundledMaterialPreviewShader.groovy"
   }
 }

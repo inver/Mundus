@@ -6,11 +6,12 @@ import com.badlogic.gdx.graphics.g3d.utils.RenderContext
 import com.mbrlabs.mundus.editor.utils.GlUtils
 import net.nevinsky.abyssus.core.Renderable
 import net.nevinsky.abyssus.core.shader.DefaultShader
+import net.nevinsky.abyssus.core.shader.ShaderConfig
 
-class WireframeShader extends DefaultShader {
+class BundledWireframeShader extends DefaultShader {
 
-    WireframeShader(String vertexShader, String fragmentShader) {
-        super(vertexShader, fragmentShader)
+    BundledWireframeShader(ShaderConfig config, Renderable renderable) {
+        super(config, renderable)
     }
 
     @Override

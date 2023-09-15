@@ -6,7 +6,9 @@ import com.mbrlabs.mundus.commons.core.ecs.component.TypeComponent;
 import com.mbrlabs.mundus.editor.core.ecs.EditorEcsService;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
+@Component
 @RequiredArgsConstructor
 public class CameraService {
     private final EditorCtx ctx;
