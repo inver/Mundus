@@ -41,6 +41,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -92,6 +93,7 @@ public class ProjectManager implements Disposable {
     public ProjectContext createProject(String folder) {
         var ref = registry.createProjectRef(folder);
         var path = ref.getPath();
+        //todo move creation folders to projectStorage
         new File(path).mkdirs();
         new File(path, PROJECT_ASSETS_DIR).mkdirs();
         new File(path, PROJECT_SCENES_DIR).mkdirs();

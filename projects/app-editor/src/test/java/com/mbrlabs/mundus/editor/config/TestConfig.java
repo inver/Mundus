@@ -49,7 +49,7 @@ public class TestConfig {
     @Bean
     @Primary
     public AppEnvironment appEnvironment() {
-        var homeDir = "/tmp/" + UUID.randomUUID() + ".mundus";
+        var homeDir = "/tmp/" + UUID.randomUUID() + "_random_home";
         new File(homeDir).mkdirs();
         return new AppEnvironment() {
             @Override

@@ -26,10 +26,13 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
 
 import static com.mbrlabs.mundus.editor.core.ProjectConstants.PROJECT_EXTENSION;
 
@@ -50,6 +53,14 @@ public class ProjectStorage {
 
     private final ObjectMapper mapper;
     private final AppEnvironment appEnvironment;
+
+    @PostConstruct
+    public void init() throws IOException {
+        var configDirPath = Path.of(appEnvironment.getConfigDir());
+        if (!configDirPath.toFile().exists()) {
+            FileUtils.forceMkdir(configDirPath.toFile());
+        }
+    }
 
     /**
      * Loads the registry.
