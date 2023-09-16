@@ -26,10 +26,13 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
 
 import static com.mbrlabs.mundus.editor.core.ProjectConstants.PROJECT_EXTENSION;
 
@@ -51,6 +54,14 @@ public class ProjectStorage {
     private final ObjectMapper mapper;
     private final AppEnvironment appEnvironment;
 
+    @PostConstruct
+    public void init() throws IOException {
+        var configDirPath = Path.of(appEnvironment.getConfigDir());
+        if (!configDirPath.toFile().exists()) {
+            FileUtils.forceMkdir(configDirPath.toFile());
+        }
+    }
+
     /**
      * Loads the registry.
      * <p>
@@ -59,7 +70,7 @@ public class ProjectStorage {
      * @return mundus registry
      */
     public Registry loadRegistry() {
-        try (var fis = new FileInputStream(appEnvironment.getHomeDataFile())) {
+        try (var fis = new FileInputStream(appEnvironment.getRegistryFile())) {
             return mapper.readValue(fis, Registry.class);
         } catch (Exception e) {
             log.error("ERROR", e);
@@ -74,7 +85,7 @@ public class ProjectStorage {
      * @param registry mundus registry
      */
     public void saveRegistry(Registry registry) {
-        try (var fos = new FileOutputStream(appEnvironment.getHomeDataFile())) {
+        try (var fos = new FileOutputStream(appEnvironment.getRegistryFile())) {
             mapper.writeValue(fos, registry);
         } catch (Exception e) {
             log.error("ERROR", e);
