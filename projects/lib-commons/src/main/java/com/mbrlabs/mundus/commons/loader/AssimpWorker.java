@@ -80,7 +80,10 @@ public class AssimpWorker {
         }
         var textures = extractTextures(aiScene);
         textures.forEach(t -> {
-            var folder = t.substring(0, t.lastIndexOf("/"));
+            var folder = "./";
+            if (t.contains("/")) {
+                folder = t.substring(0, t.lastIndexOf("/"));
+            }
             var pathForCopy = to.parent().child(folder);
             pathForCopy.mkdirs();
             from.parent().child(t).copyTo(pathForCopy);

@@ -22,7 +22,7 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.utils.Disposable;
 import com.mbrlabs.mundus.commons.Scene;
 import com.mbrlabs.mundus.commons.assets.AssetType;
-import com.mbrlabs.mundus.commons.core.ecs.EcsService;
+import com.mbrlabs.mundus.commons.core.ecs.EcsConfigurator;
 import com.mbrlabs.mundus.commons.importer.SceneConverter;
 import com.mbrlabs.mundus.editor.config.AppEnvironment;
 import com.mbrlabs.mundus.editor.core.ProjectConstants;
@@ -41,12 +41,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
-import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 
+import static com.mbrlabs.mundus.commons.assets.AssetConstants.META_FILE_NAME;
 import static com.mbrlabs.mundus.editor.core.ProjectConstants.DEFAULT_SKYBOX_NAME;
 import static com.mbrlabs.mundus.editor.core.ProjectConstants.PROJECT_ASSETS_DIR;
 import static com.mbrlabs.mundus.editor.core.ProjectConstants.PROJECT_SCENES_DIR;
@@ -72,7 +72,7 @@ public class ProjectManager implements Disposable {
     private final SceneConverter sceneConverter;
     private final EventBus eventBus;
     private final SceneStorage sceneStorage;
-    private final EcsService ecsService;
+    private final EcsConfigurator ecsConfigurator;
     private final AppEnvironment appEnvironment;
 
     /**
@@ -273,7 +273,7 @@ public class ProjectManager implements Disposable {
     public Scene loadScene(ProjectContext context, String sceneName) {
         var dto = sceneStorage.loadScene(context.getPath(), sceneName);
 
-        var scene = new Scene(ecsService.createWorld());
+        var scene = new Scene(ecsConfigurator.createWorld());
 
         //todo preload assets to cache
         sceneConverter.fillScene(scene, dto);
@@ -345,6 +345,11 @@ public class ProjectManager implements Disposable {
     }
 
     public void reloadAsset(AssetKey assetKey, FileHandle assetFolderPath) {
+        if (!assetFolderPath.child(META_FILE_NAME).exists()) {
+            log.debug("Unable to find {} in folder {}", META_FILE_NAME, assetFolderPath.toString());
+            return;
+        }
+
         var asset = assetManager.loadAsset(assetFolderPath);
         // put updated content of shader to project assets
         editorCtx.getCurrent().getProjectAssets().put(assetKey, asset);

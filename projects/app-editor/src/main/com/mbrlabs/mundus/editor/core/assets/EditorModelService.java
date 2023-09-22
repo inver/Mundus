@@ -12,6 +12,7 @@ import com.mbrlabs.mundus.commons.loader.AssimpWorker;
 import com.mbrlabs.mundus.commons.loader.ModelImporter;
 import com.mbrlabs.mundus.commons.model.ImportedModel;
 import com.mbrlabs.mundus.commons.model.ModelService;
+import com.mbrlabs.mundus.editor.core.ecs.EcsService;
 import com.mbrlabs.mundus.editor.core.ecs.PickableComponent;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
@@ -28,15 +29,18 @@ public class EditorModelService extends ModelService {
     private final ModelImporter modelImporter;
     private final ModelAssetLoader modelAssetLoader;
     private final EditorCtx ctx;
+    private final EcsService ecsService;
 
     public EditorModelService(AssimpWorker assimpWorker, MetaService metaService, AssetsStorage assetsStorage,
-                              ModelImporter modelImporter, ModelAssetLoader modelAssetLoader, EditorCtx ctx) {
+                              ModelImporter modelImporter, ModelAssetLoader modelAssetLoader, EditorCtx ctx,
+                              EcsService ecsService) {
         super(assimpWorker);
         this.metaService = metaService;
         this.assetsStorage = assetsStorage;
         this.modelImporter = modelImporter;
         this.modelAssetLoader = modelAssetLoader;
         this.ctx = ctx;
+        this.ecsService = ecsService;
     }
 
     @SneakyThrows
@@ -65,19 +69,17 @@ public class EditorModelService extends ModelService {
     }
 
     public void createModelEntity(ImportedModel importedModel) {
-        var world = ctx.getCurrentWorld();
-
-        var id = world.create();
-        var name = "Model " + id;
-
         var asset = importAndSaveAsset(importedModel);
 
+        var world = ctx.getCurrentWorld();
         var model = createFromAsset(asset);
 
-        world.edit(id)
-                .add(new PositionComponent())
-                .add(PickableComponent.of(id, new RenderableObjectDelegate(model, ShaderConstants.PICKER)))
-                .add(new RenderableObjectDelegate(model, ShaderConstants.MODEL).asComponent());
+        var id = world.create();
+        ecsService.addEntityBaseComponents(world, id, -1, "Model " + id,
+                new PositionComponent(),
+                PickableComponent.of(id, new RenderableObjectDelegate(model, ShaderConstants.PICKER)),
+                new RenderableObjectDelegate(model, ShaderConstants.MODEL).asComponent()
+        );
     }
 
 }

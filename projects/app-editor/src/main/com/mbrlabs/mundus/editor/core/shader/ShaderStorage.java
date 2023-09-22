@@ -15,6 +15,10 @@ import net.nevinsky.abyssus.core.shader.ShaderProvider;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import static com.mbrlabs.mundus.commons.assets.AssetConstants.META_FILE_NAME;
 
 @Slf4j
 @Service

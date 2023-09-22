@@ -2,7 +2,7 @@ package com.mbrlabs.mundus.editor.core.project;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mbrlabs.mundus.commons.Scene;
-import com.mbrlabs.mundus.commons.core.ecs.EcsService;
+import com.mbrlabs.mundus.commons.core.ecs.EcsConfigurator;
 import com.mbrlabs.mundus.commons.dto.SceneDto;
 import com.mbrlabs.mundus.commons.importer.SceneConverter;
 import com.mbrlabs.mundus.editor.config.BaseCtxTest;
@@ -26,7 +26,7 @@ public class SceneConverterTest extends BaseCtxTest {
     @Autowired
     private ObjectMapper mapper;
     @Autowired
-    private EcsService ecsService;
+    private EcsConfigurator ecsConfigurator;
     private SceneConverter converter;
 
     @BeforeEach
@@ -43,7 +43,7 @@ public class SceneConverterTest extends BaseCtxTest {
         var sceneJson = getFile("/scene.json");
         var dto = mapper.readValue(IOUtils.readLines(new FileReader(sceneJson)).stream().collect(Collectors.joining()),
                 SceneDto.class);
-        var scene = new Scene(ecsService.createWorld());
+        var scene = new Scene(ecsConfigurator.createWorld());
         converter.fillScene(scene, dto);
         var fromDto = converter.convert(scene);
         assertTrue(fromDto != null);

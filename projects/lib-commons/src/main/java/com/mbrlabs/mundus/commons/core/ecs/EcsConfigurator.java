@@ -28,7 +28,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class EcsService {
+public class EcsConfigurator {
 
     private final AssetManager assetManager;
     private final TerrainService terrainService;

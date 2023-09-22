@@ -24,6 +24,7 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mbrlabs.mundus.commons.Scene;
 import com.mbrlabs.mundus.commons.assets.Asset;
+import com.mbrlabs.mundus.commons.core.ecs.EcsConfigurator;
 import com.mbrlabs.mundus.commons.dto.SceneDto;
 import com.mbrlabs.mundus.commons.env.Fog;
 import com.mbrlabs.mundus.commons.env.lights.AmbientLight;
@@ -32,7 +33,6 @@ import com.mbrlabs.mundus.commons.importer.SceneConverter;
 import com.mbrlabs.mundus.commons.utils.FileUtils;
 import com.mbrlabs.mundus.editor.core.assets.AssetsStorage;
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager;
-import com.mbrlabs.mundus.editor.core.ecs.EditorEcsService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -58,10 +58,10 @@ public class SceneStorage {
     protected final AssetsStorage assetsStorage;
     protected final EditorAssetManager editorAssetManager;
     private final SceneConverter sceneConverter;
-    private final EditorEcsService ecsService;
+    private final EcsConfigurator ecsConfigurator;
 
     public Scene createDefault(String projectPath) {
-        var scene = new Scene(ecsService.createWorld());
+        var scene = new Scene(ecsConfigurator.createWorld());
         scene.setName(DEFAULT_SCENE_NAME);
         scene.getEnvironment().setSkyboxName(DEFAULT_SKYBOX_NAME);
         scene.getEnvironment().setFog(new Fog());
