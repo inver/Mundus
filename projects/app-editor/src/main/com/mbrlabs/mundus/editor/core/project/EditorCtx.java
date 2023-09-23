@@ -84,6 +84,10 @@ public class EditorCtx implements Disposable {
         return getCurrent().getCurrentScene().getWorld();
     }
 
+    public <T extends com.artemis.Component> T getComponentByEntityId(int entityId, Class<T> clazz) {
+        return getCurrent().getCurrentScene().getWorld().getEntity(entityId).getComponent(clazz);
+    }
+
     @SuppressWarnings("unchecked")
     public <T extends Asset<?>> T getAsset(AssetKey key) {
         return (T) editorAssets.get(key);

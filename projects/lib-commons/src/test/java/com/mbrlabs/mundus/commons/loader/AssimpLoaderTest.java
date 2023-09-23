@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AssimpLoaderTest extends BaseTest {
@@ -26,6 +27,13 @@ public class AssimpLoaderTest extends BaseTest {
         assertTrue(paths.contains(output.child("textures/piper_bump.jpg").file()));
         assertTrue(paths.contains(output.child("model.gltf").file()));
         assertTrue(paths.contains(output.child("model.bin").file()));
+    }
+
+    @Test
+    public void testLoadObjFileToModelData() {
+        var model = loader.loadModelData(UUID.randomUUID().toString(), getHandle("/obj/piper/piper_pa18.obj"),
+                AssimpWorker.FLAGS);
+        assertNotNull(model);
     }
 
 }

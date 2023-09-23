@@ -55,7 +55,7 @@ import static org.lwjgl.assimp.Assimp.aiTextureType_NONE;
 //todo add texture cache
 public class AssimpWorker {
 
-    private static final int FLAGS = aiProcess_GenNormals | aiProcess_GenSmoothNormals |
+    protected static final int FLAGS = aiProcess_GenNormals | aiProcess_GenSmoothNormals |
             aiProcess_JoinIdenticalVertices | aiProcess_Triangulate | aiProcess_FixInfacingNormals |
             aiProcess_CalcTangentSpace | aiProcess_LimitBoneWeights | aiProcess_PreTransformVertices |
             aiProcess_GenBoundingBoxes;
@@ -199,7 +199,7 @@ public class AssimpWorker {
             attributes.add(VertexAttribute.Position());
         }
         if (textCoords.length > 0) {
-            attributes.add(VertexAttribute.TexCoords(1));
+            attributes.add(VertexAttribute.TexCoords(0));
         }
         if (normals.length > 0) {
             attributes.add(VertexAttribute.Normal());
