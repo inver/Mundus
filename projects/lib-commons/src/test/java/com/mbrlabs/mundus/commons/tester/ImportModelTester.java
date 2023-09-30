@@ -17,7 +17,7 @@ public class ImportModelTester {
                 Float.valueOf(dm.width * 0.80f).intValue(), Float.valueOf(dm.height * 0.80f).intValue()
         );
         config.setTitle("Import model tester");
-        config.setWindowSizeLimits(1350, 1, 9999, 9999);
+        config.setWindowSizeLimits(1350, 1,  9999, 9999);
         config.setWindowPosition(-1, -1);
 
         new Lwjgl3Application(listener, config);

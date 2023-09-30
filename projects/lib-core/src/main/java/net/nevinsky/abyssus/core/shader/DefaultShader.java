@@ -222,7 +222,7 @@ public class DefaultShader extends BaseShader {
                 shader.set(inputID, attr.set(shader.camera.view).mul(renderable.worldTransform));
             }
         });
-        u_projViewWorldTrans = register(new Uniform("u_viewWorldTrans"), new LocalSetterWithAttr<>(new Matrix4()) {
+        u_projViewWorldTrans = register(new Uniform("u_projViewWorldTrans"), new LocalSetterWithAttr<>(new Matrix4()) {
             @Override
             public void set(BaseShader shader, int inputID, Renderable renderable,
                             Attributes combinedAttributes) {

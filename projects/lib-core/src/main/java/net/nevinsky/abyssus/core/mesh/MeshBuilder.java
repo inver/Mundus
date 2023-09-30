@@ -423,7 +423,7 @@ public class MeshBuilder implements MeshPartBuilder {
      *
      * @param out        The int array to receive the copy of the indices, must be at least `destOffset` +
      *                   {@link #getNumIndices()} in size.
-     * @param destOffset The offset (number of shorts) in the out array where to start copying
+     * @param destOffset The offset (number of ints) in the out array where to start copying
      */
     public void getIndices(int[] out, int destOffset) {
         if (attributes == null) {
