@@ -22,14 +22,12 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mbrlabs.mundus.commons.Scene;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.core.ecs.EcsConfigurator;
 import com.mbrlabs.mundus.commons.dto.SceneDto;
 import com.mbrlabs.mundus.commons.env.Fog;
-import com.mbrlabs.mundus.commons.env.lights.AmbientLight;
 import com.mbrlabs.mundus.commons.env.lights.DirectionalLight;
 import com.mbrlabs.mundus.commons.importer.SceneConverter;
 import com.mbrlabs.mundus.commons.utils.FileUtils;
@@ -46,7 +44,6 @@ import java.io.FileInputStream;
 import java.nio.file.Paths;
 
 import static com.mbrlabs.mundus.editor.core.ProjectConstants.DEFAULT_SCENE_NAME;
-import static com.mbrlabs.mundus.editor.core.ProjectConstants.DEFAULT_SKYBOX_NAME;
 import static com.mbrlabs.mundus.editor.core.ProjectConstants.PROJECT_ASSETS_DIR;
 import static com.mbrlabs.mundus.editor.core.ProjectConstants.PROJECT_SCENES_DIR;
 import static com.mbrlabs.mundus.editor.core.ProjectConstants.PROJECT_SCENE_EXTENSION;
@@ -66,9 +63,8 @@ public class SceneStorage {
         var scene = new Scene(ecsConfigurator.createWorld());
         scene.setName(DEFAULT_SCENE_NAME);
 //        scene.getEnvironment().setSkyboxName(DEFAULT_SKYBOX_NAME);
-//        scene.getEnvironment().setFog(new Fog());
-//        scene.getEnvironment().setAmbientLight(createDefaultAmbientLight());
-        scene.getEnvironment().set(new ColorAttribute(ColorAttribute.AmbientLight, Color.WHITE));
+        scene.getEnvironment().setFog(new Fog());
+        scene.getEnvironment().setAmbientLight(Color.WHITE, 0.3f);
         saveScene(projectPath, scene);
 
         return scene;
@@ -90,12 +86,6 @@ public class SceneStorage {
         dirLight.getDirection();
         dirLight.getDirection().nor();
         return dirLight;
-    }
-
-    private AmbientLight createDefaultAmbientLight() {
-        var res = new AmbientLight();
-        res.setIntensity(0.3f);
-        return res;
     }
 
     /**

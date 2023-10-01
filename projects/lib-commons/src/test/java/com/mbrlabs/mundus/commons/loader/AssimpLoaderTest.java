@@ -36,4 +36,9 @@ public class AssimpLoaderTest extends BaseTest {
         assertNotNull(model);
     }
 
+    @Test
+    public void testLoadOnlyAc3dFile() {
+        var model = loader.loadModelData(UUID.randomUUID().toString(), getHandle("/ac3d/sr22.ac"), AssimpWorker.FLAGS);
+        assertNotNull(model);
+    }
 }
