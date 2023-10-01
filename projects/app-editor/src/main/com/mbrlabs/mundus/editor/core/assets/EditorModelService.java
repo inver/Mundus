@@ -20,6 +20,8 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import static net.nevinsky.abyssus.core.shader.ShaderProvider.DEFAULT_SHADER_KEY;
+
 @Slf4j
 @Component
 public class EditorModelService extends ModelService {
@@ -78,7 +80,7 @@ public class EditorModelService extends ModelService {
         ecsService.addEntityBaseComponents(world, id, -1, "Model " + id,
                 new PositionComponent(),
                 PickableComponent.of(id, new RenderableObjectDelegate(model, ShaderConstants.PICKER)),
-                new RenderableObjectDelegate(model, ShaderConstants.MODEL).asComponent()
+                new RenderableObjectDelegate(model, DEFAULT_SHADER_KEY).asComponent()
         );
     }
 

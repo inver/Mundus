@@ -1,9 +1,9 @@
 package com.mbrlabs.mundus.editor.core.light;
 
-import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.math.Vector3;
 import com.mbrlabs.mundus.commons.core.ecs.component.LightComponent;
 import com.mbrlabs.mundus.commons.core.ecs.component.TypeComponent;
+import com.mbrlabs.mundus.commons.env.lights.DirectionalLight;
 import com.mbrlabs.mundus.editor.core.ecs.EcsService;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.ui.components.light.LightRenderDelegate;
@@ -25,7 +25,7 @@ public class LightService {
         );
 
         //todo check this
-        ctx.getCurrent().getCurrentScene().getEnvironment().add(light);
+//        ctx.getCurrent().getCurrentScene().getEnvironment().add(light);
         return entityId;
     }
 }

@@ -7,7 +7,6 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import com.mbrlabs.mundus.editor.ui.widgets.Icons;
 import com.mbrlabs.mundus.editor.utils.TextureUtils;
 import lombok.Getter;
-import lombok.ToString;
 
 public class IdNode extends Tree.Node<IdNode, Integer, VisTable> {
 
@@ -39,6 +38,7 @@ public class IdNode extends Tree.Node<IdNode, Integer, VisTable> {
 
     public static class RootNode extends IdNode {
 
+        public static final int ROOT_NODE_ID = -100500;
         private final IdNode hierarchy = new IdNode(-1, "Hierarchy", Icons.HIERARCHY, Type.ROOT);
         private final IdNode shaders = new IdNode(-101, "Shaders", Icons.SHADER, Type.NONE);
         private final IdNode terrains = new IdNode(-102, "Terrains", Icons.TERRAIN, Type.NONE);
@@ -50,7 +50,7 @@ public class IdNode extends Tree.Node<IdNode, Integer, VisTable> {
         private final IdNode skybox = new IdNode(-108, "Skybox", Icons.SKYBOX, Type.NONE);
 
         public RootNode() {
-            super(-100500, "Scene", Icons.SCENE, Type.ROOT);
+            super(ROOT_NODE_ID, "Scene", Icons.SCENE, Type.ROOT);
 
             add(hierarchy);
             add(models);

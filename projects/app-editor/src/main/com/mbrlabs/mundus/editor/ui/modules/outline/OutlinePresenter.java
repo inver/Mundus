@@ -65,7 +65,7 @@ public class OutlinePresenter {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 var selection = outline.getTree().getSelection();
-                if (selection == null || selection.size() == 0) {
+                if (selection == null || selection.isEmpty()) {
                     return;
                 }
 

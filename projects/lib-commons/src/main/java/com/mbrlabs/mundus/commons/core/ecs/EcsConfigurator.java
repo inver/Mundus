@@ -14,9 +14,11 @@ import com.mbrlabs.mundus.commons.core.ecs.behavior.SynchronizeCameraComponentSy
 import com.mbrlabs.mundus.commons.core.ecs.behavior.SynchronizeRenderComponentSystem;
 import com.mbrlabs.mundus.commons.core.ecs.behavior.SynchronizeRenderPoint2PointSystem;
 import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObjectDelegate;
+import com.mbrlabs.mundus.commons.core.ecs.serialization.LightSerializer;
 import com.mbrlabs.mundus.commons.core.ecs.serialization.PerspectiveCameraSerializer;
 import com.mbrlabs.mundus.commons.core.ecs.serialization.RenderableObjectDelegateSerializer;
 import com.mbrlabs.mundus.commons.core.ecs.serialization.RenderableObjectSerializer;
+import com.mbrlabs.mundus.commons.env.lights.DirectionalLight;
 import com.mbrlabs.mundus.commons.model.ModelObject;
 import com.mbrlabs.mundus.commons.model.ModelService;
 import com.mbrlabs.mundus.commons.terrain.TerrainObject;
@@ -59,14 +61,15 @@ public class EcsConfigurator {
                 .with(new RenderComponentSystem());
     }
 
-    public List<Pair<Class<?>, JsonSerializer>> getSerializers() {
+    protected List<Pair<Class<?>, JsonSerializer<?>>> getSerializers() {
         return Arrays.asList(
                 Pair.of(RenderableObjectDelegate.class, new RenderableObjectDelegateSerializer(
                         assetManager, terrainService, modelService
                 )),
                 Pair.of(TerrainObject.class, new RenderableObjectSerializer()),
                 Pair.of(ModelObject.class, new RenderableObjectSerializer()),
-                Pair.of(PerspectiveCamera.class, new PerspectiveCameraSerializer())
+                Pair.of(PerspectiveCamera.class, new PerspectiveCameraSerializer()),
+                Pair.of(DirectionalLight.class, new LightSerializer())
         );
     }
 }

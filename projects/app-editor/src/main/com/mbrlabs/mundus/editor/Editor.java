@@ -68,7 +68,6 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
     private final AppToolbar toolbar;
     private final StatusBar statusBar;
     private final Inspector inspector;
-    private final AppEnvironment appEnvironment;
     private final ProjectWatcher projectWatcher;
 
     private DockBar dockBar;

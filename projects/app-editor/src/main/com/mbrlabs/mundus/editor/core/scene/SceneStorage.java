@@ -20,7 +20,9 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mbrlabs.mundus.commons.Scene;
 import com.mbrlabs.mundus.commons.assets.Asset;
@@ -63,10 +65,10 @@ public class SceneStorage {
     public Scene createDefault(String projectPath) {
         var scene = new Scene(ecsConfigurator.createWorld());
         scene.setName(DEFAULT_SCENE_NAME);
-        scene.getEnvironment().setSkyboxName(DEFAULT_SKYBOX_NAME);
-        scene.getEnvironment().setFog(new Fog());
-        scene.getEnvironment().setAmbientLight(createDefaultAmbientLight());
-
+//        scene.getEnvironment().setSkyboxName(DEFAULT_SKYBOX_NAME);
+//        scene.getEnvironment().setFog(new Fog());
+//        scene.getEnvironment().setAmbientLight(createDefaultAmbientLight());
+        scene.getEnvironment().set(new ColorAttribute(ColorAttribute.AmbientLight, Color.WHITE));
         saveScene(projectPath, scene);
 
         return scene;
