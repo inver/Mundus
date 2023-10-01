@@ -70,7 +70,6 @@ public class ProjectStorageTest {
         var registry = new Registry("/tmp/tmp");
         registry.setLastProject(ref);
         registry.getProjects().add(ref);
-        registry.getSettings().setFbxConvBinary("binary");
 
         storage.saveRegistry(registry);
         var input = storage.loadRegistry();
