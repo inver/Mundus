@@ -16,6 +16,7 @@
 
 package com.mbrlabs.mundus.commons.dto;
 
+import com.mbrlabs.mundus.commons.env.lights.BaseLight;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,7 +29,7 @@ public class SceneDto {
     private String name;
     private FogDTO fog;
     private String skyboxName;
-    private BaseLightDto ambientLight;
+    private BaseLight ambientLight;
 
     @Getter
     @Setter
@@ -66,11 +67,11 @@ public class SceneDto {
         this.skyboxName = skyboxName;
     }
 
-    public BaseLightDto getAmbientLight() {
+    public BaseLight getAmbientLight() {
         return ambientLight;
     }
 
-    public void setAmbientLight(BaseLightDto ambientLight) {
+    public void setAmbientLight(BaseLight ambientLight) {
         this.ambientLight = ambientLight;
     }
 

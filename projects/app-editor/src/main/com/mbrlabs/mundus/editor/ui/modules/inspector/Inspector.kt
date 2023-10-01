@@ -37,6 +37,9 @@ import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.PreviewGenerator
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.TerrainWidgetPresenter
+import com.mbrlabs.mundus.editor.ui.modules.inspector.scene.SceneInspector
+import com.mbrlabs.mundus.editor.ui.modules.inspector.scene.SceneInspectorPresenter
+import com.mbrlabs.mundus.editor.ui.modules.outline.IdNode.RootNode
 import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerPresenter
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.stereotype.Component
@@ -57,7 +60,8 @@ class Inspector(
     private val terrainWidgetPresenter: TerrainWidgetPresenter,
     private val history: CommandHistory,
     private val previewGenerator: PreviewGenerator,
-    private val colorPickerPresenter: ColorPickerPresenter
+    private val colorPickerPresenter: ColorPickerPresenter,
+    private val sceneInspectorPresenter: SceneInspectorPresenter
 ) : VisTable(),
     GameObjectModifiedEvent.GameObjectModifiedListener,
     AssetSelectedEvent.AssetSelectedListener,
@@ -69,7 +73,7 @@ class Inspector(
     }
 
     enum class InspectorMode {
-        GAME_OBJECT, ASSET, EMPTY
+        GAME_OBJECT, ASSET, SCENE, EMPTY
     }
 
     private var mode = InspectorMode.EMPTY
@@ -78,6 +82,7 @@ class Inspector(
 
     private val goInspector: GameObjectInspector
     private val assetInspector: AssetInspector
+    private val sceneInspector = SceneInspector(sceneInspectorPresenter)
 //    private val cameraInspector = CameraInspector(previewGenerator, appUi)
 
     init {
@@ -130,6 +135,12 @@ class Inspector(
     }
 
     override fun onEntitySelected(event: EntitySelectedEvent) {
+        if (event.entityId == RootNode.ROOT_NODE_ID && mode != InspectorMode.SCENE) {
+            mode = InspectorMode.SCENE
+            root.clear()
+            root.add(sceneInspector).grow().row()
+        }
+
         if (mode != InspectorMode.GAME_OBJECT) {
             mode = InspectorMode.GAME_OBJECT
             root.clear()

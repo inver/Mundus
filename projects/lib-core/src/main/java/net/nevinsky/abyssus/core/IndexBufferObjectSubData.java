@@ -168,11 +168,11 @@ public class IndexBufferObjectSubData implements IndexData {
 
     /**
      * <p>
-     * Returns the underlying ShortBuffer. If you modify the buffer contents they wil be uploaded on the call to
+     * Returns the underlying IntBuffer. If you modify the buffer contents they wil be uploaded on the call to
      * {@link #bind()}. If you need immediate uploading use {@link #setIndices(int[], int, int)}.
      * </p>
      *
-     * @return the underlying short buffer.
+     * @return the underlying int buffer.
      */
     public IntBuffer getBuffer() {
         isDirty = true;

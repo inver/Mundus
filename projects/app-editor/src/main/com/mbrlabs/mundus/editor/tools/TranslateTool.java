@@ -308,11 +308,6 @@ public class TranslateTool extends TransformTool {
             modelInstance.materials.first().set(idAttribute);
         }
 
-        public void changeColor(Color color) {
-            ColorAttribute diffuse = (ColorAttribute) modelInstance.materials.get(0).get(ColorAttribute.Diffuse);
-            diffuse.color.set(color);
-        }
-
         @Override
         public void render(ModelBatch batch, SceneEnvironment environment, ShaderProvider shaders, float delta) {
             batch.render(modelInstance, DEFAULT_SHADER_KEY);

@@ -11,7 +11,7 @@ public class ModelService {
 
     private final AssimpWorker assimpWorker;
 
-    //todo may be change to ModelObject?
+    //todo save models to cache
     public ModelObject createFromAsset(ModelAsset asset) {
         var modelFileName = asset.getMeta().getAdditional().getFile();
         var model = assimpWorker.loadModel(asset.getMeta().getFile().child(modelFileName));

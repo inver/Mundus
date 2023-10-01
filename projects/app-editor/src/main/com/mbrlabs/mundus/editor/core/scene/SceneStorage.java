@@ -20,19 +20,19 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mbrlabs.mundus.commons.Scene;
 import com.mbrlabs.mundus.commons.assets.Asset;
+import com.mbrlabs.mundus.commons.core.ecs.EcsConfigurator;
 import com.mbrlabs.mundus.commons.dto.SceneDto;
 import com.mbrlabs.mundus.commons.env.Fog;
-import com.mbrlabs.mundus.commons.env.lights.AmbientLight;
 import com.mbrlabs.mundus.commons.env.lights.DirectionalLight;
 import com.mbrlabs.mundus.commons.importer.SceneConverter;
 import com.mbrlabs.mundus.commons.utils.FileUtils;
 import com.mbrlabs.mundus.editor.core.assets.AssetsStorage;
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager;
-import com.mbrlabs.mundus.editor.core.ecs.EditorEcsService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -44,7 +44,6 @@ import java.io.FileInputStream;
 import java.nio.file.Paths;
 
 import static com.mbrlabs.mundus.editor.core.ProjectConstants.DEFAULT_SCENE_NAME;
-import static com.mbrlabs.mundus.editor.core.ProjectConstants.DEFAULT_SKYBOX_NAME;
 import static com.mbrlabs.mundus.editor.core.ProjectConstants.PROJECT_ASSETS_DIR;
 import static com.mbrlabs.mundus.editor.core.ProjectConstants.PROJECT_SCENES_DIR;
 import static com.mbrlabs.mundus.editor.core.ProjectConstants.PROJECT_SCENE_EXTENSION;
@@ -58,15 +57,14 @@ public class SceneStorage {
     protected final AssetsStorage assetsStorage;
     protected final EditorAssetManager editorAssetManager;
     private final SceneConverter sceneConverter;
-    private final EditorEcsService ecsService;
+    private final EcsConfigurator ecsConfigurator;
 
     public Scene createDefault(String projectPath) {
-        var scene = new Scene(ecsService.createWorld());
+        var scene = new Scene(ecsConfigurator.createWorld());
         scene.setName(DEFAULT_SCENE_NAME);
-        scene.getEnvironment().setSkyboxName(DEFAULT_SKYBOX_NAME);
+//        scene.getEnvironment().setSkyboxName(DEFAULT_SKYBOX_NAME);
         scene.getEnvironment().setFog(new Fog());
-        scene.getEnvironment().setAmbientLight(createDefaultAmbientLight());
-
+        scene.getEnvironment().setAmbientLight(Color.WHITE, 0.3f);
         saveScene(projectPath, scene);
 
         return scene;
@@ -88,12 +86,6 @@ public class SceneStorage {
         dirLight.getDirection();
         dirLight.getDirection().nor();
         return dirLight;
-    }
-
-    private AmbientLight createDefaultAmbientLight() {
-        var res = new AmbientLight();
-        res.setIntensity(0.3f);
-        return res;
     }
 
     /**

@@ -11,7 +11,7 @@ import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
 import com.mbrlabs.mundus.commons.core.ecs.component.TypeComponent;
 import com.mbrlabs.mundus.editor.core.assets.AssetsStorage;
 import com.mbrlabs.mundus.editor.core.assets.EditorTerrainService;
-import com.mbrlabs.mundus.editor.core.ecs.EditorEcsService;
+import com.mbrlabs.mundus.editor.core.ecs.EcsService;
 import com.mbrlabs.mundus.editor.core.light.LightService;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.project.ProjectManager;
@@ -41,7 +41,7 @@ public class OutlinePresenter {
     private final EditorTerrainService terrainService;
     private final ProjectManager projectManager;
     private final LightService lightService;
-    private final EditorEcsService editorEcsService;
+    private final EcsService ecsService;
 
     public void init(@NotNull Outline outline) {
         eventBus.register((ProjectChangedEvent.ProjectChangedListener) event -> {
@@ -65,7 +65,7 @@ public class OutlinePresenter {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 var selection = outline.getTree().getSelection();
-                if (selection == null || selection.size() == 0) {
+                if (selection == null || selection.isEmpty()) {
                     return;
                 }
 
@@ -147,7 +147,7 @@ public class OutlinePresenter {
             }
 
             log.trace("Delete entity with id {}", outline.getSelectedEntityId());
-            int selectedParent = editorEcsService.removeEntity(ctx.getCurrentWorld(), outline.getSelectedEntityId());
+            int selectedParent = ecsService.removeEntity(ctx.getCurrentWorld(), outline.getSelectedEntityId());
 
             eventBus.post(new SceneGraphChangedEvent());
             eventBus.post(new EntitySelectedEvent(selectedParent));
@@ -204,7 +204,7 @@ public class OutlinePresenter {
     Runnable addGroupAction(@NotNull Outline outline) {
         return () -> {
             var id = ctx.getCurrentWorld().create();
-            editorEcsService.addEntityBaseComponents(ctx.getCurrentWorld(), id, getParentEntity(outline),
+            ecsService.addEntityBaseComponents(ctx.getCurrentWorld(), id, getParentEntity(outline),
                     "Group " + id, new TypeComponent(TypeComponent.Type.GROUP));
 
             eventBus.post(new SceneGraphChangedEvent());

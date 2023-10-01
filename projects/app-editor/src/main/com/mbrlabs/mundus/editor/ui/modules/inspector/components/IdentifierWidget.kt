@@ -22,6 +22,7 @@ import com.kotcrab.vis.ui.widget.VisCheckBox
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextField
+import com.mbrlabs.mundus.commons.core.ecs.component.NameComponent
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
 
 /**
@@ -52,6 +53,7 @@ class IdentifierWidget(private val ctx: EditorCtx) : VisTable() {
                 if (ctx.selectedEntity == null) {
                     return
                 }
+
 //                ctx.selectedEntityId.isActive = active.isChecked
             }
         })
@@ -61,7 +63,7 @@ class IdentifierWidget(private val ctx: EditorCtx) : VisTable() {
                 if (ctx.selectedEntity == null) {
                     return
                 }
-//                ctx.selectedEntityId.name = name.text
+                ctx.getComponentByEntityId(ctx.selectedEntityId, NameComponent::class.java).name = name.text
             }
         })
 

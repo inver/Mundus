@@ -19,12 +19,11 @@ package com.mbrlabs.mundus.commons.importer;
 import com.artemis.Aspect;
 import com.artemis.io.SaveFileFormat;
 import com.artemis.managers.WorldSerializationManager;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mbrlabs.mundus.commons.Scene;
 import com.mbrlabs.mundus.commons.dto.SceneDto;
-import com.mbrlabs.mundus.commons.env.lights.AmbientLight;
-import com.mbrlabs.mundus.commons.mapper.BaseLightConverter;
-import com.mbrlabs.mundus.commons.mapper.FogConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
@@ -48,7 +47,6 @@ public class SceneConverter {
 
         dto.setId(scene.getId());
         dto.setName(scene.getName());
-        dto.setSkyboxName(scene.getEnvironment().getSkyboxName());
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         scene.getWorld().getSystem(WorldSerializationManager.class).save(baos, new SaveFileFormat(
@@ -58,8 +56,9 @@ public class SceneConverter {
         dto.setEcs(obj);
 
         // getEnvironment() stuff
-        dto.setFog(FogConverter.convert(scene.getEnvironment().getFog()));
-        dto.setAmbientLight(BaseLightConverter.convert(scene.getEnvironment().getAmbientLight()));
+        dto.setAmbientLight(scene.getEnvironment().getAmbientLight());
+//        dto.setFog(FogConverter.convert(scene.getEnvironment().getFog()));
+//        dto.setSkyboxName(scene.getEnvironment().getSkyboxName());
         return dto;
     }
 
@@ -75,11 +74,12 @@ public class SceneConverter {
         }
 
         // getEnvironment() stuff
-        scene.getEnvironment().setFog(FogConverter.convert(dto.getFog()));
-        scene.getEnvironment().setSkyboxName(dto.getSkyboxName());
-        AmbientLight ambientLight = BaseLightConverter.convert(dto.getAmbientLight());
-        if (ambientLight != null) {
-            scene.getEnvironment().setAmbientLight(ambientLight);
+//        scene.getEnvironment().setFog(FogConverter.convert(dto.getFog()));
+//        scene.getEnvironment().setSkyboxName(dto.getSkyboxName());
+
+        if (dto.getAmbientLight() != null) {
+            scene.getEnvironment()
+                    .setAmbientLight(dto.getAmbientLight().getColor(), dto.getAmbientLight().getIntensity());
         }
     }
 }

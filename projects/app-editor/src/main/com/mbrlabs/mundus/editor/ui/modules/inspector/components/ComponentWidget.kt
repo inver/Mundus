@@ -23,11 +23,8 @@ import com.mbrlabs.mundus.editor.ui.modules.inspector.BaseInspectorWidget
  * @author Marcus Brummer
  * @version 22-01-2016
  */
-abstract class ComponentWidget(
-    uiComponentHolder: UiComponentHolder,
-    title: String,
-    var entityId: Int
-) : BaseInspectorWidget(uiComponentHolder, title) {
+abstract class ComponentWidget(uiComponentHolder: UiComponentHolder, title: String, var entityId: Int) :
+    BaseInspectorWidget(uiComponentHolder, title) {
 
     init {
         isDeletable = true

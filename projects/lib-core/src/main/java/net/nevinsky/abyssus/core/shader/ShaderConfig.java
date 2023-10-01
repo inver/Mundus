@@ -1,5 +1,6 @@
 package net.nevinsky.abyssus.core.shader;
 
+import com.badlogic.gdx.graphics.GL20;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -37,11 +38,11 @@ public class ShaderConfig {
     /**
      * Set to 0 to disable culling
      */
-    private int defaultCullFace = 0;
+    private int defaultCullFace = GL20.GL_BACK;
     /**
      * Set to 0 to disable depth test
      */
-    private int defaultDepthFunc = 0;
+    private int defaultDepthFunc = GL20.GL_LEQUAL;
 
     public ShaderConfig() {
     }

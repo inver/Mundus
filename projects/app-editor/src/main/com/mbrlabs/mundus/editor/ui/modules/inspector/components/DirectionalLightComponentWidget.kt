@@ -43,6 +43,8 @@ class DirectionalLightComponentWidget(
     private val intensityField: VisTextField = VisTextField()
 
     init {
+        isDeletable = false
+
         colorPickerPresenter.init(colorField)
         setupUI()
         setupListeners()

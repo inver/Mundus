@@ -27,6 +27,7 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
+import com.mbrlabs.mundus.commons.utils.MathUtils;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
@@ -66,7 +67,7 @@ public class RotateTool extends TransformTool {
     private final ShapeRenderer shapeRenderer;
 
     private TransformState state = TransformState.IDLE;
-    private RotateCommand currentRotateCommand;
+    private RotateCommand command;
     private float lastRot = 0;
 
     public RotateTool(EditorCtx ctx, String shaderKey, EntityPicker picker, ToolHandlePicker handlePicker,
@@ -130,7 +131,7 @@ public class RotateTool extends TransformTool {
         if (getCtx().getSelectedEntityId() < 0) {
             return;
         }
-
+        scaleHandles();
         translateHandles();
         if (state == TransformState.IDLE) {
             return;
@@ -139,33 +140,26 @@ public class RotateTool extends TransformTool {
         float angle = getCurrentAngle();
         float rot = angle - lastRot;
 
-        boolean modified = false;
-//        if (null != state) {
-//            switch (state) {
-//                case TRANSFORM_X:
-//                    tempQuat.setEulerAngles(0, -rot, 0);
-//                    getCtx().getSelectedEntityId().rotate(tempQuat);
-//                    modified = true;
-//                    break;
-//                case TRANSFORM_Y:
-//                    tempQuat.setEulerAngles(-rot, 0, 0);
-//                    getCtx().getSelectedEntityId().rotate(tempQuat);
-//                    modified = true;
-//                    break;
-//                case TRANSFORM_Z:
-//                    tempQuat.setEulerAngles(0, 0, -rot);
-//                    getCtx().getSelectedEntityId().rotate(tempQuat);
-//                    modified = true;
-//                    break;
-//                default:
-//                    break;
-//            }
-//        }
+        var positionComponent = getCtx().getSelectedEntity().getComponent(PositionComponent.class);
+        //todo do not create temp quaternion
+        var tempQuat = new Quaternion();
+        boolean modified = true;
+        if (state == TransformState.TRANSFORM_X) {
+            tempQuat.setEulerAngles(0, -rot, 0);
+        } else if (state == TransformState.TRANSFORM_Y) {
+            tempQuat.setEulerAngles(-rot, 0, 0);
+        } else if (state == TransformState.TRANSFORM_Z) {
+            tempQuat.setEulerAngles(0, 0, -rot);
+        } else {
+            modified = false;
+        }
 
-//        if (modified) {
-//            entityModifiedEvent.setGameObject(getCtx().getSelectedEntityId());
-//            eventBus.post(entityModifiedEvent);
-//        }
+        positionComponent.getLocalRotation().mul(tempQuat);
+
+        if (modified) {
+            entityModifiedEvent.setEntityId(getCtx().getSelectedEntityId());
+            eventBus.post(entityModifiedEvent);
+        }
 
         lastRot = angle;
     }
@@ -175,61 +169,12 @@ public class RotateTool extends TransformTool {
             return 0;
         }
 
-//        getCtx().getSelectedEntityId().getPosition(temp0);
-//        Vector3 pivot = getCtx().getCamera().project(temp0);
-//        Vector3 mouse = temp1.set(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), 0);
-//
-//        return MathUtils.angle(pivot.x, pivot.y, mouse.x, mouse.y);
+        var positionComponent = getCtx().getSelectedEntity().getComponent(PositionComponent.class);
+        positionComponent.getPosition(temp0);
+        Vector3 pivot = getCtx().getCurrent().getCamera().project(temp0);
+        Vector3 mouse = temp1.set(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), 0);
 
-        return 0;
-    }
-
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        super.touchDown(screenX, screenY, pointer, button);
-
-        if (button != Input.Buttons.LEFT || getCtx().getSelectedEntityId() < 0) {
-            return false;
-        }
-
-
-        lastRot = getCurrentAngle();
-
-//        currentRotateCommand = new RotateCommand(getCtx().getSelectedEntityId());
-//        currentRotateCommand.setBefore(getCtx().getSelectedEntityId().getLocalRotation(tempQuat));
-//
-//        RotateHandle handle = (RotateHandle) handlePicker.pick(handles, screenX, screenY);
-//        if (handle == null) {
-//            state = TransformState.IDLE;
-//            return false;
-//        }
-
-//        switch (handle.getId()) {
-//            case X_HANDLE_ID:
-//                state = TransformState.TRANSFORM_X;
-//                break;
-//            case Y_HANDLE_ID:
-//                state = TransformState.TRANSFORM_Y;
-//                break;
-//            case Z_HANDLE_ID:
-//                state = TransformState.TRANSFORM_Z;
-//                break;
-//            default:
-//                break;
-//        }
-
-        return false;
-    }
-
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        state = TransformState.IDLE;
-        if (currentRotateCommand != null) {
-//            currentRotateCommand.setAfter(getCtx().getSelectedEntityId().getLocalRotation(tempQuat));
-//            getHistory().add(currentRotateCommand);
-//            currentRotateCommand = null;
-        }
-        return false;
+        return MathUtils.angle(pivot.x, pivot.y, mouse.x, mouse.y);
     }
 
     @Override
@@ -240,19 +185,30 @@ public class RotateTool extends TransformTool {
         translateHandles();
     }
 
+
     @Override
-    protected void rotateHandles() {
-        xHandle.getRotationEuler().set(0, 90, 0);
+    protected void scaleHandles() {
+        if (getCtx().getSelectedEntityId() < 0 ||
+                getCtx().getSelectedEntity().getComponent(PositionComponent.class) == null) {
+            return;
+        }
+
+        Vector3 pos = getCtx().getSelectedEntity().getComponent(PositionComponent.class).getPosition(temp0);
+        var scaleFactor = getCtx().getCurrent().getCamera().position.dst(pos) * 0.005f;
+        xHandle.getScale().set(scaleFactor, scaleFactor, scaleFactor);
         xHandle.applyTransform();
-        yHandle.getRotationEuler().set(90, 0, 0);
+
+        yHandle.getScale().set(scaleFactor, scaleFactor, scaleFactor);
         yHandle.applyTransform();
-        zHandle.getRotationEuler().set(0, 0, 0);
+
+        zHandle.getScale().set(scaleFactor, scaleFactor, scaleFactor);
         zHandle.applyTransform();
     }
 
     @Override
     protected void translateHandles() {
-        if (getCtx().getSelectedEntityId() < 0) {
+        if (getCtx().getSelectedEntityId() < 0 ||
+                getCtx().getSelectedEntity().getComponent(PositionComponent.class) == null) {
             return;
         }
 
@@ -266,22 +222,57 @@ public class RotateTool extends TransformTool {
     }
 
     @Override
-    protected void scaleHandles() {
-//        if (getCtx().getSelectedEntityId() == null) {
-//            return;
-//        }
-//
-//        var pos = getCtx().getSelectedEntityId().getPosition(temp0);
-//        var scaleFactor = getCtx().getCamera().position.dst(pos) * 0.005f;
-//        xHandle.getScale().set(scaleFactor, scaleFactor, scaleFactor);
-//        xHandle.applyTransform();
-//
-//        yHandle.getScale().set(scaleFactor, scaleFactor, scaleFactor);
-//        yHandle.applyTransform();
-//
-//        zHandle.getScale().set(scaleFactor, scaleFactor, scaleFactor);
-//        zHandle.applyTransform();
+    protected void rotateHandles() {
+        xHandle.getRotationEuler().set(0, 90, 0);
+        xHandle.applyTransform();
+        yHandle.getRotationEuler().set(90, 0, 0);
+        yHandle.applyTransform();
+        zHandle.getRotationEuler().set(0, 0, 0);
+        zHandle.applyTransform();
     }
+
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        super.touchDown(screenX, screenY, pointer, button);
+
+        if (button != Input.Buttons.LEFT || getCtx().getSelectedEntityId() < 0) {
+            return false;
+        }
+
+        lastRot = getCurrentAngle();
+
+//        currentRotateCommand = new RotateCommand(getCtx().getSelectedEntityId());
+//        currentRotateCommand.setBefore(getCtx().getSelectedEntityId().getLocalRotation(tempQuat));
+//
+        RotateHandle handle = (RotateHandle) handlePicker.pick(handles, screenX, screenY);
+        if (handle == null) {
+            state = TransformState.IDLE;
+            return false;
+        }
+
+        state = handle.getState();
+        handle.changeColor(COLOR_SELECTED);
+
+        return true;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        super.touchUp(screenX, screenY, pointer, button);
+        if (state != TransformState.IDLE) {
+            xHandle.changeColor(COLOR_X);
+            yHandle.changeColor(COLOR_Y);
+            zHandle.changeColor(COLOR_Z);
+
+//         command.setAfter(getCtx().getSelectedEntityId().getLocalRotation(tempQuat));
+//            getHistory().add(command);
+            command = null;
+            state = TransformState.IDLE;
+        }
+        return false;
+    }
+
 
     @Override
     @NotNull
@@ -307,26 +298,21 @@ public class RotateTool extends TransformTool {
                     new Material(ColorAttribute.createDiffuse(color)), 20, 1f, 50, 50
             ));
             modelInstance.materials.first().set(idAttribute);
-//            switch (id) {
-//                case X_HANDLE_ID:
-//                    this.getRotationEuler().y = 90;
-//                    this.getScale().x = 0.9f;
-//                    this.getScale().y = 0.9f;
-//                    this.getScale().z = 0.9f;
-//                    break;
-//                case Y_HANDLE_ID:
-//                    this.getRotationEuler().x = 90;
-//                    break;
-//                case Z_HANDLE_ID:
-//                    this.getRotationEuler().z = 90;
-//                    this.getScale().x = 1.1f;
-//                    this.getScale().y = 1.1f;
-//                    this.getScale().z = 1.1f;
-//                    break;
-//            }
+            if (id == X_HANDLE_ID) {
+                getRotationEuler().y = 90;
+                getScale().x = 0.9f;
+                getScale().y = 0.9f;
+                getScale().z = 0.9f;
+            } else if (id == Y_HANDLE_ID) {
+                getRotationEuler().x = 90;
+            } else if (id == Z_HANDLE_ID) {
+                getRotationEuler().z = 90;
+                getScale().x = 1.1f;
+                getScale().y = 1.1f;
+                getScale().z = 1.1f;
+            }
             modelInstance.transform.translate(0, 100, 0);
         }
-
 
         @Override
         public void render(ModelBatch batch, SceneEnvironment environment, ShaderProvider shaders, float delta) {
@@ -336,11 +322,6 @@ public class RotateTool extends TransformTool {
         @Override
         public void renderPick(ModelBatch modelBatch, ShaderProvider shaders) {
             modelBatch.render(modelInstance, DEFAULT_SHADER_KEY);
-        }
-
-        @Override
-        public void act() {
-
         }
 
         @Override

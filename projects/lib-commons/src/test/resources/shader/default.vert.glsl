@@ -300,12 +300,12 @@ void main() {
     #ifdef ambientFlag
     #ifdef separateAmbientFlag
     v_ambientLight = ambientLight;
-    v_lightDiffuse = vec3(0.0);
+    v_lightDiffuse = vec3(1.0, 0.0, 0.0);
     #else
     v_lightDiffuse = ambientLight;
     #endif //separateAmbientFlag
     #else
-    v_lightDiffuse = vec3(0.0);
+    v_lightDiffuse = vec3(0.0, 1.0, 0.0);
     #endif //ambientFlag
 
 

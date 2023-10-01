@@ -30,11 +30,13 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.nevinsky.abyssus.core.Renderable;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+@Slf4j
 public class DefaultShader extends BaseShader {
     private static final long optionalAttributes = IntAttribute.CullFace | DepthTestAttribute.Type;
     protected static long implementedFlags = BlendingAttribute.Type | TextureAttribute.Diffuse | ColorAttribute.Diffuse
@@ -220,7 +222,7 @@ public class DefaultShader extends BaseShader {
                 shader.set(inputID, attr.set(shader.camera.view).mul(renderable.worldTransform));
             }
         });
-        u_projViewWorldTrans = register(new Uniform("u_viewWorldTrans"), new LocalSetterWithAttr<>(new Matrix4()) {
+        u_projViewWorldTrans = register(new Uniform("u_projViewWorldTrans"), new LocalSetterWithAttr<>(new Matrix4()) {
             @Override
             public void set(BaseShader shader, int inputID, Renderable renderable,
                             Attributes combinedAttributes) {
@@ -615,6 +617,8 @@ public class DefaultShader extends BaseShader {
         if (renderable.bones != null && config.getNumBones() > 0) {
             sb.append("#define numBones ").append(config.getNumBones()).append("\n");
         }
+
+        log.debug("Shader prefix: \n{}", sb);
 
         vertexShader = sb + vertexShader;
         fragmentShader = sb + fragmentShader;

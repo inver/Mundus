@@ -6,7 +6,6 @@ import com.kotcrab.vis.ui.util.OsUtils;
 import com.mbrlabs.mundus.editor.config.InitListener;
 import com.mbrlabs.mundus.editor.utils.AppUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 
 @Slf4j
 public class Main {

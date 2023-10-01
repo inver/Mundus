@@ -19,12 +19,15 @@ package com.mbrlabs.mundus.commons.env.lights;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.utils.Array;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Marcus Brummer
  * @version 14-02-2016
  */
 public class DirectionalLightsAttribute extends Attribute {
-    public static final long TYPE = register("directionalLights");
+    public static final long TYPE = register("directionalLightsExtends");
 
     public final Array<DirectionalLight> lights;
 

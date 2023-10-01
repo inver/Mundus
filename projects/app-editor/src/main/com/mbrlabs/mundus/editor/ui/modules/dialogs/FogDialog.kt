@@ -79,22 +79,22 @@ class FogDialog(
         useFog.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
                 val projectContext = ctx.current
-                if (useFog.isChecked) {
-                    if (projectContext.currentScene.environment.fog == null) {
-                        val fog = Fog()
-                        projectContext.currentScene.environment.fog = fog
-                        density.text = fog.density.toString()
-                        gradient.text = fog.gradient.toString()
-                    }
-                    density.isDisabled = false
-                    gradient.isDisabled = false
-                    colorPickerField.disable(false)
-                } else {
-                    projectContext.currentScene.environment.fog = null
-                    density.isDisabled = true
-                    gradient.isDisabled = true
-                    colorPickerField.disable(true)
-                }
+//                if (useFog.isChecked) {
+//                    if (projectContext.currentScene.environment.fog == null) {
+//                        val fog = Fog()
+//                        projectContext.currentScene.environment.fog = fog
+//                        density.text = fog.density.toString()
+//                        gradient.text = fog.gradient.toString()
+//                    }
+//                    density.isDisabled = false
+//                    gradient.isDisabled = false
+//                    colorPickerField.disable(false)
+//                } else {
+//                    projectContext.currentScene.environment.fog = null
+//                    density.isDisabled = true
+//                    gradient.isDisabled = true
+//                    colorPickerField.disable(true)
+//                }
             }
         })
 
@@ -103,7 +103,7 @@ class FogDialog(
             override fun changed(event: ChangeEvent, actor: Actor) {
                 val g = convert(gradient.text)
                 if (g != null) {
-                    ctx.current.currentScene.environment.fog.gradient = g
+//                    ctx.current.currentScene.environment.fog.gradient = g
                 }
             }
         })
@@ -113,7 +113,7 @@ class FogDialog(
             override fun changed(event: ChangeEvent, actor: Actor) {
                 val value = convert(density.text)
                 if (value != null) {
-                    ctx.current.currentScene.environment.fog.density = value
+//                    ctx.current.currentScene.environment.fog.density = value
                 }
             }
         })
@@ -121,23 +121,23 @@ class FogDialog(
         // color
         colorPickerField.colorAdapter = object : ColorPickerAdapter() {
             override fun finished(newColor: Color) {
-                ctx.current.currentScene.environment.fog.color.set(newColor)
+//                ctx.current.currentScene.environment.fog.color.set(newColor)
             }
         }
 
     }
 
     private fun resetValues() {
-        val fog = ctx.current.currentScene.environment.fog
-        if (fog == null) {
-            density.isDisabled = true
-            gradient.isDisabled = true
-        } else {
-            useFog.isChecked = true
-            density.text = fog.density.toString()
-            gradient.text = fog.gradient.toString()
-            colorPickerField.selectedColor = fog.color
-        }
+//        val fog = ctx.current.currentScene.environment.fog
+//        if (fog == null) {
+//            density.isDisabled = true
+//            gradient.isDisabled = true
+//        } else {
+//            useFog.isChecked = true
+//            density.text = fog.density.toString()
+//            gradient.text = fog.gradient.toString()
+//            colorPickerField.selectedColor = fog.color
+//        }
     }
 
     private fun convert(input: String): Float? {

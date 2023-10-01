@@ -17,6 +17,7 @@
 package com.mbrlabs.mundus.editor.tools;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset;

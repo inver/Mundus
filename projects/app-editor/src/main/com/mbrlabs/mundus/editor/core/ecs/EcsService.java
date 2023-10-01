@@ -4,35 +4,20 @@ import com.artemis.Aspect;
 import com.artemis.Component;
 import com.artemis.EntityEdit;
 import com.artemis.World;
-import com.artemis.WorldConfigurationBuilder;
 import com.badlogic.gdx.math.Vector3;
-import com.mbrlabs.mundus.commons.assets.AssetManager;
-import com.mbrlabs.mundus.commons.core.ecs.EcsService;
 import com.mbrlabs.mundus.commons.core.ecs.base.RenderableDelegate;
 import com.mbrlabs.mundus.commons.core.ecs.component.NameComponent;
 import com.mbrlabs.mundus.commons.core.ecs.component.ParentComponent;
 import com.mbrlabs.mundus.commons.core.ecs.component.Point2PointPositionComponent;
 import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
 import com.mbrlabs.mundus.commons.core.ecs.component.TypeComponent;
-import com.mbrlabs.mundus.commons.model.ModelService;
-import com.mbrlabs.mundus.commons.terrain.TerrainService;
 import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
 import com.mbrlabs.mundus.editor.ui.components.handle.DirectionHandleRenderDelegate;
 import com.mbrlabs.mundus.editor.ui.components.handle.DirectionLineRenderDelegate;
 
 @org.springframework.stereotype.Component
-public class EditorEcsService extends EcsService {
-
+public class EcsService {
     private static final String HANDLE_NAME = "'Direction' handle";
-
-    public EditorEcsService(AssetManager assetManager, TerrainService terrainService, ModelService modelService) {
-        super(assetManager, terrainService, modelService);
-    }
-
-    @Override
-    protected void configuration(WorldConfigurationBuilder builder) {
-        super.configuration(builder);
-    }
 
     public EntityEdit addEntityBaseComponents(World world, int id, int parentEntityId, String name,
                                               Component... components) {
