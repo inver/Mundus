@@ -29,7 +29,6 @@ import com.mbrlabs.mundus.editor.ui.widgets.FileChooserField
  */
 class GeneralSettingsTable : BaseSettingsTable() {
 
-    val fbxBinary = FileChooserField(500)
     val keyboardLayouts = VisSelectBox<KeyboardLayout>()
     val autoReloadFromDisk = VisCheckBox("Auto reload from disk")
     val displayCoordinateSystem = VisCheckBox("Display coordinate system")
@@ -39,8 +38,6 @@ class GeneralSettingsTable : BaseSettingsTable() {
 
         add(VisLabel("General Settings")).left().row()
         addSeparator().padBottom(UiConstants.PAD_SIDE * 2)
-        add(VisLabel("fbx-conv binary")).left().row()
-        add(fbxBinary).growX().padBottom(UiConstants.PAD_BOTTOM).row()
 
         keyboardLayouts.setItems(KeyboardLayout.QWERTY, KeyboardLayout.QWERTZ)
 

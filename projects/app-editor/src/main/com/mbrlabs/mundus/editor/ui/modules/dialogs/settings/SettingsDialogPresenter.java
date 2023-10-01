@@ -34,11 +34,8 @@ public class SettingsDialogPresenter {
                 registry.getSettings().setKeyboardLayout(table.getKeyboardLayouts().getSelected());
             }
         });
-        fileChooserFieldPresenter.initFileChooserField(table.getFbxBinary());
-        table.getFbxBinary().setText(registry.getSettings().getFbxConvBinary());
         table.getAutoReloadFromDisk().setChecked(registry.getSettings().isReloadShaderFromDisk());
         table.setSaveListener(() -> {
-            registry.getSettings().setFbxConvBinary(table.getFbxBinary().getPath());
             registry.getSettings().setReloadShaderFromDisk(table.getAutoReloadFromDisk().isChecked());
 
             projectStorage.saveRegistry(registry);
