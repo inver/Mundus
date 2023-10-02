@@ -21,6 +21,9 @@ public class SynchronizeRenderPoint2PointSystem extends IteratingSystem {
 
         var e1 = mapper.get(comp.getEntity1Id());
         var e2 = mapper.get(comp.getEntity2Id());
+        if (e1 == null || e2 == null) {
+            return;
+        }
         renderMapper.get(entityId).getRenderable().set2PointPosition(e1.getLocalPosition(), e2.getLocalPosition());
     }
 }

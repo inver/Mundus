@@ -16,12 +16,16 @@
 
 package com.mbrlabs.mundus.commons.env;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.Environment;
-import com.mbrlabs.mundus.commons.env.lights.AmbientLight;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.mbrlabs.mundus.commons.env.lights.BaseLight;
 import com.mbrlabs.mundus.commons.env.lights.DirectionalLight;
 import com.mbrlabs.mundus.commons.env.lights.DirectionalLightsAttribute;
+import com.mbrlabs.mundus.commons.env.lights.LightIntensityAttribute;
 import com.mbrlabs.mundus.commons.env.lights.SpotLight;
 import com.mbrlabs.mundus.commons.env.lights.SunLightsAttribute;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -29,10 +33,34 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  * @author Marcus Brummer
  * @version 04-01-2016
  */
+@Slf4j
 public class SceneEnvironment extends Environment {
     private Fog fog;
-    private AmbientLight ambientLight;
     private String skyboxName;
+
+    private BaseLight ambientLight;
+
+    public void setAmbientLight(Color color, float intensity) {
+        if (ambientLight == null) {
+            ambientLight = new BaseLight(color, intensity);
+        }
+        set(new ColorAttribute(ColorAttribute.AmbientLight, 1f, 1f, 1f, 1f));
+        set(new LightIntensityAttribute(intensity));
+        // todo implement intensity of ambient light in default shader
+    }
+
+    public BaseLight getAmbientLight() {
+        return ambientLight;
+    }
+
+    public void disableAmbientLight() {
+        remove(ColorAttribute.AmbientLight);
+        remove(LightIntensityAttribute.AmbientLightIntensity);
+    }
+
+    public void enableAmbientLight() {
+        setAmbientLight(ambientLight.getColor(), ambientLight.getIntensity());
+    }
 
     //todo refactor this methods to operate with BaseLight
     public SceneEnvironment add(SpotLight light) {
@@ -70,14 +98,6 @@ public class SceneEnvironment extends Environment {
             dirLights.lights.removeValue(light, true);
         }
         return this;
-    }
-
-    public AmbientLight getAmbientLight() {
-        return ambientLight;
-    }
-
-    public void setAmbientLight(AmbientLight ambientLight) {
-        this.ambientLight = ambientLight;
     }
 
     public Fog getFog() {

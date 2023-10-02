@@ -261,7 +261,7 @@ public class Outline extends VisTable {
     public void onEntitySelected(int entityId) {
         tree.getSelection().clear();
 
-        if (entityId < 0) {
+        if (entityId < 0 && entityId != IdNode.RootNode.ROOT_NODE_ID) {
             return;
         }
 

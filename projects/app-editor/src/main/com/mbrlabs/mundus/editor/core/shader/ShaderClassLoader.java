@@ -6,7 +6,10 @@ import groovy.lang.GroovyClassLoader;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
 
 @Component
 @Slf4j
@@ -24,9 +27,12 @@ public class ShaderClassLoader {
         try (var loader = new GroovyClassLoader(this.getClass().getClassLoader())) {
             if (classPath.type() == Files.FileType.Classpath) {
                 //todo may be use recompile method from loader?
-                return loader.parseClass(new File(
-                        getClass().getClassLoader().getResource(classPath.file().getPath()).getFile()
-                ));
+                try (var is = getClass().getClassLoader().getResourceAsStream(classPath.file().getPath());
+                     var br = new BufferedReader(new InputStreamReader(is))) {
+                    var name = classPath.file().getName();
+
+                    return loader.parseClass(br, name);
+                }
             }
             return loader.parseClass(classPath.file());
         } catch (Exception e) {

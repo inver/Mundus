@@ -8,12 +8,11 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 @NoArgsConstructor
 public class DependenciesComponent extends Component {
-    @Getter
     @Setter
     private List<Integer> dependencies = new ArrayList<>();
-
 
     public DependenciesComponent(int... dependencies) {
         for (int d : dependencies) {

@@ -130,7 +130,7 @@ public class IndexBufferObject implements IndexData {
      *
      * @param indices the vertex data
      * @param offset  the offset to start copying the data from
-     * @param count   the number of shorts to copy
+     * @param count   the number of ints to copy
      */
     public void setIndices(int[] indices, int offset, int count) {
         isDirty = true;
@@ -179,11 +179,11 @@ public class IndexBufferObject implements IndexData {
 
     /**
      * <p>
-     * Returns the underlying ShortBuffer. If you modify the buffer contents they wil be uploaded on the call to
+     * Returns the underlying IntBuffer. If you modify the buffer contents they wil be uploaded on the call to
      * {@link #bind()}. If you need immediate uploading use {@link #setIndices(int[], int, int)}.
      * </p>
      *
-     * @return the underlying short buffer.
+     * @return the underlying int buffer.
      */
     public IntBuffer getBuffer() {
         isDirty = true;

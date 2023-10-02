@@ -22,7 +22,7 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.utils.Disposable;
 import com.mbrlabs.mundus.commons.Scene;
 import com.mbrlabs.mundus.commons.assets.AssetType;
-import com.mbrlabs.mundus.commons.core.ecs.EcsService;
+import com.mbrlabs.mundus.commons.core.ecs.EcsConfigurator;
 import com.mbrlabs.mundus.commons.importer.SceneConverter;
 import com.mbrlabs.mundus.editor.config.AppEnvironment;
 import com.mbrlabs.mundus.editor.core.ProjectConstants;
@@ -38,11 +38,15 @@ import com.mbrlabs.mundus.editor.utils.AppUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Path;
 
+import static com.mbrlabs.mundus.commons.assets.AssetConstants.META_FILE_NAME;
 import static com.mbrlabs.mundus.editor.core.ProjectConstants.DEFAULT_SKYBOX_NAME;
 import static com.mbrlabs.mundus.editor.core.ProjectConstants.PROJECT_ASSETS_DIR;
 import static com.mbrlabs.mundus.editor.core.ProjectConstants.PROJECT_SCENES_DIR;
@@ -58,6 +62,9 @@ import static com.mbrlabs.mundus.editor.core.ProjectConstants.PROJECT_SCENES_DIR
 @RequiredArgsConstructor
 public class ProjectManager implements Disposable {
 
+    private static final String DEFAULT_PROJECTS_FOLDER = "MundusProjects";
+    private static final String UNTITLED_PROJECT = "Untitled";
+
     private final EditorCtx editorCtx;
     private final Registry registry;
     private final ProjectStorage projectStorage;
@@ -65,7 +72,7 @@ public class ProjectManager implements Disposable {
     private final SceneConverter sceneConverter;
     private final EventBus eventBus;
     private final SceneStorage sceneStorage;
-    private final EcsService ecsService;
+    private final EcsConfigurator ecsConfigurator;
     private final AppEnvironment appEnvironment;
 
     /**
@@ -86,6 +93,7 @@ public class ProjectManager implements Disposable {
     public ProjectContext createProject(String folder) {
         var ref = registry.createProjectRef(folder);
         var path = ref.getPath();
+        //todo move creation folders to projectStorage
         new File(path).mkdirs();
         new File(path, PROJECT_ASSETS_DIR).mkdirs();
         new File(path, PROJECT_SCENES_DIR).mkdirs();
@@ -94,7 +102,7 @@ public class ProjectManager implements Disposable {
         ctx.setPath(path);
 
         var scene = sceneStorage.createDefault(ctx.getPath());
-        scene.getEnvironment().setSkyboxName(DEFAULT_SKYBOX_NAME);
+//        scene.getEnvironment().setSkyboxName(DEFAULT_SKYBOX_NAME);
         sceneStorage.copyAssetToProject(
                 ctx.getPath(), editorCtx.getAssetLibrary()
                         .get(new AssetKey(AssetType.SKYBOX, ProjectConstants.DEFAULT_SKYBOX_NAME))
@@ -107,7 +115,7 @@ public class ProjectManager implements Disposable {
     }
 
     private void loadSkybox(ProjectContext ctx, Scene scene) {
-        scene.getAssets().add(assetManager.loadProjectAsset(ctx.getPath(), scene.getEnvironment().getSkyboxName()));
+//        scene.getAssets().add(assetManager.loadProjectAsset(ctx.getPath(), scene.getEnvironment().getSkyboxName()));
     }
 
     /**
@@ -146,7 +154,6 @@ public class ProjectManager implements Disposable {
      *
      * @param ref project reference to the project
      * @return loaded project context
-     * @throws FileNotFoundException if project can't be found
      */
     public ProjectContext loadProject(ProjectRef ref) {
         var currentProject = projectStorage.loadProjectContext(ref);
@@ -266,7 +273,7 @@ public class ProjectManager implements Disposable {
     public Scene loadScene(ProjectContext context, String sceneName) {
         var dto = sceneStorage.loadScene(context.getPath(), sceneName);
 
-        var scene = new Scene(ecsService.createWorld());
+        var scene = new Scene(ecsConfigurator.createWorld());
 
         //todo preload assets to cache
         sceneConverter.fillScene(scene, dto);
@@ -276,13 +283,13 @@ public class ProjectManager implements Disposable {
         return scene;
     }
 
-    @SneakyThrows
     /**
      * Loads and opens scene
      *
      * @param projectContext project context of scene
      * @param sceneName      scene name
      */
+    @SneakyThrows
     public void changeScene(ProjectContext projectContext, String sceneName) {
 //        try {
         Scene newScene = loadScene(projectContext, sceneName);
@@ -307,16 +314,42 @@ public class ProjectManager implements Disposable {
     }
 
     public ProjectContext createDefaultProject() {
-        if (registry.getLastProject() == null || registry.getProjects().isEmpty()) {
-            var path = FilenameUtils.concat(appEnvironment.getHomeDir(), "MundusProjects");
-
-            return createProject(path);
+        if (registry.getLastProject() != null && !registry.getProjects().isEmpty()) {
+            return null;
         }
 
-        return null;
+        var defFolderPath = Path.of(FilenameUtils.concat(appEnvironment.getHomeDir(), DEFAULT_PROJECTS_FOLDER));
+        createFolder(defFolderPath);
+
+        var projectPath = defFolderPath.resolve(UNTITLED_PROJECT);
+        if (projectPath.toFile().exists()) {
+            log.info("Untitled project exists, just opening it");
+            var ref = new ProjectRef(projectPath.toString());
+            registry.setLastProject(ref);
+            return loadProject(ref);
+        }
+
+        log.info("Create new untitled project");
+        return createProject(projectPath.toString());
+    }
+
+    private static void createFolder(Path projectPath) {
+        if (!projectPath.toFile().exists()) {
+            try {
+                FileUtils.forceMkdir(projectPath.toFile());
+            } catch (IOException e) {
+                log.error("Failed to create default projects folder", e);
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     public void reloadAsset(AssetKey assetKey, FileHandle assetFolderPath) {
+        if (!assetFolderPath.child(META_FILE_NAME).exists()) {
+            log.debug("Unable to find {} in folder {}", META_FILE_NAME, assetFolderPath.toString());
+            return;
+        }
+
         var asset = assetManager.loadAsset(assetFolderPath);
         // put updated content of shader to project assets
         editorCtx.getCurrent().getProjectAssets().put(assetKey, asset);

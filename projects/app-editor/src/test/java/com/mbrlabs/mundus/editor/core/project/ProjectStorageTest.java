@@ -3,24 +3,41 @@ package com.mbrlabs.mundus.editor.core.project;
 
 import com.artemis.World;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mbrlabs.mundus.commons.Scene;
-import com.mbrlabs.mundus.editor.config.BaseCtxTest;
+import com.mbrlabs.mundus.editor.config.AppEnvironment;
+import com.mbrlabs.mundus.editor.config.MapperConfig;
 import com.mbrlabs.mundus.editor.core.registry.ProjectRef;
 import com.mbrlabs.mundus.editor.core.registry.Registry;
+import lombok.SneakyThrows;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ProjectStorageTest extends BaseCtxTest {
+public class ProjectStorageTest {
 
     private static final String PROJECT_PATH = "/tmp/" + UUID.randomUUID() + "/ProjectStorageTest";
 
-    @Autowired
-    private ProjectStorage storage;
+    private static final String HOME_PATH = "/tmp/" + UUID.randomUUID() + "_random_home";
+    private final ObjectMapper mapper = new MapperConfig().mapper();
+    private final AppEnvironment environment = new AppEnvironment() {
+        @Override
+        public String getHomeDir() {
+            return HOME_PATH;
+        }
+    };
+
+    private final ProjectStorage storage = new ProjectStorage(mapper, environment);
+
+    @BeforeEach
+    @SneakyThrows
+    public void init() {
+        storage.init();
+    }
 
     @Test
     public void testSaveProject() {
@@ -53,7 +70,6 @@ public class ProjectStorageTest extends BaseCtxTest {
         var registry = new Registry("/tmp/tmp");
         registry.setLastProject(ref);
         registry.getProjects().add(ref);
-        registry.getSettings().setFbxConvBinary("binary");
 
         storage.saveRegistry(registry);
         var input = storage.loadRegistry();

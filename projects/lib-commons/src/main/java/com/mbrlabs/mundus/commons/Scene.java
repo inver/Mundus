@@ -18,6 +18,9 @@ package com.mbrlabs.mundus.commons;
 
 import com.artemis.World;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.utils.Disposable;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.core.ecs.WorldUtils;
@@ -28,6 +31,7 @@ import com.mbrlabs.mundus.commons.scene3d.components.RenderableObject;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import net.nevinsky.abyssus.core.ModelBatch;
 import net.nevinsky.abyssus.core.shader.ShaderProvider;
 import org.apache.commons.lang3.tuple.Pair;
@@ -39,6 +43,7 @@ import java.util.List;
  * @author Marcus Brummer
  * @version 22-12-2015
  */
+@Slf4j
 @RequiredArgsConstructor
 public class Scene implements Disposable, RenderableObject {
     private long id = 0;
@@ -89,4 +94,13 @@ public class Scene implements Disposable, RenderableObject {
         return world.getMapper(CameraComponent.class).get(cameraId).getCamera();
     }
 
+    public void setAmbientLight(Color color, float intensity) {
+        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 1f, 1f, 1f, 1f));
+        // todo implement intensity of ambient light in default shader
+        log.warn("Intensity for ambient light doesn't support. Implement it");
+    }
+
+    public void removeAmbientLight() {
+        environment.remove(ColorAttribute.AmbientLight);
+    }
 }

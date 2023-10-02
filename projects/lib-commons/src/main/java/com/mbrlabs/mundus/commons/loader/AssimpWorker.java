@@ -19,6 +19,7 @@ import net.nevinsky.abyssus.core.model.ModelMesh;
 import net.nevinsky.abyssus.core.model.ModelMeshPart;
 import org.lwjgl.assimp.AIColor4D;
 import org.lwjgl.assimp.AIMaterial;
+import org.lwjgl.assimp.AIMaterialProperty;
 import org.lwjgl.assimp.AIMesh;
 import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.AIString;
@@ -27,6 +28,7 @@ import org.lwjgl.assimp.Assimp;
 import org.lwjgl.system.MemoryStack;
 
 import java.io.File;
+import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -48,14 +50,13 @@ import static org.lwjgl.assimp.Assimp.aiProcess_LimitBoneWeights;
 import static org.lwjgl.assimp.Assimp.aiProcess_PreTransformVertices;
 import static org.lwjgl.assimp.Assimp.aiProcess_Triangulate;
 import static org.lwjgl.assimp.Assimp.aiReturn_SUCCESS;
-import static org.lwjgl.assimp.Assimp.aiTextureType_DIFFUSE;
 import static org.lwjgl.assimp.Assimp.aiTextureType_NONE;
 
 @Slf4j
 //todo add texture cache
 public class AssimpWorker {
 
-    private static final int FLAGS = aiProcess_GenNormals | aiProcess_GenSmoothNormals |
+    protected static final int FLAGS = aiProcess_GenNormals | aiProcess_GenSmoothNormals |
             aiProcess_JoinIdenticalVertices | aiProcess_Triangulate | aiProcess_FixInfacingNormals |
             aiProcess_CalcTangentSpace | aiProcess_LimitBoneWeights | aiProcess_PreTransformVertices |
             aiProcess_GenBoundingBoxes;
@@ -80,7 +81,10 @@ public class AssimpWorker {
         }
         var textures = extractTextures(aiScene);
         textures.forEach(t -> {
-            var folder = t.substring(0, t.lastIndexOf("/"));
+            var folder = "./";
+            if (t.contains("/")) {
+                folder = t.substring(0, t.lastIndexOf("/"));
+            }
             var pathForCopy = to.parent().child(folder);
             pathForCopy.mkdirs();
             from.parent().child(t).copyTo(pathForCopy);
@@ -120,7 +124,9 @@ public class AssimpWorker {
         try (MemoryStack stack = MemoryStack.stackPush()) {
             var aiTexturePath = AIString.calloc(stack);
             for (int i = 0; i < aiScene.mNumMaterials(); i++) {
-                var aiMaterial = AIMaterial.create(aiScene.mMaterials().get(i));
+                var matAddress = aiScene.mMaterials().get(i);
+                log.info("Mat address: {}", matAddress);
+                var aiMaterial = AIMaterial.create(matAddress);
                 log.debug("Process material {}", i);
                 for (var textureType : TextureType.values()) {
                     log.debug("  Process texture {}", textureType);
@@ -162,6 +168,75 @@ public class AssimpWorker {
 
             return material;
         }
+    }
+
+    private static void processMaterialTexture(AIMaterial aiMaterial, String modelDir, AIString aiTexturePath,
+                                               ModelMaterial material) {
+        for (var type : TextureType.values()) {
+            if (type.getTextureUsage() == USAGE_UNKNOWN) {
+                continue;
+            }
+
+            var res = aiGetMaterialTexture(aiMaterial, type.getValue(), 0, aiTexturePath, (IntBuffer) null,
+            processMaterialTexture(aiMaterial, modelDir, aiTexturePath, material);
+
+            processMaterialProperty(aiMaterial, material);
+            return material;
+        }
+    }
+
+    private void processMaterialProperty(AIMaterial aiMaterial, ModelMaterial material) {
+        for (int i = 0; i < aiMaterial.mNumProperties(); i++) {
+            var aiProperty = AIMaterialProperty.create(aiMaterial.mProperties().get(i));
+            var type = MaterialPropertyType.of(aiProperty.mKey().dataString());
+            switch (type) {
+                case NAME:
+                    processMaterialNameProperty(aiProperty, material);
+                    break;
+                case COLOR_DIFFUSE:
+                case COLOR_AMBIENT:
+                case COLOR_SPECULAR:
+                case COLOR_EMISSIVE:
+                case COLOR_TRANSPARENT:
+                case COLOR_REFLECTIVE:
+                    log.debug("Skip parse '{}' property. It parsed in #processMaterialColors method", type);
+                    break;
+                case OPACITY:
+                    processMaterialOpacityProperty(aiProperty, material);
+                    break;
+                case SHININESS:
+                    processShininessOpacityProperty(aiProperty, material);
+                    break;
+                default: {
+                    var sb = new StringBuilder();
+                    var buffer = aiProperty.mData();
+                    for (int j = 0; j < aiProperty.mDataLength(); j++) {
+                        sb.append(new String(new byte[]{buffer.get()}));
+                    }
+                    log.debug("Unsupported material property with type: {}, texture index:{}, key: {}, value: {}", type,
+                            aiProperty.mIndex(), aiProperty.mKey().dataString(), sb);
+                }
+            }
+        }
+    }
+
+    private void processShininessOpacityProperty(AIMaterialProperty aiProperty, ModelMaterial material) {
+        var buffer = aiProperty.mData();
+        material.shininess = buffer.order(ByteOrder.LITTLE_ENDIAN).getFloat();
+    }
+
+    private void processMaterialOpacityProperty(AIMaterialProperty aiProperty, ModelMaterial material) {
+        var buffer = aiProperty.mData();
+        material.opacity = buffer.order(ByteOrder.LITTLE_ENDIAN).getFloat();
+    }
+
+    private void processMaterialNameProperty(AIMaterialProperty aiProperty, ModelMaterial material) {
+        var sb = new StringBuilder();
+        var buffer = aiProperty.mData();
+        for (int j = 0; j < aiProperty.mDataLength(); j++) {
+            sb.append(Character.valueOf((char) buffer.get()));
+        }
+        material.id = sb.toString();
     }
 
     private static void processMaterialTexture(AIMaterial aiMaterial, String modelDir, AIString aiTexturePath,
@@ -230,7 +305,7 @@ public class AssimpWorker {
             attributes.add(VertexAttribute.Position());
         }
         if (textCoords.length > 0) {
-            attributes.add(VertexAttribute.TexCoords(1));
+            attributes.add(VertexAttribute.TexCoords(0));
         }
         if (normals.length > 0) {
             attributes.add(VertexAttribute.Normal());

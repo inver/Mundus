@@ -8,9 +8,10 @@ import org.springframework.stereotype.Component;
 @Getter
 @Component
 public class AppEnvironment {
-    private final String homeDir = FilenameUtils.concat(FileUtils.getUserDirectoryPath(), ".mundus/");
-    private final String logsDir = FilenameUtils.concat(getHomeDir(), "logs/");
-    private final String tempDir = FilenameUtils.concat(getHomeDir(), "temp/");
+    private final String homeDir = FileUtils.getUserDirectoryPath();
+    private final String configDir = FilenameUtils.concat(getHomeDir(), ".mundus/");
+    private final String logsDir = FilenameUtils.concat(getConfigDir(), "logs/");
+    private final String tempDir = FilenameUtils.concat(getConfigDir(), "temp/");
 
-    private final String homeDataFile = FilenameUtils.concat(getHomeDir(), "mundus.registry");
+    private final String registryFile = FilenameUtils.concat(getConfigDir(), "registry.json");
 }

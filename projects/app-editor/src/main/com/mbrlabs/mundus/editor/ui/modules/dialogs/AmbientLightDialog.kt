@@ -17,6 +17,7 @@
 package com.mbrlabs.mundus.editor.ui.modules.dialogs
 
 import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
@@ -75,7 +76,7 @@ class AmbientLightDialog(
             override fun changed(event: ChangeEvent, actor: Actor) {
                 val d = convert(intensity.text)
                 if (d != null) {
-                    ctx.current.currentScene.environment.ambientLight.intensity = d
+//                    ctx.current.currentScene.environment.ambientLight.intensity = d
                 }
             }
         })
@@ -83,15 +84,16 @@ class AmbientLightDialog(
         // color
         colorPickerField.colorAdapter = object : ColorPickerAdapter() {
             override fun finished(newColor: Color) {
-                ctx.current.currentScene.environment.ambientLight.color.set(color)
+                ctx.current.currentScene.environment.set(ColorAttribute(ColorAttribute.AmbientLight, color))
             }
         }
 
     }
 
     private fun resetValues() {
-        val light = ctx.current.currentScene.environment.ambientLight
-        intensity.text = light.intensity.toString()
+        val light = ctx.current.currentScene.environment.get(ColorAttribute.AmbientLight) as ColorAttribute
+        //todo
+//        intensity.text = light.intensity.toString()
         colorPickerField.color = light.color
     }
 

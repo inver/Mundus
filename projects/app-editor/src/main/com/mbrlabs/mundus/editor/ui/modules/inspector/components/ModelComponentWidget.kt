@@ -32,11 +32,11 @@ import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
 class ModelComponentWidget(
     uiComponentHolder: UiComponentHolder,
 //    modelComponent: ModelComponent,
-    private val ctx: EditorCtx,
-    private val appUi: AppUi,
-    private val assetSelectionDialog: AssetPickerDialog,
-    private val assetManager: EditorAssetManager,
-    private val previewGenerator: PreviewGenerator,
+//    private val ctx: EditorCtx,
+//    private val appUi: AppUi,
+//    private val assetSelectionDialog: AssetPickerDialog,
+//    private val assetManager: EditorAssetManager,
+//    private val previewGenerator: PreviewGenerator,
     entityId: Int
 ) : ComponentWidget(uiComponentHolder, "Model Component", entityId) {
 

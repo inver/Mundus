@@ -22,7 +22,6 @@ import com.mbrlabs.mundus.editor.core.shader.ShaderStorage
 import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.BaseDialog
 import com.mbrlabs.mundus.editor.ui.widgets.RenderWidget
-import com.mbrlabs.mundus.editor.ui.widgets.presenter.FileChooserFieldPresenter
 import org.springframework.stereotype.Component
 
 /**
@@ -32,7 +31,6 @@ import org.springframework.stereotype.Component
 @Component
 class ImportModelDialog(
     appUi: AppUi,
-    fileChooserFieldPresenter: FileChooserFieldPresenter,
     importModelPresenter: ImportModelPresenter,
     shaderStorage: ShaderStorage
 ) : BaseDialog("Import Mesh") {

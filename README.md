@@ -3,10 +3,10 @@
 # Mundus [![gradle build](https://github.com/inver/Mundus/actions/workflows/gradle.yml/badge.svg?branch=develop)](https://github.com/inver/Mundus/actions/workflows/gradle.yml) [![Coverage Status](https://coveralls.io/repos/github/inver/Mundus/badge.svg?branch=develop)](https://coveralls.io/github/inver/Mundus?branch=develop)
 Mundus is a platform independent 3D world editor, built with Java, Kotlin and LibGDX + VisUI.
 The plan is, that the world you create with Mundus can be exported
-into a unified format (such as JSON + assets). The exported data can then be imported into any Game Engine,
+into the gltf format. The exported data can then be imported into any Game Engine,
 if someone writes a runtime/parser for that engine.
 
-![Screenshot](https://raw.githubusercontent.com/mbrlabs/Mundus/master/screenshot.png)
+![Screenshot](docs/images/overview.png)
 
 This project is at a very early stage in development, so expect large
 changes in the future.
@@ -24,8 +24,7 @@ Below are some of the more interesting features, that already work
 - 4 different brushes (brush form can be an arbitrary image, like in Blender or Gimp)
 - 3 brush modes for each brush: Raise/Lower, Flatten & texture paint
 - A skybox (not exportable yet)
-- Loading of g3db/gltf files
-- Loading of obj/fbx/dae files (note, that the [fbx-conv](https://github.com/libgdx/fbx-conv) binary must be set in the settings)
+- Loading all types of files, which supports by Assimp.
 - A visual translation & rotation tool (scaling coming soon)
 - Multiple scenes in one project
 - A component based scene graph (not fully implemented yet)

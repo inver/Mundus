@@ -28,9 +28,9 @@ public class AssetItem extends WidgetGroup {
 //        setBackground("menu-bg");
 
         if (asset.getType() == AssetType.TEXTURE) {
-            addActor(generator.generate(asset));
+//            addActor(generator.generate(asset));
         } else if (asset.getType() == AssetType.MATERIAL) {
-            addActor(generator.generate(asset));
+//            addActor(generator.generate(asset));
         }
         var table = new VisTable();
 //        table.debugAll();

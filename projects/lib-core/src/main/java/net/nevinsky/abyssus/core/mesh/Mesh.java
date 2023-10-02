@@ -545,7 +545,7 @@ public class Mesh implements Disposable {
         }
         if ((indices.length - destOffset) < count) {
             throw new IllegalArgumentException(
-                    "not enough room in indices array, has " + indices.length + " shorts, needs " + count);
+                    "not enough room in indices array, has " + indices.length + " int, needs " + count);
         }
         int pos = getIndicesBuffer().position();
         ((Buffer) getIndicesBuffer()).position(srcOffset);
@@ -1178,7 +1178,7 @@ public class Mesh implements Disposable {
     }
 
     /**
-     * @return the backing shortbuffer holding the indices. Does not have to be a direct buffer on Android!
+     * @return the backing IntBuffer holding the indices. Does not have to be a direct buffer on Android!
      */
     public IntBuffer getIndicesBuffer() {
         return indices.getBuffer();

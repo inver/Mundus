@@ -17,9 +17,10 @@
 package com.mbrlabs.mundus.editor.ui.modules.inspector
 
 import com.badlogic.gdx.utils.Align
-import com.badlogic.gdx.utils.Array
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
+import com.mbrlabs.mundus.commons.core.ecs.component.NameComponent
+import com.mbrlabs.mundus.commons.core.ecs.component.TypeComponent
 import com.mbrlabs.mundus.editor.config.UiComponentHolder
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
@@ -28,6 +29,7 @@ import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.PreviewGenerator
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.ComponentWidget
+import com.mbrlabs.mundus.editor.ui.modules.inspector.components.DirectionalLightComponentWidget
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.IdentifierWidget
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.TransformWidget
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.TerrainWidgetPresenter
@@ -51,7 +53,7 @@ class GameObjectInspector(
 
     private val identifierWidget = IdentifierWidget(ctx)
     private val transformWidget = TransformWidget(uiComponentHolder, ctx)
-    private val componentWidgets: Array<ComponentWidget> = Array()
+    private val componentWidgets = ArrayList<ComponentWidget>()
     private val addComponentBtn = VisTextButton("Add Component")
     private val componentTable = VisTable()
 
@@ -61,9 +63,9 @@ class GameObjectInspector(
         align(Align.top)
         add(identifierWidget).growX().pad(7f).row()
         add(transformWidget).growX().pad(7f).row()
-        for (cw in componentWidgets) {
-            componentTable.add<BaseInspectorWidget>(cw).row()
-        }
+
+        componentWidgets.forEach { componentTable.add<BaseInspectorWidget>(it).row() }
+
         add(componentTable).growX().pad(7f).row()
         add(addComponentBtn).expandX().fill().top().center().pad(10f).row()
     }
@@ -87,51 +89,62 @@ class GameObjectInspector(
             return
         }
 
-        identifierWidget.setValues(ctx.currentWorld.getEntity(entityId).isActive, "TODO add name here")
+        identifierWidget.setValues(
+            ctx.currentWorld.getEntity(entityId).isActive,
+            ctx.getComponentByEntityId(entityId, NameComponent::class.java).name
+        )
         transformWidget.setValues(entityId)
-
-//        for (cw in componentWidgets) {
-//            cw.setValues(gameObject!!)
-//        }
+        componentWidgets.forEach { it.setValues(entityId) }
     }
 
     private fun buildComponentWidgets() {
-//        if (gameObject != null) {
-//            componentWidgets.clear()
-//            for (component in gameObject!!.components) {
-//                // model component widget!!
-//                if (component.type == Component.Type.MODEL) {
-//                    componentWidgets.add(
-//                        ModelComponentWidget(
-//                            uiWidgetsHolder.separatorStyle,
-//                            component as ModelComponent,
-//                            ctx,
-//                            appUi,
-//                            assetPickerDialog,
-//                            assetManager,
-//                            previewGenerator
-//                        )
+        if (entityId < 0) {
+            return
+        }
+
+        componentWidgets.clear()
+        val component = ctx.currentWorld.getEntity(entityId).getComponent(TypeComponent::class.java) ?: return
+
+        if (component.type == TypeComponent.Type.LIGHT_DIRECTIONAL) {
+            componentWidgets.add(
+                DirectionalLightComponentWidget(
+                    uiComponentHolder, entityId, colorPickerPresenter
+                )
+            )
+        }
+
+//        for (component in gameObject!!.components) {
+//            // model component widget!!
+//            if (component.type == Component.Type.MODEL) {
+//                componentWidgets.add(
+//                    ModelComponentWidget(
+//                        uiWidgetsHolder.separatorStyle,
+//                        component as ModelComponent,
+//                        ctx,
+//                        appUi,
+//                        assetPickerDialog,
+//                        assetManager,
+//                        previewGenerator
 //                    )
-//                    // terrainAsset component widget
-//                } else if (component.type == Component.Type.TERRAIN) {
-//                    componentWidgets.add(
-//                        TerrainComponentWidget(
-//                            uiWidgetsHolder.separatorStyle,
-//                            component as TerrainComponent,
-//                            terrainWidgetPresenter
-//                        )
+//                )
+//                // terrainAsset component widget
+//            } else if (component.type == Component.Type.TERRAIN) {
+//                componentWidgets.add(
+//                    TerrainComponentWidget(
+//                        uiWidgetsHolder.separatorStyle,
+//                        component as TerrainComponent,
+//                        terrainWidgetPresenter
 //                    )
-//                } else if (component.type == Component.Type.LIGHT) {
-//                    componentWidgets.add(
-//                        DirectionalLightComponentWidget(
-//                            uiWidgetsHolder.separatorStyle,
-//                            component as DirectionalLightComponent,
-//                            colorPickerPresenter
-//                        )
+//                )
+//            } else if (component.type == Component.Type.LIGHT) {
+//                componentWidgets.add(
+//                    DirectionalLightComponentWidget(
+//                        uiWidgetsHolder.separatorStyle,
+//                        component as DirectionalLightComponent,
+//                        colorPickerPresenter
 //                    )
-//                }
+//                )
 //            }
 //        }
     }
-
 }

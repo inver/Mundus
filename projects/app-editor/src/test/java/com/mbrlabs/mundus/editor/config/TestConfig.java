@@ -6,8 +6,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kotcrab.vis.ui.widget.VisTextButton;
+import com.mbrlabs.mundus.commons.assets.AssetManager;
 import com.mbrlabs.mundus.commons.assets.meta.MetaService;
+import com.mbrlabs.mundus.commons.core.ecs.EcsConfigurator;
 import com.mbrlabs.mundus.commons.importer.SceneConverter;
+import com.mbrlabs.mundus.commons.model.ModelService;
+import com.mbrlabs.mundus.commons.terrain.TerrainService;
 import com.mbrlabs.mundus.editor.config.ui.TestOutline;
 import com.mbrlabs.mundus.editor.core.project.ProjectStorage;
 import com.mbrlabs.mundus.editor.core.registry.Registry;
@@ -49,7 +53,7 @@ public class TestConfig {
     @Bean
     @Primary
     public AppEnvironment appEnvironment() {
-        var homeDir = "/tmp/" + UUID.randomUUID() + ".mundus";
+        var homeDir = "/tmp/" + UUID.randomUUID() + "_random_home";
         new File(homeDir).mkdirs();
         return new AppEnvironment() {
             @Override
@@ -120,5 +124,11 @@ public class TestConfig {
     @Bean
     public Registry registry(ProjectStorage projectStorage) {
         return projectStorage.loadRegistry();
+    }
+
+    @Bean
+    public EcsConfigurator ecsConfigurator(AssetManager assetManager, TerrainService terrainService,
+                                           ModelService modelService) {
+        return new EcsConfigurator(assetManager, terrainService, modelService);
     }
 }

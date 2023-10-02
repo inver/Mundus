@@ -71,4 +71,8 @@ public class AmbientLight {
     public void setIntensity(float intensity) {
         this.intensity = intensity;
     }
+
+    public void setColor(Color color) {
+        this.color.set(color);
+    }
 }

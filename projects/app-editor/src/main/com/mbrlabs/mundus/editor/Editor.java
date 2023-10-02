@@ -68,7 +68,6 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
     private final AppToolbar toolbar;
     private final StatusBar statusBar;
     private final Inspector inspector;
-    private final AppEnvironment appEnvironment;
     private final ProjectWatcher projectWatcher;
 
     private DockBar dockBar;
@@ -77,11 +76,6 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
     private CoordinateSystemComponent wirePlane;
 
     public void create() {
-        var homeDirFile = new File(appEnvironment.getHomeDir());
-        if (!homeDirFile.exists()) {
-            homeDirFile.mkdirs();
-        }
-
         // init stuff
         setupUI();
 

@@ -1,5 +1,7 @@
 package com.mbrlabs.mundus.editor.tools;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
@@ -36,6 +38,11 @@ public abstract class ToolHandle implements Disposable, RenderableObject {
         this.model = model;
         modelInstance = new ModelInstance(model);
         PickerColorEncoder.encodeRaypickColorId(id, idAttribute);
+    }
+
+    public void changeColor(Color color) {
+        var diffuse = (ColorAttribute) modelInstance.materials.get(0).get(ColorAttribute.Diffuse);
+        diffuse.color.set(color);
     }
 
     public abstract void renderPick(ModelBatch modelBatch, ShaderProvider shaders);

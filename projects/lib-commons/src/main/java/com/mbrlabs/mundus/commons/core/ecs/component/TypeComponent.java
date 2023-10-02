@@ -16,7 +16,9 @@ public class TypeComponent extends Component {
 
     public enum Type {
         GROUP,
-        LIGHT,
+        LIGHT_DIRECTIONAL,
+        LIGHT_POINT,
+        LIGHT_SPOT,
         OBJECT,
         CAMERA,
         HANDLE

@@ -19,7 +19,6 @@ package net.nevinsky.abyssus.core;
 import com.badlogic.gdx.utils.Disposable;
 
 import java.nio.IntBuffer;
-import java.nio.ShortBuffer;
 
 /**
  * An IndexData instance holds index data. Can be either a plain int buffer or an OpenGL buffer object.
@@ -50,14 +49,14 @@ public interface IndexData extends Disposable {
      *
      * @param indices the index data
      * @param offset  the offset to start copying the data from
-     * @param count   the number of shorts to copy
+     * @param count   the number of ints to copy
      */
     void setIndices(int[] indices, int offset, int count);
 
     /**
      * Copies the specified indices to the indices of this IndexBufferObject, discarding the old indices. Copying start
-     * at the current {@link ShortBuffer#position()} of the specified buffer and copied the
-     * {@link ShortBuffer#remaining()} amount of indices. This can be called in between calls to {@link #bind()} and
+     * at the current {@link IntBuffer#position()} of the specified buffer and copied the
+     * {@link IntBuffer#remaining()} amount of indices. This can be called in between calls to {@link #bind()} and
      * {@link #unbind()}. The index data will be updated instantly.
      *
      * @param indices the index data to copy
@@ -70,13 +69,13 @@ public interface IndexData extends Disposable {
      * @param targetOffset offset in indices buffer
      * @param indices      the index data
      * @param offset       the offset to start copying the data from
-     * @param count        the number of shorts to copy
+     * @param count        the number of ints to copy
      */
     void updateIndices(int targetOffset, int[] indices, int offset, int count);
 
     /**
      * <p>
-     * Returns the underlying ShortBuffer. If you modify the buffer contents they wil be uploaded on the call to
+     * Returns the underlying IntBuffer. If you modify the buffer contents they wil be uploaded on the call to
      * {@link #bind()}. If you need immediate uploading use {@link #setIndices(int[], int, int)}.
      * </p>
      *
