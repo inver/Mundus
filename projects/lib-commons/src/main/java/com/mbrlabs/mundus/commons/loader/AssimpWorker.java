@@ -166,20 +166,6 @@ public class AssimpWorker {
             var aiTexturePath = AIString.calloc(stack);
             processMaterialTexture(aiMaterial, modelDir, aiTexturePath, material);
 
-            return material;
-        }
-    }
-
-    private static void processMaterialTexture(AIMaterial aiMaterial, String modelDir, AIString aiTexturePath,
-                                               ModelMaterial material) {
-        for (var type : TextureType.values()) {
-            if (type.getTextureUsage() == USAGE_UNKNOWN) {
-                continue;
-            }
-
-            var res = aiGetMaterialTexture(aiMaterial, type.getValue(), 0, aiTexturePath, (IntBuffer) null,
-            processMaterialTexture(aiMaterial, modelDir, aiTexturePath, material);
-
             processMaterialProperty(aiMaterial, material);
             return material;
         }
