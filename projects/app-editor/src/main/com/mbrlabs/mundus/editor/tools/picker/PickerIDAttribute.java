@@ -30,6 +30,7 @@ public class PickerIDAttribute extends Attribute {
     public int r = 255;
     public int g = 255;
     public int b = 255;
+    public int a = 1;
 
     public static boolean is(final long mask) {
         return (mask & TYPE) == mask;

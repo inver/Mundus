@@ -21,6 +21,8 @@ public class DirectionLineRenderDelegate implements RenderableDelegate {
     private final boolean hidden = false;
     @Getter
     private final transient ModelInstance instance;
+    @Getter
+    private final String shaderKey = DEFAULT_SHADER_KEY;
 
     public DirectionLineRenderDelegate() {
         var modelBuilder = new ModelBuilder();
@@ -37,7 +39,7 @@ public class DirectionLineRenderDelegate implements RenderableDelegate {
     @Override
     public void render(ModelBatch batch, SceneEnvironment environment, ShaderProvider shaders, float delta) {
         if (!hidden) {
-            batch.render(instance, DEFAULT_SHADER_KEY);
+            batch.render(instance, shaderKey);
         }
     }
 

@@ -80,11 +80,10 @@ public class EditorTerrainService extends TerrainService {
         return asset;
     }
 
-    public void createTerrain() {
+    public int createTerrain() {
         var world = ctx.getCurrentWorld();
 
         var id = world.create();
-        var name = "Terrain " + id;
 
         var asset = createAndSaveAsset(TerrainObject.DEFAULT_VERTEX_RESOLUTION, TerrainObject.DEFAULT_SIZE);
 
@@ -94,5 +93,6 @@ public class EditorTerrainService extends TerrainService {
                 .add(new PositionComponent())
                 .add(new RenderableObjectDelegate(terrain, ShaderConstants.TERRAIN).asComponent())
                 .add(PickableComponent.of(id, new RenderableObjectDelegate(terrain, ShaderConstants.PICKER)));
+        return id;
     }
 }

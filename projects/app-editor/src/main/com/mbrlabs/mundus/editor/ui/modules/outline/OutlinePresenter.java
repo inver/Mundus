@@ -103,12 +103,13 @@ public class OutlinePresenter {
             try {
                 log.debug("Add terrain game object in root node.");
 
-                terrainService.createTerrain();
+                var entityId = terrainService.createTerrain();
 
                 projectManager.saveProject(ctx.getCurrent());
                 //todo is needed import event here?
 //                    eventBus.post(new AssetImportEvent(asset));
-                eventBus.post(new SceneGraphChangedEvent());
+
+                selectEntityAndFireEvents(entityId);
             } catch (Exception e) {
                 log.error("ERROR", e);
             }
@@ -149,8 +150,7 @@ public class OutlinePresenter {
             log.trace("Delete entity with id {}", outline.getSelectedEntityId());
             int selectedParent = ecsService.removeEntity(ctx.getCurrentWorld(), outline.getSelectedEntityId());
 
-            eventBus.post(new SceneGraphChangedEvent());
-            eventBus.post(new EntitySelectedEvent(selectedParent));
+            selectEntityAndFireEvents(selectedParent);
         };
     }
 
@@ -180,9 +180,15 @@ public class OutlinePresenter {
     Runnable addCameraAction(@NotNull Outline outline) {
         return () -> {
             var createdId = cameraService.createEcsCamera(getParentEntity(outline));
-            eventBus.post(new SceneGraphChangedEvent());
-            eventBus.post(new EntitySelectedEvent(createdId));
+
+            selectEntityAndFireEvents(createdId);
         };
+    }
+
+    private void selectEntityAndFireEvents(int createdId) {
+        toolManager.translateTool.entitySelected(createdId);
+        eventBus.post(new SceneGraphChangedEvent());
+        eventBus.post(new EntitySelectedEvent(createdId));
     }
 
     Runnable addShaderAction(@NotNull Outline outline) {
@@ -196,8 +202,8 @@ public class OutlinePresenter {
     Runnable addDirectionLightAction(@NotNull Outline outline) {
         return () -> {
             var createdId = lightService.createDirectionLight(getParentEntity(outline));
-            eventBus.post(new SceneGraphChangedEvent());
-            eventBus.post(new EntitySelectedEvent(createdId));
+
+            selectEntityAndFireEvents(createdId);
         };
     }
 

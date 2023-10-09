@@ -174,6 +174,10 @@ public class AssimpWorker {
         for (int i = 0; i < aiMaterial.mNumProperties(); i++) {
             var aiProperty = AIMaterialProperty.create(aiMaterial.mProperties().get(i));
             var type = MaterialPropertyType.of(aiProperty.mKey().dataString());
+            if (type == null) {
+                log.warn("Unknown material property: {}", aiProperty.mKey().dataString());
+                continue;
+            }
             switch (type) {
                 case NAME:
                     processMaterialNameProperty(aiProperty, material);

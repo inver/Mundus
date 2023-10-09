@@ -139,9 +139,7 @@ class Inspector(
             mode = InspectorMode.SCENE
             root.clear()
             root.add(sceneInspector).grow().row()
-        }
-
-        if (mode != InspectorMode.GAME_OBJECT) {
+        } else if (mode != InspectorMode.GAME_OBJECT) {
             mode = InspectorMode.GAME_OBJECT
             root.clear()
             root.add(goInspector).grow().row()

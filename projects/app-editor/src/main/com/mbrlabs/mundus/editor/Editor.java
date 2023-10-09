@@ -7,7 +7,6 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.mbrlabs.mundus.commons.assets.AssetType;
 import com.mbrlabs.mundus.commons.assets.skybox.SkyboxAsset;
-import com.mbrlabs.mundus.editor.config.AppEnvironment;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.project.ProjectManager;
 import com.mbrlabs.mundus.editor.core.project.ProjectWatcher;
@@ -42,8 +41,6 @@ import net.nevinsky.abyssus.core.ModelBatch;
 import net.nevinsky.abyssus.core.shader.ShaderProvider;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
-
-import java.io.File;
 
 @Slf4j
 @Component
@@ -135,7 +132,7 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
     }
 
     private void setupInput() {
-        // NOTE: order in wich processors are added is important: first added,
+        // NOTE: order in which processors are added is important: first added,
         // first executed!
         inputManager.addProcessor(shortcutController);
         inputManager.addProcessor(appUi);
@@ -156,7 +153,7 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
     private void setupSceneWidget() {
         var scene = ctx.getCurrent().getCurrentScene();
 
-        appUi.getSceneWidget().setCam(ctx.getCurrent().getCamera());
+        appUi.getSceneWidget().setCamera(ctx.getCurrent().getCamera());
         appUi.getSceneWidget().setRenderer(camera -> {
             try {
                 scene.getAssets().stream()
@@ -192,7 +189,7 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
         compass.setWorldCam(ctx.getCurrent().getCamera());
         directCameraController.setCurrent(ctx.getCurrent().getCamera());
 //        camController.setCamera(ctx.getCamera());
-        appUi.getSceneWidget().setCam(ctx.getCurrent().getCamera());
+        appUi.getSceneWidget().setCamera(ctx.getCurrent().getCamera());
         ctx.setViewport(appUi.getSceneWidget().getViewport());
     }
 

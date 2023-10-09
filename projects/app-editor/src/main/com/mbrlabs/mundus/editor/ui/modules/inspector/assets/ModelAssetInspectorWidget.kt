@@ -104,13 +104,13 @@ class ModelAssetInspectorWidget(
         var verts = 0
         var indices = 0
         val model = modelAsset!!.model
-        for (mesh in model.meshes) {
-            verts += mesh.numVertices
-            indices += mesh.numIndices
-        }
+//        for (mesh in model.meshes) {
+//            verts += mesh.numVertices
+//            indices += mesh.numIndices
+//        }
         // set info
         name.setText("Name: " + modelAsset!!.name)
-        nodeCount.setText("Nodes: " + model.nodes.size)
+//        nodeCount.setText("Nodes: " + model.nodes.size)
         //todo
 //        materialCount.setText("Materials: " + model.materials.size)
         vertexCount.setText("Vertices: " + verts)
@@ -128,10 +128,10 @@ class ModelAssetInspectorWidget(
             )
             mw.matChangedListener = object : MaterialWidget.MaterialChangedListener {
                 override fun materialChanged(materialAsset: MaterialAsset) {
-                    TODO()
+//                    TODO()
 //                    modelAsset!!.defaultMaterials.put(g3dbMatID, materialAsset)
 //                    modelAsset!!.applyDependencies()
-//                    toolManager.modelPlacementTool.setModel(modelAsset)
+                    toolManager.modelPlacementTool.setModel(modelAsset)
 //                    assetManager.dirty(modelAsset!!)
                 }
             }

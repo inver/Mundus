@@ -52,7 +52,7 @@ class ImportModelWidget(
         env.add(DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f))
 
 
-        renderWidget.setCam(cam)
+        renderWidget.setCamera(cam)
         renderWidget.setRenderer { camera ->
             if (previewInstance == null) {
                 return@setRenderer

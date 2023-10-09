@@ -3,29 +3,38 @@ package com.mbrlabs.mundus.editor.tools.picker;
 import com.artemis.Aspect;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.PixmapIO;
 import com.mbrlabs.mundus.commons.Scene;
 import com.mbrlabs.mundus.editor.core.ecs.PickableComponent;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.shader.ShaderStorage;
 import com.mbrlabs.mundus.editor.utils.PickerColorEncoder;
-import lombok.RequiredArgsConstructor;
 import net.nevinsky.abyssus.core.ModelBatch;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
 public class EntityPicker extends BasePicker {
     private final EditorCtx ctx;
-    private final ModelBatch batch;
     private final ShaderStorage shaderStorage;
+
+    private final ModelBatch batch;
+
+    public EntityPicker(EditorCtx ctx, ShaderStorage shaderStorage) {
+        this.ctx = ctx;
+        this.shaderStorage = shaderStorage;
+        batch = new ModelBatch(shaderStorage);
+    }
 
     public int pick(Scene scene, int screenX, int screenY) {
         begin(ctx.getViewport());
         renderPickableScene(scene);
         end();
         var pm = getFrameBufferPixmap(ctx.getViewport());
+
+        PixmapIO.writePNG(new FileHandle(
+                        "/home/inv3r/Development/gamedev/Mundus/projects/app-editor/src/main/com/mbrlabs/mundus" +
+                                "/editor/tools/picker/image.png"),
+                pm);
 
         int x = screenX - ctx.getViewport().getScreenX();
         int y = screenY -
@@ -39,9 +48,6 @@ public class EntityPicker extends BasePicker {
         } catch (IndexOutOfBoundsException e) {
             //ignore
         }
-
-//        PixmapIO.writePNG(new FileHandle("/home/inv3r/Development/gamedev/Mundus/editor/src/main/" +
-//                "com/mbrlabs/mundus/editor/tools/picker/image.png"), pm);
 
         pm.dispose();
         return -1;

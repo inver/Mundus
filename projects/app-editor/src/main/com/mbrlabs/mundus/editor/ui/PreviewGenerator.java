@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.kotcrab.vis.ui.widget.VisImage;
 import com.mbrlabs.mundus.commons.assets.Asset;
+import com.mbrlabs.mundus.commons.assets.AssetType;
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
@@ -87,7 +88,7 @@ public class PreviewGenerator {
 
         var environment = new SceneEnvironment();
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 1f, 1f, 1f, 1f));
-        environment.add(sunLight);
+//        environment.add(sunLight);
 
         var camera = new PerspectiveCamera(67, width, height);
         camera.position.set(0, 0, 1);

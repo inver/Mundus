@@ -28,7 +28,7 @@ import org.springframework.stereotype.Component
  * @version 07-02-2016
  */
 @Component
-class CommandHistory(private val eventBus: EventBus) {
+open class CommandHistory(private val eventBus: EventBus) {
 
     private val limit = DEFAULT_LIMIT
 

@@ -18,14 +18,14 @@ package com.mbrlabs.mundus.editor.tools;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.SnapshotArray;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.components.RenderableObject;
+import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager;
+import com.mbrlabs.mundus.editor.core.assets.EditorModelService;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
+import com.mbrlabs.mundus.editor.core.scene.SceneStorage;
 import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
@@ -68,7 +68,8 @@ public class ToolManager extends InputAdapter implements Disposable, RenderableO
 
     public ToolManager(EditorCtx ctx, AppUi appUi, EventBus eventBus, InputManager inputManager,
                        EntityPicker picker, ToolHandlePicker toolHandlePicker, ShapeRenderer shapeRenderer,
-                       CommandHistory history) {
+                       EditorModelService modelService, CommandHistory history, SceneStorage sceneStorage,
+                       EditorAssetManager editorAssetManager) {
         this.ctx = ctx;
         this.inputManager = inputManager;
 
@@ -78,7 +79,9 @@ public class ToolManager extends InputAdapter implements Disposable, RenderableO
         terrainBrushes.add(new StarBrush(ctx, ShaderConstants.TERRAIN, history));
         terrainBrushes.add(new ConfettiBrush(ctx, ShaderConstants.TERRAIN, history));
 
-        modelPlacementTool = new ModelPlacementTool(ctx, ShaderConstants.MODEL, history, appUi, eventBus);
+        modelPlacementTool =
+                new ModelPlacementTool(ctx, ShaderConstants.MODEL, history, sceneStorage, modelService, appUi, eventBus,
+                        editorAssetManager);
         selectionTool = new SelectionTool(ctx, ShaderConstants.WIREFRAME, picker, history, eventBus);
         translateTool = new TranslateTool(ctx, ShaderConstants.WIREFRAME, picker, toolHandlePicker, history,
                 eventBus);
@@ -96,12 +99,16 @@ public class ToolManager extends InputAdapter implements Disposable, RenderableO
         deactivateTool();
         activeTool = tool;
 
-        var processors = inputManager.getProcessors();
-        var newProcessors = new SnapshotArray<InputProcessor>(processors.size + 1);
-        newProcessors.add(activeTool);
-        newProcessors.addAll(processors);
-        inputManager.setProcessors(newProcessors);
-//        inputManager.setProcessors(activeTool);
+        //add tool to input manager after this toolManager
+        var index = 0;
+        for (var p : inputManager.getProcessors()) {
+            if (p.equals(this)) {
+                inputManager.addProcessor(index, activeTool);
+                break;
+            } else {
+                index++;
+            }
+        }
         activeTool.onActivated();
 
         if (shouldKeepSelection) {
@@ -123,7 +130,6 @@ public class ToolManager extends InputAdapter implements Disposable, RenderableO
         } else {
             activeTool.onDisabled();
         }
-
     }
 
     @Override
@@ -137,10 +143,6 @@ public class ToolManager extends InputAdapter implements Disposable, RenderableO
         if (activeTool != null) {
             activeTool.act();
         }
-    }
-
-    public Tool getActiveTool() {
-        return activeTool;
     }
 
     @Override
@@ -179,4 +181,7 @@ public class ToolManager extends InputAdapter implements Disposable, RenderableO
         return ctx.getSelectedEntityId();
     }
 
+    public Tool getActiveTool() {
+        return activeTool;
+    }
 }

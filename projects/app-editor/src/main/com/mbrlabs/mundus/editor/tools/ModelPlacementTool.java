@@ -17,21 +17,24 @@
 package com.mbrlabs.mundus.editor.tools;
 
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset;
+import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
+import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager;
+import com.mbrlabs.mundus.editor.core.assets.EditorModelService;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.project.ProjectContext;
+import com.mbrlabs.mundus.editor.core.scene.SceneStorage;
 import com.mbrlabs.mundus.editor.events.EventBus;
+import com.mbrlabs.mundus.editor.events.SceneGraphChangedEvent;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.ui.AppUi;
 import com.mbrlabs.mundus.editor.ui.widgets.icon.SymbolIcon;
 import net.nevinsky.abyssus.core.ModelBatch;
 import net.nevinsky.abyssus.core.ModelInstance;
 import net.nevinsky.abyssus.core.shader.ShaderProvider;
-import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -46,25 +49,38 @@ public class ModelPlacementTool extends Tool {
     private final Vector3 tempV3 = new Vector3();
     private boolean shouldRespectTerrainSlope = false;
     // DO NOT DISPOSE THIS
-    private ModelAsset model;
+    private ModelAsset asset;
     private ModelInstance modelInstance;
 
     private final AppUi appUi;
     private final EventBus eventBus;
+    private final EditorModelService modelService;
+    private final SceneStorage sceneStorage;
+    private final EditorAssetManager assetManager;
 
-    public ModelPlacementTool(EditorCtx ctx, String shaderKey, CommandHistory history,
-                              AppUi appUi, EventBus eventBus) {
+    public ModelPlacementTool(EditorCtx ctx, String shaderKey, CommandHistory history, SceneStorage sceneStorage,
+                              EditorModelService modelService, AppUi appUi, EventBus eventBus,
+                              EditorAssetManager assetManager) {
         super(ctx, shaderKey, history, NAME);
         this.appUi = appUi;
         this.eventBus = eventBus;
-        this.model = null;
-        this.modelInstance = null;
+        this.modelService = modelService;
+        this.sceneStorage = sceneStorage;
+        this.assetManager = assetManager;
     }
 
-    public void setModel(ModelAsset model) {
-        this.model = model;
-        modelInstance = null;
-        this.modelInstance = new ModelInstance(model.getModel());
+    //todo rethink this method. May by move copy and load asset to another place?
+    public void setModel(ModelAsset asset) {
+        var currentProject = getCtx().getCurrent();
+        var currentScene = getCtx().getCurrent().getCurrentScene();
+        sceneStorage.copyAssetToProject(currentProject.getPath(), asset);
+
+        var sceneAsset = assetManager.loadProjectAsset(currentProject.getPath(), asset.getName());
+        currentScene.getAssets().add(sceneAsset);
+        this.asset = (ModelAsset) sceneAsset;
+
+        var model = modelService.createFromAsset(this.asset);
+        modelInstance = model.getModelInstance();
     }
 
     @Override
@@ -101,44 +117,32 @@ public class ModelPlacementTool extends Tool {
             return false;
         }
 
-//        int id = getCtx().getCurrent().obtainID();
-        throw new NotImplementedException();
-//        GameObject modelGo = new GameObject(model.getName(), id);
-////            getCtx().getCurrent().getCurrentScene().getSceneGraph().addGameObject(modelGo);
-//
-//        modelInstance.transform.getTranslation(tempV3);
-//        modelGo.translate(tempV3);
-//
-//        PickableModelComponent modelComponent = new PickableModelComponent(modelGo, getShaderKey());
-////            modelComponent.setShader(getShader());
-//        modelComponent.setModel(model, true);
-//        modelComponent.encodeRayPickColorId();
-//
-//        try {
-////                modelGo.addComponent(modelComponent);
-//        } catch (InvalidComponentException e) {
-//            Dialogs.showErrorDialog(appUi, e.getMessage());
-//            return false;
-//        }
 
-//        eventBus.post(new SceneGraphChangedEvent());
-//        mouseMoved(screenX, screenY);
-//
-//        return false;
+        var id = modelService.createModelEntity(asset);
+        modelInstance.transform.getTranslation(tempV3);
+        var positionComponent = getCtx().getComponentByEntityId(id, PositionComponent.class);
+        positionComponent.translate(tempV3);
+
+
+        eventBus.post(new SceneGraphChangedEvent());
+        mouseMoved(screenX, screenY);
+
+        return false;
     }
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
-        if (this.model == null || modelInstance == null) {
+        if (this.asset == null || modelInstance == null) {
             return false;
         }
 
         final ProjectContext context = getCtx().getCurrent();
 
         final Ray ray = getCtx().getViewport().getPickRay(screenX, screenY);
+        //todo add terrain processing
 //        if (context.getCurrentScene().terrains.size > 0 && modelInstance != null) {
 //            MeshPartBuilder.VertexInfo vi = TerrainUtils.getRayIntersectionAndUp
-//            (context.getCurrentScene().terrains, ray);
+//                    (context.getCurrentScene().terrains, ray);
 //            if (vi != null) {
 //                if (shouldRespectTerrainSlope) {
 //                    modelInstance.transform.setToLookAt(DEFAULT_ORIENTATION, vi.normal);
@@ -146,9 +150,9 @@ public class ModelPlacementTool extends Tool {
 //                modelInstance.transform.setTranslation(vi.position);
 //            }
 //        } else {
-//            tempV3.set(getCtx().getCurrent().getCurrentScene().cam.position);
-//            tempV3.add(ray.direction.nor().scl(200));
-//            modelInstance.transform.setTranslation(tempV3);
+        tempV3.set(getCtx().getCurrent().getCamera().position);
+        tempV3.add(ray.direction.nor().scl(200));
+        modelInstance.transform.setTranslation(tempV3);
 //        }
 
         return false;
@@ -156,7 +160,7 @@ public class ModelPlacementTool extends Tool {
 
     @Override
     public void dispose() {
-        this.model = null;
+        this.asset = null;
         this.modelInstance = null;
     }
 

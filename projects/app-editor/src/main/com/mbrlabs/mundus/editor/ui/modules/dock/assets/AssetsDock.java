@@ -40,9 +40,6 @@ public class AssetsDock extends Tab/*(false, false)*/ {
     private final VisTable root = new VisTable();
     @Getter
     private final GridGroup assetsView = new GridGroup(80f, 4f);
-
-//    private val assetItems = Array < AssetItem > ()
-
     @Getter
     private final PopupMenu popupMenu = new PopupMenu();
     @Getter

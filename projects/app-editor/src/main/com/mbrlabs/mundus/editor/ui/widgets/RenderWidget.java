@@ -31,17 +31,18 @@ import com.mbrlabs.mundus.editor.ui.AppUi;
  */
 public class RenderWidget extends Widget {
 
-    private static Vector2 vec = new Vector2();
+    private static final Vector2 TMP_VEC = new Vector2();
 
     private final ScreenViewport viewport;
-    private Camera cam;
+    private Camera camera;
+
     private Renderer renderer;
 
     private final AppUi appUi;
 
     public RenderWidget(AppUi appUi, PerspectiveCamera cam) {
         super();
-        this.cam = cam;
+        this.camera = cam;
         this.appUi = appUi;
         viewport = new ScreenViewport(cam);
     }
@@ -56,9 +57,9 @@ public class RenderWidget extends Widget {
         return viewport;
     }
 
-    public void setCam(Camera cam) {
-        this.cam = cam;
-        viewport.setCamera(cam);
+    public void setCamera(Camera camera) {
+        this.camera = camera;
+        viewport.setCamera(camera);
     }
 
     public void setRenderer(Renderer renderer) {
@@ -67,36 +68,31 @@ public class RenderWidget extends Widget {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        if (renderer == null || cam == null) {
+        if (renderer == null || camera == null) {
             return;
         }
 
         // render part of the ui & pause rest
         batch.end();
 
-        vec.set(getOriginX(), getOriginY());
-        vec = localToStageCoordinates(vec);
+        TMP_VEC.set(getOriginX(), getOriginY());
+        localToStageCoordinates(TMP_VEC);
         final int width = (int) getWidth();
         final int height = (int) getHeight();
 
         // apply widget viewport
-        viewport.setScreenBounds((int) vec.x, (int) vec.y, width, height);
+        viewport.setScreenBounds((int) TMP_VEC.x, (int) TMP_VEC.y, width, height);
         viewport.setWorldSize(width * viewport.getUnitsPerPixel(), height * viewport.getUnitsPerPixel());
         viewport.apply();
 
         // render 3d scene
-        renderer.render(cam);
+        renderer.render(camera);
 
         // re-apply stage viewport
         appUi.getViewport().apply();
 
         // proceed ui rendering
         batch.begin();
-    }
-
-    @Override
-    protected void sizeChanged() {
-        super.sizeChanged();
     }
 
     /**

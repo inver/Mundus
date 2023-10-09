@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.math.Matrix4;
 import com.mbrlabs.mundus.commons.core.ecs.base.RenderableDelegate;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
+import lombok.Getter;
 import net.nevinsky.abyssus.core.ModelBatch;
 import net.nevinsky.abyssus.core.ModelBuilder;
 import net.nevinsky.abyssus.core.ModelInstance;
@@ -19,6 +20,7 @@ public class DirectionHandleRenderDelegate implements RenderableDelegate {
     private static final Material DEFAULT_MATERIAL = new Material();
     private final transient ModelInstance instance;
     private final boolean hidden = false;
+    @Getter
     private final String shaderKey;
 
     public DirectionHandleRenderDelegate(String shaderKey) {
