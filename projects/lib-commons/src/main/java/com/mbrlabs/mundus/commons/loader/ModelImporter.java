@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class ModelImporter {
     private final AssimpWorker assimpWorker;
+    private final G3dModelLoader g3dModelLoader;
 
     public ImportedModel importAndConvertToTmpFolder(FileHandle tempFolder, FileHandle file) {
         if (file == null || !file.exists()) {
@@ -16,7 +17,13 @@ public class ModelImporter {
             return null;
         }
 
-        var modelFile = assimpWorker.importModel(file);
+        ImportedModel modelFile;
+        if (file.name().endsWith("g3db")) {
+            modelFile = g3dModelLoader.importModel(file);
+        } else {
+            modelFile = assimpWorker.importModel(file);
+        }
+
         modelFile.getMain().copyTo(tempFolder);
         modelFile.getDependencies().forEach(dep -> dep.copyTo(tempFolder));
 

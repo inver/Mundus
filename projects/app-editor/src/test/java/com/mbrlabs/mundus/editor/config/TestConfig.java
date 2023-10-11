@@ -33,6 +33,7 @@ import java.io.File;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -114,7 +115,7 @@ public class TestConfig {
         when(buttonMock.getLabel()).thenReturn(mock(Label.class));
 
         var buttonFactoryMock = mock(ButtonFactory.class);
-        when(buttonFactoryMock.createButton(any())).thenReturn(buttonMock);
+        when(buttonFactoryMock.createButton(anyString())).thenReturn(buttonMock);
 
         var res = mock(UiComponentHolder.class);
         when(res.getButtonFactory()).thenReturn(buttonFactoryMock);

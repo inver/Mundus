@@ -19,6 +19,9 @@ package com.mbrlabs.mundus.commons.env;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.mbrlabs.mundus.commons.env.fog.Fog;
+import com.mbrlabs.mundus.commons.env.fog.FogDensityAttribute;
+import com.mbrlabs.mundus.commons.env.fog.FogGradientAttribute;
 import com.mbrlabs.mundus.commons.env.lights.BaseLight;
 import com.mbrlabs.mundus.commons.env.lights.DirectionalLight;
 import com.mbrlabs.mundus.commons.env.lights.DirectionalLightsAttribute;
@@ -26,8 +29,6 @@ import com.mbrlabs.mundus.commons.env.lights.LightIntensityAttribute;
 import com.mbrlabs.mundus.commons.env.lights.SpotLight;
 import com.mbrlabs.mundus.commons.env.lights.SunLightsAttribute;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  * @author Marcus Brummer
@@ -35,17 +36,15 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  */
 @Slf4j
 public class SceneEnvironment extends Environment {
-    private Fog fog;
+    private BaseLight ambientLight = new BaseLight();
+    private Fog fog = new Fog();
     private String skyboxName;
-
-    private BaseLight ambientLight;
 
     public void setAmbientLight(Color color, float intensity) {
         if (ambientLight == null) {
             ambientLight = new BaseLight(color, intensity);
         }
-        set(new ColorAttribute(ColorAttribute.AmbientLight, 1f, 1f, 1f, 1f));
-        set(new LightIntensityAttribute(intensity));
+        enableAmbientLight();
         // todo implement intensity of ambient light in default shader
     }
 
@@ -53,13 +52,45 @@ public class SceneEnvironment extends Environment {
         return ambientLight;
     }
 
+    public boolean isAmbientLightEnabled() {
+        return has(ColorAttribute.AmbientLight);
+    }
+
     public void disableAmbientLight() {
         remove(ColorAttribute.AmbientLight);
-        remove(LightIntensityAttribute.AmbientLightIntensity);
+        remove(LightIntensityAttribute.AMBIENT_LIGHT_INTENSITY);
     }
 
     public void enableAmbientLight() {
-        setAmbientLight(ambientLight.getColor(), ambientLight.getIntensity());
+        set(new ColorAttribute(ColorAttribute.AmbientLight, ambientLight.getColor()));
+        set(new LightIntensityAttribute(ambientLight.getIntensity()));
+    }
+
+    public void setFog(Color color, float density, float gradient) {
+        if (fog == null) {
+            fog = new Fog(color, density, gradient);
+        }
+        enableFog();
+    }
+
+    public Fog getFog() {
+        return fog;
+    }
+
+    public boolean isFogEnabled() {
+        return has(ColorAttribute.Fog);
+    }
+
+    public void disableFog() {
+        remove(ColorAttribute.Fog);
+        remove(FogDensityAttribute.FOG_DENSITY);
+        remove(FogGradientAttribute.FOG_GRADIENT);
+    }
+
+    public void enableFog() {
+        set(new ColorAttribute(ColorAttribute.Fog, fog.getColor()));
+        set(new FogDensityAttribute(fog.getDensity()));
+        set(new FogGradientAttribute(fog.getGradient()));
     }
 
     //todo refactor this methods to operate with BaseLight
@@ -100,41 +131,11 @@ public class SceneEnvironment extends Environment {
         return this;
     }
 
-    public Fog getFog() {
-        return fog;
-    }
-
-    public void setFog(Fog fog) {
-        this.fog = fog;
-    }
-
     public void setSkyboxName(String skyboxName) {
         this.skyboxName = skyboxName;
     }
 
     public String getSkyboxName() {
         return skyboxName;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        SceneEnvironment that = (SceneEnvironment) o;
-
-        return new EqualsBuilder().appendSuper(super.equals(o)).append(fog, that.fog)
-                .append(ambientLight, that.ambientLight).append(skyboxName, that.skyboxName).isEquals();
-    }
-
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder(17, 37).appendSuper(super.hashCode())
-                .append(fog).append(ambientLight).append(skyboxName).toHashCode();
     }
 }

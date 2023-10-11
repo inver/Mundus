@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021. See AUTHORS file.
+ * Copyright (c) 2016. See AUTHORS file.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,28 +14,24 @@
  * limitations under the License.
  */
 
-package com.mbrlabs.mundus.commons.dto;
+package com.mbrlabs.mundus.commons.env.fog;
 
-import com.mbrlabs.mundus.commons.env.fog.Fog;
-import com.mbrlabs.mundus.commons.env.lights.BaseLight;
-import lombok.Data;
+import com.badlogic.gdx.graphics.Color;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 /**
- * @author Tibor Zsuro
- * @version 12-08-2021
+ * @author Marcus Brummer
+ * @version 06-01-2016
  */
-@Data
-public class SceneDto {
-    private long id;
-    private String name;
-
-    private boolean ambientLightEnabled;
-    private BaseLight ambientLight;
-
-    private boolean fogEnabled;
-    private Fog fog;
-
-    private String skyboxName;
-
-    private Object ecs;
+@AllArgsConstructor
+@Getter
+@NoArgsConstructor
+public class Fog implements Serializable {
+    private Color color = new Color(Color.WHITE);
+    private float density = 0.001f;
+    private float gradient = 1.5f;
 }

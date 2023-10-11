@@ -24,6 +24,7 @@ import com.badlogic.gdx.utils.Align
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisScrollPane
 import com.kotcrab.vis.ui.widget.VisTable
+import com.kotcrab.vis.ui.widget.file.FileChooser
 import com.mbrlabs.mundus.editor.config.UiComponentHolder
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
@@ -35,6 +36,7 @@ import com.mbrlabs.mundus.editor.history.CommandHistory
 import com.mbrlabs.mundus.editor.tools.ToolManager
 import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.PreviewGenerator
+import com.mbrlabs.mundus.editor.ui.UiConstants
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.TerrainWidgetPresenter
 import com.mbrlabs.mundus.editor.ui.modules.inspector.scene.SceneInspector
@@ -61,7 +63,8 @@ class Inspector(
     private val history: CommandHistory,
     private val previewGenerator: PreviewGenerator,
     private val colorPickerPresenter: ColorPickerPresenter,
-    private val sceneInspectorPresenter: SceneInspectorPresenter
+    private val sceneInspectorPresenter: SceneInspectorPresenter,
+    private val fileChooser: FileChooser
 ) : VisTable(),
     GameObjectModifiedEvent.GameObjectModifiedListener,
     AssetSelectedEvent.AssetSelectedListener,
@@ -82,7 +85,7 @@ class Inspector(
 
     private val goInspector: GameObjectInspector
     private val assetInspector: AssetInspector
-    private val sceneInspector = SceneInspector(sceneInspectorPresenter)
+    private val sceneInspector = SceneInspector(uiComponentHolder, sceneInspectorPresenter, appUi, fileChooser)
 //    private val cameraInspector = CameraInspector(previewGenerator, appUi)
 
     init {
@@ -117,7 +120,7 @@ class Inspector(
         setBackground("window-bg")
         add(VisLabel("Inspector")).expandX().fillX().pad(3f).row()
         addSeparator().row()
-        root.align(Align.top)
+        root.align(Align.top).pad(UiConstants.PAD)
         scrollPane.setScrollingDisabled(true, false)
         scrollPane.setFlickScroll(false)
         scrollPane.fadeScrollBars = false

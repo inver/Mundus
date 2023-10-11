@@ -11,6 +11,7 @@ import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
 import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObjectDelegate;
 import com.mbrlabs.mundus.commons.terrain.TerrainObject;
 import com.mbrlabs.mundus.commons.terrain.TerrainService;
+import com.mbrlabs.mundus.editor.core.ecs.EcsService;
 import com.mbrlabs.mundus.editor.core.ecs.PickableComponent;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
@@ -34,6 +35,7 @@ public class EditorTerrainService extends TerrainService {
     private final TextureAssetLoader textureAssetLoader;
     private final AssetsStorage assetsStorage;
     private final MetaService metaService;
+    private final EcsService ecsService;
 
     @SneakyThrows
     private TerrainAsset createAndSaveAsset(int vertexResolution, int size) {
@@ -89,10 +91,11 @@ public class EditorTerrainService extends TerrainService {
 
         var terrain = createFromAsset(asset);
 
-        world.edit(id)
-                .add(new PositionComponent())
-                .add(new RenderableObjectDelegate(terrain, ShaderConstants.TERRAIN).asComponent())
-                .add(PickableComponent.of(id, new RenderableObjectDelegate(terrain, ShaderConstants.PICKER)));
+        ecsService.addEntityBaseComponents(world, id, -1, "Terrain " + id,
+                new PositionComponent(),
+                PickableComponent.of(id, new RenderableObjectDelegate(terrain, ShaderConstants.PICKER)),
+                new RenderableObjectDelegate(terrain, ShaderConstants.TERRAIN).asComponent()
+        );
         return id;
     }
 }

@@ -19,9 +19,7 @@ import com.mbrlabs.mundus.editor.events.AssetImportEvent;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.ui.AppUi;
-import com.mbrlabs.mundus.editor.ui.modules.dialogs.AmbientLightDialog;
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.ExitDialog;
-import com.mbrlabs.mundus.editor.ui.modules.dialogs.FogDialog;
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.IBLBoxDialog;
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.NewProjectDialog;
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.SkyboxDialog;
@@ -52,10 +50,8 @@ public class AppToolbarPresenter {
     private final ProjectManager projectManager;
     private final CommandHistory commandHistory;
     private final FileChooser fileChooser;
-    private final AmbientLightDialog ambientLightDialog;
     private final SkyboxDialog skyboxDialog;
     private final IBLBoxDialog iblBoxDialog;
-    private final FogDialog fogDialog;
     private final SettingsDialog settingsDialog;
 
     public void initToolbar(AppToolbar toolbar) {
@@ -97,10 +93,8 @@ public class AppToolbarPresenter {
             }
         });
 
-        toolbar.getEnvironmentMenu().getAmbientLight().addListener(appUi.createOpenDialogListener(ambientLightDialog));
         toolbar.getEnvironmentMenu().getSkybox().addListener(appUi.createOpenDialogListener(skyboxDialog));
         toolbar.getEnvironmentMenu().getIblImage().addListener(appUi.createOpenDialogListener(iblBoxDialog));
-        toolbar.getEnvironmentMenu().getFog().addListener(appUi.createOpenDialogListener(fogDialog));
 
         toolbar.getAssetsMenu().getImportMesh().addListener(importMeshListener());
 

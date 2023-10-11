@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class CameraDeserializer extends StdDeserializer<PerspectiveCamera> {
     public CameraDeserializer() {
-        super((Class<?>) null);
+        super((Class<PerspectiveCamera>) null);
     }
 
     @Override

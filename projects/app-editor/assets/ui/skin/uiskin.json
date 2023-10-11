@@ -778,5 +778,19 @@
       background: window-bg,
       selection: list-selection
     }
+  },
+  com.mbrlabs.mundus.editor.ui.modules.inspector.BaseInspectorWidget$BaseWidgetInspectorStyle: {
+    default: {
+      background: grey
+      padTop: 8
+    }
+  },
+  com.mbrlabs.mundus.editor.ui.FormStyle$FormFieldStyle: {
+    default: {
+      padTop: 8
+      padBottom: 8
+      padLeft: 8
+      padRight: 8
+    }
   }
 }

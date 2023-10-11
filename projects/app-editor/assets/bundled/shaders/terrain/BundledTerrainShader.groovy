@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Array
-import com.mbrlabs.mundus.commons.env.Fog
+import com.mbrlabs.mundus.commons.env.fog.Fog
 import com.mbrlabs.mundus.commons.env.SceneEnvironment
 import com.mbrlabs.mundus.commons.terrain.SplatTexture
 import com.mbrlabs.mundus.commons.terrain.TerrainObject

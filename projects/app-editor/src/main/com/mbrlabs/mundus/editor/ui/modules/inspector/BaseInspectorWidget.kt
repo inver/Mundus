@@ -16,15 +16,21 @@
 
 package com.mbrlabs.mundus.editor.ui.modules.inspector
 
+import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.Cell
+import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable
+import com.kotcrab.vis.ui.VisUI
 import com.kotcrab.vis.ui.widget.Separator
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.mbrlabs.mundus.editor.config.UiComponentHolder
+import com.mbrlabs.mundus.editor.ui.FormStyle.FormFieldStyle
 import com.mbrlabs.mundus.editor.ui.widgets.CollapseWidget
 import com.mbrlabs.mundus.editor.ui.widgets.icon.SymbolIcon
+
 
 /**
  * @author Marcus Brummer
@@ -49,6 +55,7 @@ abstract class BaseInspectorWidget(private val uiComponentHolder: UiComponentHol
     private var deletable: Boolean = false
 
     init {
+//        debugAll()
         collapseBtn.label.setFontScale(0.7f)
         deleteBtn.label.setFontScale(0.7f)
         deleteBtn.style.up = null
@@ -88,8 +95,12 @@ abstract class BaseInspectorWidget(private val uiComponentHolder: UiComponentHol
         header.add(Separator(uiComponentHolder.separatorStyle)).fillX().expandX().colspan(3).row()
 
         // add everything to root
-        add(header).expand().fill().padBottom(10f).row()
-        add(collapsibleWidget).expand().fill().row()
+        add(header).expand().fill().row()
+
+        val style = VisUI.getSkin().get(BaseWidgetInspectorStyle::class.java);
+//        collapsibleContent.background(style.background)
+        collapsibleContent.padTop(style.padTop)
+        add(collapsibleWidget).expand().padBottom(10f).fill().row()
         isDeletable = deletable
     }
 
@@ -118,8 +129,39 @@ abstract class BaseInspectorWidget(private val uiComponentHolder: UiComponentHol
         }
     }
 
-    abstract fun onDelete()
+    open fun onDelete() {
+        //do nothing
+    }
 
-    abstract fun setValues(entityId: Int)
+    open fun setValues(entityId: Int) {
+        //do nothing
+    }
 
+    class BaseWidgetInspectorStyle {
+        var background: Drawable? = null
+        var padTop = 0f
+
+        constructor()
+        constructor(background: Drawable?) {
+            this.background = background
+        }
+
+        constructor(style: BaseWidgetInspectorStyle) {
+            background = style.background
+        }
+    }
+
+    protected fun addFormField(container: Table, label: String, actor: Actor, expand: Boolean) {
+        val style = VisUI.getSkin().get(FormFieldStyle::class.java)
+        container.add(VisLabel(label)).top().left().padBottom(style.padBottom).padRight(style.padRight)
+        val cell = container.add(actor).left().top().padBottom(style.padBottom)
+        if (expand) {
+            cell.expandX().fillX()
+        }
+        cell.row()
+    }
+
+    protected fun addFormField(container: Table, label: String, actor: Actor) {
+        addFormField(container, label, actor, true)
+    }
 }
