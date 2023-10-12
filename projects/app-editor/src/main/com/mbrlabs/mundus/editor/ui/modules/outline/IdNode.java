@@ -1,11 +1,11 @@
 package com.mbrlabs.mundus.editor.ui.modules.outline;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Tree;
-import com.kotcrab.vis.ui.widget.VisImage;
+import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
-import com.mbrlabs.mundus.editor.ui.widgets.Icons;
-import com.mbrlabs.mundus.editor.utils.TextureUtils;
+import com.mbrlabs.mundus.editor.ui.widgets.icon.SymbolIcon;
 import lombok.Getter;
 
 public class IdNode extends Tree.Node<IdNode, Integer, VisTable> {
@@ -15,13 +15,14 @@ public class IdNode extends Tree.Node<IdNode, Integer, VisTable> {
     @Getter
     private final Type type;
 
-    public IdNode(int id, String name, Icons icon, Type type) {
+    public IdNode(int id, String name, SymbolIcon icon, Type type) {
         super(new VisTable());
         this.type = type;
         setValue(id);
         if (icon != null) {
-            //todo add icons to cache with asset
-            getActor().add(new VisImage(TextureUtils.load(icon.getPath(), 20, 20))).padRight(5f);
+            var label = new VisLabel(icon.getSymbol(), VisUI.getSkin().get("icon", Label.LabelStyle.class));
+            label.setFontScale(0.85f);
+            getActor().add(label).padRight(4f);
         }
 
         getActor().add(label).expand().fill();
@@ -39,18 +40,18 @@ public class IdNode extends Tree.Node<IdNode, Integer, VisTable> {
     public static class RootNode extends IdNode {
 
         public static final int ROOT_NODE_ID = -100500;
-        private final IdNode hierarchy = new IdNode(-1, "Hierarchy", Icons.HIERARCHY, Type.ROOT);
-        private final IdNode shaders = new IdNode(-101, "Shaders", Icons.SHADER, Type.NONE);
-        private final IdNode terrains = new IdNode(-102, "Terrains", Icons.TERRAIN, Type.NONE);
-        private final IdNode materials = new IdNode(-103, "Materials", Icons.MATERIAL, Type.NONE);
-        private final IdNode textures = new IdNode(-104, "Textures", Icons.TEXTURE, Type.NONE);
-        private final IdNode models = new IdNode(-105, "Models", Icons.MODEL, Type.NONE);
-        private final IdNode cameras = new IdNode(-106, "Cameras", Icons.CAMERA, Type.NONE);
-        private final IdNode lights = new IdNode(-107, "Lights", Icons.LIGHT, Type.NONE);
-        private final IdNode skybox = new IdNode(-108, "Skybox", Icons.SKYBOX, Type.NONE);
+        private final IdNode hierarchy = new IdNode(-1, "Hierarchy", SymbolIcon.HIERARCHY, Type.ROOT);
+        private final IdNode shaders = new IdNode(-101, "Shaders", SymbolIcon.SHADER, Type.NONE);
+        private final IdNode terrains = new IdNode(-102, "Terrains", SymbolIcon.TERRAIN, Type.NONE);
+        private final IdNode materials = new IdNode(-103, "Materials", SymbolIcon.MATERIAL, Type.NONE);
+        private final IdNode textures = new IdNode(-104, "Textures", SymbolIcon.TEXTURE, Type.NONE);
+        private final IdNode models = new IdNode(-105, "Models", SymbolIcon.MODEL, Type.NONE);
+        private final IdNode cameras = new IdNode(-106, "Cameras", SymbolIcon.CAMERA, Type.NONE);
+        private final IdNode lights = new IdNode(-107, "Lights", SymbolIcon.LIGHT, Type.NONE);
+        private final IdNode skybox = new IdNode(-108, "Skybox", SymbolIcon.SKYBOX, Type.NONE);
 
         public RootNode() {
-            super(ROOT_NODE_ID, "Scene", Icons.SCENE, Type.ROOT);
+            super(ROOT_NODE_ID, "Scene", SymbolIcon.SCENE, Type.ROOT);
 
             add(hierarchy);
             add(models);

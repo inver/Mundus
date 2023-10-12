@@ -3,14 +3,14 @@ package com.mbrlabs.mundus.editor.ui.modules.inspector.scene;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
-import com.kotcrab.vis.ui.widget.file.FileChooser;
 import com.mbrlabs.mundus.editor.config.UiComponentHolder;
-import com.mbrlabs.mundus.editor.ui.AppUi;
 import com.mbrlabs.mundus.editor.ui.modules.inspector.BaseInspectorWidget;
 import com.mbrlabs.mundus.editor.ui.modules.outline.ClickButtonListener;
 import com.mbrlabs.mundus.editor.ui.widgets.ImageChooserField;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
+@Getter
 public class SkyboxWidget extends BaseInspectorWidget {
 
 
@@ -25,19 +25,16 @@ public class SkyboxWidget extends BaseInspectorWidget {
     private final VisTextButton defaultBtn;
     private final VisTextButton deleteBtn;
 
-    private final AppUi appUi;
-
-    public SkyboxWidget(AppUi appUi, @NotNull UiComponentHolder uiComponentHolder, FileChooser fileChooser) {
+    public SkyboxWidget(@NotNull UiComponentHolder uiComponentHolder) {
         super(uiComponentHolder, "Skybox");
-        this.appUi = appUi;
 
         //todo replace file chooser to FileChooserFieldPresenter
-        positiveX = new ImageChooserField(appUi, 100, fileChooser);
-        negativeX = new ImageChooserField(appUi, 100, fileChooser);
-        positiveY = new ImageChooserField(appUi, 100, fileChooser);
-        negativeY = new ImageChooserField(appUi, 100, fileChooser);
-        positiveZ = new ImageChooserField(appUi, 100, fileChooser);
-        negativeZ = new ImageChooserField(appUi, 100, fileChooser);
+        positiveX = new ImageChooserField(100, "Right (+X)");
+        negativeX = new ImageChooserField(100, "Left (-X)");
+        positiveY = new ImageChooserField(100, "Top (+Y)");
+        negativeY = new ImageChooserField(100, "Bottom (-Y)");
+        positiveZ = new ImageChooserField(100, "Back (+Z)");
+        negativeZ = new ImageChooserField(100, "Front (-Z)");
 
         createBtn = uiComponentHolder.getButtonFactory().createButton("Create");
         deleteBtn = uiComponentHolder.getButtonFactory().createButton("Remove");
@@ -50,25 +47,18 @@ public class SkyboxWidget extends BaseInspectorWidget {
     }
 
     private void setupUI() {
-        positiveX.setButtonText("positiveX");
-        negativeX.setButtonText("negativeX");
-        positiveY.setButtonText("positiveY");
-        negativeY.setButtonText("negativeY");
-        positiveZ.setButtonText("positiveZ");
-        negativeZ.setButtonText("negativeZ");
-
         var root = new VisTable();
-        // root.debugAll();
-        root.padTop(6f).padRight(6f).padBottom(22f);
+//        root.debugAll();
+        root.padRight(6f).left().top();
         getCollapsibleContent().add(root).left().top();
-        root.add(new VisLabel("The 6 images must be square and of equal size")).colspan(3).row();
-        root.addSeparator().colspan(3).row();
-        root.add(positiveX);
+        root.add(new VisLabel("The 6 images must be square and of equal size")).colspan(4).row();
+        root.addSeparator().colspan(4).row();
+        root.add(positiveY).padLeft(106f).colspan(2).row();
         root.add(negativeX);
-        root.add(positiveY).row();
-        root.add(negativeY);
-        root.add(positiveZ);
-        root.add(negativeZ).row();
+        root.add(negativeZ);
+        root.add(positiveX);
+        root.add(positiveZ).row();
+        root.add(negativeY).padLeft(106f).colspan(2).row();
         root.add(createBtn).padTop(15f).padLeft(6f).padRight(6f).expandX().fillX().colspan(3).row();
 
         var tab = new VisTable();
@@ -112,7 +102,7 @@ public class SkyboxWidget extends BaseInspectorWidget {
 
     }
 
-    private void resetImages() {
+    void resetImages() {
 //        var skybox = ctx.current.getCurrentScene().skyboxName
 //        if (skybox != null) {
 //            positiveX.setImage(skybox.positiveX)

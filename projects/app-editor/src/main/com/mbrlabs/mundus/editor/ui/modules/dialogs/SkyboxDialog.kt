@@ -44,12 +44,12 @@ class SkyboxDialog(
     ProjectChangedEvent.ProjectChangedListener,
     SceneChangedEvent.SceneChangedListener {
 
-    private val positiveX = ImageChooserField(appUi, 100, fileChooser)
-    private var negativeX = ImageChooserField(appUi, 100, fileChooser)
-    private var positiveY = ImageChooserField(appUi, 100, fileChooser)
-    private var negativeY = ImageChooserField(appUi, 100, fileChooser)
-    private var positiveZ = ImageChooserField(appUi, 100, fileChooser)
-    private var negativeZ = ImageChooserField(appUi, 100, fileChooser)
+    private val positiveX = ImageChooserField(100)
+    private var negativeX = ImageChooserField(100)
+    private var positiveY = ImageChooserField(100)
+    private var negativeY = ImageChooserField(100)
+    private var positiveZ = ImageChooserField(100)
+    private var negativeZ = ImageChooserField(100)
 
     private var createBtn = VisTextButton("Create skybox")
     private var defaultBtn = VisTextButton("Create default skybox")

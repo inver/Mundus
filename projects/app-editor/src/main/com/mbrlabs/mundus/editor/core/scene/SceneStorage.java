@@ -81,10 +81,10 @@ public class SceneStorage {
 
     private DirectionalLight createDefaultDirectionalLight() {
         var dirLight = new DirectionalLight();
-        dirLight.getColor().set(1, 1, 1, 1);
-        dirLight.setIntensity(1f);
-        dirLight.getDirection();
-        dirLight.getDirection().nor();
+//        dirLight.getColor().set(1, 1, 1, 1);
+//        dirLight.setIntensity(1f);
+//        dirLight.getDirection();
+//        dirLight.getDirection().nor();
         return dirLight;
     }
 

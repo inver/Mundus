@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class ButtonFactory {
-    private final UiStyles styles;
 
     public VisTextButton createButton(String text, TextButton.TextButtonStyle style) {
         var res = new VisTextButton(text);
@@ -20,10 +19,12 @@ public class ButtonFactory {
     }
 
     public VisTextButton createButton(SymbolIcon icon) {
-        return createButton(icon.getSymbol(), styles.getStyleBg());
+        return createButton(icon.getSymbol(), VisUI.getSkin().get("bg", TextButton.TextButtonStyle.class));
     }
 
     public VisTextButton createButton(String text) {
         return createButton(text, VisUI.getSkin().get(VisTextButton.VisTextButtonStyle.class));
     }
+
+//    public
 }

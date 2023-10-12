@@ -38,7 +38,7 @@ import com.mbrlabs.mundus.editor.ui.widgets.icon.SymbolIcon
  */
 abstract class BaseInspectorWidget(private val uiComponentHolder: UiComponentHolder, title: String) : VisTable() {
 
-    var title: String? = null
+    private var title: String? = null
         set(title) {
             field = title
             titleLabel.setText(title)
@@ -56,8 +56,6 @@ abstract class BaseInspectorWidget(private val uiComponentHolder: UiComponentHol
 
     init {
 //        debugAll()
-        collapseBtn.label.setFontScale(0.7f)
-        deleteBtn.label.setFontScale(0.7f)
         deleteBtn.style.up = null
 
         deletable = false

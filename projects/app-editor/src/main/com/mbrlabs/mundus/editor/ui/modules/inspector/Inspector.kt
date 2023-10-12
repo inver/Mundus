@@ -85,7 +85,7 @@ class Inspector(
 
     private val goInspector: GameObjectInspector
     private val assetInspector: AssetInspector
-    private val sceneInspector = SceneInspector(uiComponentHolder, sceneInspectorPresenter, appUi, fileChooser)
+    private val sceneInspector = SceneInspector(uiComponentHolder, sceneInspectorPresenter)
 //    private val cameraInspector = CameraInspector(previewGenerator, appUi)
 
     init {
@@ -120,7 +120,7 @@ class Inspector(
         setBackground("window-bg")
         add(VisLabel("Inspector")).expandX().fillX().pad(3f).row()
         addSeparator().row()
-        root.align(Align.top).pad(UiConstants.PAD)
+        root.align(Align.top).padLeft(UiConstants.PAD).padRight(UiConstants.PAD).padTop(4f)
         scrollPane.setScrollingDisabled(true, false)
         scrollPane.setFlickScroll(false)
         scrollPane.fadeScrollBars = false

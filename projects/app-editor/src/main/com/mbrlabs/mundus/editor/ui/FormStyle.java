@@ -10,6 +10,5 @@ public class FormStyle {
         public Float padLeft = 0f;
         public Float padRight = 0f;
         public Float padBottom = 0f;
-
     }
 }

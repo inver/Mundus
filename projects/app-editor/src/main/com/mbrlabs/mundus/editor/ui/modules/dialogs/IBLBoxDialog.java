@@ -21,7 +21,7 @@ public class IBLBoxDialog extends BaseDialog
     public IBLBoxDialog(EventBus eventBus, AppUi appUi, FileChooser fileChooser) {
         super("IBLBox");
 
-        iblImageField = new ImageChooserField(appUi, 300, fileChooser);
+        iblImageField = new ImageChooserField(300);
 
         eventBus.register(this);
         setupUI();

@@ -19,9 +19,12 @@ package com.mbrlabs.mundus.editor.ui.modules.toolbar
 import com.artemis.Aspect
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.Array
+import com.kotcrab.vis.ui.VisUI
 import com.kotcrab.vis.ui.widget.*
 import com.mbrlabs.mundus.commons.core.ecs.component.NameComponent
 import com.mbrlabs.mundus.commons.core.ecs.component.TypeComponent
@@ -55,8 +58,7 @@ class AppToolbar(
     private val toaster: Toaster,
     private val exportDialog: ExportDialog,
     private val appUi: AppUi,
-    buttonFactory: ButtonFactory,
-    private val uiStyles: UiStyles
+    buttonFactory: ButtonFactory
 ) : Toolbar(), SceneGraphChangedEvent.SceneGraphChangedListener, ProjectChangedEvent.ProjectChangedListener {
 
     private val mainMenuBtn = buttonFactory.createButton(SymbolIcon.MENU)
@@ -215,11 +217,13 @@ class AppToolbar(
     }
 
     private fun setActive(btn: VisTextButton) {
-        selectBtn.style = uiStyles.styleNoBg
-        translateBtn.style = uiStyles.styleNoBg
-        rotateBtn.style = uiStyles.styleNoBg
-        scaleBtn.style = uiStyles.styleNoBg
-        btn.style = uiStyles.styleActive
+        var noBg = VisUI.getSkin().get("noBg", TextButtonStyle::class.java)
+
+        selectBtn.style = noBg
+        translateBtn.style = noBg
+        rotateBtn.style = noBg
+        scaleBtn.style = noBg
+        btn.style = VisUI.getSkin().get("active", TextButtonStyle::class.java)
     }
 
     /**

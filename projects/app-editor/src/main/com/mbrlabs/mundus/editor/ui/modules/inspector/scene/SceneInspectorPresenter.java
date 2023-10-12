@@ -12,6 +12,9 @@ import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent;
 import com.mbrlabs.mundus.editor.events.SceneChangedEvent;
+import com.mbrlabs.mundus.editor.ui.modules.outline.ClickButtonListener;
+import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerPresenter;
+import com.mbrlabs.mundus.editor.ui.widgets.presenter.FileChooserFieldPresenter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
@@ -21,6 +24,8 @@ import org.springframework.stereotype.Component;
 public class SceneInspectorPresenter {
     private final EditorCtx ctx;
     private final EventBus eventBus;
+    private final FileChooserFieldPresenter fileChooserFieldPresenter;
+    private final ColorPickerPresenter colorPickerPresenter;
 
     public BaseLight getValue() {
         return getEnv().getAmbientLight();
@@ -46,6 +51,7 @@ public class SceneInspectorPresenter {
                 }
             }
         });
+        colorPickerPresenter.init(ambientLightWidget.getColorPickerField());
         ambientLightWidget.getColorPickerField().setColorAdapter(new ColorPickerAdapter() {
             @Override
             public void finished(Color newColor) {
@@ -95,6 +101,7 @@ public class SceneInspectorPresenter {
                 }
             }
         });
+        colorPickerPresenter.init(fogWidget.getColorPickerField());
         fogWidget.getColorPickerField().setColorAdapter(new ColorPickerAdapter() {
             @Override
             public void finished(Color newColor) {
@@ -128,5 +135,46 @@ public class SceneInspectorPresenter {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    public void initSkyboxWidget(SkyboxWidget skyboxWidget) {
+        fileChooserFieldPresenter.initImageChooserField(skyboxWidget.getNegativeX());
+        fileChooserFieldPresenter.initImageChooserField(skyboxWidget.getNegativeY());
+        fileChooserFieldPresenter.initImageChooserField(skyboxWidget.getNegativeZ());
+        fileChooserFieldPresenter.initImageChooserField(skyboxWidget.getPositiveX());
+        fileChooserFieldPresenter.initImageChooserField(skyboxWidget.getPositiveY());
+        fileChooserFieldPresenter.initImageChooserField(skyboxWidget.getPositiveZ());
+
+        skyboxWidget.getCreateBtn().addListener(new ClickButtonListener(() -> {
+//                val scene = ctx.current.currentScene;
+//                val oldSkybox = scene.skyboxName
+//                oldSkybox?.dispose()
+
+//                scene.skybox = Skybox(
+//                    positiveX.file, negativeX.file,
+//                    positiveY.file, negativeY.file, positiveZ.file, negativeZ.file
+//                )
+            skyboxWidget.resetImages();
+        }));
+
+        // default skybox btn
+        skyboxWidget.getDefaultBtn().addListener(new ClickButtonListener(() -> {
+//            var scene = ctx.current.currentScene;
+
+//                if (scene.skyboxName != null) {
+//                    scene.skyboxName.dispose()
+//                }
+//                scene.skybox = createDefaultSkybox()
+            skyboxWidget.resetImages();
+        }));
+
+        // delete skybox btn
+        skyboxWidget.getDeleteBtn().addListener(new ClickButtonListener(() -> {
+            var scene = ctx.getCurrent().getCurrentScene();
+//            scene.
+//                scene.skyboxName.dispose()
+//                scene.skybox = null
+            skyboxWidget.resetImages();
+        }));
     }
 }

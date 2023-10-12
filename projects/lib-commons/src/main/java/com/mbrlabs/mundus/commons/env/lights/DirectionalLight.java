@@ -17,14 +17,12 @@
 package com.mbrlabs.mundus.commons.env.lights;
 
 import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Vector3;
 
 /**
  * @author Marcus Brummer
  * @version 14-02-2016
  */
-public class DirectionalLight extends AmbientLight {
-
+public class DirectionalLight extends BaseLight {
     private final Quaternion direction = new Quaternion();
 
     public DirectionalLight() {
@@ -36,7 +34,6 @@ public class DirectionalLight extends AmbientLight {
         direction.set(copyFrom.direction);
     }
 
-    @Override
     public DirectionalLight copy() {
         return new DirectionalLight(this);
     }

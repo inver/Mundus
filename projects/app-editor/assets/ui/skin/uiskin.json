@@ -9,7 +9,8 @@
     vis-blue: { a: 1, b: 0.886, g: 0.631, r: 0.105 },
     vis-red: { a: 1, b: 0.047, g: 0, r: 0.862 },
     menuitem: { a: 1, b: 0.65, g: 0.65, r: 0.65 },
-    link-label: { a: 1, b: 0.886, g: 0.631, r: 0.105 }
+    link-label: { a: 1, b: 0.886, g: 0.631, r: 0.105 },
+    teal: { a: 1, b: 0.5, g: 0.5, r: 0 }
   },
   com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
     dialogDim: {
@@ -791,6 +792,38 @@
       padBottom: 8
       padLeft: 8
       padRight: 8
+    }
+  },
+  TextButtonStyle: {
+    noBg: {
+      font: font-symbol
+      pressedOffsetX: 1
+      unpressedOffsetX: 0
+      pressedOffsetY: -1
+      fontColor: teal
+    },
+    active: {
+      font: font-symbol
+      pressedOffsetX: 1
+      unpressedOffsetX: 0
+      pressedOffsetY: -1
+      fontColor: white
+    },
+    bg: {
+      font: font-symbol
+      pressedOffsetX: 1
+      unpressedOffsetX: 0
+      pressedOffsetY: -1
+      fontColor: teal
+      up: menu-bg
+      down: button-over
+      over: button-over
+    }
+  },
+  LabelStyle: {
+    icon: {
+      font: font-symbol
+      fontColor: white
     }
   }
 }

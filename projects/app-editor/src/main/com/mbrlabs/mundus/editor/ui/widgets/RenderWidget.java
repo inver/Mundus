@@ -99,7 +99,7 @@ public class RenderWidget extends Widget {
      * Used to render the 3d scene within this widget.
      */
     public interface Renderer {
-        void render(Camera cam);
+        void render(Camera camera);
     }
 
 }

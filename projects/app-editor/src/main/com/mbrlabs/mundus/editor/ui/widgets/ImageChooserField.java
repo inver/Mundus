@@ -44,29 +44,28 @@ public class ImageChooserField extends VisTable {
 
     private final int width;
 
-    private final VisTextButton fcBtn;
+    private final VisTextButton selectButton = new VisTextButton("Select");
 
-    private final Image img;
+    private final Image img = new Image(PLACEHOLDER_IMG);
     private Texture texture;
     private FileHandle fileHandle;
 
-    private final AppUi appUi;
-    private final FileChooser fileChooser;
+    public ImageChooserField(int width) {
+        this(width, null);
+    }
 
-    public ImageChooserField(AppUi appUi, int width, FileChooser fileChooser) {
+    public ImageChooserField(int width, String buttonText) {
         super();
-        this.appUi = appUi;
         this.width = width;
-        this.fileChooser = fileChooser;
-        fcBtn = new VisTextButton("Select");
-        img = new Image(PLACEHOLDER_IMG);
 
         setupUI();
-        setupListeners();
+        if (buttonText != null) {
+            setButtonText(buttonText);
+        }
     }
 
     public FileHandle getFile() {
-        return this.fileHandle;
+        return fileHandle;
     }
 
     public void removeImage() {
@@ -74,7 +73,7 @@ public class ImageChooserField extends VisTable {
     }
 
     public void setButtonText(String text) {
-        fcBtn.setText(text);
+        selectButton.setText(text);
     }
 
     public void setImage(FileHandle fileHandle) {
@@ -93,29 +92,12 @@ public class ImageChooserField extends VisTable {
     }
 
     private void setupUI() {
-        pad(5);
+        pad(4);
         add(img).width(width).height(width).expandX().fillX().row();
-        add(fcBtn).width(width).padTop(5).expandX();
+        add(selectButton).width(width).padTop(4).expandX();
     }
 
-    private void setupListeners() {
-        fcBtn.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                super.clicked(event, x, y);
-                fileChooser.setSelectionMode(FileChooser.SelectionMode.FILES);
-                fileChooser.setListener(new SingleFileChooserListener() {
-                    public void selected(FileHandle file) {
-                        if (FileFormatUtils.isImage(file)) {
-                            setImage(file);
-                        } else {
-                            Dialogs.showErrorDialog(appUi, "This is no image");
-                        }
-                    }
-                });
-                appUi.addActor(fileChooser.fadeIn());
-            }
-        });
+    public VisTextButton getSelectButton() {
+        return selectButton;
     }
-
 }
