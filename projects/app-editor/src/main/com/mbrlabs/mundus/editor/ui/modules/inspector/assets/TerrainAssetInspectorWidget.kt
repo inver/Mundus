@@ -18,7 +18,7 @@ package com.mbrlabs.mundus.editor.ui.modules.inspector.assets
 
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset
-import com.mbrlabs.mundus.editor.config.UiComponentHolder
+import com.mbrlabs.mundus.editor.ui.UiComponentHolder
 import com.mbrlabs.mundus.editor.ui.modules.inspector.BaseInspectorWidget
 
 /**

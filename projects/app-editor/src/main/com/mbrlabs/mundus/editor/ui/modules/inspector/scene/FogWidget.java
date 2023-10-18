@@ -3,7 +3,7 @@ package com.mbrlabs.mundus.editor.ui.modules.inspector.scene;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisTextField;
 import com.mbrlabs.mundus.commons.env.fog.Fog;
-import com.mbrlabs.mundus.editor.config.UiComponentHolder;
+import com.mbrlabs.mundus.editor.ui.UiComponentHolder;
 import com.mbrlabs.mundus.editor.ui.modules.inspector.BaseInspectorWidget;
 import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerField;
 import lombok.Getter;

@@ -26,10 +26,11 @@ import com.kotcrab.vis.ui.VisUI
 import com.kotcrab.vis.ui.widget.Separator
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
-import com.mbrlabs.mundus.editor.config.UiComponentHolder
+import com.mbrlabs.mundus.editor.ui.UiComponentHolder
 import com.mbrlabs.mundus.editor.ui.FormStyle.FormFieldStyle
 import com.mbrlabs.mundus.editor.ui.widgets.CollapseWidget
 import com.mbrlabs.mundus.editor.ui.widgets.icon.SymbolIcon
+import org.apache.commons.lang3.StringUtils
 
 
 /**
@@ -149,9 +150,19 @@ abstract class BaseInspectorWidget(private val uiComponentHolder: UiComponentHol
         }
     }
 
-    protected fun addFormField(container: Table, label: String, actor: Actor, expand: Boolean) {
+    protected fun addFormField(label: String?, actor: Actor, expand: Boolean) {
+        addFormField(collapsibleContent, label, actor, expand)
+    }
+
+    protected fun addFormField(label: String?, actor: Actor) {
+        addFormField(label, actor, true)
+    }
+
+    protected fun addFormField(container: Table, label: String?, actor: Actor, expand: Boolean) {
         val style = VisUI.getSkin().get(FormFieldStyle::class.java)
-        container.add(VisLabel(label)).top().left().padBottom(style.padBottom).padRight(style.padRight)
+        if (StringUtils.isNotEmpty(label)) {
+            container.add(VisLabel(label)).top().left().padTop(1f).padRight(style.padRight)
+        }
         val cell = container.add(actor).left().top().padBottom(style.padBottom)
         if (expand) {
             cell.expandX().fillX()

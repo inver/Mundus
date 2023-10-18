@@ -24,6 +24,7 @@ import com.kotcrab.vis.ui.VisUI
 import com.kotcrab.vis.ui.widget.*
 import com.kotcrab.vis.ui.widget.tabbedpane.Tab
 import com.mbrlabs.mundus.commons.terrain.SplatTexture
+import com.mbrlabs.mundus.editor.ui.UiComponentHolder
 import com.mbrlabs.mundus.editor.tools.brushes.TerrainBrush
 import com.mbrlabs.mundus.editor.ui.widgets.TextureGrid
 
@@ -31,7 +32,10 @@ import com.mbrlabs.mundus.editor.ui.widgets.TextureGrid
  * @author Marcus Brummer
  * @version 30-01-2016
  */
-class TerrainPaintTab(private val parentWidget: TerrainComponentWidget) : Tab(false, false) {
+class TerrainPaintTab(
+    private val parentWidget: TerrainComponentWidget,
+    uiComponentHolder: UiComponentHolder
+) : Tab(false, false) {
 
     companion object {
         private val TAG = TerrainPaintTab::class.java.simpleName
@@ -42,7 +46,7 @@ class TerrainPaintTab(private val parentWidget: TerrainComponentWidget) : Tab(fa
     val textureGrid = TextureGrid<SplatTexture>(40, 5)
     val rightClickMenu = TextureRightClickMenu()
 
-    val grid = TerrainBrushGrid(TerrainBrush.BrushMode.PAINT)
+    val grid = TerrainBrushGrid(uiComponentHolder, TerrainBrush.BrushMode.PAINT)
 
     init {
         root.align(Align.left)
@@ -102,9 +106,6 @@ class TerrainPaintTab(private val parentWidget: TerrainComponentWidget) : Tab(fa
         return root
     }
 
-    /**
-
-     */
     inner class TextureRightClickMenu : PopupMenu() {
 
         private val removeTexture = MenuItem("Remove texture")

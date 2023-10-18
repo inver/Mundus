@@ -29,7 +29,7 @@ import com.mbrlabs.mundus.editor.core.scene.SceneStorage;
 import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
-import com.mbrlabs.mundus.editor.input.InputManager;
+import com.mbrlabs.mundus.editor.input.InputService;
 import com.mbrlabs.mundus.editor.tools.brushes.CircleBrush;
 import com.mbrlabs.mundus.editor.tools.brushes.ConfettiBrush;
 import com.mbrlabs.mundus.editor.tools.brushes.SmoothCircleBrush;
@@ -38,6 +38,7 @@ import com.mbrlabs.mundus.editor.tools.brushes.TerrainBrush;
 import com.mbrlabs.mundus.editor.tools.picker.EntityPicker;
 import com.mbrlabs.mundus.editor.tools.picker.ToolHandlePicker;
 import com.mbrlabs.mundus.editor.ui.AppUi;
+import lombok.Getter;
 import net.nevinsky.abyssus.core.ModelBatch;
 import net.nevinsky.abyssus.core.shader.ShaderProvider;
 import org.springframework.stereotype.Component;
@@ -52,28 +53,23 @@ import java.util.List;
 @Component
 public class ToolManager extends InputAdapter implements Disposable, RenderableObject {
 
-    private static final int KEY_DEACTIVATE = Input.Keys.ESCAPE;
-
     private final EditorCtx ctx;
     private Tool activeTool;
 
-    public List<TerrainBrush> terrainBrushes;
+    @Getter
+    private final List<TerrainBrush> terrainBrushes = new ArrayList<>();
     public ModelPlacementTool modelPlacementTool;
     public SelectionTool selectionTool;
     public TranslateTool translateTool;
     public RotateTool rotateTool;
     public ScaleTool scaleTool;
 
-    private final InputManager inputManager;
-
-    public ToolManager(EditorCtx ctx, AppUi appUi, EventBus eventBus, InputManager inputManager,
+    public ToolManager(EditorCtx ctx, AppUi appUi, EventBus eventBus,
                        EntityPicker picker, ToolHandlePicker toolHandlePicker, ShapeRenderer shapeRenderer,
                        EditorModelService modelService, CommandHistory history, SceneStorage sceneStorage,
                        EditorAssetManager editorAssetManager) {
         this.ctx = ctx;
-        this.inputManager = inputManager;
 
-        terrainBrushes = new ArrayList<>();
         terrainBrushes.add(new SmoothCircleBrush(ctx, ShaderConstants.TERRAIN, history));
         terrainBrushes.add(new CircleBrush(ctx, ShaderConstants.TERRAIN, history));
         terrainBrushes.add(new StarBrush(ctx, ShaderConstants.TERRAIN, history));
@@ -98,17 +94,6 @@ public class ToolManager extends InputAdapter implements Disposable, RenderableO
 
         deactivateTool();
         activeTool = tool;
-
-        //add tool to input manager after this toolManager
-        var index = 0;
-        for (var p : inputManager.getProcessors()) {
-            if (p.equals(this)) {
-                inputManager.addProcessor(index, activeTool);
-                break;
-            } else {
-                index++;
-            }
-        }
         activeTool.onActivated();
 
         if (shouldKeepSelection) {
@@ -117,19 +102,12 @@ public class ToolManager extends InputAdapter implements Disposable, RenderableO
     }
 
     public void deactivateTool() {
-        if (activeTool != null) {
-            activeTool.onDisabled();
-            inputManager.removeProcessor(activeTool);
-            activeTool = null;
+        if (activeTool == null) {
+            return;
         }
-    }
 
-    public void setDefaultTool() {
-        if (activeTool == null || activeTool == modelPlacementTool || activeTool instanceof TerrainBrush) {
-            activateTool(translateTool);
-        } else {
-            activeTool.onDisabled();
-        }
+        activeTool.onDisabled();
+        activeTool = null;
     }
 
     @Override
@@ -143,18 +121,6 @@ public class ToolManager extends InputAdapter implements Disposable, RenderableO
         if (activeTool != null) {
             activeTool.act();
         }
-    }
-
-    @Override
-    public boolean keyUp(int keycode) {
-        if (keycode == KEY_DEACTIVATE) {
-            if (activeTool != null) {
-                activeTool.onDisabled();
-            }
-            setDefaultTool();
-            return true;
-        }
-        return false;
     }
 
     @Override

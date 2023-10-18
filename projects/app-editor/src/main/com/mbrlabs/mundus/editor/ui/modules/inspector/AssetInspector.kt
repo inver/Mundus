@@ -23,9 +23,10 @@ import com.mbrlabs.mundus.commons.assets.material.MaterialAsset
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset
-import com.mbrlabs.mundus.editor.config.UiComponentHolder
+import com.mbrlabs.mundus.editor.ui.UiComponentHolder
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
+import com.mbrlabs.mundus.editor.input.InputService
 import com.mbrlabs.mundus.editor.tools.ToolManager
 import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.PreviewGenerator
@@ -45,6 +46,7 @@ class AssetInspector(
     private val appUi: AppUi,
     private val assetManager: EditorAssetManager,
     private val assetSelectionDialog: AssetPickerDialog,
+    private val inputService: InputService,
     private val toolManager: ToolManager,
     private val previewGenerator: PreviewGenerator,
     private val colorPickerPresenter: ColorPickerPresenter,
@@ -65,6 +67,7 @@ class AssetInspector(
         appUi,
         assetManager,
         assetSelectionDialog,
+        inputService,
         toolManager,
         uiComponentHolder,
         previewGenerator

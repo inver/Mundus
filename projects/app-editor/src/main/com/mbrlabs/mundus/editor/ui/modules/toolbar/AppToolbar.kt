@@ -35,6 +35,7 @@ import com.mbrlabs.mundus.editor.events.CameraChangedEvent
 import com.mbrlabs.mundus.editor.events.EventBus
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent
 import com.mbrlabs.mundus.editor.events.SceneGraphChangedEvent
+import com.mbrlabs.mundus.editor.input.InputService
 import com.mbrlabs.mundus.editor.tools.*
 import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.ExportDialog
@@ -53,6 +54,7 @@ class AppToolbar(
     private val ctx: EditorCtx,
     private val eventBus: EventBus,
     toolbarPresenter: AppToolbarPresenter,
+    private val inputService: InputService,
     private val toolManager: ToolManager,
     private val projectManager: ProjectManager,
     private val toaster: Toaster,
@@ -178,7 +180,7 @@ class AppToolbar(
         // select tool
         selectBtn.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                toolManager.activateTool(toolManager.selectionTool)
+                inputService.activateTool(toolManager.selectionTool)
                 setActive(selectBtn)
             }
         })
@@ -186,7 +188,7 @@ class AppToolbar(
         // translate tool
         translateBtn.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                toolManager.activateTool(toolManager.translateTool)
+                inputService.activateTool(toolManager.translateTool)
                 setActive(translateBtn)
             }
         })
@@ -194,7 +196,7 @@ class AppToolbar(
         // rotate tool
         rotateBtn.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                toolManager.activateTool(toolManager.rotateTool)
+                inputService.activateTool(toolManager.rotateTool)
                 setActive(rotateBtn)
             }
         })
@@ -202,7 +204,7 @@ class AppToolbar(
         // scale tool
         scaleBtn.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                toolManager.activateTool(toolManager.scaleTool)
+                inputService.activateTool(toolManager.scaleTool)
                 setActive(scaleBtn)
             }
         })

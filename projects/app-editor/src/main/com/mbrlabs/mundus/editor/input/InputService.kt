@@ -18,6 +18,8 @@ package com.mbrlabs.mundus.editor.input
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
+import com.mbrlabs.mundus.editor.tools.Tool
+import com.mbrlabs.mundus.editor.tools.ToolManager
 import org.springframework.stereotype.Component
 
 /**
@@ -25,10 +27,34 @@ import org.springframework.stereotype.Component
  * @version 07-12-2015
  */
 @Component
-class InputManager : InputMultiplexer() {
+class InputService(private val toolManager: ToolManager) : InputMultiplexer() {
 
     init {
         Gdx.input.inputProcessor = this
     }
 
+    fun activateTool(tool: Tool) {
+        removeProcessor(toolManager.activeTool)
+        toolManager.activateTool(tool)
+        //add tool to input manager after this toolManager
+        var index = 0
+        for (p in processors) {
+            if (p.equals(this)) {
+                addProcessor(index, toolManager.activeTool)
+                break
+            } else {
+                index++
+            }
+        }
+    }
+
+    fun deactivateTool() {
+        removeProcessor(toolManager.activeTool)
+        toolManager.deactivateTool()
+    }
+
+    fun activateDefaultTool() {
+        // todo replace to select tool
+        activateTool(toolManager.translateTool)
+    }
 }

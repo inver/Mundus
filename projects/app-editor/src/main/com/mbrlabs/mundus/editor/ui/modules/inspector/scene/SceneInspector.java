@@ -1,7 +1,7 @@
 package com.mbrlabs.mundus.editor.ui.modules.inspector.scene;
 
 import com.kotcrab.vis.ui.widget.VisTable;
-import com.mbrlabs.mundus.editor.config.UiComponentHolder;
+import com.mbrlabs.mundus.editor.ui.UiComponentHolder;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

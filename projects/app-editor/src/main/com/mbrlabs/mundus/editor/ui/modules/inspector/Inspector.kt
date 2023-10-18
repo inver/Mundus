@@ -25,7 +25,8 @@ import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisScrollPane
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.file.FileChooser
-import com.mbrlabs.mundus.editor.config.UiComponentHolder
+import com.mbrlabs.mundus.commons.core.ecs.component.TypeComponent
+import com.mbrlabs.mundus.editor.ui.UiComponentHolder
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.events.AssetSelectedEvent
@@ -33,6 +34,7 @@ import com.mbrlabs.mundus.editor.events.EntitySelectedEvent
 import com.mbrlabs.mundus.editor.events.EventBus
 import com.mbrlabs.mundus.editor.events.GameObjectModifiedEvent
 import com.mbrlabs.mundus.editor.history.CommandHistory
+import com.mbrlabs.mundus.editor.input.InputService
 import com.mbrlabs.mundus.editor.tools.ToolManager
 import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.PreviewGenerator
@@ -52,19 +54,19 @@ import org.springframework.stereotype.Component
  */
 @Component
 class Inspector(
-    eventBus: EventBus,
     private val ctx: EditorCtx,
-    private val assetManager: EditorAssetManager,
     private val appUi: AppUi,
-    private val uiComponentHolder: UiComponentHolder,
-    private val assetPickerDialog: AssetPickerDialog,
-    private val toolManager: ToolManager,
-    private val terrainWidgetPresenter: TerrainWidgetPresenter,
-    private val history: CommandHistory,
-    private val previewGenerator: PreviewGenerator,
-    private val colorPickerPresenter: ColorPickerPresenter,
-    private val sceneInspectorPresenter: SceneInspectorPresenter,
-    private val fileChooser: FileChooser
+    eventBus: EventBus,
+    assetManager: EditorAssetManager,
+    uiComponentHolder: UiComponentHolder,
+    assetPickerDialog: AssetPickerDialog,
+    inputService: InputService,
+    toolManager: ToolManager,
+    terrainWidgetPresenter: TerrainWidgetPresenter,
+    history: CommandHistory,
+    previewGenerator: PreviewGenerator,
+    colorPickerPresenter: ColorPickerPresenter,
+    sceneInspectorPresenter: SceneInspectorPresenter,
 ) : VisTable(),
     GameObjectModifiedEvent.GameObjectModifiedListener,
     AssetSelectedEvent.AssetSelectedListener,
@@ -107,6 +109,7 @@ class Inspector(
             appUi,
             assetManager,
             assetPickerDialog,
+            inputService,
             toolManager,
             previewGenerator,
             colorPickerPresenter,
@@ -142,12 +145,21 @@ class Inspector(
             mode = InspectorMode.SCENE
             root.clear()
             root.add(sceneInspector).grow().row()
-        } else if (mode != InspectorMode.GAME_OBJECT) {
+            goInspector.setEntity(event.entityId)
+            return
+        }
+
+        val type = ctx.getComponentByEntityId(event.entityId, TypeComponent::class.java)?.type
+
+        if (type != TypeComponent.Type.CAMERA && type != TypeComponent.Type.GROUP
+            && type != TypeComponent.Type.HANDLE && mode != InspectorMode.GAME_OBJECT
+        ) {
             mode = InspectorMode.GAME_OBJECT
             root.clear()
             root.add(goInspector).grow().row()
+            goInspector.setEntity(event.entityId)
+            return
         }
-        goInspector.setEntity(event.entityId)
     }
 
     override fun onGameObjectModified(event: GameObjectModifiedEvent) {

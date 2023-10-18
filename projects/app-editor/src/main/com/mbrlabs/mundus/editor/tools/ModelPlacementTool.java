@@ -19,11 +19,13 @@ package com.mbrlabs.mundus.editor.tools;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
+import com.mbrlabs.mundus.commons.assets.AssetType;
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset;
 import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager;
 import com.mbrlabs.mundus.editor.core.assets.EditorModelService;
+import com.mbrlabs.mundus.editor.core.project.AssetKey;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.project.ProjectContext;
 import com.mbrlabs.mundus.editor.core.scene.SceneStorage;
@@ -72,11 +74,10 @@ public class ModelPlacementTool extends Tool {
     //todo rethink this method. May by move copy and load asset to another place?
     public void setModel(ModelAsset asset) {
         var currentProject = getCtx().getCurrent();
-        var currentScene = getCtx().getCurrent().getCurrentScene();
         sceneStorage.copyAssetToProject(currentProject.getPath(), asset);
 
         var sceneAsset = assetManager.loadProjectAsset(currentProject.getPath(), asset.getName());
-        currentScene.getAssets().add(sceneAsset);
+        currentProject.getProjectAssets().put(new AssetKey(AssetType.MODEL, sceneAsset.getName()), sceneAsset);
         this.asset = (ModelAsset) sceneAsset;
 
         var model = modelService.createFromAsset(this.asset);

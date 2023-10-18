@@ -18,12 +18,7 @@ package com.mbrlabs.mundus.editor.ui.modules.inspector.components
 
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
-import com.mbrlabs.mundus.editor.config.UiComponentHolder
-import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
-import com.mbrlabs.mundus.editor.core.project.EditorCtx
-import com.mbrlabs.mundus.editor.ui.AppUi
-import com.mbrlabs.mundus.editor.ui.PreviewGenerator
-import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
+import com.mbrlabs.mundus.editor.ui.UiComponentHolder
 
 /**
  * @author Marcus Brummer

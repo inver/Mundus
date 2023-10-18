@@ -16,6 +16,8 @@
 
 package com.mbrlabs.mundus.editor.ui.widgets;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextField;
@@ -48,8 +50,8 @@ public class TextFieldWithLabel extends VisTable {
             add(label).left().width(width * 0.2f);
             add(textField).right().width(width * 0.8f).row();
         } else {
-            add(label).left().expandX();
-            add(textField).right().expandX().row();
+            add(label).left().padRight(4f);
+            add(textField).growX().expandX().row();
         }
     }
 
@@ -59,6 +61,11 @@ public class TextFieldWithLabel extends VisTable {
 
     public void setEditable(boolean editable) {
         textField.setDisabled(!editable);
+        if (editable) {
+            label.setStyle(VisUI.getSkin().get(Label.LabelStyle.class));
+        } else {
+            label.setStyle(VisUI.getSkin().get("disabled", Label.LabelStyle.class));
+        }
     }
 
     public void clear() {
@@ -72,5 +79,4 @@ public class TextFieldWithLabel extends VisTable {
     public void setLabelText(String text) {
         label.setText(toString());
     }
-
 }

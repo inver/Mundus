@@ -108,7 +108,6 @@ public class MetaService {
         return FileUtils.readFullFromFileSystem(mapper, handle, tr).withFile(handle.parent());
     }
 
-
     public void save(Meta<?> meta) {
         try (var fw = new FileWriter(meta.getFile().child(META_FILE_NAME).file())) {
             var res = mapper.writeValueAsString(meta);

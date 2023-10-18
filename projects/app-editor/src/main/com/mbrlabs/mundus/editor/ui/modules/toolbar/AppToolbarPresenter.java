@@ -22,7 +22,7 @@ import com.mbrlabs.mundus.editor.ui.AppUi;
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.ExitDialog;
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.IBLBoxDialog;
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.NewProjectDialog;
-import com.mbrlabs.mundus.editor.ui.modules.dialogs.SkyboxDialog;
+import com.mbrlabs.mundus.editor.ui.modules.dialogs.skybox.SkyboxDialog;
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.importer.ImportModelDialog;
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.importer.ImportTextureDialog;
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.settings.SettingsDialog;
@@ -50,7 +50,6 @@ public class AppToolbarPresenter {
     private final ProjectManager projectManager;
     private final CommandHistory commandHistory;
     private final FileChooser fileChooser;
-    private final SkyboxDialog skyboxDialog;
     private final IBLBoxDialog iblBoxDialog;
     private final SettingsDialog settingsDialog;
 
@@ -92,8 +91,6 @@ public class AppToolbarPresenter {
                 commandHistory.goBack();
             }
         });
-
-        toolbar.getEnvironmentMenu().getSkybox().addListener(appUi.createOpenDialogListener(skyboxDialog));
         toolbar.getEnvironmentMenu().getIblImage().addListener(appUi.createOpenDialogListener(iblBoxDialog));
 
         toolbar.getAssetsMenu().getImportMesh().addListener(importMeshListener());

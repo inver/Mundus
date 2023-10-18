@@ -116,9 +116,13 @@ public class ProjectManager implements Disposable {
     }
 
     private void loadSkybox(ProjectContext ctx, Scene scene) {
-        if (StringUtils.isNotEmpty(scene.getEnvironment().getSkyboxName())) {
-            scene.getAssets().add(assetManager.loadProjectAsset(ctx.getPath(), scene.getEnvironment().getSkyboxName()));
+        var skyboxName = scene.getEnvironment().getSkyboxName();
+        if (StringUtils.isEmpty(skyboxName)) {
+            return;
         }
+
+        var key = new AssetKey(AssetType.SKYBOX, skyboxName);
+        ctx.getProjectAssets().put(key, assetManager.loadProjectAsset(ctx.getPath(), skyboxName));
     }
 
     /**

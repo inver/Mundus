@@ -16,11 +16,15 @@ import com.mbrlabs.mundus.editor.config.ui.TestOutline;
 import com.mbrlabs.mundus.editor.core.project.ProjectStorage;
 import com.mbrlabs.mundus.editor.core.registry.Registry;
 import com.mbrlabs.mundus.editor.events.EventBus;
+import com.mbrlabs.mundus.editor.input.InputService;
+import com.mbrlabs.mundus.editor.tools.ToolManager;
 import com.mbrlabs.mundus.editor.ui.AppUi;
 import com.mbrlabs.mundus.editor.ui.PreviewGenerator;
+import com.mbrlabs.mundus.editor.ui.UiComponentHolder;
 import com.mbrlabs.mundus.editor.ui.modules.outline.Outline;
 import com.mbrlabs.mundus.editor.ui.modules.outline.OutlinePresenter;
 import com.mbrlabs.mundus.editor.ui.widgets.ButtonFactory;
+import com.mbrlabs.mundus.editor.ui.widgets.icon.SymbolIcon;
 import lombok.RequiredArgsConstructor;
 import net.nevinsky.abyssus.core.ModelBatch;
 import org.mockito.Mockito;
@@ -116,6 +120,7 @@ public class TestConfig {
 
         var buttonFactoryMock = mock(ButtonFactory.class);
         when(buttonFactoryMock.createButton(anyString())).thenReturn(buttonMock);
+        when(buttonFactoryMock.createButton(any(SymbolIcon.class))).thenReturn(buttonMock);
 
         var res = mock(UiComponentHolder.class);
         when(res.getButtonFactory()).thenReturn(buttonFactoryMock);
@@ -131,5 +136,13 @@ public class TestConfig {
     public EcsConfigurator ecsConfigurator(AssetManager assetManager, TerrainService terrainService,
                                            ModelService modelService) {
         return new EcsConfigurator(assetManager, terrainService, modelService);
+    }
+
+    @Bean
+    @Primary
+    public InputService inputManager(ToolManager toolManager) {
+        var res = new InputService(toolManager);
+        res.addProcessor(toolManager);
+        return res;
     }
 }

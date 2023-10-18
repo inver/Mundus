@@ -1,4 +1,4 @@
-package com.mbrlabs.mundus.editor.config;
+package com.mbrlabs.mundus.editor.ui;
 
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.Separator;

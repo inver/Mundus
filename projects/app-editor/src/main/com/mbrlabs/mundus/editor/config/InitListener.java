@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.kotcrab.vis.ui.VisUI;
 import com.mbrlabs.mundus.editor.Editor;
+import com.mbrlabs.mundus.editor.ui.UiComponentHolder;
 import com.mbrlabs.mundus.editor.ui.widgets.icon.FontRenderer;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 

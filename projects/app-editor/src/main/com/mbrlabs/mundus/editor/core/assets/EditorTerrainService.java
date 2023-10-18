@@ -9,7 +9,6 @@ import com.mbrlabs.mundus.commons.assets.terrain.TerrainMeta;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAssetLoader;
 import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
 import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObjectDelegate;
-import com.mbrlabs.mundus.commons.terrain.TerrainObject;
 import com.mbrlabs.mundus.commons.terrain.TerrainService;
 import com.mbrlabs.mundus.editor.core.ecs.EcsService;
 import com.mbrlabs.mundus.editor.core.ecs.PickableComponent;
@@ -19,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedOutputStream;
@@ -82,17 +82,22 @@ public class EditorTerrainService extends TerrainService {
         return asset;
     }
 
-    public int createTerrain() {
+    public int createTerrain(String name, int vertexResolution, int size, float posX, float posY, float posZ) {
         var world = ctx.getCurrentWorld();
 
         var id = world.create();
 
-        var asset = createAndSaveAsset(TerrainObject.DEFAULT_VERTEX_RESOLUTION, TerrainObject.DEFAULT_SIZE);
+        var asset = createAndSaveAsset(vertexResolution, size);
 
         var terrain = createFromAsset(asset);
 
-        ecsService.addEntityBaseComponents(world, id, -1, "Terrain " + id,
-                new PositionComponent(),
+        var position = new PositionComponent();
+        position.getLocalPosition().set(posX, posY, posZ);
+        if (StringUtils.isEmpty(name)) {
+            name = "Terrain " + id;
+        }
+
+        ecsService.addEntityBaseComponents(world, id, -1, name, position,
                 PickableComponent.of(id, new RenderableObjectDelegate(terrain, ShaderConstants.PICKER)),
                 new RenderableObjectDelegate(terrain, ShaderConstants.TERRAIN).asComponent()
         );

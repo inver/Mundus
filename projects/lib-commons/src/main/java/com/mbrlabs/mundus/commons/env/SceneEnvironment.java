@@ -38,6 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 public class SceneEnvironment extends Environment {
     private BaseLight ambientLight = new BaseLight();
     private Fog fog = new Fog();
+    private boolean skyboxEnabled;
     private String skyboxName;
 
     public void setAmbientLight(Color color, float intensity) {
@@ -129,6 +130,14 @@ public class SceneEnvironment extends Environment {
             dirLights.lights.removeValue(light, true);
         }
         return this;
+    }
+
+    public boolean isSkyboxEnabled() {
+        return skyboxEnabled;
+    }
+
+    public void setSkyboxEnabled(boolean skyboxEnabled) {
+        this.skyboxEnabled = skyboxEnabled;
     }
 
     public void setSkyboxName(String skyboxName) {

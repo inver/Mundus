@@ -11,6 +11,7 @@ import com.mbrlabs.mundus.editor.ui.widgets.FileChooserField;
 import com.mbrlabs.mundus.editor.ui.widgets.ImageChooserField;
 import com.mbrlabs.mundus.editor.utils.FileFormatUtils;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -40,7 +41,7 @@ public class FileChooserFieldPresenter {
         });
     }
 
-    public void initImageChooserField(final ImageChooserField field) {
+    public void initImageChooserField(@NotNull final ImageChooserField field) {
         field.getSelectButton().addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {

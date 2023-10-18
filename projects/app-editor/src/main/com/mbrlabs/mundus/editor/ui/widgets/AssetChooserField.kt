@@ -27,7 +27,7 @@ import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerListener
  * @author Marcus Brummer
  * @version 13-10-2016
  */
-class AssetSelectionField : VisTable() {
+class AssetChooserField : VisTable() {
 
     private val textField = VisTextField()
     val selectButton = VisTextButton("Select")

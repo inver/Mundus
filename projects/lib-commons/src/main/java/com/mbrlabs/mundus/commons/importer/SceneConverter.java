@@ -60,6 +60,7 @@ public class SceneConverter {
         dto.setFogEnabled(scene.getEnvironment().isFogEnabled());
         dto.setFog(scene.getEnvironment().getFog());
 
+        dto.setSkyboxEnabled(scene.getEnvironment().isSkyboxEnabled());
         dto.setSkyboxName(scene.getEnvironment().getSkyboxName());
         return dto;
     }
@@ -94,6 +95,8 @@ public class SceneConverter {
         } else {
             scene.getEnvironment().disableFog();
         }
+
+        scene.getEnvironment().setSkyboxEnabled(dto.isSkyboxEnabled());
         scene.getEnvironment().setSkyboxName(dto.getSkyboxName());
     }
 }

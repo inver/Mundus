@@ -1,6 +1,7 @@
 package com.mbrlabs.mundus.commons.tester;
 
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowAdapter;
 import com.badlogic.gdx.files.FileHandle;
@@ -14,7 +15,11 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.UBJsonReader;
+import com.mbrlabs.mundus.commons.assets.AppFileHandle;
 import com.mbrlabs.mundus.commons.loader.AssimpWorker;
+import com.mbrlabs.mundus.commons.loader.G3dModelLoader;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import net.nevinsky.abyssus.core.ModelBatch;
@@ -39,19 +44,21 @@ public class TesterListener extends Lwjgl3WindowAdapter implements ApplicationLi
     private final Environment environment = new Environment();
     private final AssimpWorker loader = new AssimpWorker();
 
+    private final G3dModelLoader g3dModelLoader = new G3dModelLoader(new UBJsonReader());
+
     @SneakyThrows
     @Override
     public void create() {
-        loadModel();
         createCamera();
-//        createCube();
+//        loadModel();
+        createCube();
 
         var shaderConfig = new ShaderConfig();
         shaderConfig.setVertexShader(
-                IOUtils.resourceToString("shader/default.vert.glsl", Charset.defaultCharset(), this.getClass()
+                IOUtils.resourceToString("shader/sky.vert.glsl", Charset.defaultCharset(), this.getClass()
                         .getClassLoader()));
         shaderConfig.setFragmentShader(
-                IOUtils.resourceToString("shader/default.frag.glsl", Charset.defaultCharset(), this.getClass()
+                IOUtils.resourceToString("shader/sky.frag.glsl", Charset.defaultCharset(), this.getClass()
                         .getClassLoader()));
 
         modelBatch = new ModelBatch(new DefaultShaderProvider(shaderConfig));
@@ -74,9 +81,15 @@ public class TesterListener extends Lwjgl3WindowAdapter implements ApplicationLi
 
     private void createCube() {
         var modelBuilder = new ModelBuilder();
-        var model = modelBuilder.createBox(5f, 5f, 5f,
-                new Material(ColorAttribute.createDiffuse(Color.GREEN)),
-                VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
+
+        var model = g3dModelLoader.loadModel(new AppFileHandle("g3d/skydome.g3db", Files.FileType.Classpath));
+
+//        var model = modelBuilder.createSphere(1, 1, 1, 12, 12,
+//                new Material(ColorAttribute.createDiffuse(Color.GREEN)),
+//                VertexAttributes.Usage.Position);
+//        var model = modelBuilder.createBox(1, 1, 1,
+//                new Material(ColorAttribute.createDiffuse(Color.GREEN)),
+//                VertexAttributes.Usage.Position);
         modelInstance = new ModelInstance(model);
     }
 

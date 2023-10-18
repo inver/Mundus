@@ -201,6 +201,10 @@
       font: font-norm,
       fontColor: white
     },
+    disabled: {
+      font: font-norm,
+      fontColor: grey
+    }
     link-label: {
       fontColor: link-label,
       font: font-norm
@@ -822,6 +826,14 @@
   },
   LabelStyle: {
     icon: {
+      font: font-symbol
+      fontColor: white
+    },
+    tooltip: {
+      font: font-symbol
+      fontColor: teal
+    },
+    tooltipActive: {
       font: font-symbol
       fontColor: white
     }

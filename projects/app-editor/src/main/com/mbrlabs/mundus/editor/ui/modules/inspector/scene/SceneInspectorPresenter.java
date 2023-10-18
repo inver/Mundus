@@ -6,30 +6,34 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisTextField;
 import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter;
+import com.mbrlabs.mundus.commons.assets.Asset;
+import com.mbrlabs.mundus.commons.assets.AssetManager;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
-import com.mbrlabs.mundus.commons.env.lights.BaseLight;
+import com.mbrlabs.mundus.editor.core.ProjectConstants;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent;
 import com.mbrlabs.mundus.editor.events.SceneChangedEvent;
+import com.mbrlabs.mundus.editor.ui.AppUi;
+import com.mbrlabs.mundus.editor.ui.modules.dialogs.skybox.SkyboxDialog;
 import com.mbrlabs.mundus.editor.ui.modules.outline.ClickButtonListener;
 import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerPresenter;
-import com.mbrlabs.mundus.editor.ui.widgets.presenter.FileChooserFieldPresenter;
+import com.mbrlabs.mundus.editor.ui.widgets.presenter.AssetChooserFieldPresenter;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class SceneInspectorPresenter {
+    private final AppUi appUi;
     private final EditorCtx ctx;
     private final EventBus eventBus;
-    private final FileChooserFieldPresenter fileChooserFieldPresenter;
     private final ColorPickerPresenter colorPickerPresenter;
-
-    public BaseLight getValue() {
-        return getEnv().getAmbientLight();
-    }
+    private final AssetChooserFieldPresenter assetChooserFieldPresenter;
+    private final AssetManager assetManager;
+    private final SkyboxDialog skyboxDialog;
 
     public void initAmbientLightWidget(AmbientLightWidget ambientLightWidget) {
         eventBus.register((ProjectChangedEvent.ProjectChangedListener) event -> {
@@ -138,43 +142,42 @@ public class SceneInspectorPresenter {
     }
 
     public void initSkyboxWidget(SkyboxWidget skyboxWidget) {
-        fileChooserFieldPresenter.initImageChooserField(skyboxWidget.getNegativeX());
-        fileChooserFieldPresenter.initImageChooserField(skyboxWidget.getNegativeY());
-        fileChooserFieldPresenter.initImageChooserField(skyboxWidget.getNegativeZ());
-        fileChooserFieldPresenter.initImageChooserField(skyboxWidget.getPositiveX());
-        fileChooserFieldPresenter.initImageChooserField(skyboxWidget.getPositiveY());
-        fileChooserFieldPresenter.initImageChooserField(skyboxWidget.getPositiveZ());
+        assetChooserFieldPresenter.init(skyboxWidget.getSkyboxAssetField());
+        eventBus.register((ProjectChangedEvent.ProjectChangedListener) event -> onProjectOrSceneChanged(skyboxWidget));
+        eventBus.register((SceneChangedEvent.SceneChangedListener) event -> onProjectOrSceneChanged(skyboxWidget));
+        skyboxWidget.getEnabled().addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                getEnv().setSkyboxEnabled(((VisCheckBox) actor).isChecked());
+            }
+        });
+        skyboxWidget.getSkyboxAssetField().setPickerListener(asset -> setSkyboxName(asset.getName()));
+        skyboxWidget.getDefaultBtn()
+                .addListener(new ClickButtonListener(() -> setSkyboxName(ProjectConstants.DEFAULT_SKYBOX_NAME)));
 
         skyboxWidget.getCreateBtn().addListener(new ClickButtonListener(() -> {
-//                val scene = ctx.current.currentScene;
-//                val oldSkybox = scene.skyboxName
-//                oldSkybox?.dispose()
-
-//                scene.skybox = Skybox(
-//                    positiveX.file, negativeX.file,
-//                    positiveY.file, negativeY.file, positiveZ.file, negativeZ.file
-//                )
-            skyboxWidget.resetImages();
+            skyboxDialog.init(null);
+            appUi.showDialog(skyboxDialog);
+        }));
+        skyboxWidget.getEditBtn().addListener(new ClickButtonListener(() -> {
+            skyboxDialog.init(getEnv().getSkyboxName());
+            appUi.showDialog(skyboxDialog);
         }));
 
-        // default skybox btn
-        skyboxWidget.getDefaultBtn().addListener(new ClickButtonListener(() -> {
-//            var scene = ctx.current.currentScene;
+    }
 
-//                if (scene.skyboxName != null) {
-//                    scene.skyboxName.dispose()
-//                }
-//                scene.skybox = createDefaultSkybox()
-            skyboxWidget.resetImages();
-        }));
+    private void onProjectOrSceneChanged(SkyboxWidget skyboxWidget) {
+        var environment = getEnv();
+        Asset<?> asset = null;
+        if (StringUtils.isNotEmpty(environment.getSkyboxName())) {
+            asset = assetManager.loadCurrentProjectAsset(environment.getSkyboxName());
+        }
+        skyboxWidget.resetValues(environment.isSkyboxEnabled(), asset);
+    }
 
-        // delete skybox btn
-        skyboxWidget.getDeleteBtn().addListener(new ClickButtonListener(() -> {
-            var scene = ctx.getCurrent().getCurrentScene();
-//            scene.
-//                scene.skyboxName.dispose()
-//                scene.skybox = null
-            skyboxWidget.resetImages();
-        }));
+    private void setSkyboxName(String name) {
+        ctx.getCurrent().getCurrentScene().getEnvironment().setSkyboxName(name);
+
+        eventBus.post(new SceneChangedEvent());
     }
 }

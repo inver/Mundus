@@ -36,6 +36,7 @@ class ShortcutController(
     private val projectManager: ProjectManager,
     private val history: CommandHistory,
     private val toolManager: ToolManager,
+    private val inputService: InputService,
     private val exportDialog: ExportDialog,
     private val toaster: Toaster,
     private val toolbar: AppToolbar
@@ -79,23 +80,27 @@ class ShortcutController(
             }
 
             Input.Keys.T -> {
-                toolManager.activateTool(toolManager.translateTool)
+                inputService.activateTool(toolManager.translateTool)
                 toolbar.updateActiveToolButton()
             }
 
             Input.Keys.R -> {
-                toolManager.activateTool(toolManager.rotateTool)
+                inputService.activateTool(toolManager.rotateTool)
                 toolbar.updateActiveToolButton()
             }
 
             Input.Keys.G -> {
-                toolManager.activateTool(toolManager.scaleTool)
+                inputService.activateTool(toolManager.scaleTool)
                 toolbar.updateActiveToolButton()
             }
 
             Input.Keys.F -> {
-                toolManager.activateTool(toolManager.selectionTool)
+                inputService.activateTool(toolManager.selectionTool)
                 toolbar.updateActiveToolButton()
+            }
+
+            Input.Keys.ESCAPE -> {
+                inputService.activateDefaultTool()
             }
         }
 

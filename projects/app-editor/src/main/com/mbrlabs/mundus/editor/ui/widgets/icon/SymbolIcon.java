@@ -30,6 +30,7 @@ public enum SymbolIcon {
     TERRAIN("\ue3f7"),
     MODEL("\uea1b"),
     SHADER("\ue3a3"),
+    HELP("\ue887"),
     HIERARCHY("\ue97a");
 
     private final String symbol;

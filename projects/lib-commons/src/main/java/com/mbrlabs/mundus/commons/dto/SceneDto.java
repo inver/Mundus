@@ -35,6 +35,7 @@ public class SceneDto {
     private boolean fogEnabled;
     private Fog fog;
 
+    private boolean skyboxEnabled;
     private String skyboxName;
 
     private Object ecs;
