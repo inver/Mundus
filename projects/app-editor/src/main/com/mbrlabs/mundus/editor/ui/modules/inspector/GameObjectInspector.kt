@@ -21,17 +21,15 @@ import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.mbrlabs.mundus.commons.core.ecs.component.NameComponent
 import com.mbrlabs.mundus.commons.core.ecs.component.TypeComponent
-import com.mbrlabs.mundus.editor.config.UiComponentHolder
+import com.mbrlabs.mundus.editor.ui.UiComponentHolder
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.history.CommandHistory
 import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.PreviewGenerator
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
-import com.mbrlabs.mundus.editor.ui.modules.inspector.components.ComponentWidget
-import com.mbrlabs.mundus.editor.ui.modules.inspector.components.DirectionalLightComponentWidget
-import com.mbrlabs.mundus.editor.ui.modules.inspector.components.IdentifierWidget
-import com.mbrlabs.mundus.editor.ui.modules.inspector.components.TransformWidget
+import com.mbrlabs.mundus.editor.ui.modules.inspector.components.*
+import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.TerrainComponentWidget
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.TerrainWidgetPresenter
 import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerPresenter
 
@@ -111,7 +109,20 @@ class GameObjectInspector(
                     uiComponentHolder, entityId, colorPickerPresenter
                 )
             )
+        } else if (component.type == TypeComponent.Type.TERRAIN) {
+            componentWidgets.add(
+                TerrainComponentWidget(
+                    uiComponentHolder, entityId, terrainWidgetPresenter
+                )
+            )
+        } else if (component.type == TypeComponent.Type.OBJECT) {
+            componentWidgets.add(
+                ModelComponentWidget(
+                    uiComponentHolder, entityId
+                )
+            )
         }
+
 
 //        for (component in gameObject!!.components) {
 //            // model component widget!!

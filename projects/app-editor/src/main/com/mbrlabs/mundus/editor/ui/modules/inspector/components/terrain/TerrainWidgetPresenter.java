@@ -16,6 +16,7 @@ import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.GlobalBrushSettingsChangedEvent;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
+import com.mbrlabs.mundus.editor.input.InputService;
 import com.mbrlabs.mundus.editor.tools.ToolManager;
 import com.mbrlabs.mundus.editor.tools.brushes.TerrainBrush;
 import com.mbrlabs.mundus.editor.ui.AppUi;
@@ -39,6 +40,7 @@ public class TerrainWidgetPresenter {
     private final EditorAssetManager assetManager;
     private final EventBus eventBus;
     private final AppUi appUi;
+    private final InputService inputService;
     private final ToolManager toolManager;
     private final AssetPickerDialog assetPickerDialog;
     private final Toaster toaster;
@@ -57,11 +59,11 @@ public class TerrainWidgetPresenter {
             }
         });
 
-        for (var brush : toolManager.terrainBrushes) {
+        for (var brush : toolManager.getTerrainBrushes()) {
             grid.addBrush(brush).addListener(new ClickButtonListener(() -> {
                 grid.activateBrush(brush);
                 try {
-                    toolManager.activateTool(brush);
+                    inputService.activateTool(brush);
                 } catch (TerrainBrush.ModeNotSupportedException e) {
                     log.error("ERROR", e);
                     Dialogs.showErrorDialog(appUi, e.getMessage());

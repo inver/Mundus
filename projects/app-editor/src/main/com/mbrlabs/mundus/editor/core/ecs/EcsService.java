@@ -12,6 +12,7 @@ import com.mbrlabs.mundus.commons.core.ecs.component.Point2PointPositionComponen
 import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
 import com.mbrlabs.mundus.commons.core.ecs.component.TypeComponent;
 import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
+import com.mbrlabs.mundus.editor.ui.components.camera.CameraBodyRenderDelegate;
 import com.mbrlabs.mundus.editor.ui.components.handle.DirectionHandleRenderDelegate;
 import com.mbrlabs.mundus.editor.ui.components.handle.DirectionLineRenderDelegate;
 
@@ -32,22 +33,25 @@ public class EcsService {
 
     public int createEntityWithDirection(World world, int parentId, Vector3 rootPosition, Vector3 handlePosition,
                                          String nodeName, RenderableDelegate renderableDelegate,
-                                         Component... rootComponents) {
+                                         RenderableDelegate pickerRenderableDelegate, Component... rootComponents) {
         int handleId = world.create();
         int rootId = world.create();
         int lineId = world.create();
 
         //todo move creation to archetypes
+
+        // add handle component
         addEntityBaseComponents(world, handleId, rootId, HANDLE_NAME)
                 .add(new TypeComponent(TypeComponent.Type.HANDLE))
                 .add(new PositionComponent(handlePosition))
                 .add(new DirectionHandleRenderDelegate().asComponent())
                 .add(PickableComponent.of(handleId, new DirectionHandleRenderDelegate(ShaderConstants.PICKER)));
 
+        // add root component, e.g. body of camera
         addEntityBaseComponents(world, rootId, parentId, nodeName + " " + rootId, rootComponents)
                 .add(new PositionComponent(rootPosition, handleId))
                 .add(renderableDelegate.asComponent())
-                .add(PickableComponent.of(rootId, renderableDelegate))
+                .add(PickableComponent.of(rootId, pickerRenderableDelegate))
                 .add(new DependenciesComponent(lineId, rootId));
 
         world.edit(lineId)

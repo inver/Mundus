@@ -16,63 +16,27 @@
 
 package com.mbrlabs.mundus.commons.dto;
 
+import com.mbrlabs.mundus.commons.env.fog.Fog;
 import com.mbrlabs.mundus.commons.env.lights.BaseLight;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 /**
  * @author Tibor Zsuro
  * @version 12-08-2021
  */
+@Data
 public class SceneDto {
     private long id;
     private String name;
-    private FogDTO fog;
-    private String skyboxName;
+
+    private boolean ambientLightEnabled;
     private BaseLight ambientLight;
 
-    @Getter
-    @Setter
+    private boolean fogEnabled;
+    private Fog fog;
+
+    private boolean skyboxEnabled;
+    private String skyboxName;
+
     private Object ecs;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public FogDTO getFog() {
-        return fog;
-    }
-
-    public void setFog(FogDTO fog) {
-        this.fog = fog;
-    }
-
-    public String getSkyboxName() {
-        return skyboxName;
-    }
-
-    public void setSkyboxName(String skyboxName) {
-        this.skyboxName = skyboxName;
-    }
-
-    public BaseLight getAmbientLight() {
-        return ambientLight;
-    }
-
-    public void setAmbientLight(BaseLight ambientLight) {
-        this.ambientLight = ambientLight;
-    }
-
 }

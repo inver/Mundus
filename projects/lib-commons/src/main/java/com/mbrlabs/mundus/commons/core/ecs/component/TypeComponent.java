@@ -20,6 +20,7 @@ public class TypeComponent extends Component {
         LIGHT_POINT,
         LIGHT_SPOT,
         OBJECT,
+        TERRAIN,
         CAMERA,
         HANDLE
     }

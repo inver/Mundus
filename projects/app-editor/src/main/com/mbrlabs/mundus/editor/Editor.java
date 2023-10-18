@@ -7,11 +7,10 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.mbrlabs.mundus.commons.assets.AssetType;
 import com.mbrlabs.mundus.commons.assets.skybox.SkyboxAsset;
-import com.mbrlabs.mundus.editor.config.AppEnvironment;
+import com.mbrlabs.mundus.editor.core.project.AssetKey;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.project.ProjectManager;
 import com.mbrlabs.mundus.editor.core.project.ProjectWatcher;
-import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
 import com.mbrlabs.mundus.editor.core.shader.ShaderStorage;
 import com.mbrlabs.mundus.editor.events.CameraChangedEvent;
 import com.mbrlabs.mundus.editor.events.EventBus;
@@ -19,7 +18,7 @@ import com.mbrlabs.mundus.editor.events.ProjectChangedEvent;
 import com.mbrlabs.mundus.editor.events.SceneChangedEvent;
 import com.mbrlabs.mundus.editor.input.DirectCameraController;
 import com.mbrlabs.mundus.editor.input.FreeCamController;
-import com.mbrlabs.mundus.editor.input.InputManager;
+import com.mbrlabs.mundus.editor.input.InputService;
 import com.mbrlabs.mundus.editor.input.ShortcutController;
 import com.mbrlabs.mundus.editor.tools.ToolManager;
 import com.mbrlabs.mundus.editor.ui.AppUi;
@@ -43,8 +42,6 @@ import net.nevinsky.abyssus.core.shader.ShaderProvider;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -55,7 +52,7 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
     private final FreeCamController camController;
     private final DirectCameraController directCameraController;
     private final ShortcutController shortcutController;
-    private final InputManager inputManager;
+    private final InputService inputService;
     private final ProjectManager projectManager;
     private final ToolManager toolManager;
     private final ModelBatch batch;
@@ -135,46 +132,45 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
     }
 
     private void setupInput() {
-        // NOTE: order in wich processors are added is important: first added,
+        // NOTE: order in which processors are added is important: first added,
         // first executed!
-        inputManager.addProcessor(shortcutController);
-        inputManager.addProcessor(appUi);
+        inputService.addProcessor(shortcutController);
+        inputService.addProcessor(appUi);
         // when user does not click on a ui element -> unfocus UI
-        inputManager.addProcessor(new InputAdapter() {
+        inputService.addProcessor(new InputAdapter() {
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
                 appUi.unfocusAll();
                 return false;
             }
         });
-        inputManager.addProcessor(toolManager);
-        inputManager.addProcessor(directCameraController);
+        inputService.addProcessor(toolManager);
+        inputService.addProcessor(directCameraController);
 //        inputManager.addProcessor(camController);
-        toolManager.setDefaultTool();
+        inputService.activateDefaultTool();
     }
 
     private void setupSceneWidget() {
         var scene = ctx.getCurrent().getCurrentScene();
 
-        appUi.getSceneWidget().setCam(ctx.getCurrent().getCamera());
+        appUi.getSceneWidget().setCamera(ctx.getCurrent().getCamera());
         appUi.getSceneWidget().setRenderer(camera -> {
             try {
-                scene.getAssets().stream()
-                        .filter(a -> a.getType() == AssetType.SKYBOX
-                                && a.getName().equals(scene.getEnvironment().getSkyboxName()))
-                        .findFirst()
-                        .ifPresent(asset -> {
-                            try {
-                                batch.begin(camera);
-                                batch.render(((SkyboxAsset) asset).getBoxInstance(), scene.getEnvironment(),
-                                        ShaderConstants.SKYBOX);
-                            } catch (Exception e) {
-                                log.error("ERROR", e);
-                            } finally {
-                                batch.end();
-                            }
-                        });
-
+                if (scene.getEnvironment().isSkyboxEnabled()) {
+                    var skybox = ctx.getCurrent().getProjectAssets()
+                            .get(new AssetKey(AssetType.SKYBOX, scene.getEnvironment().getSkyboxName()));
+                    if (skybox != null) {
+                        try {
+                            batch.begin(camera);
+                            batch.render(((SkyboxAsset) skybox).getBoxInstance(), scene.getEnvironment(),
+                                    "sky");
+                        } catch (Exception e) {
+                            log.error("ERROR", e);
+                        } finally {
+                            batch.end();
+                        }
+                    }
+                }
                 batch.begin(camera);
                 scene.render(batch, scene.getEnvironment(), shaderStorage, Gdx.graphics.getDeltaTime());
                 wirePlane.render(batch, scene.getEnvironment(), shaderStorage, Gdx.graphics.getDeltaTime());
@@ -192,7 +188,7 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
         compass.setWorldCam(ctx.getCurrent().getCamera());
         directCameraController.setCurrent(ctx.getCurrent().getCamera());
 //        camController.setCamera(ctx.getCamera());
-        appUi.getSceneWidget().setCam(ctx.getCurrent().getCamera());
+        appUi.getSceneWidget().setCamera(ctx.getCurrent().getCamera());
         ctx.setViewport(appUi.getSceneWidget().getViewport());
     }
 

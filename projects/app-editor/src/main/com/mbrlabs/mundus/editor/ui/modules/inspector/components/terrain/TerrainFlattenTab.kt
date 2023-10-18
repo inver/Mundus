@@ -21,16 +21,19 @@ import com.badlogic.gdx.utils.Align
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.tabbedpane.Tab
+import com.mbrlabs.mundus.editor.ui.UiComponentHolder
 import com.mbrlabs.mundus.editor.tools.brushes.TerrainBrush
 
 /**
  * @author Marcus Brummer
  * @version 30-01-2016
  */
-class TerrainFlattenTab : Tab(false, false) {
+class TerrainFlattenTab(
+    uiComponentHolder: UiComponentHolder
+) : Tab(false, false) {
 
     private val table = VisTable()
-    val grid = TerrainBrushGrid(TerrainBrush.BrushMode.FLATTEN)
+    val grid = TerrainBrushGrid(uiComponentHolder, TerrainBrush.BrushMode.FLATTEN)
 
     init {
         table.align(Align.left)

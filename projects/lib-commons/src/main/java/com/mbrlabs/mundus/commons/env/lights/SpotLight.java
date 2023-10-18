@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 @Getter
-public class SpotLight extends AmbientLight {
+public class SpotLight extends DirectionalLight {
     private final Vector3 position = new Vector3();
 
     public SpotLight(final SpotLight copyFrom) {
@@ -35,7 +35,6 @@ public class SpotLight extends AmbientLight {
         position.set(copyFrom.position);
     }
 
-    @Override
     public SpotLight copy() {
         return new SpotLight(this);
     }

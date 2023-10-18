@@ -2,7 +2,7 @@ package com.mbrlabs.mundus.editor.ui.widgets.colorPicker;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.mbrlabs.mundus.editor.config.UiComponentHolder;
+import com.mbrlabs.mundus.editor.ui.UiComponentHolder;
 import com.mbrlabs.mundus.editor.ui.AppUi;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

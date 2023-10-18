@@ -17,7 +17,6 @@ public class AppUi extends Stage {
 
     public AppUi() {
         super(new ScreenViewport());
-//        sceneWidget = new RenderWidget((ScreenViewport) getViewport());
         sceneWidget = new RenderWidget(this);
     }
 

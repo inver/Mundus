@@ -19,6 +19,6 @@ public class EditorAssetManagerTest extends BaseCtxTest {
         var assets = new HashMap<AssetKey, Asset<?>>();
         assetManager.loadStandardAssets(assets);
 
-        assertEquals(22, assets.size());
+        assertEquals(23, assets.size());
     }
 }

@@ -16,7 +16,7 @@
 
 package com.mbrlabs.mundus.editor.ui.modules.inspector.components
 
-import com.mbrlabs.mundus.editor.config.UiComponentHolder
+import com.mbrlabs.mundus.editor.ui.UiComponentHolder
 import com.mbrlabs.mundus.editor.ui.modules.inspector.BaseInspectorWidget
 
 /**

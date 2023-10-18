@@ -23,7 +23,15 @@ public enum SymbolIcon {
     LIGHT("\ue42e"),
     DEBLUR("\ueb77"),
     CHEVRON_RIGHT("\ue5cc"),
-    IMPORT("\ue9fc");
+    IMPORT("\ue9fc"),
+    SKYBOX("\uea46"),
+    SCENE("\ue2a7"),
+    MATERIAL("\ue53b"),
+    TERRAIN("\ue3f7"),
+    MODEL("\uea1b"),
+    SHADER("\ue3a3"),
+    HELP("\ue887"),
+    HIERARCHY("\ue97a");
 
     private final String symbol;
 

@@ -41,9 +41,11 @@ class IdentifierWidget(private val ctx: EditorCtx) : VisTable() {
     }
 
     private fun setupUI() {
-        add(active).padBottom(4f).left().top()
+        add(VisLabel("Name ")).padRight(4f).left().top()
         add(name).padBottom(4f).left().top().expandX().fillX().row()
-        add(VisLabel("Tag: ")).left().top()
+        add(VisLabel("Active ")).padRight(4f).left().top()
+        add(active).padBottom(4f).left().top().row()
+        add(VisLabel("Tag ")).padRight(4f).left().top()
         add(tag).top().left().expandX().fillX().row()
     }
 

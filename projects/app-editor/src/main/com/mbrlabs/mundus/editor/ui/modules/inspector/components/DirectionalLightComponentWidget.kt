@@ -19,7 +19,7 @@ package com.mbrlabs.mundus.editor.ui.modules.inspector.components
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextField
-import com.mbrlabs.mundus.editor.config.UiComponentHolder
+import com.mbrlabs.mundus.editor.ui.UiComponentHolder
 import com.mbrlabs.mundus.editor.ui.widgets.FloatFieldWithLabel
 import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerField
 import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerPresenter

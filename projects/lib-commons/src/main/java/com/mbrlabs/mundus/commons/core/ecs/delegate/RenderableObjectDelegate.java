@@ -1,6 +1,5 @@
 package com.mbrlabs.mundus.commons.core.ecs.delegate;
 
-import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.math.Matrix4;
 import com.mbrlabs.mundus.commons.core.ecs.base.RenderableDelegate;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
@@ -17,11 +16,11 @@ import net.nevinsky.abyssus.core.shader.ShaderProvider;
 @AllArgsConstructor
 public class RenderableObjectDelegate implements RenderableDelegate {
     private RenderableSceneObject asset;
-    private String shaderName;
+    private String shaderKey;
 
     @Override
     public void render(ModelBatch batch, SceneEnvironment environment, ShaderProvider shaders, float delta) {
-        batch.render(asset, environment, shaderName);
+        batch.render(asset, environment, shaderKey);
     }
 
     @Override

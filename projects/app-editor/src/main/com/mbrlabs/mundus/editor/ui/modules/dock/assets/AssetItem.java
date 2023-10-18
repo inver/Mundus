@@ -4,8 +4,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisImage;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
@@ -28,8 +30,10 @@ public class AssetItem extends WidgetGroup {
 //        setBackground("menu-bg");
 
         if (asset.getType() == AssetType.TEXTURE) {
-//            addActor(generator.generate(asset));
+            addActor(generator.generate(asset));
         } else if (asset.getType() == AssetType.MATERIAL) {
+            addActor(generator.generate(asset));
+        } else if (asset.getType() == AssetType.MODEL) {
 //            addActor(generator.generate(asset));
         }
         var table = new VisTable();
@@ -44,8 +48,11 @@ public class AssetItem extends WidgetGroup {
         table.setBackground(new TextureRegionDrawable(new Texture(bgPixmap)));
         table.setPosition(ASSET_BAR_PREVIEW_SIZE / 2, 0, bottom);
 
-        table.add(new VisImage(TextureUtils.load(IconUtils.getIcon(asset).getPath(), 20, 20)))
-                .width(20).height(20).padRight(2);
+        var icon = new VisLabel(
+                IconUtils.getIcon(asset).getSymbol(), VisUI.getSkin().get("icon", Label.LabelStyle.class)
+        );
+        icon.setFontScale(0.7f);
+        table.add(icon).width(20).height(20).padRight(2).padLeft(4).padTop(2);
 
         var nameLabel = new VisLabel(asset.getName(), "tiny");
         nameLabel.setWrap(true);
