@@ -75,12 +75,12 @@ public class InitListener extends Lwjgl3WindowAdapter implements ApplicationList
 
     @Override
     public void pause() {
-
+        // do nothing
     }
 
     @Override
     public void resume() {
-
+        // do nothing
     }
 
     @Override

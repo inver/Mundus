@@ -1,11 +1,10 @@
 package com.mbrlabs.mundus.editor.utils;
 
 import com.mbrlabs.mundus.editor.tools.picker.PickerIDAttribute;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public final class PickerColorEncoder {
-
-    private PickerColorEncoder() {
-    }
 
     public static int decode(int rgba8888Code) {
         if ((rgba8888Code & 0x000000FF) != 255) {

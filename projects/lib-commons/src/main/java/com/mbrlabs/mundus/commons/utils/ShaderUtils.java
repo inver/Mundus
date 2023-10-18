@@ -20,11 +20,13 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import lombok.experimental.UtilityClass;
 
 /**
  * @author Marcus Brummer
  * @version 23-11-2015
  */
+@UtilityClass
 public final class ShaderUtils {
 
     /**

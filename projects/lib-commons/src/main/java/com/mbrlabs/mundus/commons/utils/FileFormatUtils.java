@@ -17,7 +17,9 @@
 package com.mbrlabs.mundus.commons.utils;
 
 import com.badlogic.gdx.files.FileHandle;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public final class FileFormatUtils {
 
     public static final String FORMAT_3D_G3DB = "g3db";
