@@ -58,11 +58,11 @@ public class ToolManager extends InputAdapter implements Disposable, RenderableO
 
     @Getter
     private final List<TerrainBrush> terrainBrushes = new ArrayList<>();
-    public ModelPlacementTool modelPlacementTool;
-    public SelectionTool selectionTool;
-    public TranslateTool translateTool;
-    public RotateTool rotateTool;
-    public ScaleTool scaleTool;
+    private final ModelPlacementTool modelPlacementTool;
+    private final SelectionTool selectionTool;
+    private final TranslateTool translateTool;
+    private final RotateTool rotateTool;
+    private final ScaleTool scaleTool;
 
     public ToolManager(EditorCtx ctx, AppUi appUi, EventBus eventBus,
                        EntityPicker picker, ToolHandlePicker toolHandlePicker, ShapeRenderer shapeRenderer,
@@ -125,7 +125,7 @@ public class ToolManager extends InputAdapter implements Disposable, RenderableO
 
     @Override
     public void dispose() {
-        for (TerrainBrush brush : terrainBrushes) {
+        for (var brush : terrainBrushes) {
             brush.dispose();
         }
         translateTool.dispose();
@@ -149,5 +149,25 @@ public class ToolManager extends InputAdapter implements Disposable, RenderableO
 
     public Tool getActiveTool() {
         return activeTool;
+    }
+
+    public ModelPlacementTool getModelPlacementTool() {
+        return modelPlacementTool;
+    }
+
+    public SelectionTool getSelectionTool() {
+        return selectionTool;
+    }
+
+    public TranslateTool getTranslateTool() {
+        return translateTool;
+    }
+
+    public RotateTool getRotateTool() {
+        return rotateTool;
+    }
+
+    public ScaleTool getScaleTool() {
+        return scaleTool;
     }
 }

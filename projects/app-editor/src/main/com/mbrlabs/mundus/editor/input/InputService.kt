@@ -29,6 +29,7 @@ import org.springframework.stereotype.Component
 @Component
 class InputService(private val toolManager: ToolManager) : InputMultiplexer() {
 
+    // TODO move this to Editor.class
     init {
         Gdx.input.inputProcessor = this
     }
@@ -39,7 +40,7 @@ class InputService(private val toolManager: ToolManager) : InputMultiplexer() {
         //add tool to input manager after this toolManager
         var index = 0
         for (p in processors) {
-            if (p.equals(this)) {
+            if (p.equals(toolManager)) {
                 addProcessor(index, toolManager.activeTool)
                 break
             } else {

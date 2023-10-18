@@ -48,7 +48,7 @@ public class TerrainDialogPresenter {
     }
 
     private void selectEntityAndFireEvents(int createdId) {
-        toolManager.translateTool.entitySelected(createdId);
+        toolManager.getTranslateTool().entitySelected(createdId);
         eventBus.post(new SceneGraphChangedEvent());
         eventBus.post(new EntitySelectedEvent(createdId));
     }

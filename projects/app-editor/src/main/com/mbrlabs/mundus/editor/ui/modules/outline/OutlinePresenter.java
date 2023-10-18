@@ -77,7 +77,7 @@ public class OutlinePresenter {
 
                 var entityId = selection.first().getValue();
                 ctx.selectEntity(entityId);
-                toolManager.translateTool.entitySelected(entityId);
+                toolManager.getTranslateTool().entitySelected(entityId);
 
                 eventBus.post(new EntitySelectedEvent(entityId));
             }
@@ -192,7 +192,7 @@ public class OutlinePresenter {
     }
 
     private void selectEntityAndFireEvents(int createdId) {
-        toolManager.translateTool.entitySelected(createdId);
+        toolManager.getTranslateTool().entitySelected(createdId);
         eventBus.post(new SceneGraphChangedEvent());
         eventBus.post(new EntitySelectedEvent(createdId));
     }
