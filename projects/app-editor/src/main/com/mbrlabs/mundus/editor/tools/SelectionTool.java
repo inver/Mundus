@@ -23,6 +23,7 @@ import com.mbrlabs.mundus.editor.events.EntitySelectedEvent;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.tools.picker.EntityPicker;
+import com.mbrlabs.mundus.editor.ui.AppUi;
 import com.mbrlabs.mundus.editor.ui.widgets.icon.SymbolIcon;
 import lombok.extern.slf4j.Slf4j;
 import net.nevinsky.abyssus.core.ModelBatch;

@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 @Getter
 public class BaseLight {
     protected Color color = new Color(1, 1, 1, 1);
-    protected float intensity = 1f;
+    protected float intensity = 0.3f;
 }

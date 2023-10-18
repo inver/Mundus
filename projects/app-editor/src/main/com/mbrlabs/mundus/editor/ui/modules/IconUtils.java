@@ -1,24 +1,24 @@
 package com.mbrlabs.mundus.editor.ui.modules;
 
 import com.mbrlabs.mundus.commons.assets.Asset;
-import com.mbrlabs.mundus.editor.ui.widgets.Icons;
+import com.mbrlabs.mundus.editor.ui.widgets.icon.SymbolIcon;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public final class IconUtils {
-    public static Icons getIcon(Asset asset) {
+    public static SymbolIcon getIcon(Asset asset) {
         switch (asset.getType()) {
             case TERRAIN:
-                return Icons.TERRAIN;
+                return SymbolIcon.TERRAIN;
             case MATERIAL:
-                return Icons.MATERIAL;
+                return SymbolIcon.MATERIAL;
             case MODEL:
-                return Icons.MODEL;
+                return SymbolIcon.MODEL;
             case TEXTURE:
-                return Icons.TEXTURE;
+                return SymbolIcon.TEXTURE;
         }
 
         //todo add default icon
-        return Icons.SCENE;
+        return SymbolIcon.SCENE;
     }
 }

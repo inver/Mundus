@@ -55,7 +55,6 @@ public class ProjectContext implements Disposable {
     private String path;
 
     @JsonIgnore
-    @Getter
     private final Map<AssetKey, Asset<?>> projectAssets = new HashMap<>();
 
 //    @JsonIgnore
@@ -140,5 +139,9 @@ public class ProjectContext implements Disposable {
 
     public <T extends Asset<?>> T getAsset(AssetKey key) {
         return (T) projectAssets.get(key);
+    }
+
+    public Map<AssetKey, Asset<?>> getProjectAssets() {
+        return projectAssets;
     }
 }

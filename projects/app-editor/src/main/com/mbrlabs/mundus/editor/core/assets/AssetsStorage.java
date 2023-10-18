@@ -6,6 +6,8 @@ import com.mbrlabs.mundus.commons.assets.meta.Meta;
 import com.mbrlabs.mundus.commons.assets.shader.ShaderAsset;
 import com.mbrlabs.mundus.commons.assets.shader.ShaderAssetLoader;
 import com.mbrlabs.mundus.commons.assets.shader.ShaderMeta;
+import com.mbrlabs.mundus.commons.assets.skybox.SkyboxAsset;
+import com.mbrlabs.mundus.commons.assets.skybox.SkyboxMeta;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -43,5 +45,25 @@ public class AssetsStorage {
         assetWriter.writeAsset(asset);
 
         return shaderAssetLoader.load(commonMeta);
+    }
+
+    @SneakyThrows
+    public SkyboxAsset createSkybox() {
+        var commonMeta = new Meta<SkyboxMeta>();
+
+        var path = getAssetsFolder().child("Skybox_" + commonMeta.getUuid());
+        FileUtils.forceMkdir(path.file());
+
+        commonMeta.setFile(path);
+        commonMeta.setType(AssetType.SKYBOX);
+        commonMeta.setAdditional(new SkyboxMeta());
+
+        var asset = new SkyboxAsset(commonMeta);
+//        asset.setFragmentShader("");
+//        asset.setVertexShader("");
+        assetWriter.writeAsset(asset);
+
+//        return shaderAssetLoader.load(commonMeta);
+        return null;
     }
 }

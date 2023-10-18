@@ -73,6 +73,10 @@ public class EditorModelService extends ModelService {
     public void createModelEntity(ImportedModel importedModel) {
         var asset = importAndSaveAsset(importedModel);
 
+        createModelEntity(asset);
+    }
+
+    public int createModelEntity(ModelAsset asset) {
         var world = ctx.getCurrentWorld();
         var model = createFromAsset(asset);
 
@@ -82,6 +86,7 @@ public class EditorModelService extends ModelService {
                 PickableComponent.of(id, new RenderableObjectDelegate(model, ShaderConstants.PICKER)),
                 new RenderableObjectDelegate(model, DEFAULT_SHADER_KEY).asComponent()
         );
+        return id;
     }
 
 }

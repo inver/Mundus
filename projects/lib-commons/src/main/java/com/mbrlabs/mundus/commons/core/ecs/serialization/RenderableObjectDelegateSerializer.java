@@ -24,7 +24,7 @@ public class RenderableObjectDelegateSerializer implements JsonSerializer<Render
     public void write(Json json, RenderableObjectDelegate object, Class knownType) {
         json.writeObjectStart();
         json.writeValue("class", RenderableObjectDelegate.class.getName());
-        json.writeValue("shaderName", object.getShaderName());
+        json.writeValue("shaderKey", object.getShaderKey());
         json.writeValue("asset", object.getAsset());
         json.writeObjectEnd();
     }
@@ -33,7 +33,7 @@ public class RenderableObjectDelegateSerializer implements JsonSerializer<Render
     public RenderableObjectDelegate read(Json json, JsonValue jsonData, Class type) {
         var dto = json.readValue(RenderableSceneObject.Dto.class, jsonData.get("asset"));
         var res = new RenderableObjectDelegate();
-        res.setShaderName(jsonData.getString("shaderName"));
+        res.setShaderKey(jsonData.getString("shaderKey"));
         var asset = assetManager.loadCurrentProjectAsset(dto.getAssetName());
         switch (dto.getType()) {
             case TERRAIN:

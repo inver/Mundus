@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.kotcrab.vis.ui.util.dialog.InputDialogAdapter;
 import com.kotcrab.vis.ui.util.dialog.InputDialogListener;
 import com.kotcrab.vis.ui.widget.VisTree;
+import com.mbrlabs.mundus.commons.assets.AssetType;
 import com.mbrlabs.mundus.commons.core.ecs.component.NameComponent;
 import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
 import com.mbrlabs.mundus.commons.core.ecs.component.TypeComponent;
@@ -13,6 +14,7 @@ import com.mbrlabs.mundus.editor.core.assets.AssetsStorage;
 import com.mbrlabs.mundus.editor.core.assets.EditorTerrainService;
 import com.mbrlabs.mundus.editor.core.ecs.EcsService;
 import com.mbrlabs.mundus.editor.core.light.LightService;
+import com.mbrlabs.mundus.editor.core.project.AssetKey;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.project.ProjectManager;
 import com.mbrlabs.mundus.editor.events.EntitySelectedEvent;
@@ -21,7 +23,9 @@ import com.mbrlabs.mundus.editor.events.ProjectChangedEvent;
 import com.mbrlabs.mundus.editor.events.SceneChangedEvent;
 import com.mbrlabs.mundus.editor.events.SceneGraphChangedEvent;
 import com.mbrlabs.mundus.editor.tools.ToolManager;
+import com.mbrlabs.mundus.editor.ui.AppUi;
 import com.mbrlabs.mundus.editor.ui.components.camera.CameraService;
+import com.mbrlabs.mundus.editor.ui.modules.dialogs.terrain.AddTerrainDialog;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.NotImplementedException;
@@ -33,6 +37,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class OutlinePresenter {
 
+    private final AppUi appUi;
     private final EditorCtx ctx;
     private final EventBus eventBus;
     private final ToolManager toolManager;
@@ -42,6 +47,7 @@ public class OutlinePresenter {
     private final ProjectManager projectManager;
     private final LightService lightService;
     private final EcsService ecsService;
+    private final AddTerrainDialog addTerrainDialog;
 
     public void init(@NotNull Outline outline) {
         eventBus.register((ProjectChangedEvent.ProjectChangedListener) event -> {
@@ -71,7 +77,7 @@ public class OutlinePresenter {
 
                 var entityId = selection.first().getValue();
                 ctx.selectEntity(entityId);
-                toolManager.translateTool.entitySelected(entityId);
+                toolManager.getTranslateTool().entitySelected(entityId);
 
                 eventBus.post(new EntitySelectedEvent(entityId));
             }
@@ -102,13 +108,14 @@ public class OutlinePresenter {
         return () -> {
             try {
                 log.debug("Add terrain game object in root node.");
-
-                terrainService.createTerrain();
-
-                projectManager.saveProject(ctx.getCurrent());
-                //todo is needed import event here?
-//                    eventBus.post(new AssetImportEvent(asset));
-                eventBus.post(new SceneGraphChangedEvent());
+                appUi.showDialog(addTerrainDialog);
+//                var entityId = terrainService.createTerrain();
+//
+//                projectManager.saveProject(ctx.getCurrent());
+//                //todo is needed import event here?
+////                    eventBus.post(new AssetImportEvent(asset));
+//
+//                selectEntityAndFireEvents(entityId);
             } catch (Exception e) {
                 log.error("ERROR", e);
             }
@@ -149,8 +156,7 @@ public class OutlinePresenter {
             log.trace("Delete entity with id {}", outline.getSelectedEntityId());
             int selectedParent = ecsService.removeEntity(ctx.getCurrentWorld(), outline.getSelectedEntityId());
 
-            eventBus.post(new SceneGraphChangedEvent());
-            eventBus.post(new EntitySelectedEvent(selectedParent));
+            selectEntityAndFireEvents(selectedParent);
         };
     }
 
@@ -180,15 +186,21 @@ public class OutlinePresenter {
     Runnable addCameraAction(@NotNull Outline outline) {
         return () -> {
             var createdId = cameraService.createEcsCamera(getParentEntity(outline));
-            eventBus.post(new SceneGraphChangedEvent());
-            eventBus.post(new EntitySelectedEvent(createdId));
+
+            selectEntityAndFireEvents(createdId);
         };
+    }
+
+    private void selectEntityAndFireEvents(int createdId) {
+        toolManager.getTranslateTool().entitySelected(createdId);
+        eventBus.post(new SceneGraphChangedEvent());
+        eventBus.post(new EntitySelectedEvent(createdId));
     }
 
     Runnable addShaderAction(@NotNull Outline outline) {
         return () -> {
             var asset = assetsStorage.createShader();
-            ctx.getCurrent().getCurrentScene().getAssets().add(asset);
+            ctx.getCurrent().getProjectAssets().put(new AssetKey(AssetType.SHADER, asset.getName()), asset);
             eventBus.post(new SceneGraphChangedEvent());
         };
     }
@@ -196,8 +208,8 @@ public class OutlinePresenter {
     Runnable addDirectionLightAction(@NotNull Outline outline) {
         return () -> {
             var createdId = lightService.createDirectionLight(getParentEntity(outline));
-            eventBus.post(new SceneGraphChangedEvent());
-            eventBus.post(new EntitySelectedEvent(createdId));
+
+            selectEntityAndFireEvents(createdId);
         };
     }
 

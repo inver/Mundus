@@ -14,6 +14,7 @@ class BundledSkyboxShader extends DefaultShader {
     private final int UNIFORM_PROJ_VIEW_MATRIX = register(new Uniform("u_projViewMatrix"))
     private final int UNIFORM_TRANS_MATRIX = register(new Uniform("u_transMatrix"))
     private final int UNIFORM_TEXTURE = register(new Uniform("u_texture"))
+
     private final int UNIFORM_FOG = register(new Uniform("u_fog"))
     private final int UNIFORM_FOG_COLOR = register(new Uniform("u_fogColor"))
 

@@ -27,7 +27,7 @@ import com.mbrlabs.mundus.commons.Scene;
 import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.core.ecs.EcsConfigurator;
 import com.mbrlabs.mundus.commons.dto.SceneDto;
-import com.mbrlabs.mundus.commons.env.Fog;
+import com.mbrlabs.mundus.commons.env.fog.Fog;
 import com.mbrlabs.mundus.commons.env.lights.DirectionalLight;
 import com.mbrlabs.mundus.commons.importer.SceneConverter;
 import com.mbrlabs.mundus.commons.utils.FileUtils;
@@ -63,8 +63,8 @@ public class SceneStorage {
         var scene = new Scene(ecsConfigurator.createWorld());
         scene.setName(DEFAULT_SCENE_NAME);
 //        scene.getEnvironment().setSkyboxName(DEFAULT_SKYBOX_NAME);
-        scene.getEnvironment().setFog(new Fog());
-        scene.getEnvironment().setAmbientLight(Color.WHITE, 0.3f);
+        scene.getEnvironment().enableFog();
+        scene.getEnvironment().enableAmbientLight();
         saveScene(projectPath, scene);
 
         return scene;
@@ -81,10 +81,10 @@ public class SceneStorage {
 
     private DirectionalLight createDefaultDirectionalLight() {
         var dirLight = new DirectionalLight();
-        dirLight.getColor().set(1, 1, 1, 1);
-        dirLight.setIntensity(1f);
-        dirLight.getDirection();
-        dirLight.getDirection().nor();
+//        dirLight.getColor().set(1, 1, 1, 1);
+//        dirLight.setIntensity(1f);
+//        dirLight.getDirection();
+//        dirLight.getDirection().nor();
         return dirLight;
     }
 

@@ -24,7 +24,9 @@ import com.badlogic.gdx.utils.Align
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisScrollPane
 import com.kotcrab.vis.ui.widget.VisTable
-import com.mbrlabs.mundus.editor.config.UiComponentHolder
+import com.kotcrab.vis.ui.widget.file.FileChooser
+import com.mbrlabs.mundus.commons.core.ecs.component.TypeComponent
+import com.mbrlabs.mundus.editor.ui.UiComponentHolder
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.events.AssetSelectedEvent
@@ -32,9 +34,11 @@ import com.mbrlabs.mundus.editor.events.EntitySelectedEvent
 import com.mbrlabs.mundus.editor.events.EventBus
 import com.mbrlabs.mundus.editor.events.GameObjectModifiedEvent
 import com.mbrlabs.mundus.editor.history.CommandHistory
+import com.mbrlabs.mundus.editor.input.InputService
 import com.mbrlabs.mundus.editor.tools.ToolManager
 import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.PreviewGenerator
+import com.mbrlabs.mundus.editor.ui.UiConstants
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.TerrainWidgetPresenter
 import com.mbrlabs.mundus.editor.ui.modules.inspector.scene.SceneInspector
@@ -50,18 +54,19 @@ import org.springframework.stereotype.Component
  */
 @Component
 class Inspector(
-    eventBus: EventBus,
     private val ctx: EditorCtx,
-    private val assetManager: EditorAssetManager,
     private val appUi: AppUi,
-    private val uiComponentHolder: UiComponentHolder,
-    private val assetPickerDialog: AssetPickerDialog,
-    private val toolManager: ToolManager,
-    private val terrainWidgetPresenter: TerrainWidgetPresenter,
-    private val history: CommandHistory,
-    private val previewGenerator: PreviewGenerator,
-    private val colorPickerPresenter: ColorPickerPresenter,
-    private val sceneInspectorPresenter: SceneInspectorPresenter
+    eventBus: EventBus,
+    assetManager: EditorAssetManager,
+    uiComponentHolder: UiComponentHolder,
+    assetPickerDialog: AssetPickerDialog,
+    inputService: InputService,
+    toolManager: ToolManager,
+    terrainWidgetPresenter: TerrainWidgetPresenter,
+    history: CommandHistory,
+    previewGenerator: PreviewGenerator,
+    colorPickerPresenter: ColorPickerPresenter,
+    sceneInspectorPresenter: SceneInspectorPresenter,
 ) : VisTable(),
     GameObjectModifiedEvent.GameObjectModifiedListener,
     AssetSelectedEvent.AssetSelectedListener,
@@ -82,7 +87,7 @@ class Inspector(
 
     private val goInspector: GameObjectInspector
     private val assetInspector: AssetInspector
-    private val sceneInspector = SceneInspector(sceneInspectorPresenter)
+    private val sceneInspector = SceneInspector(uiComponentHolder, sceneInspectorPresenter)
 //    private val cameraInspector = CameraInspector(previewGenerator, appUi)
 
     init {
@@ -104,6 +109,7 @@ class Inspector(
             appUi,
             assetManager,
             assetPickerDialog,
+            inputService,
             toolManager,
             previewGenerator,
             colorPickerPresenter,
@@ -117,7 +123,7 @@ class Inspector(
         setBackground("window-bg")
         add(VisLabel("Inspector")).expandX().fillX().pad(3f).row()
         addSeparator().row()
-        root.align(Align.top)
+        root.align(Align.top).padLeft(UiConstants.PAD).padRight(UiConstants.PAD).padTop(4f)
         scrollPane.setScrollingDisabled(true, false)
         scrollPane.setFlickScroll(false)
         scrollPane.fadeScrollBars = false
@@ -139,14 +145,21 @@ class Inspector(
             mode = InspectorMode.SCENE
             root.clear()
             root.add(sceneInspector).grow().row()
+            goInspector.setEntity(event.entityId)
+            return
         }
 
-        if (mode != InspectorMode.GAME_OBJECT) {
+        val type = ctx.getComponentByEntityId(event.entityId, TypeComponent::class.java)?.type
+
+        if (type != TypeComponent.Type.CAMERA && type != TypeComponent.Type.GROUP
+            && type != TypeComponent.Type.HANDLE && mode != InspectorMode.GAME_OBJECT
+        ) {
             mode = InspectorMode.GAME_OBJECT
             root.clear()
             root.add(goInspector).grow().row()
+            goInspector.setEntity(event.entityId)
+            return
         }
-        goInspector.setEntity(event.entityId)
     }
 
     override fun onGameObjectModified(event: GameObjectModifiedEvent) {

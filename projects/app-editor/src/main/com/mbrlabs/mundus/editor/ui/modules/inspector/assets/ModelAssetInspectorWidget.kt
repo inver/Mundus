@@ -23,9 +23,10 @@ import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset
-import com.mbrlabs.mundus.editor.config.UiComponentHolder
+import com.mbrlabs.mundus.editor.ui.UiComponentHolder
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
+import com.mbrlabs.mundus.editor.input.InputService
 import com.mbrlabs.mundus.editor.tools.ToolManager
 import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.PreviewGenerator
@@ -42,6 +43,7 @@ class ModelAssetInspectorWidget(
     private val appUi: AppUi,
     private val assetManager: EditorAssetManager,
     private val assetSelectionDialog: AssetPickerDialog,
+    private val inputService: InputService,
     private val toolManager: ToolManager,
     uiComponentHolder: UiComponentHolder,
     private val previewGenerator: PreviewGenerator
@@ -95,7 +97,7 @@ class ModelAssetInspectorWidget(
         modelPlacement.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 toolManager.modelPlacementTool.setModel(modelAsset)
-                toolManager.activateTool(toolManager.modelPlacementTool)
+                inputService.activateTool(toolManager.modelPlacementTool)
             }
         })
     }
@@ -104,13 +106,13 @@ class ModelAssetInspectorWidget(
         var verts = 0
         var indices = 0
         val model = modelAsset!!.model
-        for (mesh in model.meshes) {
-            verts += mesh.numVertices
-            indices += mesh.numIndices
-        }
+//        for (mesh in model.meshes) {
+//            verts += mesh.numVertices
+//            indices += mesh.numIndices
+//        }
         // set info
         name.setText("Name: " + modelAsset!!.name)
-        nodeCount.setText("Nodes: " + model.nodes.size)
+//        nodeCount.setText("Nodes: " + model.nodes.size)
         //todo
 //        materialCount.setText("Materials: " + model.materials.size)
         vertexCount.setText("Vertices: " + verts)
@@ -128,10 +130,10 @@ class ModelAssetInspectorWidget(
             )
             mw.matChangedListener = object : MaterialWidget.MaterialChangedListener {
                 override fun materialChanged(materialAsset: MaterialAsset) {
-                    TODO()
+//                    TODO()
 //                    modelAsset!!.defaultMaterials.put(g3dbMatID, materialAsset)
 //                    modelAsset!!.applyDependencies()
-//                    toolManager.modelPlacementTool.setModel(modelAsset)
+                    toolManager.modelPlacementTool.setModel(modelAsset)
 //                    assetManager.dirty(modelAsset!!)
                 }
             }

@@ -25,7 +25,7 @@ import com.mbrlabs.mundus.commons.assets.texture.TextureAsset
  * @version 17-10-2016
  */
 interface AssetFilter {
-    fun ignore(asset: Asset<Any>): Boolean
+    fun ignore(asset: Asset<*>): Boolean
 }
 
 /**
@@ -33,7 +33,7 @@ interface AssetFilter {
  * @version 17-10-2016
  */
 class AssetMaterialFilter : AssetFilter {
-    override fun ignore(asset: Asset<Any>): Boolean {
+    override fun ignore(asset: Asset<*>): Boolean {
         return asset !is MaterialAsset
     }
 }
@@ -43,7 +43,7 @@ class AssetMaterialFilter : AssetFilter {
  * @version 07-10-2016
  */
 class AssetTextureFilter : AssetFilter {
-    override fun ignore(asset: Asset<Any>): Boolean {
+    override fun ignore(asset: Asset<*>): Boolean {
         return asset !is TextureAsset
     }
 }

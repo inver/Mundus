@@ -82,7 +82,7 @@ class ImportTextureDialog(
     private inner class ImportTextureTable : VisTable(), Disposable {
         // UI elements
         private val importBtn = VisTextButton("IMPORT")
-        private val imageChooserField = ImageChooserField(appUi, 300, fileChooser)
+        private val imageChooserField = ImageChooserField(300)
 
         init {
             this.setupUI()

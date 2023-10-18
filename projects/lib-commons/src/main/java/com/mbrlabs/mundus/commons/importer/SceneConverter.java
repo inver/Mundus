@@ -19,8 +19,6 @@ package com.mbrlabs.mundus.commons.importer;
 import com.artemis.Aspect;
 import com.artemis.io.SaveFileFormat;
 import com.artemis.managers.WorldSerializationManager;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mbrlabs.mundus.commons.Scene;
 import com.mbrlabs.mundus.commons.dto.SceneDto;
@@ -56,9 +54,14 @@ public class SceneConverter {
         dto.setEcs(obj);
 
         // getEnvironment() stuff
+        dto.setAmbientLightEnabled(scene.getEnvironment().isAmbientLightEnabled());
         dto.setAmbientLight(scene.getEnvironment().getAmbientLight());
-//        dto.setFog(FogConverter.convert(scene.getEnvironment().getFog()));
-//        dto.setSkyboxName(scene.getEnvironment().getSkyboxName());
+
+        dto.setFogEnabled(scene.getEnvironment().isFogEnabled());
+        dto.setFog(scene.getEnvironment().getFog());
+
+        dto.setSkyboxEnabled(scene.getEnvironment().isSkyboxEnabled());
+        dto.setSkyboxName(scene.getEnvironment().getSkyboxName());
         return dto;
     }
 
@@ -74,12 +77,26 @@ public class SceneConverter {
         }
 
         // getEnvironment() stuff
-//        scene.getEnvironment().setFog(FogConverter.convert(dto.getFog()));
-//        scene.getEnvironment().setSkyboxName(dto.getSkyboxName());
-
         if (dto.getAmbientLight() != null) {
             scene.getEnvironment()
                     .setAmbientLight(dto.getAmbientLight().getColor(), dto.getAmbientLight().getIntensity());
         }
+        if (dto.isAmbientLightEnabled()) {
+            scene.getEnvironment().enableAmbientLight();
+        } else {
+            scene.getEnvironment().disableAmbientLight();
+        }
+        if (dto.getFog() != null) {
+            scene.getEnvironment()
+                    .setFog(dto.getFog().getColor(), dto.getFog().getDensity(), dto.getFog().getGradient());
+        }
+        if (dto.isFogEnabled()) {
+            scene.getEnvironment().enableFog();
+        } else {
+            scene.getEnvironment().disableFog();
+        }
+
+        scene.getEnvironment().setSkyboxEnabled(dto.isSkyboxEnabled());
+        scene.getEnvironment().setSkyboxName(dto.getSkyboxName());
     }
 }

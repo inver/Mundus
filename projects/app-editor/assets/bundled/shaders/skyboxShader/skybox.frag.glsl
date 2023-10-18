@@ -15,9 +15,15 @@
  */
 
 #ifdef GL_ES
-precision mediump float;
+#define LOW lowp
+#define MED mediump
+#define HIGH highp
+precision highp float;
+#else
+#define MED
+#define LOW
+#define HIGH
 #endif
-
 
 uniform samplerCube u_texture;
 uniform int u_fog;
@@ -32,9 +38,8 @@ void main() {
     gl_FragColor = vec4(textureCube(u_texture, v_cubeMapUV).rgb, 1.0);
 
     if(u_fog == 1) {
-       float foggyFactor = (v_cubeMapUV.y - lowerFogLimit) / (upperFogLimit - lowerFogLimit);
-       foggyFactor = clamp(foggyFactor, 0.0, 1.0);
-       gl_FragColor = mix(u_fogColor, gl_FragColor, foggyFactor);
+        float foggyFactor = (v_cubeMapUV.y - lowerFogLimit) / (upperFogLimit - lowerFogLimit);
+        foggyFactor = clamp(foggyFactor, 0.0, 1.0);
+        gl_FragColor = mix(u_fogColor, gl_FragColor, foggyFactor);
     }
-
 }

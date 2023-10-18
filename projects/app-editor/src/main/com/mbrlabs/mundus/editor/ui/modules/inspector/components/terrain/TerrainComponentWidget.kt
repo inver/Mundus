@@ -20,7 +20,7 @@ import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.tabbedpane.Tab
 import com.kotcrab.vis.ui.widget.tabbedpane.TabbedPane
 import com.kotcrab.vis.ui.widget.tabbedpane.TabbedPaneListener
-import com.mbrlabs.mundus.editor.config.UiComponentHolder
+import com.mbrlabs.mundus.editor.ui.UiComponentHolder
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.ComponentWidget
 
 /**
@@ -36,15 +36,17 @@ class TerrainComponentWidget(
     private val tabbedPane = TabbedPane()
     private val tabContainer = VisTable()
 
-    private val raiseLowerTab = TerrainUpDownTab(this)
-    private val flattenTab = TerrainFlattenTab()
-    private val paintTab = TerrainPaintTab(this)
+    private val raiseLowerTab = TerrainUpDownTab(this, uiComponentHolder)
+    private val flattenTab = TerrainFlattenTab(uiComponentHolder)
+    private val smoothTab = TerrainSmoothTab(this)
+    private val rampTab = TerrainRampTab(this)
+    private val paintTab = TerrainPaintTab(this, uiComponentHolder)
     private val genTab = TerrainGenTab(this)
     private val settingsTab = TerrainSettingsTab(this)
 
     init {
+//        debugAll()
         tabbedPane.addListener(this)
-
         initRaiseLowerTab()
         initFlattenTab()
         initPaintTab()

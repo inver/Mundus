@@ -54,8 +54,6 @@ public class Scene implements Disposable, RenderableObject {
     @Getter
     @Setter
     private SceneEnvironment environment = new SceneEnvironment();
-    @Getter
-    private final List<Asset<?>> assets = new ArrayList<>();
 
     @Override
     public void render(ModelBatch batch, SceneEnvironment environment, ShaderProvider shaders, float delta) {

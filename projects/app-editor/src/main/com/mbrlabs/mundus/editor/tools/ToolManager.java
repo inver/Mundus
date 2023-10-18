@@ -18,18 +18,18 @@ package com.mbrlabs.mundus.editor.tools;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.SnapshotArray;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.components.RenderableObject;
+import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager;
+import com.mbrlabs.mundus.editor.core.assets.EditorModelService;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
+import com.mbrlabs.mundus.editor.core.scene.SceneStorage;
 import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
-import com.mbrlabs.mundus.editor.input.InputManager;
+import com.mbrlabs.mundus.editor.input.InputService;
 import com.mbrlabs.mundus.editor.tools.brushes.CircleBrush;
 import com.mbrlabs.mundus.editor.tools.brushes.ConfettiBrush;
 import com.mbrlabs.mundus.editor.tools.brushes.SmoothCircleBrush;
@@ -38,6 +38,7 @@ import com.mbrlabs.mundus.editor.tools.brushes.TerrainBrush;
 import com.mbrlabs.mundus.editor.tools.picker.EntityPicker;
 import com.mbrlabs.mundus.editor.tools.picker.ToolHandlePicker;
 import com.mbrlabs.mundus.editor.ui.AppUi;
+import lombok.Getter;
 import net.nevinsky.abyssus.core.ModelBatch;
 import net.nevinsky.abyssus.core.shader.ShaderProvider;
 import org.springframework.stereotype.Component;
@@ -52,33 +53,31 @@ import java.util.List;
 @Component
 public class ToolManager extends InputAdapter implements Disposable, RenderableObject {
 
-    private static final int KEY_DEACTIVATE = Input.Keys.ESCAPE;
-
     private final EditorCtx ctx;
     private Tool activeTool;
 
-    public List<TerrainBrush> terrainBrushes;
-    public ModelPlacementTool modelPlacementTool;
-    public SelectionTool selectionTool;
-    public TranslateTool translateTool;
-    public RotateTool rotateTool;
-    public ScaleTool scaleTool;
+    @Getter
+    private final List<TerrainBrush> terrainBrushes = new ArrayList<>();
+    private final ModelPlacementTool modelPlacementTool;
+    private final SelectionTool selectionTool;
+    private final TranslateTool translateTool;
+    private final RotateTool rotateTool;
+    private final ScaleTool scaleTool;
 
-    private final InputManager inputManager;
-
-    public ToolManager(EditorCtx ctx, AppUi appUi, EventBus eventBus, InputManager inputManager,
+    public ToolManager(EditorCtx ctx, AppUi appUi, EventBus eventBus,
                        EntityPicker picker, ToolHandlePicker toolHandlePicker, ShapeRenderer shapeRenderer,
-                       CommandHistory history) {
+                       EditorModelService modelService, CommandHistory history, SceneStorage sceneStorage,
+                       EditorAssetManager editorAssetManager) {
         this.ctx = ctx;
-        this.inputManager = inputManager;
 
-        terrainBrushes = new ArrayList<>();
         terrainBrushes.add(new SmoothCircleBrush(ctx, ShaderConstants.TERRAIN, history));
         terrainBrushes.add(new CircleBrush(ctx, ShaderConstants.TERRAIN, history));
         terrainBrushes.add(new StarBrush(ctx, ShaderConstants.TERRAIN, history));
         terrainBrushes.add(new ConfettiBrush(ctx, ShaderConstants.TERRAIN, history));
 
-        modelPlacementTool = new ModelPlacementTool(ctx, ShaderConstants.MODEL, history, appUi, eventBus);
+        modelPlacementTool =
+                new ModelPlacementTool(ctx, ShaderConstants.MODEL, history, sceneStorage, modelService, appUi, eventBus,
+                        editorAssetManager);
         selectionTool = new SelectionTool(ctx, ShaderConstants.WIREFRAME, picker, history, eventBus);
         translateTool = new TranslateTool(ctx, ShaderConstants.WIREFRAME, picker, toolHandlePicker, history,
                 eventBus);
@@ -95,13 +94,6 @@ public class ToolManager extends InputAdapter implements Disposable, RenderableO
 
         deactivateTool();
         activeTool = tool;
-
-        var processors = inputManager.getProcessors();
-        var newProcessors = new SnapshotArray<InputProcessor>(processors.size + 1);
-        newProcessors.add(activeTool);
-        newProcessors.addAll(processors);
-        inputManager.setProcessors(newProcessors);
-//        inputManager.setProcessors(activeTool);
         activeTool.onActivated();
 
         if (shouldKeepSelection) {
@@ -110,20 +102,12 @@ public class ToolManager extends InputAdapter implements Disposable, RenderableO
     }
 
     public void deactivateTool() {
-        if (activeTool != null) {
-            activeTool.onDisabled();
-            inputManager.removeProcessor(activeTool);
-            activeTool = null;
-        }
-    }
-
-    public void setDefaultTool() {
-        if (activeTool == null || activeTool == modelPlacementTool || activeTool instanceof TerrainBrush) {
-            activateTool(translateTool);
-        } else {
-            activeTool.onDisabled();
+        if (activeTool == null) {
+            return;
         }
 
+        activeTool.onDisabled();
+        activeTool = null;
     }
 
     @Override
@@ -139,25 +123,9 @@ public class ToolManager extends InputAdapter implements Disposable, RenderableO
         }
     }
 
-    public Tool getActiveTool() {
-        return activeTool;
-    }
-
-    @Override
-    public boolean keyUp(int keycode) {
-        if (keycode == KEY_DEACTIVATE) {
-            if (activeTool != null) {
-                activeTool.onDisabled();
-            }
-            setDefaultTool();
-            return true;
-        }
-        return false;
-    }
-
     @Override
     public void dispose() {
-        for (TerrainBrush brush : terrainBrushes) {
+        for (var brush : terrainBrushes) {
             brush.dispose();
         }
         translateTool.dispose();
@@ -179,4 +147,27 @@ public class ToolManager extends InputAdapter implements Disposable, RenderableO
         return ctx.getSelectedEntityId();
     }
 
+    public Tool getActiveTool() {
+        return activeTool;
+    }
+
+    public ModelPlacementTool getModelPlacementTool() {
+        return modelPlacementTool;
+    }
+
+    public SelectionTool getSelectionTool() {
+        return selectionTool;
+    }
+
+    public TranslateTool getTranslateTool() {
+        return translateTool;
+    }
+
+    public RotateTool getRotateTool() {
+        return rotateTool;
+    }
+
+    public ScaleTool getScaleTool() {
+        return scaleTool;
+    }
 }

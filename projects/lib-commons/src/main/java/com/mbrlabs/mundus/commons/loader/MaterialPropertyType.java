@@ -146,6 +146,6 @@ public enum MaterialPropertyType {
                 return v;
             }
         }
-        throw new IllegalArgumentException("Wrong value: " + key);
+        return null;
     }
 }

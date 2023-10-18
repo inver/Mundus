@@ -17,7 +17,7 @@
 package com.mbrlabs.mundus.editor.ui.modules.inspector.assets
 
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset
-import com.mbrlabs.mundus.editor.config.UiComponentHolder
+import com.mbrlabs.mundus.editor.ui.UiComponentHolder
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.ui.AppUi

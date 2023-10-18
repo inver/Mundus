@@ -50,16 +50,12 @@ class AssetPickerDialog(
     private val ctx: EditorCtx,
     private val assetManager: EditorAssetManager,
     private val appUi: AppUi
-) : BaseDialog(TITLE),
+) : BaseDialog("Select an asset"),
     AssetImportEvent.AssetImportListener,
     ProjectChangedEvent.ProjectChangedListener {
 
-    private companion object {
-        private val TITLE = "Select an asset"
-    }
-
     private val root = VisTable()
-    private val listAdapter = SimpleListAdapter(Array<Asset<Any>>())
+    private val listAdapter = SimpleListAdapter(Array<Asset<*>>())
     private val list = ListView(listAdapter)
     private val noneBtn = VisTextButton("None / Remove old asset")
 
@@ -109,14 +105,14 @@ class AssetPickerDialog(
         listAdapter.clear()
 
         // filter assets
-//        for (asset in assetManager.assets) {
-//            if (filter != null) {
-//                if (filter!!.ignore(asset)) {
-//                    continue
-//                }
-//            }
-//            listAdapter.add(asset)
-//        }
+        for (entry in ctx.current.projectAssets.entries) {
+            if (filter != null) {
+                if (filter!!.ignore(entry.value)) {
+                    continue
+                }
+            }
+            listAdapter.add(entry.value)
+        }
 
         listAdapter.itemsDataChanged()
     }

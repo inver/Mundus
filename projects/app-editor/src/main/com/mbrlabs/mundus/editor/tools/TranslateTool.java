@@ -18,7 +18,6 @@ package com.mbrlabs.mundus.editor.tools;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Material;
@@ -34,6 +33,7 @@ import com.mbrlabs.mundus.editor.history.commands.TranslateCommand;
 import com.mbrlabs.mundus.editor.tools.picker.EntityPicker;
 import com.mbrlabs.mundus.editor.tools.picker.ToolHandlePicker;
 import com.mbrlabs.mundus.editor.ui.widgets.icon.SymbolIcon;
+import lombok.extern.slf4j.Slf4j;
 import net.nevinsky.abyssus.core.ModelBatch;
 import net.nevinsky.abyssus.core.ModelBuilder;
 import net.nevinsky.abyssus.core.model.Model;
@@ -47,6 +47,7 @@ import static net.nevinsky.abyssus.core.shader.ShaderProvider.DEFAULT_SHADER_KEY
  * @author Marcus Brummer
  * @version 26-12-2015
  */
+@Slf4j
 public class TranslateTool extends TransformTool {
 
     private final float ARROW_THIKNESS = 0.1f;
@@ -246,6 +247,7 @@ public class TranslateTool extends TransformTool {
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
+        log.info("Mouse dragged, state: {}", state);
         return state != TransformState.IDLE;
     }
 
@@ -259,6 +261,7 @@ public class TranslateTool extends TransformTool {
 
         var handle = (TranslateHandle) handlePicker.pick(handles, screenX, screenY);
         if (handle == null) {
+            log.info("Translate tool go to state IDLE");
             state = TransformState.IDLE;
             return false;
         }

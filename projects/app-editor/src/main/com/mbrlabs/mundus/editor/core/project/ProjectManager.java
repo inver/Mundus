@@ -40,6 +40,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -115,7 +116,13 @@ public class ProjectManager implements Disposable {
     }
 
     private void loadSkybox(ProjectContext ctx, Scene scene) {
-//        scene.getAssets().add(assetManager.loadProjectAsset(ctx.getPath(), scene.getEnvironment().getSkyboxName()));
+        var skyboxName = scene.getEnvironment().getSkyboxName();
+        if (StringUtils.isEmpty(skyboxName)) {
+            return;
+        }
+
+        var key = new AssetKey(AssetType.SKYBOX, skyboxName);
+        ctx.getProjectAssets().put(key, assetManager.loadProjectAsset(ctx.getPath(), skyboxName));
     }
 
     /**
