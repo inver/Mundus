@@ -21,17 +21,18 @@ import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.mbrlabs.mundus.commons.core.ecs.component.NameComponent
 import com.mbrlabs.mundus.commons.core.ecs.component.TypeComponent
-import com.mbrlabs.mundus.editor.ui.UiComponentHolder
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.history.CommandHistory
 import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.PreviewGenerator
+import com.mbrlabs.mundus.editor.ui.UiComponentHolder
+import com.mbrlabs.mundus.editor.ui.dsl.UiDslCreator
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.*
-import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.TerrainComponentWidget
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.TerrainWidgetPresenter
-import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerPresenter
+import com.mbrlabs.mundus.editor.ui.widgets.UiFormTable
+import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorChooserPresenter
 
 /**
  * @author Marcus Brummer
@@ -46,11 +47,14 @@ class GameObjectInspector(
     private val history: CommandHistory,
     private val terrainWidgetPresenter: TerrainWidgetPresenter,
     private val previewGenerator: PreviewGenerator,
-    private val colorPickerPresenter: ColorPickerPresenter
+    private val colorPickerPresenter: ColorChooserPresenter,
+    private val modelComponentPresenter: ModelComponentPresenter,
+    private val uiDslCreator: UiDslCreator
 ) : VisTable() {
 
     private val identifierWidget = IdentifierWidget(ctx)
-    private val transformWidget = TransformWidget(uiComponentHolder, ctx)
+    private val dlsWidget = uiDslCreator.create<UiFormTable>("com/mbrlabs/mundus/editor/ui/modules/inspector/components/identifier/IdentifierWidget.groovy");
+    private val transformWidget = uiDslCreator.create<UiComponentWidget>("com/mbrlabs/mundus/editor/ui/modules/inspector/components/transform/TransformWidget.groovy");
     private val componentWidgets = ArrayList<ComponentWidget>()
     private val addComponentBtn = VisTextButton("Add Component")
     private val componentTable = VisTable()
@@ -60,7 +64,8 @@ class GameObjectInspector(
     init {
         align(Align.top)
         add(identifierWidget).growX().pad(7f).row()
-        add(transformWidget).growX().pad(7f).row()
+        add(dlsWidget.actor).growX().pad(7f).row()
+        add(transformWidget.actor).growX().pad(7f).row()
 
         componentWidgets.forEach { componentTable.add<BaseInspectorWidget>(it).row() }
 
@@ -91,7 +96,7 @@ class GameObjectInspector(
             ctx.currentWorld.getEntity(entityId).isActive,
             ctx.getComponentByEntityId(entityId, NameComponent::class.java).name
         )
-        transformWidget.setValues(entityId)
+//        transformWidget.setValues(entityId)
         componentWidgets.forEach { it.setValues(entityId) }
     }
 
@@ -103,25 +108,26 @@ class GameObjectInspector(
         componentWidgets.clear()
         val component = ctx.currentWorld.getEntity(entityId).getComponent(TypeComponent::class.java) ?: return
 
-        if (component.type == TypeComponent.Type.LIGHT_DIRECTIONAL) {
-            componentWidgets.add(
-                DirectionalLightComponentWidget(
-                    uiComponentHolder, entityId, colorPickerPresenter
-                )
-            )
-        } else if (component.type == TypeComponent.Type.TERRAIN) {
-            componentWidgets.add(
-                TerrainComponentWidget(
-                    uiComponentHolder, entityId, terrainWidgetPresenter
-                )
-            )
-        } else if (component.type == TypeComponent.Type.OBJECT) {
-            componentWidgets.add(
-                ModelComponentWidget(
-                    uiComponentHolder, entityId
-                )
-            )
-        }
+        // todo reuse created components, instead of creating on each entity select
+//        if (component.type == TypeComponent.Type.LIGHT_DIRECTIONAL) {
+//            componentWidgets.add(
+//                DirectionalLightComponentWidget(
+//                    uiComponentHolder, colorPickerPresenter
+//                )
+//            )
+//        } else if (component.type == TypeComponent.Type.TERRAIN) {
+//            componentWidgets.add(
+//                TerrainComponentWidget(
+//                    uiComponentHolder, terrainWidgetPresenter
+//                )
+//            )
+//        } else if (component.type == TypeComponent.Type.OBJECT) {
+//            componentWidgets.add(
+//                ModelComponentWidget(
+//                    uiComponentHolder, modelComponentPresenter
+//                )
+//            )
+//        }
 
 
 //        for (component in gameObject!!.components) {

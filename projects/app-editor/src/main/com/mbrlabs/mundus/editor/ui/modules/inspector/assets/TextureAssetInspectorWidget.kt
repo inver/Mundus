@@ -20,10 +20,10 @@ import com.badlogic.gdx.Files
 import com.kotcrab.vis.ui.widget.VisImage
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset
-import com.mbrlabs.mundus.editor.ui.UiComponentHolder
 import com.mbrlabs.mundus.editor.ui.UiConstants.PREVIEW_SIZE
 import com.mbrlabs.mundus.editor.ui.modules.inspector.BaseInspectorWidget
 import org.apache.commons.io.FileUtils
+import org.springframework.context.ApplicationContext
 import java.io.File
 import kotlin.math.roundToLong
 
@@ -31,8 +31,7 @@ import kotlin.math.roundToLong
  * @author Marcus Brummer
  * @version 15-10-2016
  */
-class TextureAssetInspectorWidget(uiComponentHolder: UiComponentHolder) :
-    BaseInspectorWidget(uiComponentHolder, "Texture Asset") {
+class TextureAssetInspectorWidget(applicationContext: ApplicationContext) : BaseInspectorWidget(applicationContext) {
 
     private val name = VisLabel()
     private val width = VisLabel()
@@ -43,11 +42,11 @@ class TextureAssetInspectorWidget(uiComponentHolder: UiComponentHolder) :
     private var textureAsset: TextureAsset? = null
 
     init {
-        collapsibleContent.add(previewImage).height(PREVIEW_SIZE).width(PREVIEW_SIZE).row()
-        collapsibleContent.add(name).growX().row()
-        collapsibleContent.add(width).growX().row()
-        collapsibleContent.add(height).growX().row()
-        collapsibleContent.add(fileSize).growX().row()
+        content.add(previewImage).height(PREVIEW_SIZE).width(PREVIEW_SIZE).row()
+        content.add(name).growX().row()
+        content.add(width).growX().row()
+        content.add(height).growX().row()
+        content.add(fileSize).growX().row()
     }
 
     fun setTextureAsset(texture: TextureAsset) {

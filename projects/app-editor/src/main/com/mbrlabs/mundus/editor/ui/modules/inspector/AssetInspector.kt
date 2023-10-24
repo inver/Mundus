@@ -23,19 +23,20 @@ import com.mbrlabs.mundus.commons.assets.material.MaterialAsset
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset
-import com.mbrlabs.mundus.editor.ui.UiComponentHolder
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.input.InputService
 import com.mbrlabs.mundus.editor.tools.ToolManager
 import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.PreviewGenerator
+import com.mbrlabs.mundus.editor.ui.UiComponentHolder
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
 import com.mbrlabs.mundus.editor.ui.modules.inspector.assets.MaterialAssetInspectorWidget
 import com.mbrlabs.mundus.editor.ui.modules.inspector.assets.ModelAssetInspectorWidget
 import com.mbrlabs.mundus.editor.ui.modules.inspector.assets.TerrainAssetInspectorWidget
 import com.mbrlabs.mundus.editor.ui.modules.inspector.assets.TextureAssetInspectorWidget
-import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerPresenter
+import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorChooserPresenter
+import org.springframework.context.ApplicationContext
 
 /**
  * @author Marcus Brummer
@@ -49,8 +50,9 @@ class AssetInspector(
     private val inputService: InputService,
     private val toolManager: ToolManager,
     private val previewGenerator: PreviewGenerator,
-    private val colorPickerPresenter: ColorPickerPresenter,
-    uiComponentHolder: UiComponentHolder
+    private val colorPickerPresenter: ColorChooserPresenter,
+    uiComponentHolder: UiComponentHolder,
+    applicationContext: ApplicationContext
 ) : VisTable() {
 
     private val materialWidget = MaterialAssetInspectorWidget(
@@ -60,7 +62,8 @@ class AssetInspector(
         assetManager,
         previewGenerator,
         uiComponentHolder,
-        colorPickerPresenter
+        colorPickerPresenter,
+        applicationContext
     )
     private val modelWidget = ModelAssetInspectorWidget(
         ctx,
@@ -70,10 +73,11 @@ class AssetInspector(
         inputService,
         toolManager,
         uiComponentHolder,
-        previewGenerator
+        previewGenerator,
+        applicationContext
     )
-    private val textureWidget = TextureAssetInspectorWidget(uiComponentHolder)
-    private val terrainWidget = TerrainAssetInspectorWidget(uiComponentHolder)
+    private val textureWidget = TextureAssetInspectorWidget(applicationContext)
+    private val terrainWidget = TerrainAssetInspectorWidget(applicationContext)
 
     var asset: Asset<*>? = null
         set(value) {

@@ -16,6 +16,7 @@
 
 package com.mbrlabs.mundus.editor.ui.widgets
 
+import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.kotcrab.vis.ui.widget.VisTextField
@@ -37,12 +38,21 @@ class AssetChooserField : VisTable() {
 
     init {
         textField.isDisabled = true
-
-        add(textField).grow()
-        add(selectButton).padLeft(5f).row()
+        
+        selectButton.add(textField)
+        add(selectButton).grow().row()
     }
 
     fun setAsset(asset: Asset<*>?) {
         textField.text = if (asset == null) "None" else asset.name
+    }
+
+    open fun disable(disable: Boolean) {
+        selectButton.isDisabled = disable
+        if (disable) {
+            selectButton.touchable = Touchable.disabled
+        } else {
+            selectButton.touchable = Touchable.enabled
+        }
     }
 }

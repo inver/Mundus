@@ -21,8 +21,9 @@ import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextField
 import com.mbrlabs.mundus.editor.ui.UiComponentHolder
 import com.mbrlabs.mundus.editor.ui.widgets.FloatFieldWithLabel
-import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerField
-import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerPresenter
+import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorChooserField
+import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorChooserPresenter
+import org.springframework.context.ApplicationContext
 
 /**
  * @author Guilherme Nemeth
@@ -30,16 +31,16 @@ import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerPresenter
  */
 class DirectionalLightComponentWidget(
     uiComponentHolder: UiComponentHolder,
-    entityId: Int,
-    colorPickerPresenter: ColorPickerPresenter
-) : ComponentWidget(uiComponentHolder, "Directional Light Component", entityId) {
+    colorPickerPresenter: ColorChooserPresenter,
+    applicationContext: ApplicationContext
+) : ComponentWidget(applicationContext) {
 
     private val FIELD_SIZE = 65
     private val dirX = FloatFieldWithLabel("x", FIELD_SIZE)
     private val dirY = FloatFieldWithLabel("y", FIELD_SIZE)
     private val dirZ = FloatFieldWithLabel("z", FIELD_SIZE)
 
-    val colorField: ColorPickerField = ColorPickerField()
+    val colorField: ColorChooserField = ColorChooserField()
     private val intensityField: VisTextField = VisTextField()
 
     init {
@@ -58,12 +59,12 @@ class DirectionalLightComponentWidget(
         dirWrapper.add(dirY).padBottom(pad.toFloat())
         dirWrapper.add(dirZ).padBottom(pad.toFloat()).row()
 
-        collapsibleContent.add(dirWrapper).grow().row()
-        collapsibleContent.addSeparator().row()
-        collapsibleContent.add(VisLabel("Color")).grow().left().row()
-        collapsibleContent.add(colorField).grow().left().row()
-        collapsibleContent.add(VisLabel("Intensity")).grow().row()
-        collapsibleContent.add(intensityField).growX().row()
+        content.add(dirWrapper).grow().row()
+        content.addSeparator().row()
+        content.add(VisLabel("Color")).grow().left().row()
+        content.add(colorField).grow().left().row()
+        content.add(VisLabel("Intensity")).grow().row()
+        content.add(intensityField).growX().row()
     }
 
     private fun setupListeners() {

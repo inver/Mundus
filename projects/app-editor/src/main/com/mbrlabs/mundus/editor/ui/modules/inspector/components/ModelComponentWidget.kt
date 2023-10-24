@@ -18,7 +18,10 @@ package com.mbrlabs.mundus.editor.ui.modules.inspector.components
 
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
+import com.mbrlabs.mundus.commons.assets.Asset
 import com.mbrlabs.mundus.editor.ui.UiComponentHolder
+import com.mbrlabs.mundus.editor.ui.widgets.AssetChooserField
+import org.springframework.context.ApplicationContext
 
 /**
  * @author Marcus Brummer
@@ -32,25 +35,26 @@ class ModelComponentWidget(
 //    private val assetSelectionDialog: AssetPickerDialog,
 //    private val assetManager: EditorAssetManager,
 //    private val previewGenerator: PreviewGenerator,
-    entityId: Int
-) : ComponentWidget(uiComponentHolder, "Model Component", entityId) {
+    private val modelComponentPresenter: ModelComponentPresenter,
+    applicationContext: ApplicationContext
+) : ComponentWidget(applicationContext) {
 
     private val materialContainer = VisTable()
+    val assetField = AssetChooserField()
 
     init {
         setupUI()
+
+        modelComponentPresenter.init(this)
     }
 
     private fun setupUI() {
         // create Model select dropdown
-        collapsibleContent.add(VisLabel("Model")).left().row()
-        collapsibleContent.addSeparator().padBottom(5f).row()
-        //collapsibleContent.add(selectBox).expandX().fillX().row();
-//        collapsibleContent.add(VisLabel("Model asset: " + component.modelAsset.name)).grow().padBottom(15f).row()
+        addFormField("Asset", assetField, true)
 
         // create materials for all model nodes
-        collapsibleContent.add(VisLabel("Materials")).expandX().fillX().left().padBottom(3f).padTop(3f).row()
-        collapsibleContent.addSeparator().row()
+        content.add(VisLabel("Materials")).expandX().fillX().left().padBottom(3f).padTop(3f).row()
+        content.addSeparator().row()
 
         val label = VisLabel()
         label.wrap = true
@@ -58,9 +62,9 @@ class ModelComponentWidget(
             "Here you change the materials of model components individually.\n"
                     + "Modifing the material will update all components, that use that material."
         )
-        collapsibleContent.add(label).grow().padBottom(10f).row()
+        content.add(label).grow().padBottom(10f).row()
 
-        collapsibleContent.add(materialContainer).grow().row()
+        content.add(materialContainer).grow().row()
         buildMaterials()
     }
 
@@ -88,10 +92,13 @@ class ModelComponentWidget(
     }
 
     override fun setValues(entityId: Int) {
-//        val c = go.findComponentByType(Component.Type.MODEL)
-//        if (c != null) {
-//            component = c as ModelComponent
-//        }
+        super.setValues(entityId)
+
+        modelComponentPresenter.setValues(this)
+    }
+
+    fun resetValues(asset: Asset<*>) {
+        assetField.setAsset(asset)
     }
 
 }

@@ -17,6 +17,7 @@ import com.mbrlabs.mundus.commons.assets.model.ModelAssetLoader;
 import com.mbrlabs.mundus.commons.assets.pixmap.PixmapTextureAsset;
 import com.mbrlabs.mundus.commons.assets.pixmap.PixmapTextureAssetLoader;
 import com.mbrlabs.mundus.commons.assets.shader.ShaderAssetLoader;
+import com.mbrlabs.mundus.commons.assets.skybox.SkyboxAsset;
 import com.mbrlabs.mundus.commons.assets.skybox.SkyboxAssetLoader;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAssetLoader;
@@ -31,7 +32,6 @@ import com.mbrlabs.mundus.editor.core.project.ProjectContext;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -49,16 +49,19 @@ import static com.mbrlabs.mundus.editor.core.ProjectConstants.BUNDLED_FOLDER;
 @Slf4j
 public class EditorAssetManager extends AssetManager {
     private final EditorCtx ctx;
+    private final AssetWriter assetWriter;
     @Getter
-    private final Set<Asset> dirtyAssets = new HashSet<>();
+    private final Set<Asset<?>> dirtyAssets = new HashSet<>();
 
     public EditorAssetManager(ObjectMapper mapper, MetaService metaService, TextureAssetLoader textureService,
                               TerrainAssetLoader terrainService, MaterialAssetLoader materialService,
                               PixmapTextureAssetLoader pixmapTextureService, ModelAssetLoader modelService,
-                              ShaderAssetLoader shaderAssetLoader, EditorCtx ctx, SkyboxAssetLoader skyboxAssetLoader) {
+                              ShaderAssetLoader shaderAssetLoader, EditorCtx ctx, SkyboxAssetLoader skyboxAssetLoader,
+                              AssetWriter assetWriter) {
         super(mapper, metaService, textureService, terrainService, materialService, pixmapTextureService, modelService,
                 shaderAssetLoader, skyboxAssetLoader);
         this.ctx = ctx;
+        this.assetWriter = assetWriter;
     }
 
     @PostConstruct
@@ -66,26 +69,10 @@ public class EditorAssetManager extends AssetManager {
         loadStandardAssets(ctx.getAssetLibrary());
     }
 
-    public void saveAsset(Asset asset) {
-        throw new NotImplementedException();
-//        if (asset instanceof MaterialAsset) {
-//            materialService.save((MaterialAsset) asset);
-//        } else if (asset instanceof TerrainAsset) {
-//            terrainService.save((TerrainAsset) asset);
-//        } else if (asset instanceof ModelAsset) {
-//            modelService.save((ModelAsset) asset);
-//        } else {
-//            throw new NotImplementedException();
-//        }
-    }
-
     @Override
-    public Asset<?> loadCurrentProjectAsset(String assetName) {
-        return loadProjectAsset(ctx.getCurrent().getPath(), assetName);
-    }
-
-    public <T extends Asset<?>> T loadCurrentProjectAsset(Class<T> tClass, String assetName) {
-        return (T) loadCurrentProjectAsset(assetName);
+    @SuppressWarnings("unchecked")
+    public <T extends Asset<?>> T loadCurrentProjectAsset(String assetName) {
+        return (T) loadProjectAsset(ctx.getCurrent().getPath(), assetName);
     }
 
     public Asset<?> loadProjectAsset(String projectPath, String assetName) {
@@ -141,6 +128,53 @@ public class EditorAssetManager extends AssetManager {
 
         return Collections.emptyList();
     }
+
+    @SuppressWarnings("unchecked")
+    public <M, T extends Asset<M>> T addAssetToProject(T asset) {
+        var assets = separateAsset(asset);
+        assets.forEach(assetWriter::writeAsset);
+        return (T) assets.get(0);
+    }
+
+    /**
+     * Method separate complex asset to graph of assets.
+     * Ex. Model asset with one material and one texture -> 3 asset: model, material and texture.
+     *
+     * @param bundle complex asset
+     * @return separate assets, which linked by string constants
+     */
+    public List<Asset<?>> separateAsset(Asset<?> bundle) {
+        switch (bundle.getMeta().getType()) {
+            case MODEL:
+                return separateModelAsset((ModelAsset) bundle);
+            case TERRAIN:
+                return separateTerrainAsset((TerrainAsset) bundle);
+            case MATERIAL:
+                return separateMaterialAsset((MaterialAsset) bundle);
+            case SKYBOX:
+                return separateSkyboxAsset((SkyboxAsset) bundle);
+            default:
+                return List.of(bundle);
+        }
+    }
+
+    private List<Asset<?>> separateSkyboxAsset(SkyboxAsset bundle) {
+        return null;
+    }
+
+    private List<Asset<?>> separateMaterialAsset(MaterialAsset bundle) {
+
+        return null;
+    }
+
+    private List<Asset<?>> separateTerrainAsset(TerrainAsset bundle) {
+        return null;
+    }
+
+    private List<Asset<?>> separateModelAsset(ModelAsset bundle) {
+        return Collections.emptyList();
+    }
+
 
     private Meta createMetaFileFromAsset(FileHandle file, AssetType type) {
         return createNewMetaFile(new FileHandle(getMetaPath(file)), type);
@@ -365,4 +399,6 @@ public class EditorAssetManager extends AssetManager {
 //
 //        return res;
 //    }
+
+
 }

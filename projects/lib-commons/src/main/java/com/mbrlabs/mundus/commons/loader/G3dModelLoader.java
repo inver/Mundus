@@ -44,17 +44,18 @@ import net.nevinsky.abyssus.core.model.ModelMesh;
 import net.nevinsky.abyssus.core.model.ModelMeshPart;
 
 @RequiredArgsConstructor
-public class G3dModelLoader {
+public class G3dModelLoader implements ModelLoader {
     public static final short VERSION_HI = 0;
     public static final short VERSION_LO = 1;
     protected final BaseJsonReader reader;
 
-
+    @Override
     public ImportedModel importModel(FileHandle handle) {
         var model = loadModel(handle);
         return new ImportedModel(model, handle);
     }
 
+    @Override
     public Model loadModel(FileHandle fileHandle) {
         ModelData data = parseModel(fileHandle);
         if (data == null) {
@@ -127,30 +128,29 @@ public class G3dModelLoader {
     }
 
     protected int parseType(String type) {
-        if (type.equals("TRIANGLES")) {
-            return GL20.GL_TRIANGLES;
-        } else if (type.equals("LINES")) {
-            return GL20.GL_LINES;
-        } else if (type.equals("POINTS")) {
-            return GL20.GL_POINTS;
-        } else if (type.equals("TRIANGLE_STRIP")) {
-            return GL20.GL_TRIANGLE_STRIP;
-        } else if (type.equals("LINE_STRIP")) {
-            return GL20.GL_LINE_STRIP;
-        } else {
-            throw new GdxRuntimeException(
-                    "Unknown primitive type '" + type +
-                            "', should be one of triangle, trianglestrip, line, linestrip or point");
+        switch (type) {
+            case "TRIANGLES":
+                return GL20.GL_TRIANGLES;
+            case "LINES":
+                return GL20.GL_LINES;
+            case "POINTS":
+                return GL20.GL_POINTS;
+            case "TRIANGLE_STRIP":
+                return GL20.GL_TRIANGLE_STRIP;
+            case "LINE_STRIP":
+                return GL20.GL_LINE_STRIP;
+            default:
+                throw new GdxRuntimeException("Unknown primitive type '" + type +
+                        "', should be one of TRIANGLES, LINES, POINTS, TRIANGLE_STRIP or LINE_STRIP");
         }
     }
 
     protected VertexAttribute[] parseAttributes(JsonValue attributes) {
-        Array<VertexAttribute> vertexAttributes = new Array<VertexAttribute>();
+        Array<VertexAttribute> vertexAttributes = new Array<>();
         int unit = 0;
         int blendWeightCount = 0;
         for (JsonValue value = attributes.child; value != null; value = value.next) {
-            String attribute = value.asString();
-            String attr = (String) attribute;
+            String attr = value.asString();
             if (attr.equals("POSITION")) {
                 vertexAttributes.add(VertexAttribute.Position());
             } else if (attr.equals("NORMAL")) {

@@ -34,8 +34,8 @@ class TerrainGenTab(parent: TerrainComponentWidget) : Tab(false, false), TabbedP
     private val tabbedPane = TabbedPane()
     private val tabContainer = VisTable()
 
-    val heightmapTab = HeightmapTab(parent.entityId)
-    val perlinNoiseTab = PerlinNoiseTab(parent.entityId)
+    val heightmapTab = HeightmapTab()
+    val perlinNoiseTab = PerlinNoiseTab()
 
     init {
         tabbedPane.addListener(this)

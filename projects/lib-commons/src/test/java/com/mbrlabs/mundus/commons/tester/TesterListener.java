@@ -6,19 +6,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowAdapter;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
-import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.UBJsonReader;
 import com.mbrlabs.mundus.commons.assets.AppFileHandle;
-import com.mbrlabs.mundus.commons.loader.AssimpWorker;
+import com.mbrlabs.mundus.commons.loader.assimp.AssimpLoader;
 import com.mbrlabs.mundus.commons.loader.G3dModelLoader;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +38,7 @@ public class TesterListener extends Lwjgl3WindowAdapter implements ApplicationLi
     public CameraInputController camController;
 
     private final Environment environment = new Environment();
-    private final AssimpWorker loader = new AssimpWorker();
+    private final AssimpLoader loader = new AssimpLoader();
 
     private final G3dModelLoader g3dModelLoader = new G3dModelLoader(new UBJsonReader());
 

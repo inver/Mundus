@@ -11,6 +11,7 @@ import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
 import com.mbrlabs.mundus.commons.terrain.SplatTexture;
 import com.mbrlabs.mundus.commons.terrain.TerrainObject;
 import com.mbrlabs.mundus.editor.assets.AssetTextureFilter;
+import com.mbrlabs.mundus.editor.core.assets.AssetWriter;
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.events.EventBus;
@@ -38,6 +39,7 @@ import static com.mbrlabs.mundus.editor.utils.FileFormatUtils.isImage;
 public class TerrainWidgetPresenter {
 
     private final EditorAssetManager assetManager;
+    private final AssetWriter assetWriter;
     private final EventBus eventBus;
     private final AppUi appUi;
     private final InputService inputService;
@@ -77,12 +79,12 @@ public class TerrainWidgetPresenter {
         settingsTab.getUvSlider().addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                var entityId = settingsTab.getParentWidget().getEntityId();
-                assetManager.dirty(entityId);
-
-                var value = settingsTab.getUvSlider().getValue();
-                ctx.getCurrent().getRenderableObject(TerrainObject.class, entityId)
-                        .updateUvScale(new Vector2(value, value));
+//                var entityId = settingsTab.getParentWidget().getEntityId();
+//                assetManager.dirty(entityId);
+//
+//                var value = settingsTab.getUvSlider().getValue();
+//                ctx.getCurrent().getRenderableObject(TerrainObject.class, entityId)
+//                        .updateUvScale(new Vector2(value, value));
             }
         });
     }
@@ -101,23 +103,23 @@ public class TerrainWidgetPresenter {
                     }
                 })));
         paintTab.getRightClickMenu().addRemoveListener(channel -> {
-            var assetName =
-                    ctx.getCurrent().getRenderableObject(TerrainObject.class, parent.getEntityId()).getAssetName();
-            var asset = assetManager.loadCurrentProjectAsset(TerrainAsset.class, assetName);
-            if (channel == SplatTexture.Channel.R) {
-                asset.setSplatR(null);
-            } else if (channel == SplatTexture.Channel.G) {
-                asset.setSplatG(null);
-            } else if (channel == SplatTexture.Channel.B) {
-                asset.setSplatB(null);
-            } else if (channel == SplatTexture.Channel.A) {
-                asset.setSplatA(null);
-            } else {
-                toaster.error("Can't remove the base texture");
-                return;
-            }
-            assetManager.saveAsset(asset);
-            assetManager.dirty(parent.getEntityId());
+//            var assetName =
+//                    ctx.getCurrent().getRenderableObject(TerrainObject.class, parent.getEntityId()).getAssetName();
+//            TerrainAsset asset = assetManager.loadCurrentProjectAsset(assetName);
+//            if (channel == SplatTexture.Channel.R) {
+//                asset.setSplatR(null);
+//            } else if (channel == SplatTexture.Channel.G) {
+//                asset.setSplatG(null);
+//            } else if (channel == SplatTexture.Channel.B) {
+//                asset.setSplatB(null);
+//            } else if (channel == SplatTexture.Channel.A) {
+//                asset.setSplatA(null);
+//            } else {
+//                toaster.error("Can't remove the base texture");
+//                return;
+//            }
+//            assetWriter.writeAsset(asset);
+//            assetManager.dirty(parent.getEntityId());
         });
         paintTab.getRightClickMenu().addChangeListener(channel -> assetPickerDialog.show(
                 false,
@@ -135,16 +137,16 @@ public class TerrainWidgetPresenter {
                     } else if (channel == SplatTexture.Channel.A) {
                         terrainAsset.setSplatA((TextureAsset) asset);
                     }
-                    assetManager.saveAsset(asset);
+                    assetWriter.writeAsset(asset);
                     paintTab.setTexturesInUiGrid();
-                    assetManager.dirty(parent.getEntityId());
+//                    assetManager.dirty(parent.getEntityId());
                 }));
     }
 
     private void addTexture(TerrainComponentWidget parent, TextureGrid<SplatTexture> textureGrid,
                             TextureAsset textureAsset) {
-        var assetName = ctx.getCurrent().getRenderableObject(TerrainObject.class, parent.getEntityId()).getAssetName();
-        var terrainAsset = assetManager.loadCurrentProjectAsset(TerrainAsset.class, assetName);
+//       var assetName = ctx.getCurrent().getRenderableObject(TerrainObject.class, parent.getEntityId()).getAssetName();
+//        TerrainAsset terrainAsset = assetManager.loadCurrentProjectAsset(assetName);
 
 //        var terrainTexture = terrainAsset.getTerrain().getTerrainTexture();
 //        assetManager.dirty(parent.getEntityId());
@@ -230,7 +232,7 @@ public class TerrainWidgetPresenter {
                 var max = genTab.getPerlinNoiseTab().getPerlinNoiseMaxHeight().getFloat();
                 var command = genTab.getPerlinNoiseTab().generatePerlinNoise(seed, min, max);
                 history.add(command);
-                assetManager.dirty(parent.getEntityId());
+//                assetManager.dirty(parent.getEntityId());
             }
         });
     }

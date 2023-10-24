@@ -210,7 +210,7 @@ public class AnimationController extends BaseAnimationController {
         result.loopCount = loopCount;
         result.speed = speed;
         result.offset = offset;
-        result.duration = duration < 0 ? (anim.duration - offset) : duration;
+        result.duration = duration < 0 ? (anim.getDuration() - offset) : duration;
         result.time = speed < 0 ? result.duration : 0.f;
         return result;
     }

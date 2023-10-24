@@ -18,7 +18,7 @@ public class ToolManagerTest extends BaseCtxTest {
     @Autowired
     private ToolManager manager;
     private final Tool nonSelectionTool = mock(Tool.class);
-    private final SelectionTool mockTool = spy(mock(SelectionTool.class));
+    private final SelectionTool mockTool = mock(SelectionTool.class);
 
     @Test
     void testActivateTool() {

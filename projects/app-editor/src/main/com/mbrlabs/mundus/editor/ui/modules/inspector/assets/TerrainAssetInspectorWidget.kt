@@ -18,21 +18,20 @@ package com.mbrlabs.mundus.editor.ui.modules.inspector.assets
 
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset
-import com.mbrlabs.mundus.editor.ui.UiComponentHolder
 import com.mbrlabs.mundus.editor.ui.modules.inspector.BaseInspectorWidget
+import org.springframework.context.ApplicationContext
 
 /**
  * @author Marcus Brummer
  * @version 15-10-2016
  */
-class TerrainAssetInspectorWidget(uiComponentHolder: UiComponentHolder) :
-    BaseInspectorWidget(uiComponentHolder, "Terrain Asset") {
+class TerrainAssetInspectorWidget(applicationContext: ApplicationContext) : BaseInspectorWidget(applicationContext) {
 
     private val name = VisLabel()
     private var terrain: TerrainAsset? = null
 
     init {
-        collapsibleContent.add(name).growX().row()
+        content.add(name).growX().row()
     }
 
     fun setTerrainAsset(asset: TerrainAsset) {

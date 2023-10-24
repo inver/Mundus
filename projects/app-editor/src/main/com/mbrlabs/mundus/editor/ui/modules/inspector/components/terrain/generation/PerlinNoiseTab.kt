@@ -9,7 +9,7 @@ import com.mbrlabs.mundus.editor.history.Command
 import com.mbrlabs.mundus.editor.ui.widgets.FloatFieldWithLabel
 import com.mbrlabs.mundus.editor.ui.widgets.IntegerFieldWithLabel
 
-class PerlinNoiseTab(private val entityId: Int) : Tab(false, false) {
+class PerlinNoiseTab : Tab(false, false) {
     private val root = VisTable()
 
     val perlinNoiseBtn = VisTextButton("Generate Perlin noise")

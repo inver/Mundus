@@ -22,6 +22,7 @@ import com.mbrlabs.mundus.editor.tools.ToolManager;
 import com.mbrlabs.mundus.editor.ui.AppUi;
 import com.mbrlabs.mundus.editor.ui.PreviewGenerator;
 import com.mbrlabs.mundus.editor.ui.UiComponentHolder;
+import com.mbrlabs.mundus.editor.ui.dsl.TestWidgetPresenter;
 import com.mbrlabs.mundus.editor.ui.modules.outline.Outline;
 import com.mbrlabs.mundus.editor.ui.modules.outline.OutlinePresenter;
 import com.mbrlabs.mundus.editor.ui.widgets.ButtonFactory;
@@ -146,5 +147,10 @@ public class TestConfig {
         res.addProcessor(mock(InputProcessor.class));
         res.addProcessor(toolManager);
         return res;
+    }
+
+    @Bean
+    public TestWidgetPresenter testWidgetPresenter() {
+        return new TestWidgetPresenter();
     }
 }

@@ -21,7 +21,6 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import net.nevinsky.abyssus.core.mesh.MeshPart;
 import net.nevinsky.abyssus.core.model.Model;
@@ -74,7 +73,7 @@ public class Node {
      **/
     public final Matrix4 globalTransform = new Matrix4();
 
-    public final Array<NodePart> parts = new Array<>(2);
+    public final List<NodePart> parts = new ArrayList<>(2);
 
     protected Node parent;
     private final List<Node> children = new ArrayList<>(2);
@@ -167,16 +166,15 @@ public class Node {
      * the result.
      */
     public BoundingBox extendBoundingBox(final BoundingBox out, boolean transform) {
-        final int partCount = parts.size;
-        for (int i = 0; i < partCount; i++) {
-            final NodePart part = parts.get(i);
-            if (part.enabled) {
-                final MeshPart meshPart = part.meshPart;
-                if (transform) {
-                    meshPart.mesh.extendBoundingBox(out, meshPart.offset, meshPart.size, globalTransform);
-                } else {
-                    meshPart.mesh.extendBoundingBox(out, meshPart.offset, meshPart.size);
-                }
+        for (var part : parts) {
+            if (!part.enabled) {
+                continue;
+            }
+            final MeshPart meshPart = part.meshPart;
+            if (transform) {
+                meshPart.mesh.extendBoundingBox(out, meshPart.offset, meshPart.size, globalTransform);
+            } else {
+                meshPart.mesh.extendBoundingBox(out, meshPart.offset, meshPart.size);
             }
         }
         for (Node child : children) {

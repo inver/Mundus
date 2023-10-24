@@ -788,6 +788,7 @@
     default: {
       background: grey
       padTop: 8
+      space: 4
     }
   },
   com.mbrlabs.mundus.editor.ui.FormStyle$FormFieldStyle: {

@@ -8,7 +8,7 @@ import com.mbrlabs.mundus.commons.assets.model.ModelAssetLoader;
 import com.mbrlabs.mundus.commons.assets.model.ModelMeta;
 import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
 import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObjectDelegate;
-import com.mbrlabs.mundus.commons.loader.AssimpWorker;
+import com.mbrlabs.mundus.commons.loader.assimp.AssimpLoader;
 import com.mbrlabs.mundus.commons.loader.ModelImporter;
 import com.mbrlabs.mundus.commons.model.ImportedModel;
 import com.mbrlabs.mundus.commons.model.ModelService;
@@ -33,7 +33,7 @@ public class EditorModelService extends ModelService {
     private final EditorCtx ctx;
     private final EcsService ecsService;
 
-    public EditorModelService(AssimpWorker assimpWorker, MetaService metaService, AssetsStorage assetsStorage,
+    public EditorModelService(AssimpLoader assimpWorker, MetaService metaService, AssetsStorage assetsStorage,
                               ModelImporter modelImporter, ModelAssetLoader modelAssetLoader, EditorCtx ctx,
                               EcsService ecsService) {
         super(assimpWorker);

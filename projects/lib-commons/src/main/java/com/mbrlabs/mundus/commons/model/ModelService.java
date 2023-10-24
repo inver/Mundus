@@ -1,7 +1,7 @@
 package com.mbrlabs.mundus.commons.model;
 
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset;
-import com.mbrlabs.mundus.commons.loader.AssimpWorker;
+import com.mbrlabs.mundus.commons.loader.assimp.AssimpLoader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class ModelService {
 
-    private final AssimpWorker assimpWorker;
+    private final AssimpLoader assimpWorker;
 
     //todo save models to cache
     public ModelObject createFromAsset(ModelAsset asset) {

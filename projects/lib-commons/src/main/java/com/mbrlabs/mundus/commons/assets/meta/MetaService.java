@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mbrlabs.mundus.commons.assets.exceptions.AssetNotFoundException;
 import com.mbrlabs.mundus.commons.assets.material.MaterialMeta;
 import com.mbrlabs.mundus.commons.assets.model.ModelMeta;
+import com.mbrlabs.mundus.commons.assets.pixmap.PixmapMeta;
 import com.mbrlabs.mundus.commons.assets.shader.ShaderMeta;
 import com.mbrlabs.mundus.commons.assets.skybox.SkyboxMeta;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainMeta;
@@ -94,6 +95,12 @@ public class MetaService {
     }
 
     public Meta<TerrainMeta> loadTerrainMeta(FileHandle assetFolderPath) {
+        var metaHandle = assetFolderPath.child(META_FILE_NAME);
+        return loadMeta(new TypeReference<>() {
+        }, metaHandle);
+    }
+
+    public Meta<PixmapMeta> loadPixmapMeta(FileHandle assetFolderPath) {
         var metaHandle = assetFolderPath.child(META_FILE_NAME);
         return loadMeta(new TypeReference<>() {
         }, metaHandle);

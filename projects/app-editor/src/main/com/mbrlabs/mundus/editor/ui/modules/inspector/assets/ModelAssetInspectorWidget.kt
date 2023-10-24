@@ -33,6 +33,7 @@ import com.mbrlabs.mundus.editor.ui.PreviewGenerator
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
 import com.mbrlabs.mundus.editor.ui.modules.inspector.BaseInspectorWidget
 import com.mbrlabs.mundus.editor.ui.widgets.MaterialWidget
+import org.springframework.context.ApplicationContext
 
 /**
  * @author Marcus Brummer
@@ -46,8 +47,9 @@ class ModelAssetInspectorWidget(
     private val inputService: InputService,
     private val toolManager: ToolManager,
     uiComponentHolder: UiComponentHolder,
-    private val previewGenerator: PreviewGenerator
-) : BaseInspectorWidget(uiComponentHolder, "Model Asset") {
+    private val previewGenerator: PreviewGenerator,
+    applicationContext: ApplicationContext
+) : BaseInspectorWidget(applicationContext) {
 
     private var modelAsset: ModelAsset? = null
 
@@ -68,18 +70,18 @@ class ModelAssetInspectorWidget(
         isDeletable = false
 
         // info
-        collapsibleContent.add(VisLabel("Info")).growX().row()
-        collapsibleContent.addSeparator().padBottom(5f).row()
-        collapsibleContent.add(name).growX().row()
-        collapsibleContent.add(nodeCount).growX().row()
-        collapsibleContent.add(materialCount).growX().row()
-        collapsibleContent.add(vertexCount).growX().row()
-        collapsibleContent.add(indexCount).growX().padBottom(15f).row()
+        content.add(VisLabel("Info")).growX().row()
+        content.addSeparator().padBottom(5f).row()
+        content.add(name).growX().row()
+        content.add(nodeCount).growX().row()
+        content.add(materialCount).growX().row()
+        content.add(vertexCount).growX().row()
+        content.add(indexCount).growX().padBottom(15f).row()
 
         // actions
-        collapsibleContent.add(VisLabel("Actions")).growX().row()
-        collapsibleContent.addSeparator().padBottom(5f).row()
-        collapsibleContent.add(modelPlacement).growX().padBottom(15f).row()
+        content.add(VisLabel("Actions")).growX().row()
+        content.addSeparator().padBottom(5f).row()
+        content.add(modelPlacement).growX().padBottom(15f).row()
 
         // materials
         val label = VisLabel()
@@ -88,10 +90,10 @@ class ModelAssetInspectorWidget(
                     + "you use the model placement tool."
         )
         label.wrap = true
-        collapsibleContent.add(VisLabel("Default model materials")).growX().row()
-        collapsibleContent.addSeparator().padBottom(5f).row()
-        collapsibleContent.add(label).padTop(4f).padBottom(15f).grow().row()
-        collapsibleContent.add(materialContainer).growX().padBottom(15f).row()
+        content.add(VisLabel("Default model materials")).growX().row()
+        content.addSeparator().padBottom(5f).row()
+        content.add(label).padTop(4f).padBottom(15f).grow().row()
+        content.add(materialContainer).growX().padBottom(15f).row()
 
         // model placement action
         modelPlacement.addListener(object : ClickListener() {

@@ -22,6 +22,7 @@ import com.kotcrab.vis.ui.widget.tabbedpane.TabbedPane
 import com.kotcrab.vis.ui.widget.tabbedpane.TabbedPaneListener
 import com.mbrlabs.mundus.editor.ui.UiComponentHolder
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.ComponentWidget
+import org.springframework.context.ApplicationContext
 
 /**
  * @author Marcus Brummer
@@ -29,9 +30,9 @@ import com.mbrlabs.mundus.editor.ui.modules.inspector.components.ComponentWidget
  */
 class TerrainComponentWidget(
     uiComponentHolder: UiComponentHolder,
-    entityId: Int,
-    private val terrainWidgetPresenter: TerrainWidgetPresenter
-) : ComponentWidget(uiComponentHolder, "Terrain Component", entityId), TabbedPaneListener {
+    private val terrainWidgetPresenter: TerrainWidgetPresenter,
+    applicationContext: ApplicationContext
+) : ComponentWidget(applicationContext), TabbedPaneListener {
 
     private val tabbedPane = TabbedPane()
     private val tabContainer = VisTable()
@@ -53,8 +54,8 @@ class TerrainComponentWidget(
         initGenTab()
         initSettingsTab()
 
-        collapsibleContent.add(tabbedPane.table).growX().row()
-        collapsibleContent.add(tabContainer).expand().fill().row()
+        content.add(tabbedPane.table).growX().row()
+        content.add(tabContainer).expand().fill().row()
         tabbedPane.switchTab(0)
     }
 

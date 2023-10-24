@@ -24,9 +24,7 @@ import com.badlogic.gdx.utils.Align
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisScrollPane
 import com.kotcrab.vis.ui.widget.VisTable
-import com.kotcrab.vis.ui.widget.file.FileChooser
 import com.mbrlabs.mundus.commons.core.ecs.component.TypeComponent
-import com.mbrlabs.mundus.editor.ui.UiComponentHolder
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.events.AssetSelectedEvent
@@ -38,14 +36,17 @@ import com.mbrlabs.mundus.editor.input.InputService
 import com.mbrlabs.mundus.editor.tools.ToolManager
 import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.PreviewGenerator
+import com.mbrlabs.mundus.editor.ui.UiComponentHolder
 import com.mbrlabs.mundus.editor.ui.UiConstants
+import com.mbrlabs.mundus.editor.ui.dsl.UiDslCreator
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
+import com.mbrlabs.mundus.editor.ui.modules.inspector.components.ModelComponentPresenter
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.TerrainWidgetPresenter
-import com.mbrlabs.mundus.editor.ui.modules.inspector.scene.SceneInspector
-import com.mbrlabs.mundus.editor.ui.modules.inspector.scene.SceneInspectorPresenter
 import com.mbrlabs.mundus.editor.ui.modules.outline.IdNode.RootNode
-import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerPresenter
+import com.mbrlabs.mundus.editor.ui.widgets.UiFormTable
+import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorChooserPresenter
 import org.slf4j.LoggerFactory.getLogger
+import org.springframework.context.ApplicationContext
 import org.springframework.stereotype.Component
 
 /**
@@ -65,8 +66,10 @@ class Inspector(
     terrainWidgetPresenter: TerrainWidgetPresenter,
     history: CommandHistory,
     previewGenerator: PreviewGenerator,
-    colorPickerPresenter: ColorPickerPresenter,
-    sceneInspectorPresenter: SceneInspectorPresenter,
+    colorPickerPresenter: ColorChooserPresenter,
+    modelComponentPresenter: ModelComponentPresenter,
+    uiDslCreator: UiDslCreator,
+    applicationContext: ApplicationContext
 ) : VisTable(),
     GameObjectModifiedEvent.GameObjectModifiedListener,
     AssetSelectedEvent.AssetSelectedListener,
@@ -87,7 +90,8 @@ class Inspector(
 
     private val goInspector: GameObjectInspector
     private val assetInspector: AssetInspector
-    private val sceneInspector = SceneInspector(uiComponentHolder, sceneInspectorPresenter)
+    private val dslSceneInspector =
+        uiDslCreator.create<UiFormTable>("com/mbrlabs/mundus/editor/ui/modules/inspector/scene/SceneWidget.groovy")
 //    private val cameraInspector = CameraInspector(previewGenerator, appUi)
 
     init {
@@ -102,7 +106,9 @@ class Inspector(
             history,
             terrainWidgetPresenter,
             previewGenerator,
-            colorPickerPresenter
+            colorPickerPresenter,
+            modelComponentPresenter,
+            uiDslCreator
         )
         assetInspector = AssetInspector(
             ctx,
@@ -113,7 +119,8 @@ class Inspector(
             toolManager,
             previewGenerator,
             colorPickerPresenter,
-            uiComponentHolder
+            uiComponentHolder,
+            applicationContext
         )
 
         init()
@@ -144,7 +151,8 @@ class Inspector(
         if (event.entityId == RootNode.ROOT_NODE_ID && mode != InspectorMode.SCENE) {
             mode = InspectorMode.SCENE
             root.clear()
-            root.add(sceneInspector).grow().row()
+//            root.add(sceneInspector).grow().row()
+            root.add(dslSceneInspector.actor).growX().row()
             goInspector.setEntity(event.entityId)
             return
         }

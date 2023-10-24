@@ -13,6 +13,7 @@ dependencies {
 
     testImplementation libs.junit_jupiter_engine
     testImplementation libs.mockito_core
+    testImplementation libs.mockito_junit
     testImplementation libs.gdx_backend_lwjgl3
     testImplementation libs.gdx_platform
     testImplementation libs.logback_classic

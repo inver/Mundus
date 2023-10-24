@@ -26,37 +26,45 @@ import com.kotcrab.vis.ui.VisUI
 import com.kotcrab.vis.ui.widget.Separator
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
-import com.mbrlabs.mundus.editor.ui.UiComponentHolder
 import com.mbrlabs.mundus.editor.ui.FormStyle.FormFieldStyle
+import com.mbrlabs.mundus.editor.ui.UiComponentHolder
 import com.mbrlabs.mundus.editor.ui.widgets.CollapseWidget
+import com.mbrlabs.mundus.editor.ui.widgets.UiFormTable
 import com.mbrlabs.mundus.editor.ui.widgets.icon.SymbolIcon
 import org.apache.commons.lang3.StringUtils
+import org.springframework.context.ApplicationContext
 
 
 /**
  * @author Marcus Brummer
  * @version 19-01-2016
  */
-abstract class BaseInspectorWidget(private val uiComponentHolder: UiComponentHolder, title: String) : VisTable() {
+abstract class BaseInspectorWidget(applicationContext: ApplicationContext) : VisTable() {
 
-    private var title: String? = null
+    var title: String? = null
         set(title) {
             field = title
             titleLabel.setText(title)
         }
 
+    private val header = VisTable()
+    private var headerCell: Cell<VisTable>? = null
+
+    protected val uiComponentHolder: UiComponentHolder = applicationContext.getBean(UiComponentHolder::class.java)
     private val collapseBtn = uiComponentHolder.buttonFactory.createButton(SymbolIcon.EXPAND_MORE)
     private val deleteBtn = uiComponentHolder.buttonFactory.createButton(SymbolIcon.CLOSE)
-    private var deletableBtnCell: Cell<*>? = null
 
-    protected val collapsibleContent = VisTable()
-    private val collapsibleWidget = CollapseWidget(collapsibleContent)
+    private var deletableBtnCell: Cell<*>? = null
+    protected val formTable = UiFormTable(applicationContext)
+    protected val content = formTable.actor
+    private val collapsibleWidget = CollapseWidget(content)
+
     private val titleLabel = VisLabel()
 
     private var deletable: Boolean = false
 
     init {
-//        debugAll()
+        //        debugAll()
         deleteBtn.style.up = null
 
         deletable = false
@@ -85,20 +93,17 @@ abstract class BaseInspectorWidget(private val uiComponentHolder: UiComponentHol
 
     private fun setupUI() {
         // header
-        val header = VisTable()
         deletableBtnCell = header.add(deleteBtn).top().left().padBottom(4f)
         header.add(titleLabel)
         header.add(collapseBtn).right().top().width(20f).height(20f).expand().row()
-
-        // add separator
         header.add(Separator(uiComponentHolder.separatorStyle)).fillX().expandX().colspan(3).row()
 
         // add everything to root
-        add(header).expand().fill().row()
+        headerCell = add(header)
+        headerCell!!.expand().fill().row()
 
-        val style = VisUI.getSkin().get(BaseWidgetInspectorStyle::class.java);
-//        collapsibleContent.background(style.background)
-        collapsibleContent.padTop(style.padTop)
+        val style = VisUI.getSkin().get(BaseWidgetInspectorStyle::class.java)
+        content.padTop(style.padTop)
         add(collapsibleWidget).expand().padBottom(10f).fill().row()
         isDeletable = deletable
     }
@@ -128,6 +133,15 @@ abstract class BaseInspectorWidget(private val uiComponentHolder: UiComponentHol
         }
     }
 
+    open fun setShowHeader(value: Boolean) {
+        header.isVisible = value
+        if (value) {
+            headerCell!!.height(20f)
+        } else {
+            headerCell!!.height(0f)
+        }
+    }
+
     open fun onDelete() {
         //do nothing
     }
@@ -139,19 +153,11 @@ abstract class BaseInspectorWidget(private val uiComponentHolder: UiComponentHol
     class BaseWidgetInspectorStyle {
         var background: Drawable? = null
         var padTop = 0f
-
-        constructor()
-        constructor(background: Drawable?) {
-            this.background = background
-        }
-
-        constructor(style: BaseWidgetInspectorStyle) {
-            background = style.background
-        }
+        var space = 0f
     }
 
     protected fun addFormField(label: String?, actor: Actor, expand: Boolean) {
-        addFormField(collapsibleContent, label, actor, expand)
+        addFormField(content, label, actor, expand)
     }
 
     protected fun addFormField(label: String?, actor: Actor) {

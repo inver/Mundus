@@ -1,9 +1,6 @@
 package com.mbrlabs.mundus.editor.ui;
 
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-
 public class FormStyle {
-
 
     public static class FormFieldStyle {
         public Float padTop = 0f;

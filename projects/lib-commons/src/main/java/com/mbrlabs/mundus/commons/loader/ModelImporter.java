@@ -1,6 +1,7 @@
 package com.mbrlabs.mundus.commons.loader;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.mbrlabs.mundus.commons.loader.assimp.AssimpLoader;
 import com.mbrlabs.mundus.commons.model.ImportedModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,8 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class ModelImporter {
-    private final AssimpWorker assimpWorker;
+    private final AssimpLoader assimpWorker;
     private final G3dModelLoader g3dModelLoader;
+    private final G3dModelLoader g3dbModelLoader;
 
     public ImportedModel importAndConvertToTmpFolder(FileHandle tempFolder, FileHandle file) {
         if (file == null || !file.exists()) {
@@ -19,6 +21,8 @@ public class ModelImporter {
 
         ImportedModel modelFile;
         if (file.name().endsWith("g3db")) {
+            modelFile = g3dbModelLoader.importModel(file);
+        } else if (file.name().endsWith("g3d")) {
             modelFile = g3dModelLoader.importModel(file);
         } else {
             modelFile = assimpWorker.importModel(file);

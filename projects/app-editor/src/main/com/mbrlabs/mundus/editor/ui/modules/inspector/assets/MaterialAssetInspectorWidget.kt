@@ -25,7 +25,8 @@ import com.mbrlabs.mundus.editor.ui.PreviewGenerator
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
 import com.mbrlabs.mundus.editor.ui.modules.inspector.BaseInspectorWidget
 import com.mbrlabs.mundus.editor.ui.widgets.MaterialWidget
-import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerPresenter
+import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorChooserPresenter
+import org.springframework.context.ApplicationContext
 
 /**
  * @author Marcus Brummer
@@ -37,9 +38,10 @@ class MaterialAssetInspectorWidget(
     private val assetSelectionDialog: AssetPickerDialog,
     private val assetManager: EditorAssetManager,
     private val previewGenerator: PreviewGenerator,
-    private val uiComponentHolder: UiComponentHolder,
-    colorPickerPresenter: ColorPickerPresenter
-) : BaseInspectorWidget(uiComponentHolder, "Material Asset") {
+    uiComponentHolder: UiComponentHolder,
+    colorPickerPresenter: ColorChooserPresenter,
+    applicationContext: ApplicationContext
+) : BaseInspectorWidget(applicationContext) {
 
     private var material: MaterialAsset? = null
     private val materialWidget =
@@ -49,7 +51,7 @@ class MaterialAssetInspectorWidget(
         colorPickerPresenter.init(materialWidget.diffuseColorField)
 
         isDeletable = false
-        collapsibleContent.add(materialWidget).grow().row()
+        content.add(materialWidget).grow().row()
     }
 
     fun setMaterial(material: MaterialAsset) {

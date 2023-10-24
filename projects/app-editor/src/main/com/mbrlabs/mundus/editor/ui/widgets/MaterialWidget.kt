@@ -37,7 +37,7 @@ import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.PreviewGenerator
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerListener
-import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerField
+import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorChooserField
 
 /**
  * Displays all properties of a material.
@@ -69,7 +69,7 @@ class MaterialWidget(
     val normalTextureField = AssetChooserField()
     val roughnessTextureField = AssetChooserField()
 
-    val diffuseColorField = ColorPickerField()
+    val diffuseColorField = ColorChooserField()
     val shininessField = VisTextField()
     val opacityField = VisTextField()
 

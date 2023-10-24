@@ -4,7 +4,7 @@ import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.editor.ui.widgets.icon.SymbolIcon;
 
 public final class IconUtils {
-    public static SymbolIcon getIcon(Asset asset) {
+    public static SymbolIcon getIcon(Asset<?> asset) {
         switch (asset.getType()) {
             case TERRAIN:
                 return SymbolIcon.TERRAIN;

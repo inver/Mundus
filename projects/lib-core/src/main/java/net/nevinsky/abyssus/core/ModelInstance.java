@@ -340,7 +340,7 @@ public class ModelInstance implements RenderableProvider {
      * this node tree and that all materials are listed in the {@link #materials} array.
      */
     private void invalidate(Node node) {
-        for (int i = 0, n = node.parts.size; i < n; ++i) {
+        for (int i = 0, n = node.parts.size(); i < n; ++i) {
             NodePart part = node.parts.get(i);
             ArrayMap<Node, Matrix4> bindPose = part.invBoneBindTransforms;
             if (bindPose != null) {
@@ -412,7 +412,7 @@ public class ModelInstance implements RenderableProvider {
      */
     public void copyAnimation(Animation sourceAnim, boolean shareKeyframes) {
         Animation animation = new Animation(sourceAnim.id);
-        animation.duration = sourceAnim.duration;
+        animation.setDuration(sourceAnim.getDuration());
         for (final NodeAnimation nanim : sourceAnim.nodeAnimations) {
             final Node node = getNode(nanim.node.id);
             if (node == null) {
@@ -495,7 +495,7 @@ public class ModelInstance implements RenderableProvider {
     }
 
     protected void getRenderables(Node node, Array<Renderable> renderables, Pool<Renderable> pool) {
-        if (node.parts.size > 0) {
+        if (node.parts.size() > 0) {
             for (NodePart nodePart : node.parts) {
                 if (nodePart.enabled) {
                     renderables.add(getRenderable(pool.obtain(), node, nodePart));

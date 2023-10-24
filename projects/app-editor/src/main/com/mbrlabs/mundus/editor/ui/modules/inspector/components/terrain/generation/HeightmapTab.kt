@@ -9,7 +9,7 @@ import com.kotcrab.vis.ui.widget.tabbedpane.Tab
 import com.mbrlabs.mundus.editor.history.Command
 import com.mbrlabs.mundus.editor.ui.widgets.FileChooserField
 
-class HeightmapTab(private val entityId: Int) : Tab(false, false) {
+class HeightmapTab : Tab(false, false) {
 
     private val root = VisTable()
 

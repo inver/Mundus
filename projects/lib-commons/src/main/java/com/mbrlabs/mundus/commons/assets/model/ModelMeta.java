@@ -3,6 +3,9 @@ package com.mbrlabs.mundus.commons.assets.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Setter
 @Getter
 public class ModelMeta {
@@ -13,4 +16,6 @@ public class ModelMeta {
     public enum Format {
         GLTF
     }
+
+    private final List<String> materials = new ArrayList<>();
 }
