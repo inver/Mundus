@@ -38,6 +38,7 @@ public class UiComponentWidget extends UiComponent<VisTable> {
     @Getter
     private final UiFormTable contentTable;
     private final CollapseWidget collapsibleWidget;
+    private Cell<CollapseWidget> collapseWidgetCell;
 
     @Getter
     private boolean deletable = false;
@@ -71,7 +72,8 @@ public class UiComponentWidget extends UiComponent<VisTable> {
 
         var style = VisUI.getSkin().get(BaseInspectorWidget.BaseWidgetInspectorStyle.class);
         contentTable.getActor().padTop(style.getPadTop());
-        actor.add(collapsibleWidget).expand().padBottom(8f).fill().row();
+        collapseWidgetCell = actor.add(collapsibleWidget);
+        collapseWidgetCell.expand().fill().row();
 
         setDeletable(false);
     }
@@ -119,10 +121,12 @@ public class UiComponentWidget extends UiComponent<VisTable> {
         if (visible) {
             setShowHeader(showHeader);
             collapsibleWidget.setCollapsed(false, false);
+            collapseWidgetCell.padBottom(8f);
         } else {
             showHeader = header.isVisible();
             setShowHeader(false);
             collapsibleWidget.setCollapsed(true, false);
+            collapseWidgetCell.padBottom(0f);
         }
     }
 
@@ -131,10 +135,6 @@ public class UiComponentWidget extends UiComponent<VisTable> {
     }
 
     public void onDelete() {
-        //do nothing
-    }
-
-    public void setValues(int entityId) {
         //do nothing
     }
 
