@@ -7,6 +7,12 @@ public class UiLabelComponent extends UiComponent<VisLabel> {
         super(new VisLabel());
     }
 
+    public UiLabelComponent(String text, String layoutTypes) {
+        this();
+        setText(text);
+        setLayoutTypes(layoutTypes);
+    }
+
     public void setText(String text) {
         actor.setText(text);
     }

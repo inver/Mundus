@@ -52,10 +52,7 @@ public class UiDslProcessor extends GroovyObjectSupport {
      * @return label instance
      */
     public UiComponent<?> Label(Object[] args) {
-        var res = new UiLabelComponent();
-        res.setText((String) args[0]);
-        res.setLayoutTypes((String) args[1]);
-        return res;
+        return new UiLabelComponent((String) args[0], (String) args[1]);
     }
 
     public UiComponent<?> Table(Closure<?> closure) {
@@ -91,9 +88,7 @@ public class UiDslProcessor extends GroovyObjectSupport {
 
     private <T extends Actor> UiComponent<T> delegateTo(Closure<?> closure, Supplier<T> creator) {
         var value = new UiComponent<T>(creator.get());
-        closure.setDelegate(value);
-        closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-        closure.call();
+        delegateTo(closure, value);
         return value;
     }
 
