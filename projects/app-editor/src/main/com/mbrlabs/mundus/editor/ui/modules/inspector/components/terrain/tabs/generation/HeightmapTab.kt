@@ -1,4 +1,4 @@
-package com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.generation
+package com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.tabs.generation
 
 import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.scenes.scene2d.ui.Table

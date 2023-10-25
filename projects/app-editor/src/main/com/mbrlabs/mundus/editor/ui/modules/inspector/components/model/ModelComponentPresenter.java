@@ -1,10 +1,9 @@
-package com.mbrlabs.mundus.editor.ui.modules.inspector.components;
+package com.mbrlabs.mundus.editor.ui.modules.inspector.components.model;
 
 import com.mbrlabs.mundus.commons.assets.AssetManager;
 import com.mbrlabs.mundus.commons.core.ecs.base.RenderComponent;
 import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObjectDelegate;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
-import com.mbrlabs.mundus.editor.events.EntitySelectedEvent;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;

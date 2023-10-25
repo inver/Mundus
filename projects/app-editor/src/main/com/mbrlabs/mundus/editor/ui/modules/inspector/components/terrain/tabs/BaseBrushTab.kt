@@ -1,4 +1,4 @@
-package com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain
+package com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.tabs
 
 import com.kotcrab.vis.ui.widget.tabbedpane.Tab
 import com.mbrlabs.mundus.editor.tools.brushes.TerrainBrush

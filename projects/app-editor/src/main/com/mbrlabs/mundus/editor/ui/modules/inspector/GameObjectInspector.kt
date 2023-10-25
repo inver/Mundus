@@ -19,20 +19,15 @@ package com.mbrlabs.mundus.editor.ui.modules.inspector
 import com.badlogic.gdx.utils.Align
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
-import com.mbrlabs.mundus.commons.core.ecs.component.NameComponent
 import com.mbrlabs.mundus.commons.core.ecs.component.TypeComponent
-import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
-import com.mbrlabs.mundus.editor.history.CommandHistory
-import com.mbrlabs.mundus.editor.ui.AppUi
-import com.mbrlabs.mundus.editor.ui.PreviewGenerator
 import com.mbrlabs.mundus.editor.ui.UiComponentHolder
 import com.mbrlabs.mundus.editor.ui.dsl.UiDslCreator
-import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
-import com.mbrlabs.mundus.editor.ui.modules.inspector.components.*
+import com.mbrlabs.mundus.editor.ui.modules.inspector.components.ComponentWidget
+import com.mbrlabs.mundus.editor.ui.modules.inspector.components.UiComponentWidget
+import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.TerrainComponentWidget
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.TerrainWidgetPresenter
-import com.mbrlabs.mundus.editor.ui.widgets.UiFormTable
-import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorChooserPresenter
+import org.springframework.context.ApplicationContext
 
 /**
  * @author Marcus Brummer
@@ -40,21 +35,19 @@ import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorChooserPresenter
  */
 class GameObjectInspector(
     private val ctx: EditorCtx,
-    private val appUi: AppUi,
-    private val uiComponentHolder: UiComponentHolder,
-    private val assetPickerDialog: AssetPickerDialog,
-    private val assetManager: EditorAssetManager,
-    private val history: CommandHistory,
-    private val terrainWidgetPresenter: TerrainWidgetPresenter,
-    private val previewGenerator: PreviewGenerator,
-    private val colorPickerPresenter: ColorChooserPresenter,
-    private val modelComponentPresenter: ModelComponentPresenter,
-    private val uiDslCreator: UiDslCreator
+    uiComponentHolder: UiComponentHolder,
+    terrainWidgetPresenter: TerrainWidgetPresenter,
+    uiDslCreator: UiDslCreator,
+    applicationContext: ApplicationContext
 ) : VisTable() {
 
-    private val identifierWidget = IdentifierWidget(ctx)
-    private val dlsWidget = uiDslCreator.create<UiFormTable>("com/mbrlabs/mundus/editor/ui/modules/inspector/components/identifier/IdentifierWidget.groovy");
-    private val transformWidget = uiDslCreator.create<UiComponentWidget>("com/mbrlabs/mundus/editor/ui/modules/inspector/components/transform/TransformWidget.groovy");
+    private val dlsWidget =
+        uiDslCreator.create<UiComponentWidget>("com/mbrlabs/mundus/editor/ui/modules/inspector/components/identifier/IdentifierWidget.groovy");
+    private val transformWidget =
+        uiDslCreator.create<UiComponentWidget>("com/mbrlabs/mundus/editor/ui/modules/inspector/components/transform/TransformWidget.groovy");
+    private val terrainComponentWidget =
+        TerrainComponentWidget(uiComponentHolder, terrainWidgetPresenter, applicationContext)
+
     private val componentWidgets = ArrayList<ComponentWidget>()
     private val addComponentBtn = VisTextButton("Add Component")
     private val componentTable = VisTable()
@@ -63,9 +56,9 @@ class GameObjectInspector(
 
     init {
         align(Align.top)
-        add(identifierWidget).growX().pad(7f).row()
         add(dlsWidget.actor).growX().pad(7f).row()
         add(transformWidget.actor).growX().pad(7f).row()
+        add(terrainComponentWidget).growX().pad(8f).row()
 
         componentWidgets.forEach { componentTable.add<BaseInspectorWidget>(it).row() }
 
@@ -92,10 +85,6 @@ class GameObjectInspector(
             return
         }
 
-        identifierWidget.setValues(
-            ctx.currentWorld.getEntity(entityId).isActive,
-            ctx.getComponentByEntityId(entityId, NameComponent::class.java).name
-        )
 //        transformWidget.setValues(entityId)
         componentWidgets.forEach { it.setValues(entityId) }
     }
@@ -106,7 +95,7 @@ class GameObjectInspector(
         }
 
         componentWidgets.clear()
-        val component = ctx.currentWorld.getEntity(entityId).getComponent(TypeComponent::class.java) ?: return
+//        val component = ctx.currentWorld.getEntity(entityId).getComponent(TypeComponent::class.java) ?: return
 
         // todo reuse created components, instead of creating on each entity select
 //        if (component.type == TypeComponent.Type.LIGHT_DIRECTIONAL) {

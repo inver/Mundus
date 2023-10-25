@@ -9,6 +9,7 @@ import com.mbrlabs.mundus.commons.assets.AssetManager;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.editor.core.ProjectConstants;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
+import com.mbrlabs.mundus.editor.events.EntitySelectedEvent;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent;
 import com.mbrlabs.mundus.editor.events.SceneChangedEvent;
@@ -17,6 +18,7 @@ import com.mbrlabs.mundus.editor.ui.modules.dialogs.skybox.SkyboxDialog;
 import com.mbrlabs.mundus.editor.ui.modules.inspector.UiComponentPresenter;
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.UiComponentWidget;
 import com.mbrlabs.mundus.editor.ui.modules.outline.ClickButtonListener;
+import com.mbrlabs.mundus.editor.ui.modules.outline.IdNode;
 import com.mbrlabs.mundus.editor.ui.widgets.AssetChooserField;
 import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorChooserPresenter;
 import com.mbrlabs.mundus.editor.ui.widgets.presenter.AssetChooserFieldPresenter;
@@ -41,6 +43,9 @@ public class SkyboxPresenter implements UiComponentPresenter<UiComponentWidget> 
         eventBus.register((ProjectChangedEvent.ProjectChangedListener) event ->
                 onProjectOrSceneChanged(uiComponent));
         eventBus.register((SceneChangedEvent.SceneChangedListener) event -> onProjectOrSceneChanged(uiComponent));
+        eventBus.register((EntitySelectedEvent.EntitySelectedListener) event ->
+                uiComponent.setVisible(event.getEntityId() == IdNode.RootNode.ROOT_NODE_ID)
+        );
         uiComponent.getField("enabled", VisCheckBox.class).addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {

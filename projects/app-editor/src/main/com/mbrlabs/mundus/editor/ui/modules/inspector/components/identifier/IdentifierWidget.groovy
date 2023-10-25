@@ -1,7 +1,7 @@
-import com.mbrlabs.mundus.editor.ui.modules.inspector.components.transform.TransformWidgetPresenter
+import com.mbrlabs.mundus.editor.ui.modules.inspector.components.identifier.IdentifierWidgetPresenter
 
-return Table {
-    presenter = TransformWidgetPresenter.class
+return ComponentWidget {
+    presenter = IdentifierWidgetPresenter.class
     showHeader = false
 
     content {

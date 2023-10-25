@@ -1,9 +1,10 @@
-package com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain
+package com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.tabs
 
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import com.kotcrab.vis.ui.widget.VisTable
 import com.mbrlabs.mundus.editor.tools.brushes.TerrainBrush
+import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.TerrainComponentWidget
 
 /**
  * @author JamesTKhan

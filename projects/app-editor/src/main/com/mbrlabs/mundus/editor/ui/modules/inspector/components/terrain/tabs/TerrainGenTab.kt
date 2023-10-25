@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain
+package com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.tabs
 
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.tabbedpane.Tab
 import com.kotcrab.vis.ui.widget.tabbedpane.TabbedPane
 import com.kotcrab.vis.ui.widget.tabbedpane.TabbedPaneListener
-import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.generation.HeightmapTab
-import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.generation.PerlinNoiseTab
+import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.TerrainComponentWidget
+import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.tabs.generation.HeightmapTab
+import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.tabs.generation.PerlinNoiseTab
 
 /**
  * @author Marcus Brummer

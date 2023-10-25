@@ -8,11 +8,13 @@ import com.kotcrab.vis.ui.widget.VisTextField;
 import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
+import com.mbrlabs.mundus.editor.events.EntitySelectedEvent;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent;
 import com.mbrlabs.mundus.editor.events.SceneChangedEvent;
 import com.mbrlabs.mundus.editor.ui.modules.inspector.UiComponentPresenter;
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.UiComponentWidget;
+import com.mbrlabs.mundus.editor.ui.modules.outline.IdNode;
 import com.mbrlabs.mundus.editor.ui.widgets.FloatField;
 import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorChooserField;
 import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorChooserPresenter;
@@ -31,6 +33,9 @@ public class FogPresenter implements UiComponentPresenter<UiComponentWidget> {
     public void init(UiComponentWidget uiComponent) {
         eventBus.register((ProjectChangedEvent.ProjectChangedListener) event -> fillFromEnvironment(uiComponent));
         eventBus.register((SceneChangedEvent.SceneChangedListener) event -> fillFromEnvironment(uiComponent));
+        eventBus.register((EntitySelectedEvent.EntitySelectedListener) event ->
+                uiComponent.setVisible(event.getEntityId() == IdNode.RootNode.ROOT_NODE_ID)
+        );
         uiComponent.getField("density", FloatField.class).addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {

@@ -9,6 +9,7 @@ import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.ui.modules.inspector.UiComponentPresenter;
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.ComponentWidget;
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.UiComponentWidget;
+import com.mbrlabs.mundus.editor.ui.modules.outline.IdNode;
 import com.mbrlabs.mundus.editor.ui.widgets.FloatField;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,9 @@ public class TransformWidgetPresenter implements UiComponentPresenter<UiComponen
 
     @Override
     public void init(UiComponentWidget uiComponent) {
+        eventBus.register((EntitySelectedEvent.EntitySelectedListener) event ->
+                uiComponent.setVisible(event.getEntityId() != IdNode.RootNode.ROOT_NODE_ID)
+        );
         eventBus.register((EntitySelectedEvent.EntitySelectedListener) event -> {
             if (!ctx.entityExists(event.getEntityId())) {
                 return;

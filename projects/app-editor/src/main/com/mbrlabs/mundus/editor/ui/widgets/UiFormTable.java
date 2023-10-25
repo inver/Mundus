@@ -20,6 +20,7 @@ public class UiFormTable extends UiComponent<VisTable> {
     public UiFormTable(ApplicationContext applicationContext) {
         super(new VisTable());
         this.applicationContext = applicationContext;
+//        actor.debugAll();
     }
 
     @SuppressWarnings("unchecked")

@@ -14,36 +14,38 @@
  * limitations under the License.
  */
 
-package com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain
+package com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.tabs
 
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.tabbedpane.Tab
-import com.mbrlabs.mundus.editor.ui.widgets.ImprovedSlider
+import com.mbrlabs.mundus.editor.ui.UiComponentHolder
+import com.mbrlabs.mundus.editor.tools.brushes.TerrainBrush
+import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.TerrainBrushGrid
+import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.TerrainComponentWidget
 
 /**
  * @author Marcus Brummer
  * @version 30-01-2016
  */
-class TerrainSettingsTab(val parentWidget: TerrainComponentWidget) :
-    Tab(false, false) {
-
+class TerrainUpDownTab(
+    parent: TerrainComponentWidget,
+    uiComponentHolder: UiComponentHolder
+) : Tab(false, false) {
     private val table = VisTable()
-    val uvSlider = ImprovedSlider(.5f, 120f, .5f)
+
+    val grid = TerrainBrushGrid(uiComponentHolder, TerrainBrush.BrushMode.RAISE_LOWER)
 
     init {
         table.align(Align.left)
-        table.add(VisLabel("Settings")).row()
-
-        table.add(VisLabel("UV scale")).left().row()
-//        uvSlider.value = parentWidget.component.terrain.terrain.uvScale.x
-//        table.add(uvSlider).expandX().fillX().row()
+        table.add(VisLabel("Hold shift to lower")).center().row()
+        table.add(grid).expandX().fillX().row()
     }
 
     override fun getTabTitle(): String {
-        return "Settings"
+        return "Up/Down"
     }
 
     override fun getContentTable(): Table {

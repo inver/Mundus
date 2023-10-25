@@ -31,9 +31,7 @@ import com.mbrlabs.mundus.editor.ui.widgets.ImprovedSlider
  * @author Marcus Brummer
  * @version 30-01-2016
  */
-class TerrainBrushGrid(
-    private val uiComponentHolder: UiComponentHolder
-) : VisTable(),
+class TerrainBrushGrid(private val uiComponentHolder: UiComponentHolder) : VisTable(),
     GlobalBrushSettingsChangedEvent.GlobalBrushSettingsChangedListener {
 
     private var brushMode: TerrainBrush.BrushMode? = null

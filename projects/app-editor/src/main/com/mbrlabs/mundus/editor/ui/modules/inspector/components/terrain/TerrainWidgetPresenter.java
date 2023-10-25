@@ -1,6 +1,5 @@
 package com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain;
 
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -9,7 +8,6 @@ import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
 import com.mbrlabs.mundus.commons.terrain.SplatTexture;
-import com.mbrlabs.mundus.commons.terrain.TerrainObject;
 import com.mbrlabs.mundus.editor.assets.AssetTextureFilter;
 import com.mbrlabs.mundus.editor.core.assets.AssetWriter;
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager;
@@ -22,6 +20,9 @@ import com.mbrlabs.mundus.editor.tools.ToolManager;
 import com.mbrlabs.mundus.editor.tools.brushes.TerrainBrush;
 import com.mbrlabs.mundus.editor.ui.AppUi;
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog;
+import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.tabs.TerrainGenTab;
+import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.tabs.TerrainPaintTab;
+import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.tabs.TerrainSettingsTab;
 import com.mbrlabs.mundus.editor.ui.modules.outline.ClickButtonListener;
 import com.mbrlabs.mundus.editor.ui.widgets.TextureGrid;
 import com.mbrlabs.mundus.editor.ui.widgets.presenter.FileChooserFieldPresenter;

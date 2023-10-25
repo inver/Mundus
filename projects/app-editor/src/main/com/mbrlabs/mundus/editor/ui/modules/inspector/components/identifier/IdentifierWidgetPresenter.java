@@ -9,28 +9,33 @@ import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.events.EntitySelectedEvent;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.ui.modules.inspector.UiComponentPresenter;
+import com.mbrlabs.mundus.editor.ui.modules.inspector.components.UiComponentWidget;
+import com.mbrlabs.mundus.editor.ui.modules.outline.IdNode;
 import com.mbrlabs.mundus.editor.ui.widgets.UiFormTable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class IdentifierWidgetPresenter implements UiComponentPresenter<UiFormTable> {
+public class IdentifierWidgetPresenter implements UiComponentPresenter<UiComponentWidget> {
 
     private final EditorCtx ctx;
     private final EventBus eventBus;
 
     @Override
-    public void init(UiFormTable table) {
-        var nameField = (VisTextField) table.getField("name");
-        var activeField = (VisCheckBox) table.getField("active");
+    public void init(UiComponentWidget widget) {
+        var nameField = (VisTextField) widget.getField("name");
+        var activeField = (VisCheckBox) widget.getField("active");
 
+        eventBus.register((EntitySelectedEvent.EntitySelectedListener) event ->
+                widget.setVisible(event.getEntityId() != IdNode.RootNode.ROOT_NODE_ID)
+        );
         eventBus.register((EntitySelectedEvent.EntitySelectedListener) event -> {
             if (!ctx.entityExists(event.getEntityId())) {
                 return;
             }
 
-            table.setEntityId(event.getEntityId());
+            widget.getContentTable().setEntityId(event.getEntityId());
             var name = ctx.getComponentByEntityId(event.getEntityId(), NameComponent.class);
 
             nameField.setText(name.getName());
@@ -40,7 +45,8 @@ public class IdentifierWidgetPresenter implements UiComponentPresenter<UiFormTab
         nameField.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                ctx.getComponentByEntityId(table.getEntityId(), NameComponent.class).setName(nameField.getText());
+                ctx.getComponentByEntityId(widget.getContentTable().getEntityId(), NameComponent.class)
+                        .setName(nameField.getText());
             }
         });
         activeField.addListener(new ChangeListener() {

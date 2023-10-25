@@ -40,6 +40,7 @@ public class UiDslProcessor extends GroovyObjectSupport {
         fields.clear();
         var res = delegateTo(closure, widget);
         widget.setFields(fields);
+        widget.setVisible(false); // Set visibility from presenter on entity select event
         var instance = applicationContext.getBean(widget.getPresenter());
         instance.init(widget);
         return res;

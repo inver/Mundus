@@ -41,6 +41,7 @@ public class UiComponentWidget extends UiComponent<VisTable> {
 
     @Getter
     private boolean deletable = false;
+    private boolean showHeader = true;
 
     public UiComponentWidget(ApplicationContext applicationContext) {
         super(new VisTable());
@@ -114,11 +115,20 @@ public class UiComponentWidget extends UiComponent<VisTable> {
         deleteBtn.addListener(new ClickButtonListener(this::onDelete));
     }
 
+    public void setVisible(boolean visible) {
+        if (visible) {
+            setShowHeader(showHeader);
+            collapsibleWidget.setCollapsed(false, false);
+        } else {
+            showHeader = header.isVisible();
+            setShowHeader(false);
+            collapsibleWidget.setCollapsed(true, false);
+        }
+    }
 
     public void content(Closure<?> closure) {
         contentTable.content(closure);
     }
-
 
     public void onDelete() {
         //do nothing

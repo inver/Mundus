@@ -24,7 +24,6 @@ import com.badlogic.gdx.utils.Align
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisScrollPane
 import com.kotcrab.vis.ui.widget.VisTable
-import com.mbrlabs.mundus.commons.core.ecs.component.TypeComponent
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.events.AssetSelectedEvent
@@ -40,9 +39,8 @@ import com.mbrlabs.mundus.editor.ui.UiComponentHolder
 import com.mbrlabs.mundus.editor.ui.UiConstants
 import com.mbrlabs.mundus.editor.ui.dsl.UiDslCreator
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
-import com.mbrlabs.mundus.editor.ui.modules.inspector.components.ModelComponentPresenter
+import com.mbrlabs.mundus.editor.ui.modules.inspector.components.model.ModelComponentPresenter
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.TerrainWidgetPresenter
-import com.mbrlabs.mundus.editor.ui.modules.outline.IdNode.RootNode
 import com.mbrlabs.mundus.editor.ui.widgets.UiFormTable
 import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorChooserPresenter
 import org.slf4j.LoggerFactory.getLogger
@@ -90,7 +88,7 @@ class Inspector(
 
     private val goInspector: GameObjectInspector
     private val assetInspector: AssetInspector
-    private val dslSceneInspector =
+    private val sceneInspector =
         uiDslCreator.create<UiFormTable>("com/mbrlabs/mundus/editor/ui/modules/inspector/scene/SceneWidget.groovy")
 //    private val cameraInspector = CameraInspector(previewGenerator, appUi)
 
@@ -99,16 +97,10 @@ class Inspector(
 
         goInspector = GameObjectInspector(
             ctx,
-            appUi,
             uiComponentHolder,
-            assetPickerDialog,
-            assetManager,
-            history,
             terrainWidgetPresenter,
-            previewGenerator,
-            colorPickerPresenter,
-            modelComponentPresenter,
-            uiDslCreator
+            uiDslCreator,
+            applicationContext
         )
         assetInspector = AssetInspector(
             ctx,
@@ -145,29 +137,30 @@ class Inspector(
         })
 
         add<ScrollPane>(scrollPane).expand().fill().top()
+        root.add(sceneInspector.actor).growX().row()
+        root.add(goInspector).growX().row()
     }
 
     override fun onEntitySelected(event: EntitySelectedEvent) {
-        if (event.entityId == RootNode.ROOT_NODE_ID && mode != InspectorMode.SCENE) {
-            mode = InspectorMode.SCENE
-            root.clear()
-//            root.add(sceneInspector).grow().row()
-            root.add(dslSceneInspector.actor).growX().row()
-            goInspector.setEntity(event.entityId)
-            return
-        }
-
-        val type = ctx.getComponentByEntityId(event.entityId, TypeComponent::class.java)?.type
-
-        if (type != TypeComponent.Type.CAMERA && type != TypeComponent.Type.GROUP
-            && type != TypeComponent.Type.HANDLE && mode != InspectorMode.GAME_OBJECT
-        ) {
-            mode = InspectorMode.GAME_OBJECT
-            root.clear()
-            root.add(goInspector).grow().row()
-            goInspector.setEntity(event.entityId)
-            return
-        }
+//        if (event.entityId == RootNode.ROOT_NODE_ID && mode != InspectorMode.SCENE) {
+//            mode = InspectorMode.SCENE
+//            root.clear()
+//            root.add(sceneInspector.actor).growX().row()
+//            goInspector.setEntity(event.entityId)
+//            return
+//        }
+//
+//        val type = ctx.getComponentByEntityId(event.entityId, TypeComponent::class.java)?.type
+//
+//        if (type != TypeComponent.Type.CAMERA && type != TypeComponent.Type.GROUP
+//            && type != TypeComponent.Type.HANDLE && mode != InspectorMode.GAME_OBJECT
+//        ) {
+//            mode = InspectorMode.GAME_OBJECT
+//            root.clear()
+//            root.add(goInspector).grow().row()
+//            goInspector.setEntity(event.entityId)
+//            return
+//        }
     }
 
     override fun onGameObjectModified(event: GameObjectModifiedEvent) {
