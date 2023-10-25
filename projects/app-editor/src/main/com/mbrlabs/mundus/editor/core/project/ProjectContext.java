@@ -113,6 +113,7 @@ public class ProjectContext implements Disposable {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public <T extends RenderableSceneObject> T getRenderableObject(Class<T> clazz, int entityId) {
         var delegate = currentScene.getWorld().getMapper(RenderComponent.class).get(entityId).getRenderable();
         if (!(delegate instanceof RenderableObjectDelegate)) {

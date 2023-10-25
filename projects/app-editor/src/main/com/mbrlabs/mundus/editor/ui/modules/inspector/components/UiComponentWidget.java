@@ -1,6 +1,5 @@
 package com.mbrlabs.mundus.editor.ui.modules.inspector.components;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.Separator;
@@ -76,6 +75,12 @@ public class UiComponentWidget extends UiComponent<VisTable> {
         setDeletable(false);
     }
 
+    /**
+     * Method used from UI dsl to set title of widget
+     *
+     * @param title title to set
+     */
+    @SuppressWarnings("unused")
     public void setTitle(String title) {
         titleLabel.setText(title);
     }
@@ -114,13 +119,6 @@ public class UiComponentWidget extends UiComponent<VisTable> {
         contentTable.content(closure);
     }
 
-    public <T extends Actor> T getField(String id, Class<T> clazz) {
-        return contentTable.getField(id, clazz);
-    }
-
-    public Actor getField(String id) {
-        return contentTable.getField(id);
-    }
 
     public void onDelete() {
         //do nothing
@@ -130,7 +128,12 @@ public class UiComponentWidget extends UiComponent<VisTable> {
         //do nothing
     }
 
-
+    /**
+     * Method used from UI dsl for show or hide header
+     *
+     * @param value if true -> show header, otherwise hide
+     */
+    @SuppressWarnings("unused")
     public void setShowHeader(boolean value) {
         header.setVisible(value);
         if (value) {

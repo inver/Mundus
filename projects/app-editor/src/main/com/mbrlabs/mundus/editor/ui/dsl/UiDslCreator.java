@@ -1,6 +1,7 @@
 package com.mbrlabs.mundus.editor.ui.dsl;
 
-import com.mbrlabs.mundus.editor.ui.UiComponentHolder;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.mbrlabs.mundus.editor.ui.widgets.UiComponent;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import groovy.util.DelegatingScript;
@@ -10,6 +11,8 @@ import org.codehaus.groovy.control.CompilerConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
+
 @Component
 @RequiredArgsConstructor
 public class UiDslCreator {
@@ -18,16 +21,17 @@ public class UiDslCreator {
 
     @SneakyThrows
     @SuppressWarnings("unchecked")
-    public <T> T create(String file) {
+    public <T extends UiComponent<?>> T create(String file) {
         var cc = new CompilerConfiguration();
         cc.setScriptBaseClass(DelegatingScript.class.getName());
         var shell = new GroovyShell(getClass().getClassLoader(), new Binding(), cc);
-        var script = (DelegatingScript) shell.parse(getClass().getClassLoader().getResource(file).toURI());
 
         var dslProcessor = new UiDslProcessor(applicationContext);
+
+        var script = (DelegatingScript) shell.parse(getClass().getClassLoader().getResource(file).toURI());
         script.setDelegate(dslProcessor);
+        script.getBinding().setProperty("fields", new HashMap<String, Actor>());
 
         return (T) script.run();
-
     }
 }

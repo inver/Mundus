@@ -1,5 +1,6 @@
 package com.mbrlabs.mundus.editor.ui.widgets;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisLabel;
@@ -10,7 +11,9 @@ import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 @RequiredArgsConstructor
@@ -19,6 +22,7 @@ public class UiComponent<T> {
     private static final FormStyle.FormFieldStyle FORM_FIELD_STYLE =
             VisUI.getSkin().get(FormStyle.FormFieldStyle.class);
 
+    protected UiComponent<?> parent;
     protected final T actor;
 
     private final List<LayoutType> layoutTypes = new ArrayList<>();
@@ -28,6 +32,8 @@ public class UiComponent<T> {
     @Setter
     @Getter
     private int colspan = 1;
+
+    private final Map<String, Actor> fields = new HashMap<>();
 
     public void setLayoutTypes(String types) {
         if (StringUtils.isEmpty(types)) {
@@ -45,6 +51,19 @@ public class UiComponent<T> {
 
     public T getActor() {
         return actor;
+    }
+
+    public void setFields(Map<String, Actor> input) {
+        fields.putAll(input);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends Actor> T getField(String id, Class<T> clazz) {
+        return (T) getField(id);
+    }
+
+    public Actor getField(String id) {
+        return fields.get(id);
     }
 
     @RequiredArgsConstructor

@@ -9,12 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.context.ApplicationContext;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class UiFormTable extends UiComponent<VisTable> {
-
-    private final Map<String, Actor> fields = new HashMap<>();
 
     private final ApplicationContext applicationContext;
 
@@ -25,7 +20,6 @@ public class UiFormTable extends UiComponent<VisTable> {
     public UiFormTable(ApplicationContext applicationContext) {
         super(new VisTable());
         this.applicationContext = applicationContext;
-//        actor.debugAll();
     }
 
     @SuppressWarnings("unchecked")
@@ -36,7 +30,7 @@ public class UiFormTable extends UiComponent<VisTable> {
                     if ("row".equals(method.getName())) {
                         actor.row();
                     } else if (UiDslProcessor.hasMethod(method.getName())) {
-                        addComponent((UiComponent<Actor>) res);
+                        addComponent((UiComponent<Actor>) res, closure);
                     }
                     return res;
                 }));
@@ -44,22 +38,13 @@ public class UiFormTable extends UiComponent<VisTable> {
         closure.call();
     }
 
-    public void addComponent(UiComponent<? extends Actor> component) {
+    public void addComponent(UiComponent<? extends Actor> component, Closure<?> closure) {
         if (component.getId() != null) {
-            fields.put(component.getId(), component.getActor());
+            UiDslProcessor.getFieldsMap(closure).put(component.getId(), component.getActor());
         }
 
         Cell<?> cell = actor.add(component.getActor());
         cell.colspan(component.getColspan());
         component.applyStyles(cell);
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T extends Actor> T getField(String id, Class<T> clazz) {
-        return (T) getField(id);
-    }
-
-    public Actor getField(String id) {
-        return fields.get(id);
     }
 }

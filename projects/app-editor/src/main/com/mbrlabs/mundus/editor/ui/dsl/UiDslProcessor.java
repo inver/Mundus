@@ -13,6 +13,7 @@ import com.mbrlabs.mundus.editor.ui.widgets.UiLabelComponent;
 import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorChooserField;
 import groovy.lang.Closure;
 import groovy.lang.GroovyObjectSupport;
+import groovy.util.DelegatingScript;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.cglib.proxy.Enhancer;
@@ -20,6 +21,8 @@ import org.springframework.cglib.proxy.MethodInterceptor;
 import org.springframework.context.ApplicationContext;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Supplier;
 
 @RequiredArgsConstructor
@@ -33,7 +36,10 @@ public class UiDslProcessor extends GroovyObjectSupport {
 
     public UiComponent<?> ComponentWidget(Closure<?> closure) {
         var widget = new UiComponentWidget(applicationContext);
+        var fields = getFieldsMap(closure);
+        fields.clear();
         var res = delegateTo(closure, widget);
+        widget.setFields(fields);
         var instance = applicationContext.getBean(widget.getPresenter());
         instance.init(widget);
         return res;
@@ -87,7 +93,7 @@ public class UiDslProcessor extends GroovyObjectSupport {
     }
 
     private <T extends Actor> UiComponent<T> delegateTo(Closure<?> closure, Supplier<T> creator) {
-        var value = new UiComponent<T>(creator.get());
+        var value = new UiComponent<>(creator.get());
         delegateTo(closure, value);
         return value;
     }
@@ -110,5 +116,16 @@ public class UiDslProcessor extends GroovyObjectSupport {
     public static boolean hasMethod(String name) {
         return Arrays.stream(UiDslProcessor.class.getDeclaredMethods())
                 .anyMatch(m -> name.equals(m.getName()));
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Map<String, Actor> getFieldsMap(Closure<?> closure) {
+        var script = (DelegatingScript) closure.getThisObject();
+        var res = (Map<String, Actor>) script.getBinding().getProperty("fields");
+        if (res == null) {
+            res = new HashMap<>();
+            script.getBinding().setProperty("fields", res);
+        }
+        return res;
     }
 }
