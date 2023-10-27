@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mbrlabs.mundus.editor.ui.widgets;
+package com.mbrlabs.mundus.editor.ui.widgets.chooser.image;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;

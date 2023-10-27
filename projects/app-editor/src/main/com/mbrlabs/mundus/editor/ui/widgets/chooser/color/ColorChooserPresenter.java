@@ -1,4 +1,4 @@
-package com.mbrlabs.mundus.editor.ui.widgets.colorPicker;
+package com.mbrlabs.mundus.editor.ui.widgets.chooser.color;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;

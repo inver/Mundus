@@ -19,16 +19,19 @@ package com.mbrlabs.mundus.editor.ui.widgets;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.kotcrab.vis.ui.widget.VisRadioButton;
 import com.kotcrab.vis.ui.widget.VisTable;
+import lombok.Getter;
 
 /**
  * @author Marcus Brummer
  * @version 08-12-2015
  */
-public class RadioButtonGroup<T> extends VisTable {
+@Getter
+public class RadioButtonGroup extends VisTable {
 
     /**
      * A checkbox with a reference object.
      */
+    @Getter
     public static class RadioButton extends VisRadioButton {
 
         private final Object refObject;
@@ -38,29 +41,22 @@ public class RadioButtonGroup<T> extends VisTable {
             this.refObject = refObject;
         }
 
-        public Object getRefObject() {
-            return refObject;
-        }
-
     }
 
     private final ButtonGroup<RadioButton> buttonGroup;
 
     public RadioButtonGroup() {
         super();
+        debugAll();
         buttonGroup = new ButtonGroup<>();
         buttonGroup.setMaxCheckCount(1);
         buttonGroup.setMinCheckCount(1);
         pad(5);
     }
 
-    public void add(RadioButton radioButton) {
-        buttonGroup.add(radioButton);
-        super.add(radioButton).left().row();
+    public void addOption(String text, Object refObject) {
+        var button = new RadioButton(text, refObject);
+        buttonGroup.add(button);
+        add(button).left().top();
     }
-
-    public ButtonGroup<RadioButton> getButtonGroup() {
-        return buttonGroup;
-    }
-
 }

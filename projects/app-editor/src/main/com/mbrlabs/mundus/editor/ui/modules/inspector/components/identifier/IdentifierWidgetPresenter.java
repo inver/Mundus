@@ -11,7 +11,6 @@ import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.ui.modules.inspector.UiComponentPresenter;
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.UiComponentWidget;
 import com.mbrlabs.mundus.editor.ui.modules.outline.IdNode;
-import com.mbrlabs.mundus.editor.ui.widgets.UiFormTable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

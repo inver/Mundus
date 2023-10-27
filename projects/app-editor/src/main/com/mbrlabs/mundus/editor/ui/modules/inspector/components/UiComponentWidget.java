@@ -11,8 +11,8 @@ import com.mbrlabs.mundus.editor.ui.modules.inspector.BaseInspectorWidget;
 import com.mbrlabs.mundus.editor.ui.modules.inspector.UiComponentPresenter;
 import com.mbrlabs.mundus.editor.ui.modules.outline.ClickButtonListener;
 import com.mbrlabs.mundus.editor.ui.widgets.CollapseWidget;
-import com.mbrlabs.mundus.editor.ui.widgets.UiComponent;
-import com.mbrlabs.mundus.editor.ui.widgets.UiFormTable;
+import com.mbrlabs.mundus.editor.ui.widgets.dsl.UiComponent;
+import com.mbrlabs.mundus.editor.ui.widgets.dsl.UiFormTable;
 import com.mbrlabs.mundus.editor.ui.widgets.icon.SymbolIcon;
 import groovy.lang.Closure;
 import lombok.Getter;
@@ -43,6 +43,10 @@ public class UiComponentWidget extends UiComponent<VisTable> {
     @Getter
     private boolean deletable = false;
     private boolean showHeader = true;
+
+    @Setter
+    @Getter
+    protected int entityId = -1;
 
     public UiComponentWidget(ApplicationContext applicationContext) {
         super(new VisTable());
@@ -150,6 +154,12 @@ public class UiComponentWidget extends UiComponent<VisTable> {
             headerCell.height(20f);
         } else {
             headerCell.height(0f);
+        }
+    }
+
+    public void setDebug(boolean value) {
+        if (value) {
+            contentTable.getActor().debugAll();
         }
     }
 

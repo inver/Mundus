@@ -1,4 +1,4 @@
-package com.mbrlabs.mundus.editor.ui.widgets;
+package com.mbrlabs.mundus.editor.ui.widgets.dsl;
 
 import com.kotcrab.vis.ui.widget.VisLabel;
 

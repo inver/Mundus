@@ -7,6 +7,7 @@ import com.mbrlabs.mundus.commons.assets.model.ModelAsset;
 import com.mbrlabs.mundus.commons.assets.model.ModelAssetLoader;
 import com.mbrlabs.mundus.commons.assets.model.ModelMeta;
 import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
+import com.mbrlabs.mundus.commons.core.ecs.component.TypeComponent;
 import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObjectDelegate;
 import com.mbrlabs.mundus.commons.loader.assimp.AssimpLoader;
 import com.mbrlabs.mundus.commons.loader.ModelImporter;
@@ -84,7 +85,8 @@ public class EditorModelService extends ModelService {
         ecsService.addEntityBaseComponents(world, id, -1, "Model " + id,
                 new PositionComponent(),
                 PickableComponent.of(id, new RenderableObjectDelegate(model, ShaderConstants.PICKER)),
-                new RenderableObjectDelegate(model, DEFAULT_SHADER_KEY).asComponent()
+                new RenderableObjectDelegate(model, DEFAULT_SHADER_KEY).asComponent(),
+                new TypeComponent(TypeComponent.Type.OBJECT)
         );
         return id;
     }

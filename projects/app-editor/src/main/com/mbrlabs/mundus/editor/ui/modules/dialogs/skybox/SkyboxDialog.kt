@@ -26,9 +26,9 @@ import com.mbrlabs.mundus.commons.assets.skybox.SkyboxAsset
 import com.mbrlabs.mundus.commons.assets.skybox.SkyboxMeta
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.BaseDialog
-import com.mbrlabs.mundus.editor.ui.widgets.ImageChooserField
+import com.mbrlabs.mundus.editor.ui.widgets.chooser.image.ImageChooserField
 import com.mbrlabs.mundus.editor.ui.widgets.TextFieldWithLabel
-import com.mbrlabs.mundus.editor.ui.widgets.presenter.FileChooserFieldPresenter
+import com.mbrlabs.mundus.editor.ui.widgets.chooser.file.FileChooserFieldPresenter
 import org.apache.commons.lang3.StringUtils
 import org.springframework.stereotype.Component
 
@@ -46,12 +46,15 @@ class SkyboxDialog(
 
     private val root = VisTable()
 
-    val right = ImageChooserField(100, "Right (+X)")
+    val right =
+        ImageChooserField(100, "Right (+X)")
     val left = ImageChooserField(100, "Left (-X)")
     val top = ImageChooserField(100, "Top (+Y)")
-    val bottom = ImageChooserField(100, "Bottom (-Y)")
+    val bottom =
+        ImageChooserField(100, "Bottom (-Y)")
     val back = ImageChooserField(100, "Back (+Z)")
-    val front = ImageChooserField(100, "Front (-Z)")
+    val front =
+        ImageChooserField(100, "Front (-Z)")
 
     val saveBtn = VisTextButton("Create")
 

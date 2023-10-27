@@ -31,8 +31,12 @@ import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.history.commands.TerrainHeightCommand;
 import com.mbrlabs.mundus.editor.history.commands.TerrainPaintCommand;
 import com.mbrlabs.mundus.editor.tools.Tool;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import net.nevinsky.abyssus.core.ModelBatch;
 import net.nevinsky.abyssus.core.shader.ShaderProvider;
+
+import javax.swing.Spring;
 
 /**
  * A Terrain Brush can modify the terrainAsset in various ways (BrushMode).
@@ -47,23 +51,28 @@ public abstract class TerrainBrush extends Tool {
     /**
      * Defines the draw mode of a brush.
      */
+    @RequiredArgsConstructor
     public enum BrushMode {
         /**
          * Raises or lowers the terrainAsset height.
          */
-        RAISE_LOWER,
+        RAISE_LOWER("Raise or lower"),
         /**
          * Sets all vertices of the selection to a specified height.
          */
-        FLATTEN,
+        FLATTEN("Flatten"),
         /**
          * TBD
          */
-        SMOOTH,
+        SMOOTH("Smooth"),
         /**
          * Paints on the splatmap of the terrainAsset.
          */
-        PAINT
+        PAINT("Paint"),
+        RAMP("Ramp");
+
+        @Getter
+        private final String text;
     }
 
     /**

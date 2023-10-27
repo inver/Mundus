@@ -25,7 +25,7 @@ import com.mbrlabs.mundus.editor.ui.PreviewGenerator
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
 import com.mbrlabs.mundus.editor.ui.modules.inspector.BaseInspectorWidget
 import com.mbrlabs.mundus.editor.ui.widgets.MaterialWidget
-import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorChooserPresenter
+import com.mbrlabs.mundus.editor.ui.widgets.chooser.color.ColorChooserPresenter
 import org.springframework.context.ApplicationContext
 
 /**

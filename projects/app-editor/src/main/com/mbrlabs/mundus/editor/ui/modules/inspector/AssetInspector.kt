@@ -35,7 +35,7 @@ import com.mbrlabs.mundus.editor.ui.modules.inspector.assets.MaterialAssetInspec
 import com.mbrlabs.mundus.editor.ui.modules.inspector.assets.ModelAssetInspectorWidget
 import com.mbrlabs.mundus.editor.ui.modules.inspector.assets.TerrainAssetInspectorWidget
 import com.mbrlabs.mundus.editor.ui.modules.inspector.assets.TextureAssetInspectorWidget
-import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorChooserPresenter
+import com.mbrlabs.mundus.editor.ui.widgets.chooser.color.ColorChooserPresenter
 import org.springframework.context.ApplicationContext
 
 /**

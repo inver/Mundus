@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mbrlabs.mundus.editor.ui.widgets.colorPicker
+package com.mbrlabs.mundus.editor.ui.widgets.chooser.color
 
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.Touchable

@@ -37,7 +37,9 @@ import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.PreviewGenerator
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerListener
-import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorChooserField
+import com.mbrlabs.mundus.editor.ui.widgets.chooser.asset.AssetChooserField
+import com.mbrlabs.mundus.editor.ui.widgets.chooser.color.ColorChooserField
+import com.mbrlabs.mundus.editor.ui.widgets.chooser.file.FileChooserField
 
 /**
  * Displays all properties of a material.

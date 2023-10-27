@@ -41,8 +41,8 @@ import com.mbrlabs.mundus.editor.ui.dsl.UiDslCreator
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.model.ModelComponentPresenter
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.TerrainWidgetPresenter
-import com.mbrlabs.mundus.editor.ui.widgets.UiFormTable
-import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorChooserPresenter
+import com.mbrlabs.mundus.editor.ui.widgets.dsl.UiFormTable
+import com.mbrlabs.mundus.editor.ui.widgets.chooser.color.ColorChooserPresenter
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.context.ApplicationContext
 import org.springframework.stereotype.Component

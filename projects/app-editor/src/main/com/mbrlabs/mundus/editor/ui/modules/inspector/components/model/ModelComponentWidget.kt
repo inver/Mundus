@@ -21,7 +21,7 @@ import com.kotcrab.vis.ui.widget.VisTable
 import com.mbrlabs.mundus.commons.assets.Asset
 import com.mbrlabs.mundus.editor.ui.UiComponentHolder
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.ComponentWidget
-import com.mbrlabs.mundus.editor.ui.widgets.AssetChooserField
+import com.mbrlabs.mundus.editor.ui.widgets.chooser.asset.AssetChooserField
 import org.springframework.context.ApplicationContext
 
 /**

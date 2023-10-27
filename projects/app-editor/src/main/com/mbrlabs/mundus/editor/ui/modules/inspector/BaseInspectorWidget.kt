@@ -29,7 +29,7 @@ import com.kotcrab.vis.ui.widget.VisTable
 import com.mbrlabs.mundus.editor.ui.FormStyle.FormFieldStyle
 import com.mbrlabs.mundus.editor.ui.UiComponentHolder
 import com.mbrlabs.mundus.editor.ui.widgets.CollapseWidget
-import com.mbrlabs.mundus.editor.ui.widgets.UiFormTable
+import com.mbrlabs.mundus.editor.ui.widgets.dsl.UiFormTable
 import com.mbrlabs.mundus.editor.ui.widgets.icon.SymbolIcon
 import org.apache.commons.lang3.StringUtils
 import org.springframework.context.ApplicationContext
@@ -55,7 +55,8 @@ abstract class BaseInspectorWidget(applicationContext: ApplicationContext) : Vis
     private val deleteBtn = uiComponentHolder.buttonFactory.createButton(SymbolIcon.CLOSE)
 
     private var deletableBtnCell: Cell<*>? = null
-    protected val formTable = UiFormTable(applicationContext)
+    protected val formTable =
+        UiFormTable(applicationContext)
     protected val content = formTable.actor
     private val collapsibleWidget = CollapseWidget(content)
 

@@ -21,8 +21,8 @@ import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextField
 import com.mbrlabs.mundus.editor.ui.UiComponentHolder
 import com.mbrlabs.mundus.editor.ui.widgets.FloatFieldWithLabel
-import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorChooserField
-import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorChooserPresenter
+import com.mbrlabs.mundus.editor.ui.widgets.chooser.color.ColorChooserField
+import com.mbrlabs.mundus.editor.ui.widgets.chooser.color.ColorChooserPresenter
 import org.springframework.context.ApplicationContext
 
 /**

@@ -19,7 +19,6 @@ package com.mbrlabs.mundus.editor.ui.modules.inspector
 import com.badlogic.gdx.utils.Align
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
-import com.mbrlabs.mundus.commons.core.ecs.component.TypeComponent
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.ui.UiComponentHolder
 import com.mbrlabs.mundus.editor.ui.dsl.UiDslCreator
@@ -47,6 +46,9 @@ class GameObjectInspector(
         uiDslCreator.create<UiComponentWidget>("com/mbrlabs/mundus/editor/ui/modules/inspector/components/transform/TransformWidget.groovy");
     private val terrainComponentWidget =
         TerrainComponentWidget(uiComponentHolder, terrainWidgetPresenter, applicationContext)
+    private val terrainComponentWidgetDsl =
+        uiDslCreator.create<UiComponentWidget>("com/mbrlabs/mundus/editor/ui/modules/inspector/components/terrain/TerrainWidget.groovy");
+
 
     private val componentWidgets = ArrayList<ComponentWidget>()
     private val addComponentBtn = VisTextButton("Add Component")
@@ -59,6 +61,7 @@ class GameObjectInspector(
         add(dlsWidget.actor).growX().pad(7f).row()
         add(transformWidget.actor).growX().pad(7f).row()
         add(terrainComponentWidget).growX().pad(8f).row()
+        add(terrainComponentWidgetDsl.actor).growX().pad(8f).row()
 
         componentWidgets.forEach { componentTable.add<BaseInspectorWidget>(it).row() }
 

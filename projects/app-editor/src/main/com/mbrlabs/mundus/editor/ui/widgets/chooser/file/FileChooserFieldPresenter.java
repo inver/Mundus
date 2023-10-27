@@ -1,4 +1,4 @@
-package com.mbrlabs.mundus.editor.ui.widgets.presenter;
+package com.mbrlabs.mundus.editor.ui.widgets.chooser.file;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -7,8 +7,7 @@ import com.kotcrab.vis.ui.util.dialog.Dialogs;
 import com.kotcrab.vis.ui.widget.file.FileChooser;
 import com.kotcrab.vis.ui.widget.file.SingleFileChooserListener;
 import com.mbrlabs.mundus.editor.ui.AppUi;
-import com.mbrlabs.mundus.editor.ui.widgets.FileChooserField;
-import com.mbrlabs.mundus.editor.ui.widgets.ImageChooserField;
+import com.mbrlabs.mundus.editor.ui.widgets.chooser.image.ImageChooserField;
 import com.mbrlabs.mundus.editor.utils.FileFormatUtils;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;

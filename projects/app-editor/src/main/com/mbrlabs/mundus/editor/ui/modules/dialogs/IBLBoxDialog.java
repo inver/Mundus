@@ -7,7 +7,7 @@ import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent;
 import com.mbrlabs.mundus.editor.events.SceneChangedEvent;
 import com.mbrlabs.mundus.editor.ui.AppUi;
-import com.mbrlabs.mundus.editor.ui.widgets.ImageChooserField;
+import com.mbrlabs.mundus.editor.ui.widgets.chooser.image.ImageChooserField;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 

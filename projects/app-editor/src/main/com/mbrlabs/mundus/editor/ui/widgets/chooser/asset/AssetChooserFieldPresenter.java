@@ -1,9 +1,9 @@
-package com.mbrlabs.mundus.editor.ui.widgets.presenter;
+package com.mbrlabs.mundus.editor.ui.widgets.chooser.asset;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog;
-import com.mbrlabs.mundus.editor.ui.widgets.AssetChooserField;
+import com.mbrlabs.mundus.editor.ui.widgets.chooser.asset.AssetChooserField;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

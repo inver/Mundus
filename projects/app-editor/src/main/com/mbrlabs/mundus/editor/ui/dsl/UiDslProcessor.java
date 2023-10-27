@@ -4,13 +4,19 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisTextField;
 import com.mbrlabs.mundus.editor.ui.modules.inspector.components.UiComponentWidget;
-import com.mbrlabs.mundus.editor.ui.widgets.AssetChooserField;
 import com.mbrlabs.mundus.editor.ui.widgets.FloatField;
-import com.mbrlabs.mundus.editor.ui.widgets.UiButtonComponent;
-import com.mbrlabs.mundus.editor.ui.widgets.UiComponent;
-import com.mbrlabs.mundus.editor.ui.widgets.UiFormTable;
-import com.mbrlabs.mundus.editor.ui.widgets.UiLabelComponent;
-import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorChooserField;
+import com.mbrlabs.mundus.editor.ui.widgets.RadioButtonGroup;
+import com.mbrlabs.mundus.editor.ui.widgets.chooser.asset.AssetChooserField;
+import com.mbrlabs.mundus.editor.ui.widgets.chooser.color.ColorChooserField;
+import com.mbrlabs.mundus.editor.ui.widgets.chooser.file.FileChooserField;
+import com.mbrlabs.mundus.editor.ui.widgets.dsl.UiButtonComponent;
+import com.mbrlabs.mundus.editor.ui.widgets.dsl.UiComponent;
+import com.mbrlabs.mundus.editor.ui.widgets.dsl.UiFormTable;
+import com.mbrlabs.mundus.editor.ui.widgets.dsl.UiLabelComponent;
+import com.mbrlabs.mundus.editor.ui.widgets.dsl.UiSlider;
+import com.mbrlabs.mundus.editor.ui.widgets.dsl.UiTabs;
+import com.mbrlabs.mundus.editor.ui.widgets.dsl.grid.UiButtonGrid;
+import com.mbrlabs.mundus.editor.ui.widgets.dsl.grid.UiTextureGrid;
 import groovy.lang.Closure;
 import groovy.lang.GroovyObjectSupport;
 import groovy.util.DelegatingScript;
@@ -91,6 +97,30 @@ public class UiDslProcessor extends GroovyObjectSupport {
 
     public UiComponent<?> Button(Closure<?> closure) {
         return delegateTo(closure, new UiButtonComponent());
+    }
+
+    public UiComponent<?> Tabs(Closure<?> closure) {
+        return delegateTo(closure, new UiTabs(applicationContext));
+    }
+
+    public UiComponent<?> ButtonGrid(Closure<?> closure) {
+        return delegateTo(closure, new UiButtonGrid());
+    }
+
+    public UiComponent<?> Slider(Closure<?> closure) {
+        return delegateTo(closure, new UiSlider());
+    }
+
+    public UiComponent<?> FileChooserField(Closure<?> closure) {
+        return delegateTo(closure, new UiComponent<>(new FileChooserField()));
+    }
+
+    public UiComponent<?> TextureGrid(Closure<?> closure) {
+        return delegateTo(closure, new UiTextureGrid());
+    }
+
+    public UiComponent<?> RadioButton(Closure<?> closure) {
+        return delegateTo(closure, new UiComponent<>(new RadioButtonGroup()));
     }
 
     private <T extends Actor> UiComponent<T> delegateTo(Closure<?> closure, Supplier<T> creator) {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mbrlabs.mundus.editor.ui.widgets
+package com.mbrlabs.mundus.editor.ui.widgets.chooser.asset
 
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.kotcrab.vis.ui.widget.VisTable

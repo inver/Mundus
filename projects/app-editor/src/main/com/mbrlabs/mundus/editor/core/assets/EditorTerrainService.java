@@ -8,6 +8,7 @@ import com.mbrlabs.mundus.commons.assets.terrain.TerrainAssetLoader;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainMeta;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAssetLoader;
 import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
+import com.mbrlabs.mundus.commons.core.ecs.component.TypeComponent;
 import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObjectDelegate;
 import com.mbrlabs.mundus.commons.terrain.TerrainService;
 import com.mbrlabs.mundus.editor.core.ecs.EcsService;
@@ -99,7 +100,8 @@ public class EditorTerrainService extends TerrainService {
 
         ecsService.addEntityBaseComponents(world, id, -1, name, position,
                 PickableComponent.of(id, new RenderableObjectDelegate(terrain, ShaderConstants.PICKER)),
-                new RenderableObjectDelegate(terrain, ShaderConstants.TERRAIN).asComponent()
+                new RenderableObjectDelegate(terrain, ShaderConstants.TERRAIN).asComponent(),
+                new TypeComponent(TypeComponent.Type.TERRAIN)
         );
         return id;
     }

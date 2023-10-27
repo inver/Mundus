@@ -1,7 +1,7 @@
 package com.mbrlabs.mundus.editor.ui.dsl;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.mbrlabs.mundus.editor.ui.widgets.UiComponent;
+import com.mbrlabs.mundus.editor.ui.widgets.dsl.UiComponent;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import groovy.util.DelegatingScript;

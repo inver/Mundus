@@ -30,7 +30,7 @@ import com.mbrlabs.mundus.editor.events.AssetImportEvent
 import com.mbrlabs.mundus.editor.events.EventBus
 import com.mbrlabs.mundus.editor.ui.AppUi
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.BaseDialog
-import com.mbrlabs.mundus.editor.ui.widgets.ImageChooserField
+import com.mbrlabs.mundus.editor.ui.widgets.chooser.image.ImageChooserField
 import com.mbrlabs.mundus.editor.utils.Toaster
 import com.mbrlabs.mundus.editor.utils.isImage
 import org.slf4j.LoggerFactory
@@ -82,7 +82,8 @@ class ImportTextureDialog(
     private inner class ImportTextureTable : VisTable(), Disposable {
         // UI elements
         private val importBtn = VisTextButton("IMPORT")
-        private val imageChooserField = ImageChooserField(300)
+        private val imageChooserField =
+            ImageChooserField(300)
 
         init {
             this.setupUI()

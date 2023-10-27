@@ -16,10 +16,10 @@
 
 package com.mbrlabs.mundus.editor.tools;
 
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Disposable;
+import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.commons.scene3d.components.RenderableObject;
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager;
@@ -29,7 +29,6 @@ import com.mbrlabs.mundus.editor.core.scene.SceneStorage;
 import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
-import com.mbrlabs.mundus.editor.input.InputService;
 import com.mbrlabs.mundus.editor.tools.brushes.CircleBrush;
 import com.mbrlabs.mundus.editor.tools.brushes.ConfettiBrush;
 import com.mbrlabs.mundus.editor.tools.brushes.SmoothCircleBrush;
@@ -145,6 +144,11 @@ public class ToolManager extends InputAdapter implements Disposable, RenderableO
             return -1;
         }
         return ctx.getSelectedEntityId();
+    }
+
+    public void activateBrush(TerrainBrush brush, TerrainBrush.BrushMode brushMode, TerrainAsset asset) {
+        brush.setMode(brushMode);
+        brush.setTerrainAsset(asset);
     }
 
     public Tool getActiveTool() {
