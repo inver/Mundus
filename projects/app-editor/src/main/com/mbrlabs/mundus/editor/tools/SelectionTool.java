@@ -29,7 +29,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.nevinsky.abyssus.core.ModelBatch;
 import net.nevinsky.abyssus.core.shader.ShaderProvider;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Marcus Brummer
@@ -50,11 +49,6 @@ public class SelectionTool extends Tool {
         this.picker = picker;
         this.eventBus = eventBus;
     }
-
-//    public SelectionTool(EditorCtx ctx, String shaderKey, EntityPicker picker, CommandHistory history,
-//                         EventBus eventBus) {
-//        this(ctx, shaderKey, picker, history, eventBus, NAME);
-//    }
 
     public void entitySelected(int entityId) {
         getCtx().selectEntity(entityId);
@@ -88,11 +82,6 @@ public class SelectionTool extends Tool {
 //            }
 //        }
         batch.end();
-    }
-
-    @Override
-    public void act() {
-
     }
 
     @Override

@@ -19,6 +19,7 @@ public class TypeComponent extends Component {
         LIGHT_DIRECTIONAL,
         LIGHT_POINT,
         LIGHT_SPOT,
+        MODEL,
         OBJECT,
         TERRAIN,
         CAMERA,

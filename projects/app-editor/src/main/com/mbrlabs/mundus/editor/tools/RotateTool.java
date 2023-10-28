@@ -18,6 +18,7 @@ package com.mbrlabs.mundus.editor.tools;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
@@ -56,28 +57,39 @@ public class RotateTool extends TransformTool {
     private final RotateHandle xHandle;
     private final RotateHandle yHandle;
     private final RotateHandle zHandle;
-    private final RotateHandle[] handles;
 
     private final Matrix4 shapeRenderMat = new Matrix4();
 
-    private final Vector3 temp0 = new Vector3();
-    private final Vector3 temp1 = new Vector3();
     private final Quaternion tempQuat = new Quaternion();
 
     private final ShapeRenderer shapeRenderer;
-
-    private TransformState state = TransformState.IDLE;
     private RotateCommand command;
     private float lastRot = 0;
+//    private final BitmapFont font;
+//    private final SpriteBatch batch;
 
     public RotateTool(EditorCtx ctx, String shaderKey, EntityPicker picker, ToolHandlePicker handlePicker,
                       ShapeRenderer shapeRenderer, CommandHistory history, EventBus eventBus) {
-        super(ctx, shaderKey, picker, handlePicker, history, eventBus, NAME);
+        super(ctx, shaderKey, picker, handlePicker, history, eventBus);
         this.shapeRenderer = shapeRenderer;
         xHandle = new RotateHandle(X_HANDLE_ID, TransformState.TRANSFORM_X, COLOR_X);
         yHandle = new RotateHandle(Y_HANDLE_ID, TransformState.TRANSFORM_Y, COLOR_Y);
         zHandle = new RotateHandle(Z_HANDLE_ID, TransformState.TRANSFORM_Z, COLOR_Z);
-        handles = new RotateHandle[]{xHandle, yHandle, zHandle};
+        handles.add(xHandle);
+        handles.add(yHandle);
+        handles.add(zHandle);
+
+        //todo move generating fonts to bean
+//        var generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/robotoRegular.ttf"));
+//        var params = new FreeTypeFontGenerator.FreeTypeFontParameter();
+//        params.kerning = true;
+//        params.borderStraight = false;
+//        params.genMipMaps = true;
+//        params.hinting = FreeTypeFontGenerator.Hinting.Full;
+//        params.size = 20;
+//        font = generator.generateFont(params);
+//        generator.dispose();
+//        batch = new SpriteBatch();
     }
 
     @Override
@@ -104,24 +116,35 @@ public class RotateTool extends TransformTool {
         shapeRenderMat.setToOrtho2D(vp.getScreenX(), vp.getScreenY(), vp.getScreenWidth(), vp.getScreenHeight());
         switch (state) {
             case TRANSFORM_X:
-                renderTool(pivot, COLOR_X);
+                renderTool(batch.getCamera(), pivot, COLOR_X);
                 return;
             case TRANSFORM_Y:
-                renderTool(pivot, COLOR_Y);
+                renderTool(batch.getCamera(), pivot, COLOR_Y);
                 return;
             case TRANSFORM_Z:
-                renderTool(pivot, COLOR_Z);
+                renderTool(batch.getCamera(), pivot, COLOR_Z);
         }
     }
 
-    private void renderTool(Vector3 pivot, Color color) {
+    private void renderTool(Camera camera, Vector3 pivot, Color color) {
+//        batch.setProjectionMatrix(shapeRenderMat);
+//        batch.begin();
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.BLACK);
         shapeRenderer.setProjectionMatrix(shapeRenderMat);
-        shapeRenderer.rectLine(pivot.x, pivot.y, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), 2);
+
+        var mouseX = Gdx.input.getX();
+        var mouseY = Gdx.graphics.getHeight() - Gdx.input.getY();
+        shapeRenderer.rectLine(pivot.x, pivot.y, mouseX, mouseY, 2);
+        shapeRenderer.rectLine(mouseX, mouseY, mouseX + 10, mouseY, 2);
         shapeRenderer.setColor(color);
         shapeRenderer.circle(pivot.x, pivot.y, 7);
         shapeRenderer.end();
+
+//        font.setColor(Color.BLACK);
+//        font.draw(batch, String.format("%.2fº", lastRot), mouseX, mouseY);
+
+//        batch.end();
     }
 
     @Override
@@ -171,20 +194,13 @@ public class RotateTool extends TransformTool {
 
         var positionComponent = getCtx().getSelectedEntity().getComponent(PositionComponent.class);
         positionComponent.getPosition(temp0);
-        Vector3 pivot = getCtx().getCurrent().getCamera().project(temp0);
-        Vector3 mouse = temp1.set(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), 0);
+        // fill pivot vector
+        getCtx().getCurrent().getCamera().project(temp0);
+        //fill mouse vector
+        temp1.set(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), 0);
 
-        return MathUtils.angle(pivot.x, pivot.y, mouse.x, mouse.y);
+        return MathUtils.angle(temp0.x, temp0.y, temp1.x, temp1.y);
     }
-
-    @Override
-    public void entitySelected(int entityId) {
-        super.entitySelected(entityId);
-        scaleHandles();
-        rotateHandles();
-        translateHandles();
-    }
-
 
     @Override
     protected void scaleHandles() {
@@ -195,42 +211,20 @@ public class RotateTool extends TransformTool {
 
         Vector3 pos = getCtx().getSelectedEntity().getComponent(PositionComponent.class).getPosition(temp0);
         var scaleFactor = getCtx().getCurrent().getCamera().position.dst(pos) * 0.005f;
-        xHandle.getScale().set(scaleFactor, scaleFactor, scaleFactor);
-        xHandle.applyTransform();
 
-        yHandle.getScale().set(scaleFactor, scaleFactor, scaleFactor);
-        yHandle.applyTransform();
-
-        zHandle.getScale().set(scaleFactor, scaleFactor, scaleFactor);
-        zHandle.applyTransform();
-    }
-
-    @Override
-    protected void translateHandles() {
-        if (getCtx().getSelectedEntityId() < 0 ||
-                getCtx().getSelectedEntity().getComponent(PositionComponent.class) == null) {
-            return;
-        }
-
-        final Vector3 pos = getCtx().getSelectedEntity().getComponent(PositionComponent.class).getPosition(temp0);
-        xHandle.getPosition().set(pos);
-        xHandle.applyTransform();
-        yHandle.getPosition().set(pos);
-        yHandle.applyTransform();
-        zHandle.getPosition().set(pos);
-        zHandle.applyTransform();
+        handles.forEach(handle -> {
+            handle.getScale().set(scaleFactor, scaleFactor, scaleFactor);
+            handle.applyTransform();
+        });
     }
 
     @Override
     protected void rotateHandles() {
         xHandle.getRotationEuler().set(0, 90, 0);
-        xHandle.applyTransform();
         yHandle.getRotationEuler().set(90, 0, 0);
-        yHandle.applyTransform();
         zHandle.getRotationEuler().set(0, 0, 0);
-        zHandle.applyTransform();
+        handles.forEach(ToolHandle::applyTransform);
     }
-
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {

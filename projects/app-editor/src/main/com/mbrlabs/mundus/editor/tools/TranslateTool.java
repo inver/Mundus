@@ -49,33 +49,26 @@ import static net.nevinsky.abyssus.core.shader.ShaderProvider.DEFAULT_SHADER_KEY
  */
 @Slf4j
 public class TranslateTool extends TransformTool {
+    public static final String NAME = "Translate Tool";
 
     private final float ARROW_THIKNESS = 0.1f;
     private final float ARROW_CAP_SIZE = 0.15f;
     private final int ARROW_DIVISIONS = 12;
 
-    public static final String NAME = "Translate Tool";
-
-    private TransformState state = TransformState.IDLE;
     private boolean initTranslate = true;
-
     private final TranslateHandle xHandle;
     private final TranslateHandle yHandle;
     private final TranslateHandle zHandle;
     private final TranslateHandle xzPlaneHandle;
-    private final TranslateHandle[] handles;
 
     private final Vector3 lastPos = new Vector3();
     private boolean globalSpace = true;
-
-    private final Vector3 temp0 = new Vector3();
-
     private TranslateCommand command;
 
     public TranslateTool(EditorCtx ctx, String shaderKey, EntityPicker picker, ToolHandlePicker handlePicker,
                          CommandHistory history, EventBus eventBus) {
 
-        super(ctx, shaderKey, picker, handlePicker, history, eventBus, NAME);
+        super(ctx, shaderKey, picker, handlePicker, history, eventBus);
 
         ModelBuilder modelBuilder = new ModelBuilder();
 
@@ -98,22 +91,16 @@ public class TranslateTool extends TransformTool {
         yHandle = new TranslateHandle(COLOR_Y.toIntBits(), TransformState.TRANSFORM_Y, yHandleModel);
         zHandle = new TranslateHandle(COLOR_Z.toIntBits(), TransformState.TRANSFORM_Z, zHandleModel);
         xzPlaneHandle = new TranslateHandle(COLOR_XZ.toIntBits(), TransformState.TRANSFORM_XZ, xzPlaneHandleModel);
-        handles = new TranslateHandle[]{xHandle, yHandle, zHandle, xzPlaneHandle};
-
-        entityModifiedEvent = new EntityModifiedEvent(-1);
+        handles.add(xHandle);
+        handles.add(yHandle);
+        handles.add(zHandle);
+        handles.add(xzPlaneHandle);
     }
 
     @Override
     @NotNull
     public SymbolIcon getIcon() {
         return SymbolIcon.TRANSLATE;
-    }
-
-    @Override
-    public void entitySelected(int entityId) {
-        super.entitySelected(entityId);
-        scaleHandles();
-        translateHandles();
     }
 
     public void setGlobalSpace(boolean global) {
@@ -206,43 +193,14 @@ public class TranslateTool extends TransformTool {
             return;
         }
 
-        Vector3 pos = getCtx().getSelectedEntity().getComponent(PositionComponent.class).getPosition(temp0);
-        float scaleFactor = getCtx().getCurrent().getCamera().position.dst(pos) * 0.25f;
+        getPositionOfSelectedEntity().getPosition(temp0);
+        float scaleFactor = getCtx().getCurrent().getCamera().position.dst(temp0) * 0.25f;
         xHandle.getScale().set(scaleFactor * 0.7f, scaleFactor / 2, scaleFactor / 2);
-        xHandle.applyTransform();
-
         yHandle.getScale().set(scaleFactor / 2, scaleFactor * 0.7f, scaleFactor / 2);
-        yHandle.applyTransform();
-
         zHandle.getScale().set(scaleFactor / 2, scaleFactor / 2, scaleFactor * 0.7f);
-        zHandle.applyTransform();
-
         xzPlaneHandle.getScale().set(scaleFactor * 0.13f, scaleFactor * 0.13f, scaleFactor * 0.13f);
-        xzPlaneHandle.applyTransform();
-    }
 
-    @Override
-    protected void translateHandles() {
-        if (getCtx().getSelectedEntityId() < 0 ||
-                getCtx().getSelectedEntity().getComponent(PositionComponent.class) == null) {
-            return;
-        }
-
-        final Vector3 pos =
-                getCtx().getSelectedEntity().getComponent(PositionComponent.class).getTransform().getTranslation(temp0);
-        xHandle.getPosition().set(pos);
-        xHandle.applyTransform();
-        yHandle.getPosition().set(pos);
-        yHandle.applyTransform();
-        zHandle.getPosition().set(pos);
-        zHandle.applyTransform();
-        xzPlaneHandle.getPosition().set(pos);
-        xzPlaneHandle.applyTransform();
-    }
-
-    @Override
-    protected void rotateHandles() {
-        // no rotation for this one
+        handles.forEach(ToolHandle::applyTransform);
     }
 
     @Override
@@ -319,11 +277,6 @@ public class TranslateTool extends TransformTool {
         @Override
         public void renderPick(ModelBatch modelBatch, ShaderProvider shaders) {
             modelBatch.render(modelInstance, getShaderKey());
-        }
-
-        @Override
-        public void act() {
-
         }
 
         @Override

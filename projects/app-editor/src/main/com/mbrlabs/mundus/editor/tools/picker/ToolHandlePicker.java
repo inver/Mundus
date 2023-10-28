@@ -29,6 +29,8 @@ import lombok.extern.slf4j.Slf4j;
 import net.nevinsky.abyssus.core.ModelBatch;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * @author Marcus Brummer
  * @version 07-03-2016
@@ -41,7 +43,7 @@ public class ToolHandlePicker extends BasePicker {
     private final ModelBatch batch;
     private final ShaderStorage shaderStorage;
 
-    public ToolHandle pick(ToolHandle[] handles, int screenX, int screenY) {
+    public ToolHandle pick(List<ToolHandle> handles, int screenX, int screenY) {
         //todo may be needed to revert render of image, but it needs to thinks
         var x = HdpiUtils.toBackBufferX(screenX);
         var y = Gdx.graphics.getBackBufferHeight() - HdpiUtils.toBackBufferY(screenY);
@@ -54,7 +56,7 @@ public class ToolHandlePicker extends BasePicker {
         int id = new Color(pixmap.getPixel(0, 0)).toIntBits();
         pixmap.dispose();
         log.debug("Picking handle with id {}", id);
-        for (ToolHandle handle : handles) {
+        for (var handle : handles) {
             if (handle.getId() == id) {
                 return handle;
             }

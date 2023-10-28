@@ -31,7 +31,7 @@ import com.mbrlabs.mundus.editor.ui.AppUi;
  */
 public class RenderWidget extends Widget {
 
-    private static final Vector2 TMP_VEC = new Vector2();
+    private static final Vector2 VEC = new Vector2();
 
     private final ScreenViewport viewport;
     private Camera camera;
@@ -75,13 +75,13 @@ public class RenderWidget extends Widget {
         // render part of the ui & pause rest
         batch.end();
 
-        TMP_VEC.set(getOriginX(), getOriginY());
-        localToStageCoordinates(TMP_VEC);
+        VEC.set(getOriginX(), getOriginY());
+        localToStageCoordinates(VEC);
         final int width = (int) getWidth();
         final int height = (int) getHeight();
 
         // apply widget viewport
-        viewport.setScreenBounds((int) TMP_VEC.x, (int) TMP_VEC.y, width, height);
+        viewport.setScreenBounds((int) VEC.x, (int) VEC.y, width, height);
         viewport.setWorldSize(width * viewport.getUnitsPerPixel(), height * viewport.getUnitsPerPixel());
         viewport.apply();
 

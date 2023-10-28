@@ -18,6 +18,7 @@ package com.mbrlabs.mundus.editor.tools
 
 import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.utils.Disposable
+import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent
 import com.mbrlabs.mundus.commons.scene3d.components.RenderableObject
 import com.mbrlabs.mundus.editor.core.project.EditorCtx
 import com.mbrlabs.mundus.editor.history.CommandHistory
@@ -39,7 +40,14 @@ abstract class Tool(
     //    abstract val name: String
     abstract val icon: SymbolIcon
 
-    abstract fun act()
+    open fun act() {
+        //do nothing
+    }
+
     abstract fun onActivated()
     abstract fun onDisabled()
+
+    fun getPositionOfSelectedEntity(): PositionComponent {
+        return ctx.getComponentByEntityId(ctx.selectedEntityId, PositionComponent::class.java)
+    }
 }

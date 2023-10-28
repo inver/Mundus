@@ -17,6 +17,7 @@
 package com.mbrlabs.mundus.editor.tools;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Material;
@@ -24,8 +25,12 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
+import com.mbrlabs.mundus.commons.core.ecs.component.TypeComponent;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
+import com.mbrlabs.mundus.commons.utils.MathUtils;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
@@ -42,6 +47,10 @@ import net.nevinsky.abyssus.core.shader.ShaderProvider;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;
 
+import static com.mbrlabs.mundus.editor.tools.TransformTool.TransformState.TRANSFORM_X;
+import static com.mbrlabs.mundus.editor.tools.TransformTool.TransformState.TRANSFORM_XYZ;
+import static com.mbrlabs.mundus.editor.tools.TransformTool.TransformState.TRANSFORM_Y;
+import static com.mbrlabs.mundus.editor.tools.TransformTool.TransformState.TRANSFORM_Z;
 import static net.nevinsky.abyssus.core.shader.ShaderProvider.DEFAULT_SHADER_KEY;
 
 /**
@@ -62,46 +71,44 @@ public class ScaleTool extends TransformTool {
     private final ScaleHandle yHandle;
     private final ScaleHandle zHandle;
     private final ScaleHandle xyzHandle;
-    private final ScaleHandle[] handles;
 
     private final Matrix4 shapeRenderMat = new Matrix4();
     private Viewport viewport3d = null;
-
-    private final Vector3 temp0 = new Vector3();
-    private final Vector3 temp1 = new Vector3();
     private final Vector3 tempScale = new Vector3();
     private final Vector3 tempScaleDst = new Vector3();
 
     private final ShapeRenderer shapeRenderer;
 
-    private final TransformState state = TransformState.IDLE;
     private ScaleCommand command;
 
     public ScaleTool(EditorCtx ctx, String shaderKey, EntityPicker picker, ToolHandlePicker handlePicker,
                      ShapeRenderer shapeRenderer, CommandHistory history, AppUi appUi,
                      EventBus eventBus) {
-        super(ctx, shaderKey, picker, handlePicker, history, eventBus, NAME);
+        super(ctx, shaderKey, picker, handlePicker, history, eventBus);
 
         this.shapeRenderer = shapeRenderer;
         this.appUi = appUi;
 
         ModelBuilder modelBuilder = new ModelBuilder();
-        Model xPlaneHandleModel = UsefulMeshs.createArrowStub(new Material(ColorAttribute.createDiffuse(COLOR_X)),
+        var xPlaneHandleModel = UsefulMeshs.createArrowStub(new Material(ColorAttribute.createDiffuse(COLOR_X)),
                 Vector3.Zero, new Vector3(15, 0, 0));
-        Model yPlaneHandleModel = UsefulMeshs.createArrowStub(new Material(ColorAttribute.createDiffuse(COLOR_Y)),
+        var yPlaneHandleModel = UsefulMeshs.createArrowStub(new Material(ColorAttribute.createDiffuse(COLOR_Y)),
                 Vector3.Zero, new Vector3(0, 15, 0));
-        Model zPlaneHandleModel = UsefulMeshs.createArrowStub(new Material(ColorAttribute.createDiffuse(COLOR_Z)),
+        var zPlaneHandleModel = UsefulMeshs.createArrowStub(new Material(ColorAttribute.createDiffuse(COLOR_Z)),
                 Vector3.Zero, new Vector3(0, 0, 15));
-        Model xyzPlaneHandleModel = modelBuilder.createBox(3, 3, 3,
+        var xyzPlaneHandleModel = modelBuilder.createBox(3, 3, 3,
                 new Material(ColorAttribute.createDiffuse(COLOR_XYZ)),
                 VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
 
-        xHandle = new ScaleHandle(X_HANDLE_ID, TransformState.TRANSFORM_X, xPlaneHandleModel);
-        yHandle = new ScaleHandle(Y_HANDLE_ID, TransformState.TRANSFORM_Y, yPlaneHandleModel);
-        zHandle = new ScaleHandle(Z_HANDLE_ID, TransformState.TRANSFORM_Z, zPlaneHandleModel);
-        xyzHandle = new ScaleHandle(XYZ_HANDLE_ID, TransformState.TRANSFORM_XYZ, xyzPlaneHandleModel);
+        xHandle = new ScaleHandle(X_HANDLE_ID, TRANSFORM_X, xPlaneHandleModel);
+        yHandle = new ScaleHandle(Y_HANDLE_ID, TRANSFORM_Y, yPlaneHandleModel);
+        zHandle = new ScaleHandle(Z_HANDLE_ID, TRANSFORM_Z, zPlaneHandleModel);
+        xyzHandle = new ScaleHandle(XYZ_HANDLE_ID, TRANSFORM_XYZ, xyzPlaneHandleModel);
 
-        handles = new ScaleHandle[]{xHandle, yHandle, zHandle, xyzHandle};
+        handles.add(xHandle);
+        handles.add(yHandle);
+        handles.add(zHandle);
+        handles.add(xyzHandle);
     }
 
     @Override
@@ -120,8 +127,8 @@ public class ScaleTool extends TransformTool {
         xyzHandle.render(batch, environment, shaders, delta);
         batch.end();
 
-//        GameObject go = getCtx().getSelectedEntityId();
-//        go.getTransform().getTranslation(temp0);
+        getCtx().getComponentByEntityId(getCtx().getSelectedEntityId(), PositionComponent.class)
+                .getTransform().getTranslation(temp0);
         if (viewport3d == null) {
             viewport3d = appUi.getSceneWidget().getViewport();
         }
@@ -133,232 +140,175 @@ public class ScaleTool extends TransformTool {
                 viewport3d.getScreenHeight());
         switch (state) {
             case TRANSFORM_X:
-                shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-                shapeRenderer.setColor(COLOR_X);
-                shapeRenderer.setProjectionMatrix(shapeRenderMat);
-                shapeRenderer.rectLine(pivot.x, pivot.y, Gdx.input.getX(),
-                        Gdx.graphics.getHeight() - Gdx.input.getY(), 2);
-                shapeRenderer.end();
+                renderTool(pivot, COLOR_X);
                 break;
             case TRANSFORM_Y:
-                shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-                shapeRenderer.setColor(COLOR_Y);
-                shapeRenderer.setProjectionMatrix(shapeRenderMat);
-                shapeRenderer.rectLine(pivot.x, pivot.y, Gdx.input.getX(),
-                        Gdx.graphics.getHeight() - Gdx.input.getY(), 2);
-                shapeRenderer.end();
+                renderTool(pivot, COLOR_Y);
                 break;
             case TRANSFORM_Z:
-                shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-                shapeRenderer.setColor(COLOR_Z);
-                shapeRenderer.setProjectionMatrix(shapeRenderMat);
-                shapeRenderer.rectLine(pivot.x, pivot.y, Gdx.input.getX(),
-                        Gdx.graphics.getHeight() - Gdx.input.getY(), 2);
-                shapeRenderer.end();
+                renderTool(pivot, COLOR_Z);
                 break;
             case TRANSFORM_XYZ:
-                shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-                shapeRenderer.setColor(COLOR_XYZ);
-                shapeRenderer.setProjectionMatrix(shapeRenderMat);
-                shapeRenderer.rectLine(pivot.x, pivot.y, Gdx.input.getX(),
-                        Gdx.graphics.getHeight() - Gdx.input.getY(), 2);
-                shapeRenderer.end();
+                renderTool(pivot, COLOR_XYZ);
                 break;
             default:
                 break;
         }
     }
 
+    private void renderTool(Vector3 pivot, Color color) {
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(color);
+        shapeRenderer.setProjectionMatrix(shapeRenderMat);
+
+        var mouseX = Gdx.input.getX();
+        var mouseY = Gdx.graphics.getHeight() - Gdx.input.getY();
+        shapeRenderer.rectLine(pivot.x, pivot.y, mouseX, mouseY, 2);
+        shapeRenderer.end();
+    }
+
     @Override
     public void act() {
         super.act();
-//        final GameObject selection = getCtx().getSelectedEntityId();
-//        if (!isScalable(selection)) {
-//            return;
-//        }
-//
-//        if (selection != null) {
-//            translateHandles();
-//            if (state == TransformState.IDLE) {
-//                return;
-//            }
-//            float dst = getCurrentDst();
-//
-//            boolean modified = false;
-//            if (null != state) {
-//                switch (state) {
-//                    case TRANSFORM_X:
-//                        tempScale.x = (100 / tempScaleDst.x * dst) / 100;
-//                        selection.setLocalScale(tempScale.x, tempScale.y, tempScale.z);
-//                        modified = true;
-//                        break;
-//                    case TRANSFORM_Y:
-//                        tempScale.y = (100 / tempScaleDst.y * dst) / 100;
-//                        selection.setLocalScale(tempScale.x, tempScale.y, tempScale.z);
-//                        modified = true;
-//                        break;
-//                    case TRANSFORM_Z:
-//                        tempScale.z = (100 / tempScaleDst.z * dst) / 100;
-//                        selection.setLocalScale(tempScale.x, tempScale.y, tempScale.z);
-//                        modified = true;
-//                        break;
-//                    case TRANSFORM_XYZ:
-//                        tempScale.x = (100 / tempScaleDst.x * dst) / 100;
-//                        tempScale.y = (100 / tempScaleDst.y * dst) / 100;
-//                        tempScale.z = (100 / tempScaleDst.z * dst) / 100;
-//                        selection.setLocalScale(tempScale.x, tempScale.y, tempScale.z);
-//                        modified = true;
-//                        break;
-//                    default:
-//                        break;
-//                }
-//            }
-//            if (modified) {
-//                entityModifiedEvent.setGameObject(selection);
-//                eventBus.post(entityModifiedEvent);
-//            }
-//        }
+
+        if (getCtx().getSelectedEntityId() < 0) {
+            return;
+        }
+        scaleHandles();
+        translateHandles();
+        if (state == TransformState.IDLE) {
+            return;
+        }
+        if (!isScalable(getCtx().getSelectedEntityId())) {
+            return;
+        }
+
+        float dst = getCurrentDst();
+        var position = getPositionOfSelectedEntity();
+        tempScale.set(position.getLocalScale());
+
+        boolean modified = true;
+        if (state == TRANSFORM_X) {
+            tempScale.x = (100 / tempScaleDst.x * dst) / 100;
+        } else if (state == TRANSFORM_Y) {
+            tempScale.y = (100 / tempScaleDst.y * dst) / 100;
+        } else if (state == TRANSFORM_Z) {
+            tempScale.z = (100 / tempScaleDst.z * dst) / 100;
+        } else if (state == TRANSFORM_XYZ) {
+            tempScale.x = (100 / tempScaleDst.x * dst) / 100;
+            tempScale.y = (100 / tempScaleDst.y * dst) / 100;
+            tempScale.z = (100 / tempScaleDst.z * dst) / 100;
+        } else {
+            modified = false;
+        }
+
+        position.getLocalScale()
+                .set(tempScale.x, tempScale.y, tempScale.z);
+
+        if (modified) {
+            entityModifiedEvent.setEntityId(getCtx().getSelectedEntityId());
+            eventBus.post(entityModifiedEvent);
+        }
     }
 
     private float getCurrentDst() {
-//        final GameObject selection = getCtx().getSelectedEntityId();
-//        if (selection != null) {
-//            selection.getTransform().getTranslation(temp0);
-//            Vector3 pivot = getCtx().getCamera().project(temp0, viewport3d.getScreenX(),
-//                    viewport3d.getScreenY(), viewport3d.getWorldWidth(), viewport3d.getWorldHeight());
-//            Vector3 mouse = temp1.set(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), 0);
-//
-//            return MathUtils.dst(pivot.x, pivot.y, mouse.x, mouse.y);
-//        }
-        return 0;
+        getCtx().getComponentByEntityId(getCtx().getSelectedEntityId(), PositionComponent.class)
+                .getTransform()
+                .getTranslation(temp0);
+        var pivot = getCtx().getCurrent().getCamera().project(temp0, viewport3d.getScreenX(),
+                viewport3d.getScreenY(), viewport3d.getWorldWidth(), viewport3d.getWorldHeight());
+        var mouse = temp1.set(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), 0);
+
+        return MathUtils.dst(pivot.x, pivot.y, mouse.x, mouse.y);
     }
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-//        final GameObject selection = getCtx().getSelectedEntityId();
-//        super.touchDown(screenX, screenY, pointer, button);
-//
-//        if (!isScalable(selection)) {
-//            return false;
-//        }
-//
-//        if (button == Input.Buttons.LEFT && getCtx().getSelectedEntityId() != null) {
-//            ScaleHandle handle = (ScaleHandle) handlePicker.pick(handles, screenX, screenY);
-//            if (handle == null) {
-//                state = TransformState.IDLE;
-//                return false;
-//            }
-//            // current scale
-//            selection.getScale(tempScale);
-//
-//            // set tempScaleDst
-//            tempScaleDst.x = getCurrentDst() / tempScale.x;
-//            tempScaleDst.y = getCurrentDst() / tempScale.y;
-//            tempScaleDst.z = getCurrentDst() / tempScale.z;
-//
-////            switch (handle.getId()) {
-////                case X_HANDLE_ID:
-////                    state = TransformState.TRANSFORM_X;
-////                    xHandle.changeColor(COLOR_SELECTED);
-////                    break;
-////                case Y_HANDLE_ID:
-////                    state = TransformState.TRANSFORM_Y;
-////                    yHandle.changeColor(COLOR_SELECTED);
-////                    break;
-////                case Z_HANDLE_ID:
-////                    state = TransformState.TRANSFORM_Z;
-////                    zHandle.changeColor(COLOR_SELECTED);
-////                    break;
-////                case XYZ_HANDLE_ID:
-////                    state = TransformState.TRANSFORM_XYZ;
-////                    xyzHandle.changeColor(COLOR_SELECTED);
-////                    break;
-////                default:
-////                    break;
-////            }
-//        }
+        super.touchDown(screenX, screenY, pointer, button);
+
+        if (!isScalable(getCtx().getSelectedEntityId())) {
+            return false;
+        }
+
+        if (button != Input.Buttons.LEFT || getCtx().getSelectedEntityId() < 0) {
+            return false;
+        }
+        ScaleHandle handle = (ScaleHandle) handlePicker.pick(handles, screenX, screenY);
+        if (handle == null) {
+            state = TransformState.IDLE;
+            return false;
+        }
+
+        var position = getCtx().getComponentByEntityId(getCtx().getSelectedEntityId(), PositionComponent.class);
+        // current scale
+        tempScale.set(position.getLocalScale());
+
+        // set tempScaleDst
+        tempScaleDst.x = getCurrentDst() / tempScale.x;
+        tempScaleDst.y = getCurrentDst() / tempScale.y;
+        tempScaleDst.z = getCurrentDst() / tempScale.z;
+
+        if (handle.id == X_HANDLE_ID) {
+            state = TransformState.TRANSFORM_X;
+            xHandle.changeColor(COLOR_SELECTED);
+        } else if (handle.id == Y_HANDLE_ID) {
+            state = TransformState.TRANSFORM_Y;
+            yHandle.changeColor(COLOR_SELECTED);
+        } else if (handle.id == Z_HANDLE_ID) {
+            state = TransformState.TRANSFORM_Z;
+            zHandle.changeColor(COLOR_SELECTED);
+        } else if (handle.id == XYZ_HANDLE_ID) {
+            state = TransformState.TRANSFORM_XYZ;
+            xyzHandle.changeColor(COLOR_SELECTED);
+        }
+
 //
 //        // scale command before
 //        if (state != TransformState.IDLE) {
 //            command = new ScaleCommand(selection);
 //            command.setBefore(tempScale);
 //        }
-        return false;
+        return true;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         super.touchUp(screenX, screenY, pointer, button);
-//        if (state != TransformState.IDLE) {
-//            xHandle.changeColor(COLOR_X);
-//            yHandle.changeColor(COLOR_Y);
-//            zHandle.changeColor(COLOR_Z);
-//            xyzHandle.changeColor(COLOR_XYZ);
-//
-//            // scale command after
+        if (state != TransformState.IDLE) {
+            xHandle.changeColor(COLOR_X);
+            yHandle.changeColor(COLOR_Y);
+            zHandle.changeColor(COLOR_Z);
+            xyzHandle.changeColor(COLOR_XYZ);
+
+            // scale command after
 //            getCtx().getSelectedEntityId().getScale(tempScale);
 //            command.setAfter(tempScale);
 //            getHistory().add(command);
 //            command = null;
-//            state = TransformState.IDLE;
-//        }
+            state = TransformState.IDLE;
+        }
         return false;
     }
 
-    @Override
-    public void entitySelected(int entityId) {
-        super.entitySelected(entityId);
-        // configure handles
-        scaleHandles();
-        rotateHandles();
-        translateHandles();
-    }
-
-//    private boolean isScalable(GameObject go) {
-//        return go == null || go.findComponentByType(Component.Type.TERRAIN) == null;
-//    }
-
-    @Override
-    protected void rotateHandles() {
-        // not needed
-    }
-
-    @Override
-    protected void translateHandles() {
-//        if (getCtx().getSelectedEntityId() == null) {
-//            return;
-//        }
-//        final Vector3 pos = getCtx().getSelectedEntityId().getTransform().getTranslation(temp0);
-//        xHandle.getPosition().set(pos);
-//        xHandle.applyTransform();
-//        yHandle.getPosition().set(pos);
-//        yHandle.applyTransform();
-//        zHandle.getPosition().set(pos);
-//        zHandle.applyTransform();
-//        xyzHandle.getPosition().set(pos);
-//        xyzHandle.applyTransform();
+    private boolean isScalable(int entityId) {
+        return entityId >= 0 || getCtx().getCurrentWorld()
+                .getEntity(entityId)
+                .getComponent(TypeComponent.class)
+                .getType() != TypeComponent.Type.TERRAIN;
     }
 
     @Override
     protected void scaleHandles() {
-//        if (getCtx().getSelectedEntityId() == null) {
-//            return;
-//        }
-//
-//        Vector3 pos = getCtx().getSelectedEntityId().getPosition(temp0);
-//        float scaleFactor = getCtx().getCamera().position.dst(pos) * 0.01f;
-//        xHandle.getScale().set(scaleFactor, scaleFactor, scaleFactor);
-//
-//        xHandle.applyTransform();
-//
-//        yHandle.getScale().set(scaleFactor, scaleFactor, scaleFactor);
-//        yHandle.applyTransform();
-//
-//        zHandle.getScale().set(scaleFactor, scaleFactor, scaleFactor);
-//        zHandle.applyTransform();
-//
-//        xyzHandle.getScale().set(scaleFactor, scaleFactor, scaleFactor);
-//        xyzHandle.applyTransform();
+        if (getCtx().getSelectedEntityId() < 0) {
+            return;
+        }
+
+        getPositionOfSelectedEntity().getTransform().getTranslation(temp0);
+        float scaleFactor = getCtx().getCurrent().getCamera().position.dst(temp0) * 0.01f;
+        handles.forEach(handle -> {
+            handle.getScale().set(scaleFactor, scaleFactor, scaleFactor);
+            handle.applyTransform();
+        });
     }
 
     @Override
@@ -370,10 +320,7 @@ public class ScaleTool extends TransformTool {
     @Override
     public void dispose() {
         super.dispose();
-        xHandle.dispose();
-        yHandle.dispose();
-        zHandle.dispose();
-        xyzHandle.dispose();
+        handles.forEach(Disposable::dispose);
     }
 
     private class ScaleHandle extends ToolHandle {
@@ -391,11 +338,6 @@ public class ScaleTool extends TransformTool {
         @Override
         public void renderPick(ModelBatch modelBatch, ShaderProvider shaders) {
             modelBatch.render(modelInstance, getShaderKey());
-        }
-
-        @Override
-        public void act() {
-
         }
 
         @Override

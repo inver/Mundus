@@ -47,9 +47,5 @@ public abstract class ToolHandle implements Disposable, RenderableObject {
 
     public abstract void renderPick(ModelBatch modelBatch, ShaderProvider shaders);
 
-    public void act() {
-
-    }
-
     public abstract void applyTransform();
 }

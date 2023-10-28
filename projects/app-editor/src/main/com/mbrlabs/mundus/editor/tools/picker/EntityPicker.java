@@ -31,10 +31,10 @@ public class EntityPicker extends BasePicker {
         end();
         var pm = getFrameBufferPixmap(ctx.getViewport());
 
-        PixmapIO.writePNG(new FileHandle(
-                        "/home/inv3r/Development/gamedev/Mundus/projects/app-editor/src/main/com/mbrlabs/mundus" +
-                                "/editor/tools/picker/image.png"),
-                pm);
+//        PixmapIO.writePNG(new FileHandle(
+//                        "/home/inv3r/Development/gamedev/Mundus/projects/app-editor/src/main/com/mbrlabs/mundus" +
+//                                "/editor/tools/picker/image.png"),
+//                pm);
 
         int x = screenX - ctx.getViewport().getScreenX();
         int y = screenY -
