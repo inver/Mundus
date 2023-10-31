@@ -12,9 +12,8 @@ import com.mbrlabs.mundus.commons.core.ecs.component.Point2PointPositionComponen
 import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
 import com.mbrlabs.mundus.commons.core.ecs.component.TypeComponent;
 import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
-import com.mbrlabs.mundus.editor.ui.components.camera.CameraBodyRenderDelegate;
-import com.mbrlabs.mundus.editor.ui.components.handle.DirectionHandleRenderDelegate;
-import com.mbrlabs.mundus.editor.ui.components.handle.DirectionLineRenderDelegate;
+import com.mbrlabs.mundus.editor.ui.ecs.handle.DirectionHandleRenderDelegate;
+import com.mbrlabs.mundus.editor.ui.ecs.handle.DirectionLineRenderDelegate;
 
 @org.springframework.stereotype.Component
 public class EcsService {

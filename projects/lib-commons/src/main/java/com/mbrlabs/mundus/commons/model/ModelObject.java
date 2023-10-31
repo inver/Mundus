@@ -13,6 +13,7 @@ public class ModelObject implements RenderableSceneObject {
 
     @Getter
     private final String assetName;
+    @Getter
     private final transient Model model;
     @Getter
     private transient ModelInstance modelInstance;

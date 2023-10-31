@@ -17,9 +17,11 @@
 package com.mbrlabs.mundus.editor.tools.picker;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.glutils.HdpiUtils;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.shader.ShaderStorage;
@@ -44,16 +46,27 @@ public class ToolHandlePicker extends BasePicker {
     private final ShaderStorage shaderStorage;
 
     public ToolHandle pick(List<ToolHandle> handles, int screenX, int screenY) {
+        begin(ctx.getViewport());
+        renderPickableScene(handles, batch, ctx.getCurrent().getCamera());
+        end();
+
         //todo may be needed to revert render of image, but it needs to thinks
         var x = HdpiUtils.toBackBufferX(screenX);
         var y = Gdx.graphics.getBackBufferHeight() - HdpiUtils.toBackBufferY(screenY);
 
-        var pixmap = Pixmap.createFromFrameBuffer(x, y, 1, 1);
+//        var pixmap = Pixmap.createFromFrameBuffer(x, y, 1, 1);
+        var pixmap = getFrameBufferPixmap(ctx.getViewport());
+
         pixmap.getPixels().put(3, (byte) 255);
 
         log.debug("Coordinates of pixel is {}:{}", x, y);
 
         int id = new Color(pixmap.getPixel(0, 0)).toIntBits();
+
+        PixmapIO.writePNG(new FileHandle(
+                        "/home/inv3r/Development/gamedev/Mundus/projects/app-editor/src/main/com/mbrlabs/mundus" +
+                                "/editor/tools/picker/tool_handle_image.png"),
+                pixmap);
         pixmap.dispose();
         log.debug("Picking handle with id {}", id);
         for (var handle : handles) {
@@ -65,7 +78,7 @@ public class ToolHandlePicker extends BasePicker {
         return null;
     }
 
-    private void renderPickableScene(ToolHandle[] handles, ModelBatch batch, Camera cam) {
+    private void renderPickableScene(List<ToolHandle> handles, ModelBatch batch, Camera cam) {
         batch.begin(cam);
         for (ToolHandle handle : handles) {
             handle.renderPick(batch, shaderStorage);

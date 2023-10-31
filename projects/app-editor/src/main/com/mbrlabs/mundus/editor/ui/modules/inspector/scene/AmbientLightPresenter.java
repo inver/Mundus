@@ -13,14 +13,15 @@ import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent;
 import com.mbrlabs.mundus.editor.events.SceneChangedEvent;
 import com.mbrlabs.mundus.editor.ui.modules.inspector.UiComponentPresenter;
-import com.mbrlabs.mundus.editor.ui.modules.inspector.components.UiComponentWidget;
-import com.mbrlabs.mundus.editor.ui.modules.outline.IdNode;
+import com.mbrlabs.mundus.editor.ui.modules.inspector.UiComponentWidget;
 import com.mbrlabs.mundus.editor.ui.widgets.FloatField;
 import com.mbrlabs.mundus.editor.ui.widgets.chooser.color.ColorChooserField;
 import com.mbrlabs.mundus.editor.ui.widgets.chooser.color.ColorChooserPresenter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
+
+import static com.mbrlabs.mundus.editor.ui.modules.outline.IdNode.ROOT_NODE_SCENE;
 
 @Component
 @RequiredArgsConstructor
@@ -34,7 +35,7 @@ public class AmbientLightPresenter implements UiComponentPresenter<UiComponentWi
         eventBus.register((ProjectChangedEvent.ProjectChangedListener) event -> fillFromEnvironment(uiComponent));
         eventBus.register((SceneChangedEvent.SceneChangedListener) event -> fillFromEnvironment(uiComponent));
         eventBus.register((EntitySelectedEvent.EntitySelectedListener) event ->
-                uiComponent.setVisible(event.getEntityId() == IdNode.RootNode.ROOT_NODE_ID)
+                uiComponent.setVisible(event.getEntityId() == ROOT_NODE_SCENE)
         );
         uiComponent.getField("intensity", FloatField.class).addListener(new ChangeListener() {
             @Override

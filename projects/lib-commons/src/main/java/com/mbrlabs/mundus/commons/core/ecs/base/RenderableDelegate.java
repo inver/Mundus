@@ -2,7 +2,6 @@ package com.mbrlabs.mundus.commons.core.ecs.base;
 
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
-import com.mbrlabs.mundus.commons.assets.AssetType;
 import com.mbrlabs.mundus.commons.scene3d.components.RenderableObject;
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -19,36 +19,23 @@ package com.mbrlabs.mundus.editor.ui.modules.inspector
 import com.badlogic.gdx.utils.Align
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
-import com.mbrlabs.mundus.editor.core.project.EditorCtx
-import com.mbrlabs.mundus.editor.ui.UiComponentHolder
 import com.mbrlabs.mundus.editor.ui.dsl.UiDslCreator
-import com.mbrlabs.mundus.editor.ui.modules.inspector.components.ComponentWidget
-import com.mbrlabs.mundus.editor.ui.modules.inspector.components.UiComponentWidget
-import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.TerrainComponentWidget
-import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.TerrainWidgetPresenter
-import org.springframework.context.ApplicationContext
 
 /**
  * @author Marcus Brummer
  * @version 13-10-2016
  */
-class GameObjectInspector(
-    private val ctx: EditorCtx,
-    uiComponentHolder: UiComponentHolder,
-    terrainWidgetPresenter: TerrainWidgetPresenter,
-    uiDslCreator: UiDslCreator,
-    applicationContext: ApplicationContext
-) : VisTable() {
+class GameObjectInspector(uiDslCreator: UiDslCreator) : VisTable() {
 
     private val dlsWidget =
-        uiDslCreator.create<UiComponentWidget>("com/mbrlabs/mundus/editor/ui/modules/inspector/components/identifier/IdentifierWidget.groovy");
+        uiDslCreator.create<UiComponentWidget>("com/mbrlabs/mundus/editor/ui/modules/inspector/identifier/IdentifierWidget.groovy");
     private val transformWidget =
-        uiDslCreator.create<UiComponentWidget>("com/mbrlabs/mundus/editor/ui/modules/inspector/components/transform/TransformWidget.groovy");
-    private val terrainComponentWidget =
-        TerrainComponentWidget(uiComponentHolder, terrainWidgetPresenter, applicationContext)
+        uiDslCreator.create<UiComponentWidget>("com/mbrlabs/mundus/editor/ui/modules/inspector/transform/TransformWidget.groovy");
     private val terrainComponentWidgetDsl =
-        uiDslCreator.create<UiComponentWidget>("com/mbrlabs/mundus/editor/ui/modules/inspector/components/terrain/TerrainWidget.groovy");
+        uiDslCreator.create<UiComponentWidget>("com/mbrlabs/mundus/editor/ui/modules/inspector/terrain/TerrainWidget.groovy");
 
+    private val modelComponentWidgetDsl =
+        uiDslCreator.create<UiComponentWidget>("com/mbrlabs/mundus/editor/ui/modules/inspector/model/ModelWidget.groovy");
 
     private val componentWidgets = ArrayList<ComponentWidget>()
     private val addComponentBtn = VisTextButton("Add Component")
@@ -58,15 +45,16 @@ class GameObjectInspector(
 
     init {
         align(Align.top)
-        add(dlsWidget.actor).growX().pad(7f).row()
-        add(transformWidget.actor).growX().pad(7f).row()
-        add(terrainComponentWidget).growX().pad(8f).row()
+        add(dlsWidget.actor).growX().pad(8f).row()
+        add(transformWidget.actor).growX().pad(8f).row()
         add(terrainComponentWidgetDsl.actor).growX().pad(8f).row()
+//        add(materialComponentWidgetDsl.actor).growX().pad(8f).row()
+        add(modelComponentWidgetDsl.actor).growX().pad(8f).row()
 
         componentWidgets.forEach { componentTable.add<BaseInspectorWidget>(it).row() }
 
-        add(componentTable).growX().pad(7f).row()
-        add(addComponentBtn).expandX().fill().top().center().pad(10f).row()
+        add(componentTable).growX().pad(8f).row()
+//        add(addComponentBtn).expandX().fill().top().center().pad(10f).row()
     }
 
     fun setEntity(entityId: Int) {

@@ -47,5 +47,8 @@ public class UiFormTable extends UiComponent<VisTable> {
         Cell<?> cell = actor.add(component.getActor());
         cell.colspan(component.getColspan());
         component.applyStyles(cell);
+        if (component instanceof UiImage) {
+            cell.size(((UiImage) component).getWidth(), ((UiImage) component).getHeight());
+        }
     }
 }

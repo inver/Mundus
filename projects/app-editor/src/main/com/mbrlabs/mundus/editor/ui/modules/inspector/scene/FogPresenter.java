@@ -13,7 +13,7 @@ import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent;
 import com.mbrlabs.mundus.editor.events.SceneChangedEvent;
 import com.mbrlabs.mundus.editor.ui.modules.inspector.UiComponentPresenter;
-import com.mbrlabs.mundus.editor.ui.modules.inspector.components.UiComponentWidget;
+import com.mbrlabs.mundus.editor.ui.modules.inspector.UiComponentWidget;
 import com.mbrlabs.mundus.editor.ui.modules.outline.IdNode;
 import com.mbrlabs.mundus.editor.ui.widgets.FloatField;
 import com.mbrlabs.mundus.editor.ui.widgets.chooser.color.ColorChooserField;
@@ -34,7 +34,7 @@ public class FogPresenter implements UiComponentPresenter<UiComponentWidget> {
         eventBus.register((ProjectChangedEvent.ProjectChangedListener) event -> fillFromEnvironment(uiComponent));
         eventBus.register((SceneChangedEvent.SceneChangedListener) event -> fillFromEnvironment(uiComponent));
         eventBus.register((EntitySelectedEvent.EntitySelectedListener) event ->
-                uiComponent.setVisible(event.getEntityId() == IdNode.RootNode.ROOT_NODE_ID)
+                uiComponent.setVisible(event.getEntityId() == IdNode.ROOT_NODE_SCENE)
         );
         uiComponent.getField("density", FloatField.class).addListener(new ChangeListener() {
             @Override

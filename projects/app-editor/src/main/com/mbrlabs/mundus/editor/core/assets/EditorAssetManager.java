@@ -5,11 +5,11 @@ import com.badlogic.gdx.files.FileHandle;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mbrlabs.mundus.commons.assets.AppFileHandle;
 import com.mbrlabs.mundus.commons.assets.Asset;
-import com.mbrlabs.mundus.commons.assets.AssetConstants;
 import com.mbrlabs.mundus.commons.assets.AssetManager;
 import com.mbrlabs.mundus.commons.assets.AssetType;
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset;
 import com.mbrlabs.mundus.commons.assets.material.MaterialAssetLoader;
+import com.mbrlabs.mundus.commons.assets.material.MaterialMeta;
 import com.mbrlabs.mundus.commons.assets.meta.Meta;
 import com.mbrlabs.mundus.commons.assets.meta.MetaService;
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset;
@@ -23,15 +23,18 @@ import com.mbrlabs.mundus.commons.assets.terrain.TerrainAsset;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAssetLoader;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAssetLoader;
+import com.mbrlabs.mundus.commons.assets.texture.TextureMeta;
 import com.mbrlabs.mundus.commons.model.ImportedModel;
 import com.mbrlabs.mundus.commons.utils.FileUtils;
-import com.mbrlabs.mundus.editor.core.ProjectConstants;
 import com.mbrlabs.mundus.editor.core.project.AssetKey;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.project.ProjectContext;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.NotImplementedException;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -43,7 +46,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import static com.mbrlabs.mundus.commons.assets.AssetConstants.META_FILE_NAME;
 import static com.mbrlabs.mundus.editor.core.ProjectConstants.BUNDLED_FOLDER;
+import static com.mbrlabs.mundus.editor.core.ProjectConstants.PROJECT_ASSETS_DIR;
 
 @Component
 @Slf4j
@@ -77,13 +82,13 @@ public class EditorAssetManager extends AssetManager {
 
     public Asset<?> loadProjectAsset(String projectPath, String assetName) {
         try {
-            var assetFolder = new FileHandle(projectPath + "/" + ProjectConstants.PROJECT_ASSETS_DIR + assetName);
+            var assetFolder = new FileHandle(projectPath + "/" + PROJECT_ASSETS_DIR + assetName);
             return loadAsset(assetFolder);
         } catch (Exception e) {
             log.error("ERROR", e);
         }
         throw new IllegalStateException("Failed to load asset: "
-                + projectPath + "/" + ProjectConstants.PROJECT_ASSETS_DIR + assetName);
+                + projectPath + "/" + PROJECT_ASSETS_DIR + assetName);
     }
 
     void loadStandardAssets(Map<AssetKey, Asset<?>> assets) {
@@ -102,7 +107,7 @@ public class EditorAssetManager extends AssetManager {
 
     public void loadProjectAssets(ProjectContext project) {
         try {
-            var metaPaths = new FileHandle(project.getPath() + "/" + ProjectConstants.PROJECT_ASSETS_DIR);
+            var metaPaths = new FileHandle(project.getPath() + "/" + PROJECT_ASSETS_DIR);
 
             for (var assetFolder : metaPaths.list()) {
                 var asset = loadAsset(assetFolder);
@@ -116,7 +121,7 @@ public class EditorAssetManager extends AssetManager {
     private List<String> getClasspathMetas(String root) {
         try {
             var res = new ArrayList<String>();
-            for (var meta : FileUtils.getResourceFiles(getClass(), root, AssetConstants.META_FILE_NAME)) {
+            for (var meta : FileUtils.getResourceFiles(getClass(), root, META_FILE_NAME)) {
                 if (getClass().getClassLoader().getResource(meta) != null) {
                     res.add(meta);
                 }
@@ -175,6 +180,35 @@ public class EditorAssetManager extends AssetManager {
         return Collections.emptyList();
     }
 
+    public void copyAssetToProjectFolder(Asset<?> asset) {
+        var assetsPath = FilenameUtils.concat(ctx.getCurrent().getPath(), PROJECT_ASSETS_DIR);
+        var assetPath = FilenameUtils.concat(assetsPath, asset.getName());
+        var meta = asset.getMeta();
+
+        meta.getFile().child(META_FILE_NAME).copyTo(new FileHandle(FilenameUtils.concat(assetPath, META_FILE_NAME)));
+        if (meta.getType() == AssetType.TEXTURE) {
+            copyFile(assetPath, meta, ((TextureMeta) meta.getAdditional()).getFile());
+        } else if (meta.getType() == AssetType.MATERIAL) {
+            var additional = (MaterialMeta) meta.getAdditional();
+            copyFile(assetPath, meta, additional.getPreview());
+            copyFile(assetPath, meta, additional.getDiffuseTexture());
+            copyFile(assetPath, meta, additional.getAmbientOcclusionTexture());
+            copyFile(assetPath, meta, additional.getAlbedoTexture());
+            copyFile(assetPath, meta, additional.getHeightTexture());
+            copyFile(assetPath, meta, additional.getMetallicTexture());
+            copyFile(assetPath, meta, additional.getNormalTexture());
+            copyFile(assetPath, meta, additional.getRoughnessTexture());
+        } else {
+            throw new NotImplementedException();
+        }
+    }
+
+    private void copyFile(String assetPath, Meta<?> meta, String fileName) {
+        if (StringUtils.isEmpty(fileName)) {
+            return;
+        }
+        meta.getFile().child(fileName).copyTo(new FileHandle(FilenameUtils.concat(assetPath, fileName)));
+    }
 
     private Meta createMetaFileFromAsset(FileHandle file, AssetType type) {
         return createNewMetaFile(new FileHandle(getMetaPath(file)), type);
@@ -368,13 +402,6 @@ public class EditorAssetManager extends AssetManager {
 
     private String clearedUUID() {
         return UUID.randomUUID().toString().replaceAll("-", "");
-    }
-
-    private FileHandle copyAssetToProjectFolder(FileHandle file) {
-//        var copy = new FileHandle(FilenameUtils.concat(rootFolder.path(), file.name()));
-//        file.copyTo(copy);
-//        return copy;
-        return null;
     }
 
     public void dirty(int entityId) {

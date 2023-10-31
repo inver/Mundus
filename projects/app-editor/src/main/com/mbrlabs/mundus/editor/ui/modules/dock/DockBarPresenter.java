@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager;
+import com.mbrlabs.mundus.editor.core.project.AssetKey;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.project.ProjectManager;
 import com.mbrlabs.mundus.editor.events.AssetImportEvent;
@@ -30,7 +31,6 @@ public class DockBarPresenter {
 
     private final EditorCtx ctx;
     private final EditorAssetManager assetManager;
-    private final ProjectManager projectManager;
     private final EventBus eventBus;
     private final AppUi appUi;
     private final PreviewGenerator previewGenerator;
@@ -98,39 +98,12 @@ public class DockBarPresenter {
                 var asset = assetsDock.getSelected().getAsset();
 
                 try {
-                    var context = ctx.getCurrent();
-//                    var sceneGraph = context.getCurrentScene().getSceneGraph();
-//                    var goID = context.obtainID();
-//                    var name = asset.getType() + "_" + goID;
-
-                    // create asset
-//                        var asset = context.getAssetManager().createModelAsset(it.file)
-
-//                        asset.load()
-//                        asset.applyDependencies()
-//                    var go = assetManager.convert(goID, name, asset);
-
-//                    var modelGO = GameObjectUtils.createModelGO(
-//                            sceneGraph, Shaders.modelShader, goID, name,
-//                            it as ModelAsset ?
-//                    )
-//                        var terrainGO = createTerrainGO(
-//                            sceneGraph,
-//                            Shaders.terrainShader, goID, name, asset
-//                        )
-                    // update sceneGraph
-//                    sceneGraph.addGameObject(go);
-
-                    // update outline
-                    //todo
-//                        addGoToTree(null, terrainGO)
-
-//                        context.getCurrentScene()..add(asset)
-                    projectManager.saveProject(context);
+                    assetManager.copyAssetToProjectFolder(asset);
+                    var projectAsset = assetManager.loadCurrentProjectAsset(asset.getName());
+                    ctx.getCurrent().getProjectAssets()
+                            .put(new AssetKey(projectAsset.getType(), projectAsset.getName()), projectAsset);
                     eventBus.post(new AssetImportEvent(asset));
                     eventBus.post(new SceneGraphChangedEvent());
-//                    Mundus.postEvent(AssetImportEvent(it))
-//                    Mundus.postEvent(SceneGraphChangedEvent())
                 } catch (Exception e) {
                     log.error("ERROR", e);
                 }

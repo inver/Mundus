@@ -31,7 +31,8 @@ public enum SymbolIcon {
     MODEL("\uea1b"),
     SHADER("\ue3a3"),
     HELP("\ue887"),
-    HIERARCHY("\ue97a");
+    HIERARCHY("\uf535"),
+    ASSET("\ue338");
 
     private final String symbol;
 

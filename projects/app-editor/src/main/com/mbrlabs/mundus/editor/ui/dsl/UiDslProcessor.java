@@ -3,7 +3,7 @@ package com.mbrlabs.mundus.editor.ui.dsl;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisTextField;
-import com.mbrlabs.mundus.editor.ui.modules.inspector.components.UiComponentWidget;
+import com.mbrlabs.mundus.editor.ui.modules.inspector.UiComponentWidget;
 import com.mbrlabs.mundus.editor.ui.widgets.FloatField;
 import com.mbrlabs.mundus.editor.ui.widgets.RadioButtonGroup;
 import com.mbrlabs.mundus.editor.ui.widgets.chooser.asset.AssetChooserField;
@@ -12,11 +12,11 @@ import com.mbrlabs.mundus.editor.ui.widgets.chooser.file.FileChooserField;
 import com.mbrlabs.mundus.editor.ui.widgets.dsl.UiButtonComponent;
 import com.mbrlabs.mundus.editor.ui.widgets.dsl.UiComponent;
 import com.mbrlabs.mundus.editor.ui.widgets.dsl.UiFormTable;
+import com.mbrlabs.mundus.editor.ui.widgets.dsl.UiGrid;
+import com.mbrlabs.mundus.editor.ui.widgets.dsl.UiImage;
 import com.mbrlabs.mundus.editor.ui.widgets.dsl.UiLabelComponent;
 import com.mbrlabs.mundus.editor.ui.widgets.dsl.UiSlider;
 import com.mbrlabs.mundus.editor.ui.widgets.dsl.UiTabs;
-import com.mbrlabs.mundus.editor.ui.widgets.dsl.grid.UiButtonGrid;
-import com.mbrlabs.mundus.editor.ui.widgets.dsl.grid.UiTextureGrid;
 import groovy.lang.Closure;
 import groovy.lang.GroovyObjectSupport;
 import groovy.util.DelegatingScript;
@@ -104,7 +104,7 @@ public class UiDslProcessor extends GroovyObjectSupport {
     }
 
     public UiComponent<?> ButtonGrid(Closure<?> closure) {
-        return delegateTo(closure, new UiButtonGrid());
+        return delegateTo(closure, new UiGrid());
     }
 
     public UiComponent<?> Slider(Closure<?> closure) {
@@ -116,11 +116,15 @@ public class UiDslProcessor extends GroovyObjectSupport {
     }
 
     public UiComponent<?> TextureGrid(Closure<?> closure) {
-        return delegateTo(closure, new UiTextureGrid());
+        return delegateTo(closure, new UiGrid());
     }
 
     public UiComponent<?> RadioButton(Closure<?> closure) {
         return delegateTo(closure, new UiComponent<>(new RadioButtonGroup()));
+    }
+
+    public UiComponent<?> Image(Closure<?> closure) {
+        return delegateTo(closure, new UiImage());
     }
 
     private <T extends Actor> UiComponent<T> delegateTo(Closure<?> closure, Supplier<T> creator) {

@@ -86,7 +86,7 @@ public class EditorModelService extends ModelService {
                 new PositionComponent(),
                 PickableComponent.of(id, new RenderableObjectDelegate(model, ShaderConstants.PICKER)),
                 new RenderableObjectDelegate(model, DEFAULT_SHADER_KEY).asComponent(),
-                new TypeComponent(TypeComponent.Type.MODEL)
+                new TypeComponent(TypeComponent.Type.OBJECT)
         );
         return id;
     }

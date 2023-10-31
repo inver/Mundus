@@ -22,7 +22,7 @@ import com.mbrlabs.mundus.editor.input.InputService;
 import com.mbrlabs.mundus.editor.input.ShortcutController;
 import com.mbrlabs.mundus.editor.tools.ToolManager;
 import com.mbrlabs.mundus.editor.ui.AppUi;
-import com.mbrlabs.mundus.editor.ui.components.CoordinateSystemComponent;
+import com.mbrlabs.mundus.editor.ui.ecs.CoordinateSystemComponent;
 import com.mbrlabs.mundus.editor.ui.modules.StatusBar;
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.ExitDialog;
 import com.mbrlabs.mundus.editor.ui.modules.dock.DockBar;

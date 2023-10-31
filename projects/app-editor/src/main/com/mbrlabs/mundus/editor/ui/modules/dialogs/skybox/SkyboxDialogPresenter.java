@@ -6,7 +6,7 @@ import com.mbrlabs.mundus.commons.assets.skybox.SkyboxAsset;
 import com.mbrlabs.mundus.commons.assets.skybox.SkyboxMeta;
 import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
-import com.mbrlabs.mundus.editor.ui.modules.outline.ClickButtonListener;
+import com.mbrlabs.mundus.editor.ui.ClickButtonListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
