@@ -6,8 +6,8 @@ import com.kotcrab.vis.ui.widget.Separator;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
-import com.mbrlabs.mundus.editor.ui.UiComponentHolder;
 import com.mbrlabs.mundus.editor.ui.ClickButtonListener;
+import com.mbrlabs.mundus.editor.ui.UiComponentHolder;
 import com.mbrlabs.mundus.editor.ui.widgets.CollapseWidget;
 import com.mbrlabs.mundus.editor.ui.widgets.dsl.UiComponent;
 import com.mbrlabs.mundus.editor.ui.widgets.dsl.UiFormTable;
@@ -121,12 +121,11 @@ public class UiComponentWidget extends UiComponent<VisTable> {
 
     public void setVisible(boolean visible) {
         if (visible) {
-            setShowHeader(showHeader);
+            showHeader(showHeader);
             collapsibleWidget.setCollapsed(false, false);
             collapseWidgetCell.padBottom(8f);
         } else {
-            showHeader = header.isVisible();
-            setShowHeader(false);
+            showHeader(false);
             collapsibleWidget.setCollapsed(true, false);
             collapseWidgetCell.padBottom(0f);
         }
@@ -147,6 +146,11 @@ public class UiComponentWidget extends UiComponent<VisTable> {
      */
     @SuppressWarnings("unused")
     public void setShowHeader(boolean value) {
+        showHeader = value;
+        showHeader(value);
+    }
+
+    private void showHeader(boolean value) {
         header.setVisible(value);
         if (value) {
             headerCell.height(20f);
