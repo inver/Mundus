@@ -43,7 +43,6 @@ import com.mbrlabs.mundus.editor.utils.UsefulMeshs;
 import net.nevinsky.abyssus.core.ModelBatch;
 import net.nevinsky.abyssus.core.ModelBuilder;
 import net.nevinsky.abyssus.core.model.Model;
-import net.nevinsky.abyssus.core.shader.ShaderProvider;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;
 
@@ -51,7 +50,6 @@ import static com.mbrlabs.mundus.editor.tools.TransformTool.TransformState.TRANS
 import static com.mbrlabs.mundus.editor.tools.TransformTool.TransformState.TRANSFORM_XYZ;
 import static com.mbrlabs.mundus.editor.tools.TransformTool.TransformState.TRANSFORM_Y;
 import static com.mbrlabs.mundus.editor.tools.TransformTool.TransformState.TRANSFORM_Z;
-import static net.nevinsky.abyssus.core.shader.ShaderProvider.DEFAULT_SHADER_KEY;
 
 /**
  * Scales valid game objects.
@@ -112,28 +110,28 @@ public class ScaleTool extends TransformTool {
     }
 
     @Override
-    public void render(ModelBatch batch, SceneEnvironment environment, ShaderProvider shaders, float delta) {
-        super.render(batch, environment, shaders, delta);
+    public void render(ModelBatch batch, SceneEnvironment environment, String shaderKey, float delta) {
+        super.render(batch, environment, shaderKey, delta);
 
         GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
-        if (getCtx().getSelectedEntityId() < 0) {
+        if (ctx.getSelectedEntityId() < 0) {
             return;
         }
 
-        batch.begin(getCtx().getCurrent().getCamera());
-        xHandle.render(batch, environment, shaders, delta);
-        yHandle.render(batch, environment, shaders, delta);
-        zHandle.render(batch, environment, shaders, delta);
-        xyzHandle.render(batch, environment, shaders, delta);
+        batch.begin(ctx.getCurrent().getCamera());
+        xHandle.render(batch, environment, shaderKey, delta);
+        yHandle.render(batch, environment, shaderKey, delta);
+        zHandle.render(batch, environment, shaderKey, delta);
+        xyzHandle.render(batch, environment, shaderKey, delta);
         batch.end();
 
-        getCtx().getComponentByEntityId(getCtx().getSelectedEntityId(), PositionComponent.class)
+        ctx.getComponentByEntityId(ctx.getSelectedEntityId(), PositionComponent.class)
                 .getTransform().getTranslation(temp0);
         if (viewport3d == null) {
             viewport3d = appUi.getSceneWidget().getViewport();
         }
 
-        Vector3 pivot = getCtx().getCurrent().getCamera().project(temp0, viewport3d.getScreenX(),
+        Vector3 pivot = ctx.getCurrent().getCamera().project(temp0, viewport3d.getScreenX(),
                 viewport3d.getScreenY(), viewport3d.getWorldWidth(), viewport3d.getWorldHeight());
 
         shapeRenderMat.setToOrtho2D(viewport3d.getScreenX(), viewport3d.getScreenY(), viewport3d.getScreenWidth(),
@@ -171,7 +169,7 @@ public class ScaleTool extends TransformTool {
     public void act() {
         super.act();
 
-        if (getCtx().getSelectedEntityId() < 0) {
+        if (ctx.getSelectedEntityId() < 0) {
             return;
         }
         scaleHandles();
@@ -179,7 +177,7 @@ public class ScaleTool extends TransformTool {
         if (state == TransformState.IDLE) {
             return;
         }
-        if (!isScalable(getCtx().getSelectedEntityId())) {
+        if (!isScalable(ctx.getSelectedEntityId())) {
             return;
         }
 
@@ -206,16 +204,16 @@ public class ScaleTool extends TransformTool {
                 .set(tempScale.x, tempScale.y, tempScale.z);
 
         if (modified) {
-            entityModifiedEvent.setEntityId(getCtx().getSelectedEntityId());
+            entityModifiedEvent.setEntityId(ctx.getSelectedEntityId());
             eventBus.post(entityModifiedEvent);
         }
     }
 
     private float getCurrentDst() {
-        getCtx().getComponentByEntityId(getCtx().getSelectedEntityId(), PositionComponent.class)
+        ctx.getComponentByEntityId(ctx.getSelectedEntityId(), PositionComponent.class)
                 .getTransform()
                 .getTranslation(temp0);
-        var pivot = getCtx().getCurrent().getCamera().project(temp0, viewport3d.getScreenX(),
+        var pivot = ctx.getCurrent().getCamera().project(temp0, viewport3d.getScreenX(),
                 viewport3d.getScreenY(), viewport3d.getWorldWidth(), viewport3d.getWorldHeight());
         var mouse = temp1.set(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), 0);
 
@@ -226,11 +224,11 @@ public class ScaleTool extends TransformTool {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         super.touchDown(screenX, screenY, pointer, button);
 
-        if (!isScalable(getCtx().getSelectedEntityId())) {
+        if (!isScalable(ctx.getSelectedEntityId())) {
             return false;
         }
 
-        if (button != Input.Buttons.LEFT || getCtx().getSelectedEntityId() < 0) {
+        if (button != Input.Buttons.LEFT || ctx.getSelectedEntityId() < 0) {
             return false;
         }
         ScaleHandle handle = (ScaleHandle) handlePicker.pick(handles, screenX, screenY);
@@ -239,7 +237,7 @@ public class ScaleTool extends TransformTool {
             return false;
         }
 
-        var position = getCtx().getComponentByEntityId(getCtx().getSelectedEntityId(), PositionComponent.class);
+        var position = ctx.getComponentByEntityId(ctx.getSelectedEntityId(), PositionComponent.class);
         // current scale
         tempScale.set(position.getLocalScale());
 
@@ -281,7 +279,7 @@ public class ScaleTool extends TransformTool {
             xyzHandle.changeColor(COLOR_XYZ);
 
             // scale command after
-//            getCtx().getSelectedEntityId().getScale(tempScale);
+//            ctx.getSelectedEntityId().getScale(tempScale);
 //            command.setAfter(tempScale);
 //            getHistory().add(command);
 //            command = null;
@@ -291,7 +289,7 @@ public class ScaleTool extends TransformTool {
     }
 
     private boolean isScalable(int entityId) {
-        return entityId >= 0 || getCtx().getCurrentWorld()
+        return entityId >= 0 || ctx.getCurrentWorld()
                 .getEntity(entityId)
                 .getComponent(TypeComponent.class)
                 .getType() != TypeComponent.Type.TERRAIN;
@@ -299,12 +297,12 @@ public class ScaleTool extends TransformTool {
 
     @Override
     protected void scaleHandles() {
-        if (getCtx().getSelectedEntityId() < 0) {
+        if (ctx.getSelectedEntityId() < 0) {
             return;
         }
 
         getPositionOfSelectedEntity().getTransform().getTranslation(temp0);
-        float scaleFactor = getCtx().getCurrent().getCamera().position.dst(temp0) * 0.01f;
+        float scaleFactor = ctx.getCurrent().getCamera().position.dst(temp0) * 0.01f;
         handles.forEach(handle -> {
             handle.getScale().set(scaleFactor, scaleFactor, scaleFactor);
             handle.applyTransform();
@@ -323,31 +321,16 @@ public class ScaleTool extends TransformTool {
         handles.forEach(Disposable::dispose);
     }
 
-    private class ScaleHandle extends ToolHandle {
+    private static class ScaleHandle extends ToolHandle {
 
         public ScaleHandle(int id, TransformState state, Model model) {
             super(id, state, model);
-            modelInstance.materials.first().set(idAttribute);
-        }
-
-        @Override
-        public void render(ModelBatch batch, SceneEnvironment environment, ShaderProvider shaders, float delta) {
-            batch.render(modelInstance, DEFAULT_SHADER_KEY);
-        }
-
-        @Override
-        public void renderPick(ModelBatch modelBatch, ShaderProvider shaders) {
-            modelBatch.render(modelInstance, getShaderKey());
+            modelInstance.getMaterials().first().set(idAttribute);
         }
 
         @Override
         public void applyTransform() {
             modelInstance.transform.set(getPosition(), getRotation(), getScale());
-        }
-
-        @Override
-        public void dispose() {
-            model.dispose();
         }
     }
 

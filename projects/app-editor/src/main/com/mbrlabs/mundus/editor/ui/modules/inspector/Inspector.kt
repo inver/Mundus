@@ -19,7 +19,6 @@ package com.mbrlabs.mundus.editor.ui.modules.inspector
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.badlogic.gdx.utils.Align
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisScrollPane
@@ -50,9 +49,16 @@ class Inspector(
         uiDslCreator.create<UiComponentWidget>("com/mbrlabs/mundus/editor/ui/modules/inspector/texture/TextureWidget.groovy")
     private val materialWidget =
         uiDslCreator.create<UiComponentWidget>("com/mbrlabs/mundus/editor/ui/modules/inspector/material/MaterialWidget.groovy")
+    private val dlsWidget =
+        uiDslCreator.create<UiComponentWidget>("com/mbrlabs/mundus/editor/ui/modules/inspector/identifier/IdentifierWidget.groovy");
+    private val transformWidget =
+        uiDslCreator.create<UiComponentWidget>("com/mbrlabs/mundus/editor/ui/modules/inspector/transform/TransformWidget.groovy");
+    private val terrainComponentWidgetDsl =
+        uiDslCreator.create<UiComponentWidget>("com/mbrlabs/mundus/editor/ui/modules/inspector/terrain/TerrainWidget.groovy");
+    private val modelComponentWidgetDsl =
+        uiDslCreator.create<UiComponentWidget>("com/mbrlabs/mundus/editor/ui/modules/inspector/model/ModelWidget.groovy");
 
     init {
-        debugAll()
         goInspector = GameObjectInspector(
             uiDslCreator
         )
@@ -63,6 +69,7 @@ class Inspector(
         setBackground("window-bg")
         add(VisLabel("Inspector")).expandX().fillX().row()
         addSeparator().row()
+        root.debugAll()
         root.align(Align.top).padLeft(UiConstants.PAD).padRight(UiConstants.PAD).padTop(4f)
         scrollPane.setScrollingDisabled(true, false)
         scrollPane.setFlickScroll(false)
@@ -77,10 +84,17 @@ class Inspector(
             }
         })
 
-        add<ScrollPane>(scrollPane).expand().fill().top()
-        root.add(textureWidget.actor).top().growX().row()
-        root.add(materialWidget.actor).top().growX().row()
-        root.add(sceneInspector.actor).growX().row()
-        root.add(goInspector).growX().row()
+        add(scrollPane).expand().fill().top()
+
+//        add(dlsWidget.actor).growX().pad(8f).row()
+//        add(transformWidget.actor).growX().pad(8f).row()
+//        add(terrainComponentWidgetDsl.actor).growX().pad(8f).row()
+//        add(materialComponentWidgetDsl.actor).growX().pad(8f).row()
+//        add(modelComponentWidgetDsl.actor).growX().pad(8f).row()
+
+        root.add(textureWidget.actor).top().growX().expandX().fillX().row()
+//        root.add(materialWidget.actor).top().growX().expandX().fillX().row()
+        root.add(sceneInspector.actor).top().growX().expandX().fillX().row()
+//        root.add(goInspector).top().growX().expandX().fillX().row()
     }
 }

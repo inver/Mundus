@@ -39,7 +39,6 @@ import com.mbrlabs.mundus.editor.tools.picker.ToolHandlePicker;
 import com.mbrlabs.mundus.editor.ui.AppUi;
 import lombok.Getter;
 import net.nevinsky.abyssus.core.ModelBatch;
-import net.nevinsky.abyssus.core.shader.ShaderProvider;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -110,9 +109,9 @@ public class ToolManager extends InputAdapter implements Disposable, RenderableO
     }
 
     @Override
-    public void render(ModelBatch batch, SceneEnvironment environment, ShaderProvider shaders, float delta) {
+    public void render(ModelBatch batch, SceneEnvironment environment, String shaderKey, float delta) {
         if (activeTool != null) {
-            activeTool.render(batch, environment, shaders, delta);
+            activeTool.render(batch, environment, delta);
         }
     }
 

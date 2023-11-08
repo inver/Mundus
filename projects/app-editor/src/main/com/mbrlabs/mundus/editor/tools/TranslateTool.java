@@ -26,7 +26,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
-import com.mbrlabs.mundus.editor.events.EntityModifiedEvent;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.history.commands.TranslateCommand;
@@ -37,11 +36,8 @@ import lombok.extern.slf4j.Slf4j;
 import net.nevinsky.abyssus.core.ModelBatch;
 import net.nevinsky.abyssus.core.ModelBuilder;
 import net.nevinsky.abyssus.core.model.Model;
-import net.nevinsky.abyssus.core.shader.ShaderProvider;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;
-
-import static net.nevinsky.abyssus.core.shader.ShaderProvider.DEFAULT_SHADER_KEY;
 
 /**
  * @author Marcus Brummer
@@ -51,9 +47,9 @@ import static net.nevinsky.abyssus.core.shader.ShaderProvider.DEFAULT_SHADER_KEY
 public class TranslateTool extends TransformTool {
     public static final String NAME = "Translate Tool";
 
-    private final float ARROW_THIKNESS = 0.1f;
-    private final float ARROW_CAP_SIZE = 0.15f;
-    private final int ARROW_DIVISIONS = 12;
+    private static final float ARROW_THICKNESS = 0.1f;
+    private static final float ARROW_CAP_SIZE = 0.15f;
+    private static final int ARROW_DIVISIONS = 12;
 
     private boolean initTranslate = true;
     private final TranslateHandle xHandle;
@@ -73,15 +69,15 @@ public class TranslateTool extends TransformTool {
         ModelBuilder modelBuilder = new ModelBuilder();
 
         Model xHandleModel = modelBuilder.createArrow(0, 0, 0, 1, 0, 0, ARROW_CAP_SIZE,
-                ARROW_THIKNESS, ARROW_DIVISIONS,
+                ARROW_THICKNESS, ARROW_DIVISIONS,
                 GL20.GL_TRIANGLES, new Material(ColorAttribute.createDiffuse(COLOR_X)),
                 VertexAttributes.Usage.Position);
         Model yHandleModel = modelBuilder.createArrow(0, 0, 0, 0, 1, 0, ARROW_CAP_SIZE,
-                ARROW_THIKNESS, ARROW_DIVISIONS,
+                ARROW_THICKNESS, ARROW_DIVISIONS,
                 GL20.GL_TRIANGLES, new Material(ColorAttribute.createDiffuse(COLOR_Y)),
                 VertexAttributes.Usage.Position);
         Model zHandleModel = modelBuilder.createArrow(0, 0, 0, 0, 0, 1, ARROW_CAP_SIZE,
-                ARROW_THIKNESS, ARROW_DIVISIONS,
+                ARROW_THICKNESS, ARROW_DIVISIONS,
                 GL20.GL_TRIANGLES, new Material(ColorAttribute.createDiffuse(COLOR_Z)),
                 VertexAttributes.Usage.Position);
         Model xzPlaneHandleModel = modelBuilder.createSphere(1, 1, 1, 20, 20,
@@ -116,18 +112,18 @@ public class TranslateTool extends TransformTool {
     }
 
     @Override
-    public void render(ModelBatch batch, SceneEnvironment environment, ShaderProvider shaders, float delta) {
-        super.render(batch, environment, shaders, delta);
-        if (getCtx().getSelectedEntityId() < 0) {
+    public void render(ModelBatch batch, SceneEnvironment environment, String shaderKey, float delta) {
+        super.render(batch, environment, shaderKey, delta);
+        if (ctx.getSelectedEntityId() < 0) {
             return;
         }
 
-        batch.begin(getCtx().getCurrent().getCamera());
+        batch.begin(ctx.getCurrent().getCamera());
         GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
-        xHandle.render(batch, environment, shaders, delta);
-        yHandle.render(batch, environment, shaders, delta);
-        zHandle.render(batch, environment, shaders, delta);
-        xzPlaneHandle.render(batch, environment, shaders, delta);
+        xHandle.render(batch, environment, shaderKey, delta);
+        yHandle.render(batch, environment, shaderKey, delta);
+        zHandle.render(batch, environment, shaderKey, delta);
+        xzPlaneHandle.render(batch, environment, shaderKey, delta);
         batch.end();
     }
 
@@ -135,7 +131,7 @@ public class TranslateTool extends TransformTool {
     public void act() {
         super.act();
 
-        if (getCtx().getSelectedEntityId() < 0) {
+        if (ctx.getSelectedEntityId() < 0) {
             return;
         }
         scaleHandles();
@@ -144,11 +140,11 @@ public class TranslateTool extends TransformTool {
             return;
         }
 
-        var ray = getCtx().getViewport().getPickRay(Gdx.input.getX(), Gdx.input.getY());
+        var ray = ctx.getViewport().getPickRay(Gdx.input.getX(), Gdx.input.getY());
 
-        var positionComponent = getCtx().getSelectedEntity().getComponent(PositionComponent.class);
+        var positionComponent = ctx.getSelectedEntity().getComponent(PositionComponent.class);
         positionComponent.getLocalPosition(temp0);
-        float dst = getCtx().getCurrent().getCamera().position.dst(temp0);
+        float dst = ctx.getCurrent().getCamera().position.dst(temp0);
         ray.getEndPoint(temp0, dst);
 
         if (initTranslate) {
@@ -179,7 +175,7 @@ public class TranslateTool extends TransformTool {
         positionComponent.translate(vec);
 
         if (modified) {
-            entityModifiedEvent.setEntityId(getCtx().getSelectedEntityId());
+            entityModifiedEvent.setEntityId(ctx.getSelectedEntityId());
             eventBus.post(entityModifiedEvent);
         }
 
@@ -188,13 +184,13 @@ public class TranslateTool extends TransformTool {
 
     @Override
     protected void scaleHandles() {
-        if (getCtx().getSelectedEntityId() < 0 ||
-                getCtx().getSelectedEntity().getComponent(PositionComponent.class) == null) {
+        if (ctx.getSelectedEntityId() < 0 ||
+                ctx.getSelectedEntity().getComponent(PositionComponent.class) == null) {
             return;
         }
 
         getPositionOfSelectedEntity().getPosition(temp0);
-        float scaleFactor = getCtx().getCurrent().getCamera().position.dst(temp0) * 0.25f;
+        float scaleFactor = ctx.getCurrent().getCamera().position.dst(temp0) * 0.25f;
         xHandle.getScale().set(scaleFactor * 0.7f, scaleFactor / 2, scaleFactor / 2);
         yHandle.getScale().set(scaleFactor / 2, scaleFactor * 0.7f, scaleFactor / 2);
         zHandle.getScale().set(scaleFactor / 2, scaleFactor / 2, scaleFactor * 0.7f);
@@ -213,7 +209,7 @@ public class TranslateTool extends TransformTool {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         super.touchDown(screenX, screenY, pointer, button);
 
-        if (button != Input.Buttons.LEFT || getCtx().getSelectedEntityId() < 0) {
+        if (button != Input.Buttons.LEFT || ctx.getSelectedEntityId() < 0) {
             return false;
         }
 
@@ -228,8 +224,8 @@ public class TranslateTool extends TransformTool {
         initTranslate = true;
         handle.changeColor(COLOR_SELECTED);
 
-//        command = new TranslateCommand(getCtx().getSelectedEntityId());
-//        command.setBefore(getCtx().getSelectedEntityId().getLocalPosition(temp0));
+//        command = new TranslateCommand(ctx.getSelectedEntityId());
+//        command.setBefore(ctx.getSelectedEntityId().getLocalPosition(temp0));
         return true;
     }
 
@@ -242,7 +238,7 @@ public class TranslateTool extends TransformTool {
             zHandle.changeColor(COLOR_Z);
             xzPlaneHandle.changeColor(COLOR_XZ);
 
-//            command.setAfter(getCtx().getSelectedEntityId().getLocalPosition(temp0));
+//            command.setAfter(ctx.getSelectedEntityId().getLocalPosition(temp0));
 //            getHistory().add(command);
             command = null;
             state = TransformState.IDLE;
@@ -259,24 +255,11 @@ public class TranslateTool extends TransformTool {
         xzPlaneHandle.dispose();
     }
 
-    /**
-     *
-     */
-    private class TranslateHandle extends ToolHandle {
+    private static class TranslateHandle extends ToolHandle {
 
         public TranslateHandle(int id, TransformState state, Model model) {
             super(id, state, model);
-            modelInstance.materials.first().set(idAttribute);
-        }
-
-        @Override
-        public void render(ModelBatch batch, SceneEnvironment environment, ShaderProvider shaders, float delta) {
-            batch.render(modelInstance, DEFAULT_SHADER_KEY);
-        }
-
-        @Override
-        public void renderPick(ModelBatch modelBatch, ShaderProvider shaders) {
-            modelBatch.render(modelInstance, getShaderKey());
+            modelInstance.getMaterials().first().set(idAttribute);
         }
 
         @Override
@@ -284,12 +267,6 @@ public class TranslateTool extends TransformTool {
             rotation.setEulerAngles(rotationEuler.y, rotationEuler.x, rotationEuler.z);
             modelInstance.transform.set(position, rotation, scale);
         }
-
-        @Override
-        public void dispose() {
-            this.model.dispose();
-        }
-
     }
 
 }

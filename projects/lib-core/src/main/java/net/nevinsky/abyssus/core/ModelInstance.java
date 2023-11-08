@@ -25,6 +25,7 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
 import com.badlogic.gdx.utils.Pool;
+import lombok.Getter;
 import net.nevinsky.abyssus.core.model.Model;
 import net.nevinsky.abyssus.core.node.Animation;
 import net.nevinsky.abyssus.core.node.Node;
@@ -57,7 +58,8 @@ public class ModelInstance implements RenderableProvider {
      * the materials of the model, used by nodes that have a graphical representation TODO not sure if superfluous,
      * allows modification of materials without having to traverse the nodes
      **/
-    public final Array<Material> materials = new Array<>();
+    @Getter
+    private final Array<Material> materials = new Array<>();
     /**
      * root nodes of the model
      **/

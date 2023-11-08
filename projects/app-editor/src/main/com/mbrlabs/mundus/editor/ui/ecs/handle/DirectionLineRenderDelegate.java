@@ -20,7 +20,7 @@ public class DirectionLineRenderDelegate implements RenderableDelegate {
     private static final Material DEFAULT_MATERIAL = new Material();
     private final boolean hidden = false;
     @Getter
-    private final transient ModelInstance instance;
+    private final transient ModelInstance modelInstance;
     @Getter
     private final String shaderKey = DEFAULT_SHADER_KEY;
 
@@ -33,19 +33,19 @@ public class DirectionLineRenderDelegate implements RenderableDelegate {
         //todo rework for dotted line
         partBuilder.line(0, 0, 0, 0, 0, 10.2f);
 
-        instance = new ModelInstance(modelBuilder.end());
+        modelInstance = new ModelInstance(modelBuilder.end());
     }
 
     @Override
-    public void render(ModelBatch batch, SceneEnvironment environment, ShaderProvider shaders, float delta) {
+    public void render(ModelBatch batch, SceneEnvironment environment, String shaderKey, float delta) {
         if (!hidden) {
-            batch.render(instance, shaderKey);
+            batch.render(modelInstance, shaderKey);
         }
     }
 
     @Override
     public void set2PointPosition(Vector3 point1, Vector3 point2) {
-        var mesh = instance.model.getMeshes().iterator().next();
+        var mesh = modelInstance.model.getMeshes().iterator().next();
         final int stride = mesh.getVertexSize() / 4;
 
         final float[] vertices = new float[mesh.getNumVertices() * stride];

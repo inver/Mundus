@@ -79,12 +79,12 @@ public abstract class TransformTool extends SelectionTool {
     protected abstract void scaleHandles();
 
     protected void translateHandles() {
-        if (getCtx().getSelectedEntityId() < 0 ||
-                getCtx().getSelectedEntity().getComponent(PositionComponent.class) == null) {
+        if (ctx.getSelectedEntityId() < 0 ||
+                ctx.getSelectedEntity().getComponent(PositionComponent.class) == null) {
             return;
         }
 
-        getCtx().getSelectedEntity().getComponent(PositionComponent.class).getPosition(temp0);
+        ctx.getSelectedEntity().getComponent(PositionComponent.class).getPosition(temp0);
         handles.forEach(handle -> {
             handle.getPosition().set(temp0);
             handle.applyTransform();

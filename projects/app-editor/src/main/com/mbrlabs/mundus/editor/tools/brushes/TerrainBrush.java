@@ -34,9 +34,6 @@ import com.mbrlabs.mundus.editor.tools.Tool;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.nevinsky.abyssus.core.ModelBatch;
-import net.nevinsky.abyssus.core.shader.ShaderProvider;
-
-import javax.swing.Spring;
 
 /**
  * A Terrain Brush can modify the terrainAsset in various ways (BrushMode).
@@ -354,7 +351,7 @@ public abstract class TerrainBrush extends Tool {
     }
 
     @Override
-    public void render(ModelBatch batch, SceneEnvironment environment, ShaderProvider shaders, float delta) {
+    public void render(ModelBatch batch, SceneEnvironment environment, String shaderKey, float delta) {
         // rendering of the brush is done in the editor terrain shader
     }
 

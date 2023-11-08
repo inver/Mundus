@@ -37,10 +37,9 @@ class AssetChooserField : VisTable() {
     var assetFilter: AssetFilter? = null
 
     init {
+        add(textField).growX()
         textField.isDisabled = true
-        
-        selectButton.add(textField)
-        add(selectButton).grow().row()
+        add(selectButton).padLeft(8f).row()
     }
 
     fun setAsset(asset: Asset<*>?) {

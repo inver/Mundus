@@ -33,7 +33,6 @@ class GameObjectInspector(uiDslCreator: UiDslCreator) : VisTable() {
         uiDslCreator.create<UiComponentWidget>("com/mbrlabs/mundus/editor/ui/modules/inspector/transform/TransformWidget.groovy");
     private val terrainComponentWidgetDsl =
         uiDslCreator.create<UiComponentWidget>("com/mbrlabs/mundus/editor/ui/modules/inspector/terrain/TerrainWidget.groovy");
-
     private val modelComponentWidgetDsl =
         uiDslCreator.create<UiComponentWidget>("com/mbrlabs/mundus/editor/ui/modules/inspector/model/ModelWidget.groovy");
 

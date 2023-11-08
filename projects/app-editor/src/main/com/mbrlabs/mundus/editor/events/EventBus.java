@@ -81,10 +81,13 @@ public class EventBus {
             return;
         }
 
+        long ts;
         for (var pair : new ArrayList<>(methods)) {
             try {
+                ts = System.currentTimeMillis();
                 pair.getRight().invoke(pair.getLeft(), event);
-                log.debug("Event {} to {} delivered", event, pair.getLeft());
+                log.debug("Event {} to {} delivered in {} ms", event, pair.getLeft(),
+                        (System.currentTimeMillis() - ts));
             } catch (IllegalAccessException | InvocationTargetException e) {
                 log.error("ERROR", e);
             }

@@ -50,11 +50,11 @@ public class ToolManagerTest extends BaseCtxTest {
     void testRender() {
         manager.activateTool(mockTool);
         manager.render(null, null, null, 0f);
-        verify(mockTool, times(1)).render(any(), any(), any(), eq(0f));
+        verify(mockTool, times(1)).render(any(), any(), eq(0f));
 
         manager.deactivateTool();
         manager.render(null, null, null, 0f);
-        verify(mockTool, times(1)).render(any(), any(), any(), eq(0f));
+        verify(mockTool, times(1)).render(any(), any(), eq(0f));
     }
 
     @Test

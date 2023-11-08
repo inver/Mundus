@@ -18,7 +18,8 @@ public class DirectionHandleRenderDelegate implements RenderableDelegate {
     private static final long ATTRIBUTES =
             VertexAttributes.Usage.Position | VertexAttributes.Usage.ColorUnpacked | VertexAttributes.Usage.Normal;
     private static final Material DEFAULT_MATERIAL = new Material();
-    private final transient ModelInstance instance;
+    @Getter
+    private final transient ModelInstance modelInstance;
     private final boolean hidden = false;
     @Getter
     private final String shaderKey;
@@ -32,7 +33,7 @@ public class DirectionHandleRenderDelegate implements RenderableDelegate {
         var partBuilder = modelBuilder.part("directionHandle", GL20.GL_TRIANGLES, ATTRIBUTES, DEFAULT_MATERIAL);
         partBuilder.setColor(Color.GRAY);
         SphereShapeBuilder.build(partBuilder, 0.4f, 0.4f, 0.4f, 10, 10);
-        instance = new ModelInstance(modelBuilder.end());
+        modelInstance = new ModelInstance(modelBuilder.end());
     }
 
     public DirectionHandleRenderDelegate() {
@@ -40,14 +41,14 @@ public class DirectionHandleRenderDelegate implements RenderableDelegate {
     }
 
     @Override
-    public void render(ModelBatch batch, SceneEnvironment environment, ShaderProvider shaders, float delta) {
+    public void render(ModelBatch batch, SceneEnvironment environment, String shaderKey, float delta) {
         if (!hidden) {
-            batch.render(instance, shaderKey);
+            batch.render(modelInstance, shaderKey);
         }
     }
 
     @Override
     public void setPosition(Matrix4 position) {
-        instance.transform.set(position);
+        modelInstance.transform.set(position);
     }
 }

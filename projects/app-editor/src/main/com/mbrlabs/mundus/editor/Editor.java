@@ -172,13 +172,13 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
                     }
                 }
                 batch.begin(camera);
-                scene.render(batch, scene.getEnvironment(), shaderStorage, Gdx.graphics.getDeltaTime());
-                wirePlane.render(batch, scene.getEnvironment(), shaderStorage, Gdx.graphics.getDeltaTime());
+                scene.render(batch, scene.getEnvironment(), Gdx.graphics.getDeltaTime());
+                wirePlane.render(batch, scene.getEnvironment(), Gdx.graphics.getDeltaTime());
                 //todo check current camera
 
                 batch.end();
 
-                toolManager.render(batch, scene.getEnvironment(), shaderStorage, Gdx.graphics.getDeltaTime());
+                toolManager.render(batch, scene.getEnvironment(), Gdx.graphics.getDeltaTime());
                 compass.render(batch, ShaderProvider.DEFAULT_SHADER_KEY);
             } catch (Exception e) {
                 log.error("ERROR", e);

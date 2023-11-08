@@ -10,18 +10,18 @@ import net.nevinsky.abyssus.core.ModelInstance;
 import net.nevinsky.abyssus.core.shader.ShaderProvider;
 
 @RequiredArgsConstructor
+@Getter
 public class LightRenderDelegate implements RenderableDelegate {
-    private final transient ModelInstance instance;
-    @Getter
+    private final transient ModelInstance modelInstance;
     private final String shaderKey;
 
     @Override
-    public void render(ModelBatch batch, SceneEnvironment environment, ShaderProvider shaders, float delta) {
-        batch.render(instance, environment, shaderKey);
+    public void render(ModelBatch batch, SceneEnvironment environment, String shaderKey, float delta) {
+        batch.render(modelInstance, environment, shaderKey);
     }
 
     @Override
     public void setPosition(Matrix4 position) {
-        instance.transform.set(position);
+        modelInstance.transform.set(position);
     }
 }

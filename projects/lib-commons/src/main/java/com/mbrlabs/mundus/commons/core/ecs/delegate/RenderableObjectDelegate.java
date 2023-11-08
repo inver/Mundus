@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.nevinsky.abyssus.core.ModelBatch;
-import net.nevinsky.abyssus.core.shader.ShaderProvider;
+import net.nevinsky.abyssus.core.ModelInstance;
 
 @Getter
 @Setter
@@ -19,7 +19,12 @@ public class RenderableObjectDelegate implements RenderableDelegate {
     private String shaderKey;
 
     @Override
-    public void render(ModelBatch batch, SceneEnvironment environment, ShaderProvider shaders, float delta) {
+    public ModelInstance getModelInstance() {
+        return asset.getModelInstance();
+    }
+
+    @Override
+    public void render(ModelBatch batch, SceneEnvironment environment, String shaderKey, float delta) {
         batch.render(asset, environment, shaderKey);
     }
 

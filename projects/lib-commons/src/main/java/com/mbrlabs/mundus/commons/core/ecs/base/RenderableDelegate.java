@@ -6,6 +6,7 @@ import com.mbrlabs.mundus.commons.scene3d.components.RenderableObject;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.nevinsky.abyssus.core.ModelInstance;
 
 public interface RenderableDelegate extends RenderableObject {
     default void setPosition(Matrix4 position) {
@@ -20,7 +21,7 @@ public interface RenderableDelegate extends RenderableObject {
         return new RenderComponent(this);
     }
 
-    String getShaderKey();
+    ModelInstance getModelInstance();
 
     @Data
     @NoArgsConstructor

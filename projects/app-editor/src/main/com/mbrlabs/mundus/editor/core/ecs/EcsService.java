@@ -44,13 +44,13 @@ public class EcsService {
                 .add(new TypeComponent(TypeComponent.Type.HANDLE))
                 .add(new PositionComponent(handlePosition))
                 .add(new DirectionHandleRenderDelegate().asComponent())
-                .add(PickableComponent.of(handleId, new DirectionHandleRenderDelegate(ShaderConstants.PICKER)));
+                .add(PickableComponent.of(handleId));
 
         // add root component, e.g. body of camera
         addEntityBaseComponents(world, rootId, parentId, nodeName + " " + rootId, rootComponents)
                 .add(new PositionComponent(rootPosition, handleId))
                 .add(renderableDelegate.asComponent())
-                .add(PickableComponent.of(rootId, pickerRenderableDelegate))
+                .add(PickableComponent.of(rootId))
                 .add(new DependenciesComponent(lineId, rootId));
 
         world.edit(lineId)

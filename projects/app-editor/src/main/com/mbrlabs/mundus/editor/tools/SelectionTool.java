@@ -23,11 +23,9 @@ import com.mbrlabs.mundus.editor.events.EntitySelectedEvent;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.tools.picker.EntityPicker;
-import com.mbrlabs.mundus.editor.ui.AppUi;
 import com.mbrlabs.mundus.editor.ui.widgets.icon.SymbolIcon;
 import lombok.extern.slf4j.Slf4j;
 import net.nevinsky.abyssus.core.ModelBatch;
-import net.nevinsky.abyssus.core.shader.ShaderProvider;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -51,7 +49,7 @@ public class SelectionTool extends Tool {
     }
 
     public void entitySelected(int entityId) {
-        getCtx().selectEntity(entityId);
+        ctx.selectEntity(entityId);
     }
 
     @Override
@@ -61,14 +59,14 @@ public class SelectionTool extends Tool {
     }
 
     @Override
-    public void render(ModelBatch batch, SceneEnvironment environment, ShaderProvider shaders, float delta) {
-        if (getCtx().getSelectedEntity() == null) {
+    public void render(ModelBatch batch, SceneEnvironment environment, String shaderKey, float delta) {
+        if (ctx.getSelectedEntity() == null) {
             return;
         }
-        batch.begin(getCtx().getCurrent().getCamera());
+        batch.begin(ctx.getCurrent().getCamera());
 
         //todo
-//        for (GameObject go : getCtx().getSelectedEntityId()) {
+//        for (GameObject go : ctx.getSelectedEntityId()) {
 //            // model component
 //            ModelComponent mc = (ModelComponent) go.findComponentByType(Component.Type.MODEL);
 //            if (mc != null) {
@@ -100,8 +98,8 @@ public class SelectionTool extends Tool {
             return false;
         }
 
-        int entityId = picker.pick(getCtx().getCurrent().getCurrentScene(), screenX, screenY);
-        if (entityId >= 0 && entityId != getCtx().getSelectedEntityId()) {
+        int entityId = picker.pick(ctx.getCurrent().getCurrentScene(), screenX, screenY);
+        if (entityId >= 0 && entityId != ctx.getSelectedEntityId()) {
             entitySelected(entityId);
             eventBus.post(new EntitySelectedEvent(entityId));
         }
@@ -120,7 +118,7 @@ public class SelectionTool extends Tool {
 
     @Override
     public void onDisabled() {
-        getCtx().selectEntity(-1);
+        ctx.selectEntity(-1);
     }
 
 }

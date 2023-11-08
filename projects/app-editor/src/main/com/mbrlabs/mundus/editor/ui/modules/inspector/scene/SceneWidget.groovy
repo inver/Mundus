@@ -9,6 +9,7 @@ return Table {
                 title = "Ambient light"
                 presenter = AmbientLightPresenter.class
                 layoutTypes = "expandX, fillX, left, top"
+                showHeader = true
 
                 content {
                     row {

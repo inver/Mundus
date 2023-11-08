@@ -16,15 +16,17 @@
 
 package com.mbrlabs.mundus.editor.tools.picker;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 
 /**
  * @author Marcus Brummer
  * @version 20-02-2016
  */
+//todo migrate attribute to ColorAttribute
 public class PickerIDAttribute extends Attribute {
 
-    public static final String Alias = "goID";
+    public static final String Alias = "u_color";
     public static final long TYPE = register(Alias);
 
     public int r = 255;
@@ -34,6 +36,10 @@ public class PickerIDAttribute extends Attribute {
 
     public static boolean is(final long mask) {
         return (mask & TYPE) == mask;
+    }
+
+    public Color asColor() {
+        return new Color(r / 255.0f, g / 255.0f, b / 255.0f, a);
     }
 
     public PickerIDAttribute() {

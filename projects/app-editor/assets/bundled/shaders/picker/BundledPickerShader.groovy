@@ -1,8 +1,7 @@
 package bundled.shaders.picker
 
-import com.badlogic.gdx.graphics.Camera
-import com.badlogic.gdx.graphics.GL20
-import com.badlogic.gdx.graphics.g3d.utils.RenderContext
+
+import com.badlogic.gdx.graphics.g3d.Attributes
 import com.badlogic.gdx.math.Vector3
 import com.mbrlabs.mundus.editor.tools.picker.PickerIDAttribute
 import net.nevinsky.abyssus.core.Renderable
@@ -20,30 +19,37 @@ import net.nevinsky.abyssus.core.shader.ShaderConfig
  * @author Marcus Brummer
  * @version 20-02-2016
  */
+@SuppressWarnings("unused")
 class BundledPickerShader extends DefaultShader {
 
-    protected final int UNIFORM_COLOR = register(new Uniform("u_color"))
-
-    private static final Vector3 vec3 = new Vector3()
+    private final int UNIFORM_COLOR = register(new Uniform(PickerIDAttribute.Alias))
 
     BundledPickerShader(ShaderConfig config, Renderable renderable) {
         super(config, renderable)
     }
 
+//    @Override
+//    void begin(Camera camera, RenderContext context) {
+//        super.begin(camera, context)
+////        context.setCullFace(GL20.GL_BACK)
+////        context.setDepthTest(GL20.GL_LEQUAL, 0f, 1f)
+////        context.setDepthMask(true)
+//    }
     @Override
-    void begin(Camera camera, RenderContext context) {
-        super.begin(camera, context)
-        this.context.setCullFace(GL20.GL_BACK)
-        this.context.setDepthTest(GL20.GL_LEQUAL, 0f, 1f)
-        this.context.setDepthMask(true)
+    void render(Renderable renderable, Attributes combinedAttributes) {
+        def pickerAttr = combinedAttributes.get(PickerIDAttribute.TYPE) as PickerIDAttribute
+        if (pickerAttr != null) {
+            set(UNIFORM_COLOR, pickerAttr.asColor())
+        }
+        super.render(renderable, combinedAttributes)
     }
 
     @Override
     void render(Renderable renderable) {
-        def goID = renderable.material.get(PickerIDAttribute.TYPE)
-        if (goID != null) {
-            set(UNIFORM_COLOR, vec3.set(goID.r, goID.g, goID.b))
-        }
+//        def pickerId = renderable.material.get(PickerIDAttribute.TYPE)
+//        if (pickerId != null) {
+//            set(UNIFORM_COLOR, VEC.set(pickerId.r, pickerId.g, pickerId.b))
+//        }
 
         super.render(renderable)
     }

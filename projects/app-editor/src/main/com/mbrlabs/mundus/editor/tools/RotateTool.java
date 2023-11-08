@@ -38,11 +38,8 @@ import com.mbrlabs.mundus.editor.tools.picker.ToolHandlePicker;
 import com.mbrlabs.mundus.editor.ui.widgets.icon.SymbolIcon;
 import com.mbrlabs.mundus.editor.utils.UsefulMeshs;
 import net.nevinsky.abyssus.core.ModelBatch;
-import net.nevinsky.abyssus.core.shader.ShaderProvider;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;
-
-import static net.nevinsky.abyssus.core.shader.ShaderProvider.DEFAULT_SHADER_KEY;
 
 /**
  * Rotate tool for game objects
@@ -93,25 +90,25 @@ public class RotateTool extends TransformTool {
     }
 
     @Override
-    public void render(ModelBatch batch, SceneEnvironment environment, ShaderProvider shaders, float delta) {
-        super.render(batch, environment, shaders, delta);
-        if (getCtx().getSelectedEntityId() < 0) {
+    public void render(ModelBatch batch, SceneEnvironment environment, String shaderKey, float delta) {
+        super.render(batch, environment, shaderKey, delta);
+        if (ctx.getSelectedEntityId() < 0) {
             return;
         }
 
         if (state == TransformState.IDLE) {
             GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
-            batch.begin(getCtx().getCurrent().getCamera());
-            xHandle.render(batch, environment, shaders, delta);
-            yHandle.render(batch, environment, shaders, delta);
-            zHandle.render(batch, environment, shaders, delta);
+            batch.begin(ctx.getCurrent().getCamera());
+            xHandle.render(batch, environment, shaderKey, delta);
+            yHandle.render(batch, environment, shaderKey, delta);
+            zHandle.render(batch, environment, shaderKey, delta);
             batch.end();
             return;
         }
 
-        var vp = getCtx().getViewport();
-        getCtx().getSelectedEntity().getComponent(PositionComponent.class).getLocalPosition(temp0);
-        var pivot = getCtx().getCurrent().getCamera().project(temp0);
+        var vp = ctx.getViewport();
+        ctx.getSelectedEntity().getComponent(PositionComponent.class).getLocalPosition(temp0);
+        var pivot = ctx.getCurrent().getCamera().project(temp0);
 
         shapeRenderMat.setToOrtho2D(vp.getScreenX(), vp.getScreenY(), vp.getScreenWidth(), vp.getScreenHeight());
         switch (state) {
@@ -151,7 +148,7 @@ public class RotateTool extends TransformTool {
     public void act() {
         super.act();
 
-        if (getCtx().getSelectedEntityId() < 0) {
+        if (ctx.getSelectedEntityId() < 0) {
             return;
         }
         scaleHandles();
@@ -163,7 +160,7 @@ public class RotateTool extends TransformTool {
         float angle = getCurrentAngle();
         float rot = angle - lastRot;
 
-        var positionComponent = getCtx().getSelectedEntity().getComponent(PositionComponent.class);
+        var positionComponent = ctx.getSelectedEntity().getComponent(PositionComponent.class);
         //todo do not create temp quaternion
         var tempQuat = new Quaternion();
         boolean modified = true;
@@ -180,7 +177,7 @@ public class RotateTool extends TransformTool {
         positionComponent.getLocalRotation().mul(tempQuat);
 
         if (modified) {
-            entityModifiedEvent.setEntityId(getCtx().getSelectedEntityId());
+            entityModifiedEvent.setEntityId(ctx.getSelectedEntityId());
             eventBus.post(entityModifiedEvent);
         }
 
@@ -188,14 +185,14 @@ public class RotateTool extends TransformTool {
     }
 
     private float getCurrentAngle() {
-        if (getCtx().getSelectedEntityId() < 0) {
+        if (ctx.getSelectedEntityId() < 0) {
             return 0;
         }
 
-        var positionComponent = getCtx().getSelectedEntity().getComponent(PositionComponent.class);
+        var positionComponent = ctx.getSelectedEntity().getComponent(PositionComponent.class);
         positionComponent.getPosition(temp0);
         // fill pivot vector
-        getCtx().getCurrent().getCamera().project(temp0);
+        ctx.getCurrent().getCamera().project(temp0);
         //fill mouse vector
         temp1.set(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), 0);
 
@@ -204,13 +201,13 @@ public class RotateTool extends TransformTool {
 
     @Override
     protected void scaleHandles() {
-        if (getCtx().getSelectedEntityId() < 0 ||
-                getCtx().getSelectedEntity().getComponent(PositionComponent.class) == null) {
+        if (ctx.getSelectedEntityId() < 0 ||
+                ctx.getSelectedEntity().getComponent(PositionComponent.class) == null) {
             return;
         }
 
-        Vector3 pos = getCtx().getSelectedEntity().getComponent(PositionComponent.class).getPosition(temp0);
-        var scaleFactor = getCtx().getCurrent().getCamera().position.dst(pos) * 0.005f;
+        Vector3 pos = ctx.getSelectedEntity().getComponent(PositionComponent.class).getPosition(temp0);
+        var scaleFactor = ctx.getCurrent().getCamera().position.dst(pos) * 0.005f;
 
         handles.forEach(handle -> {
             handle.getScale().set(scaleFactor, scaleFactor, scaleFactor);
@@ -230,14 +227,14 @@ public class RotateTool extends TransformTool {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         super.touchDown(screenX, screenY, pointer, button);
 
-        if (button != Input.Buttons.LEFT || getCtx().getSelectedEntityId() < 0) {
+        if (button != Input.Buttons.LEFT || ctx.getSelectedEntityId() < 0) {
             return false;
         }
 
         lastRot = getCurrentAngle();
 
-//        currentRotateCommand = new RotateCommand(getCtx().getSelectedEntityId());
-//        currentRotateCommand.setBefore(getCtx().getSelectedEntityId().getLocalRotation(tempQuat));
+//        currentRotateCommand = new RotateCommand(ctx.getSelectedEntityId());
+//        currentRotateCommand.setBefore(ctx.getSelectedEntityId().getLocalRotation(tempQuat));
 //
         RotateHandle handle = (RotateHandle) handlePicker.pick(handles, screenX, screenY);
         if (handle == null) {
@@ -259,7 +256,7 @@ public class RotateTool extends TransformTool {
             yHandle.changeColor(COLOR_Y);
             zHandle.changeColor(COLOR_Z);
 
-//         command.setAfter(getCtx().getSelectedEntityId().getLocalRotation(tempQuat));
+//         command.setAfter(ctx.getSelectedEntityId().getLocalRotation(tempQuat));
 //            getHistory().add(command);
             command = null;
             state = TransformState.IDLE;
@@ -285,13 +282,13 @@ public class RotateTool extends TransformTool {
     /**
      *
      */
-    private class RotateHandle extends ToolHandle {
+    private static class RotateHandle extends ToolHandle {
 
         public RotateHandle(int id, TransformState state, Color color) {
             super(id, state, UsefulMeshs.torus(
                     new Material(ColorAttribute.createDiffuse(color)), 20, 1f, 50, 50
             ));
-            modelInstance.materials.first().set(idAttribute);
+            modelInstance.getMaterials().first().set(idAttribute);
             if (id == X_HANDLE_ID) {
                 getRotationEuler().y = 90;
                 getScale().x = 0.9f;
@@ -309,24 +306,9 @@ public class RotateTool extends TransformTool {
         }
 
         @Override
-        public void render(ModelBatch batch, SceneEnvironment environment, ShaderProvider shaders, float delta) {
-            batch.render(modelInstance, DEFAULT_SHADER_KEY);
-        }
-
-        @Override
-        public void renderPick(ModelBatch modelBatch, ShaderProvider shaders) {
-            modelBatch.render(modelInstance, DEFAULT_SHADER_KEY);
-        }
-
-        @Override
         public void applyTransform() {
             getRotation().setEulerAngles(getRotationEuler().y, getRotationEuler().x, getRotationEuler().z);
             modelInstance.transform.set(getPosition(), getRotation(), getScale());
-        }
-
-        @Override
-        public void dispose() {
-            model.dispose();
         }
     }
 

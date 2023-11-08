@@ -99,7 +99,7 @@ public class EditorTerrainService extends TerrainService {
         }
 
         ecsService.addEntityBaseComponents(world, id, -1, name, position,
-                PickableComponent.of(id, new RenderableObjectDelegate(terrain, ShaderConstants.PICKER)),
+                PickableComponent.of(id),
                 new RenderableObjectDelegate(terrain, ShaderConstants.TERRAIN).asComponent(),
                 new TypeComponent(TypeComponent.Type.TERRAIN)
         );

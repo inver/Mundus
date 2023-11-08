@@ -9,14 +9,13 @@ import com.mbrlabs.mundus.commons.assets.model.ModelMeta;
 import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
 import com.mbrlabs.mundus.commons.core.ecs.component.TypeComponent;
 import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObjectDelegate;
-import com.mbrlabs.mundus.commons.loader.assimp.AssimpLoader;
 import com.mbrlabs.mundus.commons.loader.ModelImporter;
+import com.mbrlabs.mundus.commons.loader.assimp.AssimpLoader;
 import com.mbrlabs.mundus.commons.model.ImportedModel;
 import com.mbrlabs.mundus.commons.model.ModelService;
 import com.mbrlabs.mundus.editor.core.ecs.EcsService;
 import com.mbrlabs.mundus.editor.core.ecs.PickableComponent;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
-import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -84,7 +83,7 @@ public class EditorModelService extends ModelService {
         var id = world.create();
         ecsService.addEntityBaseComponents(world, id, -1, "Model " + id,
                 new PositionComponent(),
-                PickableComponent.of(id, new RenderableObjectDelegate(model, ShaderConstants.PICKER)),
+                PickableComponent.of(id),
                 new RenderableObjectDelegate(model, DEFAULT_SHADER_KEY).asComponent(),
                 new TypeComponent(TypeComponent.Type.OBJECT)
         );
