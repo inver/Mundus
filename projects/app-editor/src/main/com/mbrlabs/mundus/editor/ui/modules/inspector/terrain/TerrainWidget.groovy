@@ -4,6 +4,7 @@ return ComponentWidget {
     title = "Terrain generation"
     presenter = TerrainWidgetPresenter.class
     showHeader = true
+    layoutStyle = "top, expandX"
 
     content {
         Tabs {
@@ -16,7 +17,7 @@ return ComponentWidget {
                         Label("Mode", "left, top")
                     }
                     row {
-                        RadioButton {
+                            RadioButton {
                             id = "brushMode"
                             layoutTypes = "left, expandX"
                         }

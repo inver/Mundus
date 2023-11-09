@@ -6,11 +6,11 @@ import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisTextField;
 import com.mbrlabs.mundus.commons.core.ecs.component.NameComponent;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
+import com.mbrlabs.mundus.editor.events.AssetSelectedEvent;
 import com.mbrlabs.mundus.editor.events.EntitySelectedEvent;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.ui.modules.inspector.UiComponentPresenter;
 import com.mbrlabs.mundus.editor.ui.modules.inspector.UiComponentWidget;
-import com.mbrlabs.mundus.editor.ui.modules.outline.IdNode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -40,7 +40,9 @@ public class IdentifierWidgetPresenter implements UiComponentPresenter<UiCompone
             nameField.setText(name.getName());
             activeField.setChecked(ctx.getCurrentWorld().getEntity(event.getEntityId()).isActive());
         });
-
+        eventBus.register((AssetSelectedEvent.AssetSelectedListener) event -> {
+            widget.setVisible(false);
+        });
         nameField.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {

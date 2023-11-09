@@ -49,6 +49,8 @@ public class UiFormTable extends UiComponent<VisTable> {
         component.applyStyles(cell);
         if (component instanceof UiImage) {
             cell.size(((UiImage) component).getWidth(), ((UiImage) component).getHeight());
+        } else if (component instanceof UiFloatField) {
+            cell.width(component.actor.getWidth());
         }
     }
 }

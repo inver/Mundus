@@ -4,8 +4,8 @@ final def FIELD_SIZE = 15
 
 return ComponentWidget {
     title = "Transformation"
-    showHeader = true
     presenter = TransformWidgetPresenter.class
+    layoutStyle = "top, expandX"
 
     content {
         row {
@@ -14,16 +14,19 @@ return ComponentWidget {
             FloatField {
                 id = "posX"
                 layoutTypes = "form"
+                width = 45f
             }
             Label("y", "form")
             FloatField {
                 id = "posY"
                 layoutTypes = "form"
+                width = 45f
             }
             Label("z", "form")
             FloatField {
                 id = "posZ"
                 layoutTypes = "form"
+                width = 45f
             }
         }
         row {
@@ -32,16 +35,19 @@ return ComponentWidget {
             FloatField {
                 id = "rotX"
                 layoutTypes = "form"
+                width = 45f
             }
             Label("y", "form")
             FloatField {
                 id = "rotY"
                 layoutTypes = "form"
+                width = 45f
             }
             Label("z", "form")
             FloatField {
                 id = "rotZ"
                 layoutTypes = "form"
+                width = 45f
             }
         }
         row {
@@ -50,16 +56,19 @@ return ComponentWidget {
             FloatField {
                 id = "sclX"
                 layoutTypes = "form"
+                width = 45f
             }
             Label("y", "form")
             FloatField {
                 id = "sclY"
                 layoutTypes = "form"
+                width = 45f
             }
             Label("z", "form")
             FloatField {
                 id = "sclZ"
                 layoutTypes = "form"
+                width = 45f
             }
         }
     }

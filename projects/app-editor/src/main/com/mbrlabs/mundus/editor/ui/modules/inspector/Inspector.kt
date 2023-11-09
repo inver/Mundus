@@ -43,17 +43,17 @@ class Inspector(
     private val scrollPane = VisScrollPane(root)
 
     private val goInspector: GameObjectInspector
+    private val identifierWidget =
+        uiDslCreator.create<UiComponentWidget>("com/mbrlabs/mundus/editor/ui/modules/inspector/identifier/IdentifierWidget.groovy");
+    private val transformWidget =
+        uiDslCreator.create<UiComponentWidget>("com/mbrlabs/mundus/editor/ui/modules/inspector/transform/TransformWidget.groovy");
     private val sceneInspector =
         uiDslCreator.create<UiFormTable>("com/mbrlabs/mundus/editor/ui/modules/inspector/scene/SceneWidget.groovy")
     private val textureWidget =
         uiDslCreator.create<UiComponentWidget>("com/mbrlabs/mundus/editor/ui/modules/inspector/texture/TextureWidget.groovy")
     private val materialWidget =
         uiDslCreator.create<UiComponentWidget>("com/mbrlabs/mundus/editor/ui/modules/inspector/material/MaterialWidget.groovy")
-    private val dlsWidget =
-        uiDslCreator.create<UiComponentWidget>("com/mbrlabs/mundus/editor/ui/modules/inspector/identifier/IdentifierWidget.groovy");
-    private val transformWidget =
-        uiDslCreator.create<UiComponentWidget>("com/mbrlabs/mundus/editor/ui/modules/inspector/transform/TransformWidget.groovy");
-    private val terrainComponentWidgetDsl =
+    private val terrainWidget =
         uiDslCreator.create<UiComponentWidget>("com/mbrlabs/mundus/editor/ui/modules/inspector/terrain/TerrainWidget.groovy");
     private val modelComponentWidgetDsl =
         uiDslCreator.create<UiComponentWidget>("com/mbrlabs/mundus/editor/ui/modules/inspector/model/ModelWidget.groovy");
@@ -67,9 +67,8 @@ class Inspector(
 
     fun init() {
         setBackground("window-bg")
-        add(VisLabel("Inspector")).expandX().fillX().row()
+        add(VisLabel("Inspector")).expandX().fillX().padLeft(8f).row()
         addSeparator().row()
-        root.debugAll()
         root.align(Align.top).padLeft(UiConstants.PAD).padRight(UiConstants.PAD).padTop(4f)
         scrollPane.setScrollingDisabled(true, false)
         scrollPane.setFlickScroll(false)
@@ -86,15 +85,15 @@ class Inspector(
 
         add(scrollPane).expand().fill().top()
 
-//        add(dlsWidget.actor).growX().pad(8f).row()
-//        add(transformWidget.actor).growX().pad(8f).row()
-//        add(terrainComponentWidgetDsl.actor).growX().pad(8f).row()
+        root.add(identifierWidget.actor).top().growX().expandX().fillX().row()
+        root.add(transformWidget.actor).top().growX().expandX().fillX().row()
+        root.add(sceneInspector.actor).top().growX().expandX().fillX().row()
+        root.add(textureWidget.actor).top().growX().expandX().fillX().row()
 //        add(materialComponentWidgetDsl.actor).growX().pad(8f).row()
 //        add(modelComponentWidgetDsl.actor).growX().pad(8f).row()
 
-        root.add(textureWidget.actor).top().growX().expandX().fillX().row()
 //        root.add(materialWidget.actor).top().growX().expandX().fillX().row()
-        root.add(sceneInspector.actor).top().growX().expandX().fillX().row()
+//        root.add(terrainWidget.actor).top().growX().expandX().fillX().row()
 //        root.add(goInspector).top().growX().expandX().fillX().row()
     }
 }

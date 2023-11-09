@@ -4,13 +4,13 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisTextField;
 import com.mbrlabs.mundus.editor.ui.modules.inspector.UiComponentWidget;
-import com.mbrlabs.mundus.editor.ui.widgets.FloatField;
 import com.mbrlabs.mundus.editor.ui.widgets.RadioButtonGroup;
 import com.mbrlabs.mundus.editor.ui.widgets.chooser.asset.AssetChooserField;
 import com.mbrlabs.mundus.editor.ui.widgets.chooser.color.ColorChooserField;
 import com.mbrlabs.mundus.editor.ui.widgets.chooser.file.FileChooserField;
 import com.mbrlabs.mundus.editor.ui.widgets.dsl.UiButtonComponent;
 import com.mbrlabs.mundus.editor.ui.widgets.dsl.UiComponent;
+import com.mbrlabs.mundus.editor.ui.widgets.dsl.UiFloatField;
 import com.mbrlabs.mundus.editor.ui.widgets.dsl.UiFormTable;
 import com.mbrlabs.mundus.editor.ui.widgets.dsl.UiGrid;
 import com.mbrlabs.mundus.editor.ui.widgets.dsl.UiImage;
@@ -53,7 +53,7 @@ public class UiDslProcessor extends GroovyObjectSupport {
     }
 
     public UiComponent<?> FloatField(Closure<?> closure) {
-        return delegateTo(closure, FloatField::new);
+        return delegateTo(closure, new UiFloatField());
     }
 
     public UiComponent<?> Label(Closure<?> closure) {

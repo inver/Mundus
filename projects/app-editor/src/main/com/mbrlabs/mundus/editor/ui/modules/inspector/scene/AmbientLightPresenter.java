@@ -6,8 +6,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisTextField;
 import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter;
+import com.mbrlabs.mundus.commons.assets.AssetType;
 import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
+import com.mbrlabs.mundus.editor.events.AssetSelectedEvent;
 import com.mbrlabs.mundus.editor.events.EntitySelectedEvent;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent;
@@ -37,6 +39,9 @@ public class AmbientLightPresenter implements UiComponentPresenter<UiComponentWi
         eventBus.register((EntitySelectedEvent.EntitySelectedListener) event ->
                 uiComponent.setVisible(event.getEntityId() == ROOT_NODE_SCENE)
         );
+        eventBus.register((AssetSelectedEvent.AssetSelectedListener) event -> {
+            uiComponent.setVisible(false);
+        });
         uiComponent.getField("intensity", FloatField.class).addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {

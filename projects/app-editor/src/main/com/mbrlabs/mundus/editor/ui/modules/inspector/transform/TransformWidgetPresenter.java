@@ -4,6 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
+import com.mbrlabs.mundus.editor.events.AssetSelectedEvent;
 import com.mbrlabs.mundus.editor.events.EntitySelectedEvent;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.ui.modules.inspector.UiComponentPresenter;
@@ -46,6 +47,9 @@ public class TransformWidgetPresenter implements UiComponentPresenter<UiComponen
             uiComponent.getField("sclX", FloatField.class).setValue(position.getLocalScale().x);
             uiComponent.getField("sclY", FloatField.class).setValue(position.getLocalScale().y);
             uiComponent.getField("sclZ", FloatField.class).setValue(position.getLocalScale().z);
+        });
+        eventBus.register((AssetSelectedEvent.AssetSelectedListener) event -> {
+            uiComponent.setVisible(false);
         });
 
         addChangeListener(uiComponent, "posX", (pos, value) -> {
