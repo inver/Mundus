@@ -7,10 +7,10 @@ public class UiLabelComponent extends UiComponent<VisLabel> {
         super(new VisLabel());
     }
 
-    public UiLabelComponent(String text, String layoutTypes) {
+    public UiLabelComponent(String text, String layoutModifiers) {
         this();
         setText(text);
-        setLayoutTypes(layoutTypes);
+        layout(layoutModifiers);
     }
 
     public void setText(String text) {

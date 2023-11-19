@@ -267,7 +267,6 @@ public class TerrainWidgetPresenter implements UiComponentPresenter<UiComponentW
             var typeComponent = ctx.getComponentByEntityId(event.getEntityId(), TypeComponent.class);
             uiComponent.setVisible(typeComponent != null && typeComponent.getType() == TypeComponent.Type.TERRAIN);
             uiComponent.setEntityId(event.getEntityId());
-
         });
 
         initBrushesTab(uiComponent);
@@ -275,7 +274,7 @@ public class TerrainWidgetPresenter implements UiComponentPresenter<UiComponentW
 
     private void initBrushesTab(UiComponentWidget uiComponent) {
         var brushMode = uiComponent.getField("brushMode", RadioButtonGroup.class);
-//        Arrays.stream(TerrainBrush.BrushMode.values()).forEach(mode -> brushMode.addOption(mode.getText(), mode));
+        Arrays.stream(TerrainBrush.BrushMode.values()).forEach(mode -> brushMode.addOption(mode.getText(), mode));
 
         var upDownButtonGrid = uiComponent.getField("brushButtonGrid", GridGroup.class);
         for (var brush : toolManager.getTerrainBrushes()) {

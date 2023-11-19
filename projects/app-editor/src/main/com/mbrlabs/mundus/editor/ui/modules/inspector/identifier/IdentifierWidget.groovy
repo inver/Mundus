@@ -9,21 +9,21 @@ return ComponentWidget {
             Label("Name", "form")
             TextField {
                 id = "name"
-                layoutTypes = "form, growX"
+                layout = "form, growX"
             }
         }
         row {
             Label("Active", "form")
             CheckBox {
                 id = "active"
-                layoutTypes = "form"
+                layout = "form"
             }
         }
         row {
             Label("Tag", "form")
             TextField {
                 id = "tag"
-                layoutTypes = "form, growX"
+                layout = "form, growX"
                 editable = false
             }
         }

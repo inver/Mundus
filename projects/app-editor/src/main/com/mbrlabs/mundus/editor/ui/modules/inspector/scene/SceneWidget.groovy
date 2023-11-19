@@ -8,38 +8,38 @@ return Table {
             ComponentWidget {
                 title = "Ambient light"
                 presenter = AmbientLightPresenter.class
-                layoutTypes = "expandX, fillX, left, top"
+                layout = "expandX, fillX, left, top"
                 showHeader = true
 
                 content {
                     row {
                         Label {
                             text = "Enabled"
-                            layoutTypes = "form"
+                            layout = "form"
                         }
                         CheckBox {
                             id = "enabled"
-                            layoutTypes = "form"
+                            layout = "form"
                         }
                     }
                     row {
                         Label {
                             text = "Intensity"
-                            layoutTypes = "form"
+                            layout = "form"
                         }
                         FloatField {
                             id = "intensity"
-                            layoutTypes = "form, growX"
+                            layout = "form, growX"
                         }
                     }
                     row {
                         Label {
                             text = "Color"
-                            layoutTypes = "form"
+                            layout = "form"
                         }
                         ColorChooserField {
                             id = "color"
-                            layoutTypes = "form, growX"
+                            layout = "form, growX"
                         }
                     }
                 }
@@ -49,35 +49,35 @@ return Table {
             ComponentWidget {
                 title = "Fog"
                 presenter = FogPresenter.class
-                layoutTypes = "expandX, fillX, left, top"
+                layout = "expandX, fillX, left, top"
 
                 content {
                     row {
                         Label("Enabled", "form")
                         CheckBox {
                             id = "enabled"
-                            layoutTypes = "form"
+                            layout = "form"
                         }
                     }
                     row {
                         Label("Density", "form")
                         FloatField {
                             id = "density"
-                            layoutTypes = "form, growX"
+                            layout = "form, growX"
                         }
                     }
                     row {
                         Label("Gradient", "form")
                         FloatField {
                             id = "gradient"
-                            layoutTypes = "form, growX"
+                            layout = "form, growX"
                         }
                     }
                     row {
                         Label("Color", "form")
                         ColorChooserField {
                             id = "color"
-                            layoutTypes = "form, growX"
+                            layout = "form, growX"
                         }
                     }
                 }
@@ -87,21 +87,21 @@ return Table {
             ComponentWidget {
                 title = "Skybox"
                 presenter = SkyboxPresenter.class
-                layoutTypes = "expandX, fillX, left, top"
+                layout = "expandX, fillX, left, top"
 
                 content {
                     row {
                         Label("Enabled", "form")
                         CheckBox {
                             id = "enabled"
-                            layoutTypes = "form"
+                            layout = "form"
                         }
                     }
                     row {
                         Label("Asset", "form")
                         AssetChooserField {
                             id = "asset"
-                            layoutTypes = "form, growX"
+                            layout = "form, growX"
                         }
                     }
                     row {

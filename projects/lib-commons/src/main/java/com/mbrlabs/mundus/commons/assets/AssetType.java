@@ -55,5 +55,9 @@ public enum AssetType {
     /**
      * Shader asset
      */
-    SHADER
+    SHADER,
+    /**
+     * Bundle file for Editor UI
+     */
+    UI_BUNDLE
 }

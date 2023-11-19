@@ -4,11 +4,12 @@ return ComponentWidget {
     title = "Terrain generation"
     presenter = TerrainWidgetPresenter.class
     showHeader = true
-    layoutStyle = "top, expandX"
+    layout = "top, expandX"
+    debug = true
 
     content {
         Tabs {
-            layoutTypes = "expandX, fillX, left, top"
+            layout = "expandX, fillX, left, top"
 
             Tab {
                 title = "Brushes"
@@ -17,9 +18,9 @@ return ComponentWidget {
                         Label("Mode", "left, top")
                     }
                     row {
-                            RadioButton {
+                        RadioButton {
                             id = "brushMode"
-                            layoutTypes = "left, expandX"
+                            layout = "left, expandX"
                         }
                     }
                     row {
@@ -30,7 +31,7 @@ return ComponentWidget {
                             id = "brushButtonGrid"
                             itemSize = 30f
                             spacing = 0f
-                            layoutTypes = "expandX, fillX"
+                            layout = "expandX, fillX"
                         }
                     }
                     row {
@@ -39,22 +40,22 @@ return ComponentWidget {
                     row {
                         Slider {
                             id = "upDownStrengthSlider"
-                            layoutTypes = "expandX, fillX"
+                            layout = "expandX, fillX"
                             min = 0
                             max = 1
                             stepSize = 0.1f
                         }
                     }
                     row {
-                        Table{
-                            layoutTypes = "left, top"
-                            content{
-                                row{
+                        Table {
+                            layout = "left, top"
+                            content {
+                                row {
                                     Label("Textures", "left, top")
                                     Button {
                                         id = "selectTexture"
                                         text = "Select"
-                                        layoutTypes = "left, top"
+                                        layout = "left, top"
                                     }
                                 }
                             }
@@ -63,7 +64,7 @@ return ComponentWidget {
                     row {
                         TextureGrid {
                             id = "textureGrid"
-                            layoutTypes = "left, top, growX"
+                            layout = "left, top, growX"
                             itemSize = 40f
                             spacing = 1f
                         }
@@ -76,26 +77,26 @@ return ComponentWidget {
                     row {
                         Label {
                             text = "Height map"
-                            layoutTypes = "form, expandX"
+                            layout = "form, expandX"
                             colspan = 4
                         }
                     }
                     row {
                         FileChooserField {
                             id = "heightMapChooser"
-                            layoutTypes = "form, expandX"
+                            layout = "form, expandX"
                             colspan = 3
                         }
                         Button {
                             id = "loadHeightMapBtn"
                             text = "Load"
-                            layoutTypes = "form"
+                            layout = "form"
                         }
                     }
                     row {
                         Label {
                             text = "Perlin noise"
-                            layoutTypes = "form, expandX"
+                            layout = "form, expandX"
                             colspan = 4
                         }
                     }
@@ -103,7 +104,7 @@ return ComponentWidget {
                         Label("Seed", "form")
                         FloatField {
                             id = "seed"
-                            layoutTypes = "form, expandX"
+                            layout = "form, expandX"
                             colspan = 3
                         }
                     }
@@ -111,19 +112,19 @@ return ComponentWidget {
                         Label("Min Height", "form")
                         FloatField {
                             id = "minHeight"
-                            layoutTypes = "form, expandX"
+                            layout = "form, expandX"
                         }
                         Label("Max Height", "form")
                         FloatField {
                             id = "maxHeight"
-                            layoutTypes = "form, expandX"
+                            layout = "form, expandX"
                         }
                     }
                     row {
                         Button {
                             id = "generatePerlinNoise"
                             text = "Generate"
-                            layoutTypes = "form"
+                            layout = "form"
                         }
                     }
                 }
@@ -135,7 +136,7 @@ return ComponentWidget {
                     row {
                         Slider {
                             id = "settingsUVScaling"
-                            layoutTypes = "expandX, fillX"
+                            layout = "expandX, fillX"
                             min = 0.5f
                             max = 120
                             stepSize = 0.5f

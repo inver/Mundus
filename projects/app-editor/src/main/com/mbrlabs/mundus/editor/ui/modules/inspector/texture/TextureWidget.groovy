@@ -4,7 +4,7 @@ return ComponentWidget {
     title = "Texture"
     presenter = TextureWidgetPresenter.class
     showHeader = true
-    layoutStyle = "top, expandX"
+    layout = "top, expandX"
 
     content {
         row {
@@ -19,24 +19,24 @@ return ComponentWidget {
             Label("Name", "form")
             Label {
                 id = "nameLabel"
-                layoutStyle = "form, expandX"
+                layout = "form, expandX"
             }
             Label("Width", "form")
             Label {
                 id = "widthLabel"
-                layoutStyle = "form, expandX"
+                layout = "form, expandX"
             }
         }
         row {
             Label("Size", "form")
             Label {
                 id = "sizeLabel"
-                layoutStyle = "form, expandX"
+                layout = "form, expandX"
             }
             Label("Height", "form")
             Label {
                 id = "heightLabel"
-                layoutStyle = "form, expandX"
+                layout = "form, expandX"
             }
         }
     }

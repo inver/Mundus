@@ -35,10 +35,10 @@ import java.util.Map;
  * @author Marcus Brummer
  * @version 01-10-2016
  */
+@Getter
 @RequiredArgsConstructor
 public abstract class Asset<M> implements Disposable {
 
-    @Getter
     protected final Meta<M> meta;
 
     public AssetType getType() {

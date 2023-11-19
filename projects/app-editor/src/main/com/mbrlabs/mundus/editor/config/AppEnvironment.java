@@ -12,6 +12,7 @@ public class AppEnvironment {
     private final String configDir = FilenameUtils.concat(getHomeDir(), ".mundus/");
     private final String logsDir = FilenameUtils.concat(getConfigDir(), "logs/");
     private final String tempDir = FilenameUtils.concat(getConfigDir(), "temp/");
+    private final String pluginsDir = FilenameUtils.concat(getConfigDir(), "plugins/");
 
     private final String registryFile = FilenameUtils.concat(getConfigDir(), "registry.json");
 }

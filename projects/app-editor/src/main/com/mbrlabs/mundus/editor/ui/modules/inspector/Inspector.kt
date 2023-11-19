@@ -42,7 +42,6 @@ class Inspector(
     private val root = VisTable()
     private val scrollPane = VisScrollPane(root)
 
-    private val goInspector: GameObjectInspector
     private val identifierWidget =
         uiDslCreator.create<UiComponentWidget>("com/mbrlabs/mundus/editor/ui/modules/inspector/identifier/IdentifierWidget.groovy");
     private val transformWidget =
@@ -59,13 +58,6 @@ class Inspector(
         uiDslCreator.create<UiComponentWidget>("com/mbrlabs/mundus/editor/ui/modules/inspector/model/ModelWidget.groovy");
 
     init {
-        goInspector = GameObjectInspector(
-            uiDslCreator
-        )
-        init()
-    }
-
-    fun init() {
         setBackground("window-bg")
         add(VisLabel("Inspector")).expandX().fillX().padLeft(8f).row()
         addSeparator().row()
@@ -88,11 +80,9 @@ class Inspector(
         root.add(identifierWidget.actor).top().growX().expandX().fillX().row()
         root.add(transformWidget.actor).top().growX().expandX().fillX().row()
         root.add(sceneInspector.actor).top().growX().expandX().fillX().row()
+        root.add(terrainWidget.actor).top().growX().expandX().fillX().row()
+        root.add(materialWidget.actor).top().growX().expandX().fillX().row()
         root.add(textureWidget.actor).top().growX().expandX().fillX().row()
-//        root.add(materialWidget.actor).top().growX().expandX().fillX().row()
-//        add(modelComponentWidgetDsl.actor).growX().pad(8f).row()
-
-//        root.add(terrainWidget.actor).top().growX().expandX().fillX().row()
-//        root.add(goInspector).top().growX().expandX().fillX().row()
+        add(modelComponentWidgetDsl.actor).growX().pad(8f).row()
     }
 }

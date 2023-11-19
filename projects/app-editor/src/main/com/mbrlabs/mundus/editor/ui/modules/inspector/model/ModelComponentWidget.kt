@@ -46,7 +46,7 @@ class ModelComponentWidget(
     init {
         setupUI()
 
-        modelComponentPresenter.init(this)
+//        modelComponentPresenter.init(this)
     }
 
     private fun setupUI() {

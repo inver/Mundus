@@ -397,9 +397,6 @@ public abstract class TerrainBrush extends Tool {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-
-        //todo
-//        // get action
 //        final boolean primary = Gdx.input.isButtonPressed(BrushAction.PRIMARY.code);
 //        final boolean secondary = Gdx.input.isKeyPressed(BrushAction.SECONDARY.code);
 //        if (primary && secondary) {
@@ -420,7 +417,6 @@ public abstract class TerrainBrush extends Tool {
 //                paintCommand.setBefore(sm.getPixmap());
 //            }
 //        }
-
         return false;
     }
 

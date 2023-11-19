@@ -5,7 +5,7 @@ final def FIELD_SIZE = 15
 return ComponentWidget {
     title = "Transformation"
     presenter = TransformWidgetPresenter.class
-    layoutStyle = "top, expandX"
+    layout = "top, expandX"
 
     content {
         row {
@@ -13,19 +13,19 @@ return ComponentWidget {
             Label("x", "form")
             FloatField {
                 id = "posX"
-                layoutTypes = "form"
+                layout = "form"
                 width = 45f
             }
             Label("y", "form")
             FloatField {
                 id = "posY"
-                layoutTypes = "form"
+                layout = "form"
                 width = 45f
             }
             Label("z", "form")
             FloatField {
                 id = "posZ"
-                layoutTypes = "form"
+                layout = "form"
                 width = 45f
             }
         }
@@ -34,19 +34,19 @@ return ComponentWidget {
             Label("x", "form")
             FloatField {
                 id = "rotX"
-                layoutTypes = "form"
+                layout = "form"
                 width = 45f
             }
             Label("y", "form")
             FloatField {
                 id = "rotY"
-                layoutTypes = "form"
+                layout = "form"
                 width = 45f
             }
             Label("z", "form")
             FloatField {
                 id = "rotZ"
-                layoutTypes = "form"
+                layout = "form"
                 width = 45f
             }
         }
@@ -55,19 +55,19 @@ return ComponentWidget {
             Label("x", "form")
             FloatField {
                 id = "sclX"
-                layoutTypes = "form"
+                layout = "form"
                 width = 45f
             }
             Label("y", "form")
             FloatField {
                 id = "sclY"
-                layoutTypes = "form"
+                layout = "form"
                 width = 45f
             }
             Label("z", "form")
             FloatField {
                 id = "sclZ"
-                layoutTypes = "form"
+                layout = "form"
                 width = 45f
             }
         }

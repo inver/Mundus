@@ -25,15 +25,6 @@ public class ModelWidgetPresenter implements UiComponentPresenter<UiComponentWid
     private final UiDslCreator uiDslCreator;
     private final MaterialWidgetPresenter materialWidgetPresenter;
 
-    void init(ModelComponentWidget widget) {
-//        eventBus.register((EntitySelectedEvent.EntitySelectedListener) event -> {
-//            var renderComponent = ctx.getComponentByEntityId(event.getEntityId(), RenderComponent.class);
-//            var asset = assetManager.loadCurrentProjectAsset(
-//                    ((RenderableObjectDelegate) renderComponent.getRenderable()).getAsset().getAssetName());
-//            widget.resetValues(asset);
-//        });
-    }
-
     public void setValues(@NotNull ModelComponentWidget widget) {
         var renderComponent = ctx.getComponentByEntityId(widget.getEntityId(), RenderComponent.class);
         var asset = assetManager.loadCurrentProjectAsset(

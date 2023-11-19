@@ -25,7 +25,7 @@ public class UiComponent<T> {
     protected UiComponent<?> parent;
     protected final T actor;
 
-    private final List<LayoutType> layoutTypes = new ArrayList<>();
+    private final List<LayoutModifier> layoutModifiers = new ArrayList<>();
     @Setter
     @Getter
     private String id;
@@ -35,18 +35,18 @@ public class UiComponent<T> {
 
     private final Map<String, Actor> fields = new HashMap<>();
 
-    public void setLayoutTypes(String types) {
-        if (StringUtils.isEmpty(types)) {
+    public void layout(String modifiers) {
+        if (StringUtils.isEmpty(modifiers)) {
             return;
         }
 
-        for (var type : types.split(",")) {
-            layoutTypes.add(LayoutType.fromId(type.trim()));
+        for (var type : modifiers.split(",")) {
+            layoutModifiers.add(LayoutModifier.fromId(type.trim()));
         }
     }
 
     public void applyStyles(Cell<?> cell) {
-        layoutTypes.forEach(type -> type.apply(cell));
+        layoutModifiers.forEach(type -> type.apply(cell));
     }
 
     public T getActor() {
@@ -67,7 +67,7 @@ public class UiComponent<T> {
     }
 
     @RequiredArgsConstructor
-    public enum LayoutType {
+    public enum LayoutModifier {
         EXPAND_X("expandX", Cell::expandX),
 
         FILL_X("fillX", Cell::fillX),
@@ -89,7 +89,7 @@ public class UiComponent<T> {
         private final String id;
         private final Consumer<Cell<?>> action;
 
-        public static LayoutType fromId(String input) {
+        public static LayoutModifier fromId(String input) {
             for (var type : values()) {
                 if (type.id.equalsIgnoreCase(input)) {
                     return type;

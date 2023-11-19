@@ -47,7 +47,7 @@ public class MetaService {
 
     private final ObjectMapper mapper;
 
-    public Meta loadCommon(FileHandle assetFolderPath) {
+    public Meta<?> loadCommon(FileHandle assetFolderPath) {
         var metaHandle = assetFolderPath.child(META_FILE_NAME);
         if (!metaHandle.exists()) {
             throw new AssetNotFoundException(META_FILE_NAME + " not found in asset folder: " + assetFolderPath);
@@ -56,7 +56,7 @@ public class MetaService {
         return loadCommonMeta(metaHandle);
     }
 
-    private Meta loadCommonMeta(FileHandle handle) {
+    private Meta<?> loadCommonMeta(FileHandle handle) {
         if (handle.type() == Files.FileType.Classpath) {
             return FileUtils.readFromClassPath(mapper, handle, Meta.class).withFile(handle.parent());
         }
@@ -106,7 +106,6 @@ public class MetaService {
         }, metaHandle);
     }
 
-    @SuppressWarnings("unchecked")
     private <T> Meta<T> loadMeta(TypeReference<Meta<T>> tr, FileHandle handle) {
         if (handle.type() == Files.FileType.Classpath) {
             return FileUtils.readFullFromClassPath(mapper, handle, tr).withFile(handle.parent());

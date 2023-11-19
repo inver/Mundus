@@ -47,7 +47,6 @@ public class RadioButtonGroup extends VisTable {
 
     public RadioButtonGroup() {
         super();
-        debugAll();
         buttonGroup = new ButtonGroup<>();
         buttonGroup.setMaxCheckCount(1);
         buttonGroup.setMinCheckCount(1);
