@@ -32,6 +32,7 @@ class AssetChooserField : VisTable() {
 
     private val textField = VisTextField()
     val selectButton = VisTextButton("Select")
+    val editAssetButton = VisTextButton("Edit ->")
 
     var pickerListener: AssetPickerListener? = null
     var assetFilter: AssetFilter? = null
@@ -39,14 +40,15 @@ class AssetChooserField : VisTable() {
     init {
         add(textField).growX()
         textField.isDisabled = true
-        add(selectButton).padLeft(8f).row()
+        add(selectButton).padLeft(4f)
+        add(editAssetButton).padLeft(4f).row()
     }
 
     fun setAsset(asset: Asset<*>?) {
         textField.text = if (asset == null) "None" else asset.name
     }
 
-    open fun disable(disable: Boolean) {
+    fun disable(disable: Boolean) {
         selectButton.isDisabled = disable
         if (disable) {
             selectButton.touchable = Touchable.disabled

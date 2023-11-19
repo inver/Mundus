@@ -4,7 +4,7 @@ return ComponentWidget {
     title = "Material"
     presenter = MaterialWidgetPresenter.class
     showHeader = true
-    styleTypes = "left, top, fillX, expandX"
+    styleTypes = "top, expandX"
 
     content {
         row {

@@ -89,10 +89,9 @@ class Inspector(
         root.add(transformWidget.actor).top().growX().expandX().fillX().row()
         root.add(sceneInspector.actor).top().growX().expandX().fillX().row()
         root.add(textureWidget.actor).top().growX().expandX().fillX().row()
-//        add(materialComponentWidgetDsl.actor).growX().pad(8f).row()
+//        root.add(materialWidget.actor).top().growX().expandX().fillX().row()
 //        add(modelComponentWidgetDsl.actor).growX().pad(8f).row()
 
-//        root.add(materialWidget.actor).top().growX().expandX().fillX().row()
 //        root.add(terrainWidget.actor).top().growX().expandX().fillX().row()
 //        root.add(goInspector).top().growX().expandX().fillX().row()
     }

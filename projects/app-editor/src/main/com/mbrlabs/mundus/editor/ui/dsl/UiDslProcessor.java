@@ -61,7 +61,7 @@ public class UiDslProcessor extends GroovyObjectSupport {
     }
 
     /**
-     * @param args: text and layouttypes
+     * @param args: text and layoutTypes
      * @return label instance
      */
     public UiComponent<?> Label(Object[] args) {
