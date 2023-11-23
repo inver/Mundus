@@ -20,9 +20,9 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Array;
 
 import java.util.Comparator;
+import java.util.List;
 
 public class DefaultRenderableSorter implements RenderableSorter, Comparator<Renderable> {
     private Camera camera;
@@ -30,7 +30,7 @@ public class DefaultRenderableSorter implements RenderableSorter, Comparator<Ren
     private final Vector3 tmpV2 = new Vector3();
 
     @Override
-    public void sort(final Camera camera, final Array<Renderable> renderables) {
+    public void sort(final Camera camera, final List<Renderable> renderables) {
         this.camera = camera;
         renderables.sort(this);
     }

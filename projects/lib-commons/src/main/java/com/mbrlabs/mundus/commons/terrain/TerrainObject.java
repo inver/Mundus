@@ -364,7 +364,7 @@ public class TerrainObject implements RenderableSceneObject, Disposable {
     }
 
     @Override
-    public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
+    public void getRenderables(List<Renderable> renderables, Pool<Renderable> pool) {
         modelInstance.userData = new TerrainUserData(terrainWidth, terrainDepth);
         modelInstance.getRenderables(renderables, pool);
     }

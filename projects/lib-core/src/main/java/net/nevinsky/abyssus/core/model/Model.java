@@ -85,6 +85,8 @@ public class Model implements Disposable {
      **/
     protected final Set<Disposable> disposables = new HashSet<>();
 
+    private final Map<NodePart, ArrayMap<String, Matrix4>> nodePartBones = new HashMap<>();
+
     /**
      * Constructs a new Model based on the {@link ModelData}. Texture files will be loaded from the internal file
      * storage via an {@link TextureProvider.FileTextureProvider}.
@@ -169,13 +171,11 @@ public class Model implements Disposable {
                     animation.nodeAnimations.add(nodeAnim);
                 }
             }
-            if (animation.nodeAnimations.size > 0) {
+            if (!animation.nodeAnimations.isEmpty()) {
                 animations.add(animation);
             }
         }
     }
-
-    private final ObjectMap<NodePart, ArrayMap<String, Matrix4>> nodePartBones = new ObjectMap<>();
 
     protected void loadNodes(Map<String, MeshPart> meshParts, Map<String, Material> materials,
                              Iterable<ModelNode> modelNodes) {
@@ -183,13 +183,13 @@ public class Model implements Disposable {
         for (ModelNode node : modelNodes) {
             nodes.add(loadNode(meshParts, materials, node));
         }
-        for (ObjectMap.Entry<NodePart, ArrayMap<String, Matrix4>> e : nodePartBones.entries()) {
-            if (e.key.invBoneBindTransforms == null) {
-                e.key.invBoneBindTransforms = new ArrayMap<>(Node.class, Matrix4.class);
+        for (Map.Entry<NodePart, ArrayMap<String, Matrix4>> e : nodePartBones.entrySet()) {
+            if (e.getKey().invBoneBindTransforms == null) {
+                e.getKey().invBoneBindTransforms = new ArrayMap<>(Node.class, Matrix4.class);
             }
-            e.key.invBoneBindTransforms.clear();
-            for (ObjectMap.Entry<String, Matrix4> b : e.value.entries()) {
-                e.key.invBoneBindTransforms.put(getNode(b.key), new Matrix4(b.value).inv());
+            e.getKey().invBoneBindTransforms.clear();
+            for (ObjectMap.Entry<String, Matrix4> b : e.getValue().entries()) {
+                e.getKey().invBoneBindTransforms.put(getNode(b.key), new Matrix4(b.value).inv());
             }
         }
     }

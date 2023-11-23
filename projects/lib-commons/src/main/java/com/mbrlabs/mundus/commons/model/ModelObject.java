@@ -9,6 +9,8 @@ import net.nevinsky.abyssus.core.ModelInstance;
 import net.nevinsky.abyssus.core.Renderable;
 import net.nevinsky.abyssus.core.model.Model;
 
+import java.util.List;
+
 public class ModelObject implements RenderableSceneObject {
 
     @Getter
@@ -29,7 +31,7 @@ public class ModelObject implements RenderableSceneObject {
     }
 
     @Override
-    public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
+    public void getRenderables(List<Renderable> renderables, Pool<Renderable> pool) {
         modelInstance.getRenderables(renderables, pool);
     }
 }

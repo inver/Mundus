@@ -16,9 +16,11 @@
 
 package net.nevinsky.abyssus.core.node;
 
-import com.badlogic.gdx.utils.Array;
 import lombok.RequiredArgsConstructor;
 import net.nevinsky.abyssus.core.model.Model;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An Animation has an id and a list of {@link NodeAnimation} instances. Each NodeAnimation animates a single
@@ -40,5 +42,5 @@ public class Animation {
     /**
      * the animation curves for individual nodes
      **/
-    public final Array<NodeAnimation> nodeAnimations = new Array<>();
+    public final List<NodeAnimation> nodeAnimations = new ArrayList<>();
 }

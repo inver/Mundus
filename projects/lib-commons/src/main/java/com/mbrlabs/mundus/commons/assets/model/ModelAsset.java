@@ -28,6 +28,7 @@ import net.nevinsky.abyssus.core.model.Model;
 import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -77,7 +78,7 @@ public class ModelAsset extends Asset<ModelMeta> implements RenderableProvider {
 //    }
 
     @Override
-    public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
+    public void getRenderables(List<Renderable> renderables, Pool<Renderable> pool) {
         throw new NotImplementedException();
     }
 }

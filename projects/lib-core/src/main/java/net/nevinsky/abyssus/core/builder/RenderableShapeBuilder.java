@@ -18,12 +18,14 @@ package net.nevinsky.abyssus.core.builder;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FlushablePool;
 import net.nevinsky.abyssus.core.Renderable;
 import net.nevinsky.abyssus.core.RenderableProvider;
 import net.nevinsky.abyssus.core.mesh.Mesh;
 import net.nevinsky.abyssus.core.mesh.MeshPartBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * RenderableShapeBuilder builds various properties of a renderable.
@@ -53,7 +55,7 @@ public class RenderableShapeBuilder extends BaseShapeBuilder {
     private static int[] indices;
     private static float[] vertices;
     private static final RenderablePool renderablesPool = new RenderablePool();
-    private static final Array<Renderable> renderables = new Array<Renderable>();
+    private static final List<Renderable> renderables = new ArrayList<>();
     private static final int FLOAT_BYTES = 4;
 
     /**
@@ -135,7 +137,7 @@ public class RenderableShapeBuilder extends BaseShapeBuilder {
         int verticesQuantity = 0;
 
         if (mesh.getNumIndices() > 0) {
-            // Get min vertice to max vertice in indices array
+            // Get min vertex to max vertex in indices array
             ensureIndicesCapacity(mesh.getNumIndices());
             mesh.getIndices(renderable.meshPart.offset, renderable.meshPart.size, indices, 0);
 
@@ -215,20 +217,20 @@ public class RenderableShapeBuilder extends BaseShapeBuilder {
     }
 
     private static int minVerticeInIndices() {
-        int min = (int) 32767;
-        for (int i = 0; i < indices.length; i++) {
-            if (indices[i] < min) {
-                min = indices[i];
+        int min = 32767;
+        for (int index : indices) {
+            if (index < min) {
+                min = index;
             }
         }
         return min;
     }
 
     private static int maxVerticeInIndices() {
-        int max = (int) -32768;
-        for (int i = 0; i < indices.length; i++) {
-            if (indices[i] > max) {
-                max = indices[i];
+        int max = -32768;
+        for (int index : indices) {
+            if (index > max) {
+                max = index;
             }
         }
         return max;

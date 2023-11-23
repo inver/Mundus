@@ -19,6 +19,8 @@ package net.nevinsky.abyssus.core;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.utils.Array;
 
+import java.util.List;
+
 /**
  * Responsible for sorting {@link Renderable} lists by whatever criteria (material, distance to camera, etc.)
  *
@@ -30,5 +32,5 @@ public interface RenderableSorter {
      *
      * @param renderables the array of renderables to be sorted
      */
-    void sort(Camera camera, Array<Renderable> renderables);
+    void sort(Camera camera, List<Renderable> renderables);
 }

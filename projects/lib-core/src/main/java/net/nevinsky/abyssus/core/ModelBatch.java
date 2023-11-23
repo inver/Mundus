@@ -20,13 +20,16 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultTextureBinder;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FlushablePool;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool;
+import lombok.Getter;
 import net.nevinsky.abyssus.core.shader.DefaultShaderProvider;
 import net.nevinsky.abyssus.core.shader.Shader;
 import net.nevinsky.abyssus.core.shader.ShaderProvider;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Batches {@link Renderable} instances, fetches {@link Shader}s for them, sorts them and then renders them. Fetching
@@ -56,12 +59,13 @@ public class ModelBatch {
         }
     }
 
+    @Getter
     protected Camera camera;
     protected final RenderablePool renderablesPool = new RenderablePool();
     /**
      * list of Renderables to be rendered in the current batch
      **/
-    protected final Array<Renderable> renderables = new Array<>();
+    protected final List<Renderable> renderables = new ArrayList<>();
     /**
      * the {@link RenderContext}
      **/
@@ -142,20 +146,10 @@ public class ModelBatch {
         if (camera == null) {
             throw new GdxRuntimeException("Call begin() first.");
         }
-        if (renderables.size > 0) {
+        if (!renderables.isEmpty()) {
             flush();
         }
         camera = cam;
-    }
-
-    /**
-     * Provides access to the current camera in between {@link #begin(Camera)} and {@link #end()}. Do not change the
-     * camera's values. Use {@link #setCamera(Camera)}, if you need to change the camera.
-     *
-     * @return The current camera being used or null if called outside {@link #begin(Camera)} and {@link #end()}.
-     */
-    public Camera getCamera() {
-        return camera;
     }
 
     /**
@@ -191,8 +185,7 @@ public class ModelBatch {
     public void flush() {
         sorter.sort(camera, renderables);
         Shader currentShader = null;
-        for (int i = 0; i < renderables.size; i++) {
-            final Renderable renderable = renderables.get(i);
+        for (final Renderable renderable : renderables) {
             if (currentShader != renderable.shader) {
                 if (currentShader != null) {
                     currentShader.end();
@@ -223,7 +216,7 @@ public class ModelBatch {
     }
 
     /**
-     * Calls {@link RenderableProvider#getRenderables(Array, Pool)} and adds all returned {@link Renderable} instances
+     * Calls {@link RenderableProvider#getRenderables(List, Pool)} and adds all returned {@link Renderable} instances
      * to the current batch to be rendered. Any shaders set on the returned renderables will be replaced with the given
      * {@link Shader}. Can only be called after a call to {@link #begin(Camera)} and before a call to {@link #end()}.
      *
@@ -231,16 +224,16 @@ public class ModelBatch {
      * @param shaderKey          the shader key to get shader to use for the renderables
      */
     public void render(final RenderableProvider renderableProvider, String shaderKey) {
-        final int offset = renderables.size;
+        final int offset = renderables.size();
         renderableProvider.getRenderables(renderables, renderablesPool);
-        for (int i = offset; i < renderables.size; i++) {
+        for (int i = offset; i < renderables.size(); i++) {
             Renderable renderable = renderables.get(i);
             renderable.shader = shaderProvider.get(shaderKey, renderable);
         }
     }
 
     /**
-     * Calls {@link RenderableProvider#getRenderables(Array, Pool)} and adds all returned {@link Renderable} instances
+     * Calls {@link RenderableProvider#getRenderables(List, Pool)} and adds all returned {@link Renderable} instances
      * to the current batch to be rendered. Any shaders set on the returned renderables will be replaced with the given
      * {@link Shader}. Can only be called after a call to {@link #begin(Camera)} and before a call to {@link #end()}.
      *
@@ -254,7 +247,7 @@ public class ModelBatch {
     }
 
     /**
-     * Calls {@link RenderableProvider#getRenderables(Array, Pool)} and adds all returned {@link Renderable} instances
+     * Calls {@link RenderableProvider#getRenderables(List, Pool)} and adds all returned {@link Renderable} instances
      * to the current batch to be rendered. Any environment set on the returned renderables will be replaced with the
      * given environment. Any shaders set on the returned renderables will be replaced with the given {@link Shader}.
      * Can only be called after a call to {@link #begin(Camera)} and before a call to {@link #end()}.
@@ -265,9 +258,9 @@ public class ModelBatch {
      */
     public void render(final RenderableProvider renderableProvider, final Environment environment,
                        final String shaderKey) {
-        final int offset =renderables.size;
+        final int offset = renderables.size();
         renderableProvider.getRenderables(renderables, renderablesPool);
-        for (int i = offset; i < renderables.size; i++) {
+        for (int i = offset; i < renderables.size(); i++) {
             Renderable renderable = renderables.get(i);
             renderable.environment = environment;
             renderable.shader = shaderProvider.get(shaderKey, renderable);
@@ -275,7 +268,7 @@ public class ModelBatch {
     }
 
     /**
-     * Calls {@link RenderableProvider#getRenderables(Array, Pool)} and adds all returned {@link Renderable} instances
+     * Calls {@link RenderableProvider#getRenderables(List, Pool)} and adds all returned {@link Renderable} instances
      * to the current batch to be rendered. Any environment set on the returned renderables will be replaced with the
      * given environment. Any shaders set on the returned renderables will be replaced with the given {@link Shader}.
      * Can only be called after a call to {@link #begin(Camera)} and before a call to {@link #end()}.

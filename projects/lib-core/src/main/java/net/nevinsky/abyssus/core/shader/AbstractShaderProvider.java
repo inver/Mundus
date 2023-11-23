@@ -43,6 +43,7 @@ public abstract class AbstractShaderProvider<T extends ShaderHolder> implements 
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     protected T createHolder(String key) {
         return (T) new ShaderHolder(key);
     }
