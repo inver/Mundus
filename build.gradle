@@ -2,13 +2,13 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
-    ext.kotlinVersion = '1.8.21'
+    ext.kotlinVersion = '1.9.21'
     repositories {
         mavenCentral()
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-        classpath 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.9.11'
+        classpath 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.15.0'
     }
 }
 
