@@ -8,7 +8,7 @@ buildscript {
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-        classpath 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.9.11'
+        classpath 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.15.0'
     }
 }
 
