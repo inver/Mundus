@@ -23,19 +23,23 @@ import com.badlogic.gdx.graphics.g3d.model.data.ModelNode;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Returned by a {@link ModelLoader}, contains meshes, materials, nodes and animations. OpenGL resources like textures
  * or vertex buffer objects are not stored. Instead, a ModelData instance needs to be converted to a Model first.
  *
  * @author badlogic
  */
+//todo remove this class and converts to Model
 public class ModelData {
     public String id;
     public final int[] version = new int[2];
-    public final Array<ModelMesh> meshes = new Array<>();
-    public final Array<ModelMaterial> materials = new Array<>();
-    public final Array<ModelNode> nodes = new Array<>();
-    public final Array<ModelAnimation> animations = new Array<>();
+    public final List<ModelMesh> meshes = new ArrayList<>();
+    public final List<ModelMaterial> materials = new ArrayList<>();
+    public final List<ModelNode> nodes = new ArrayList<>();
+    public final List<ModelAnimation> animations = new ArrayList<>();
 
     public void addMesh(ModelMesh mesh) {
         for (ModelMesh other : meshes) {

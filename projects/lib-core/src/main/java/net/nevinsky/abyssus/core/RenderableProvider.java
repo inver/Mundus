@@ -16,8 +16,9 @@
 
 package net.nevinsky.abyssus.core;
 
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
+
+import java.util.List;
 
 /**
  * Returns a list of {@link Renderable} instances to be rendered by a {@link com.badlogic.gdx.graphics.g3d.ModelBatch}.
@@ -33,5 +34,5 @@ public interface RenderableProvider {
      * @param renderables the output array
      * @param pool        the pool to obtain Renderables from
      */
-    void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool);
+    void getRenderables(List<Renderable> renderables, Pool<Renderable> pool);
 }

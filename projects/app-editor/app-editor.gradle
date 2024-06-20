@@ -78,8 +78,8 @@ dependencies {
     implementation libs.gdx_freetype
     implementation libs.gdx_freetype_platform
     implementation "com.github.mgsx-dev.gdx-gltf:gltf:$gltfVersion"
-    implementation "net.onedaybeard.artemis:artemis-odb:2.3.0"
-    implementation 'net.onedaybeard.artemis:artemis-odb-serializer-json:2.3.0'
+    implementation libs.artemis
+    implementation libs.artemis_serializer
 
     // other
     implementation "com.kotcrab.vis:vis-ui:$visuiVersion"

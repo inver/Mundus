@@ -1,6 +1,5 @@
 package com.mbrlabs.mundus.commons.loader;
 
-import com.badlogic.gdx.assets.loaders.ModelLoader;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -54,7 +53,7 @@ import static org.lwjgl.assimp.Assimp.aiTextureType_NONE;
 
 @Slf4j
 //todo add texture cache
-public class AssimpWorker{
+public class AssimpWorker {
 
     protected static final int FLAGS = aiProcess_GenNormals | aiProcess_GenSmoothNormals |
             aiProcess_JoinIdenticalVertices | aiProcess_Triangulate | aiProcess_FixInfacingNormals |
@@ -143,10 +142,10 @@ public class AssimpWorker{
         return res;
     }
 
-    private Array<ModelMaterial> loadMaterials(String modelDir, AIScene aiScene) {
+    private List<ModelMaterial> loadMaterials(String modelDir, AIScene aiScene) {
         int numMaterials = aiScene.mNumMaterials();
 
-        var materialList = new Array<ModelMaterial>();
+        var materialList = new ArrayList<ModelMaterial>();
         for (int i = 0; i < numMaterials; i++) {
             AIMaterial aiMaterial = AIMaterial.create(aiScene.mMaterials().get(i));
             materialList.add(processMaterial(aiMaterial, modelDir));

@@ -43,12 +43,14 @@ import net.nevinsky.abyssus.core.model.ModelData;
 import net.nevinsky.abyssus.core.model.ModelMesh;
 import net.nevinsky.abyssus.core.model.ModelMeshPart;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RequiredArgsConstructor
 public class G3dModelLoader {
     public static final short VERSION_HI = 0;
     public static final short VERSION_LO = 1;
     protected final BaseJsonReader reader;
-
 
     public ImportedModel importModel(FileHandle handle) {
         var model = loadModel(handle);
@@ -85,19 +87,18 @@ public class G3dModelLoader {
         JsonValue meshes = json.get("meshes");
         if (meshes != null) {
 
-            model.meshes.ensureCapacity(meshes.size);
+//            model.meshes.ensureCapacity(meshes.size);
             for (JsonValue mesh = meshes.child; mesh != null; mesh = mesh.next) {
                 ModelMesh jsonMesh = new ModelMesh();
 
-                String id = mesh.getString("id", "");
-                jsonMesh.id = id;
+                jsonMesh.id = mesh.getString("id", "");
 
                 JsonValue attributes = mesh.require("attributes");
                 jsonMesh.attributes = parseAttributes(attributes);
                 jsonMesh.vertices = mesh.require("vertices").asFloatArray();
 
                 JsonValue meshParts = mesh.require("parts");
-                Array<ModelMeshPart> parts = new Array<ModelMeshPart>();
+                List<ModelMeshPart> parts = new ArrayList<>();
                 for (JsonValue meshPart = meshParts.child; meshPart != null; meshPart = meshPart.next) {
                     ModelMeshPart jsonPart = new ModelMeshPart();
                     String partId = meshPart.getString("id", null);
@@ -120,27 +121,28 @@ public class G3dModelLoader {
                     jsonPart.indices = meshPart.require("indices").asIntArray();
                     parts.add(jsonPart);
                 }
-                jsonMesh.parts = parts.toArray(ModelMeshPart.class);
+                jsonMesh.parts = parts.toArray(new ModelMeshPart[]{});
                 model.meshes.add(jsonMesh);
             }
         }
     }
 
     protected int parseType(String type) {
-        if (type.equals("TRIANGLES")) {
-            return GL20.GL_TRIANGLES;
-        } else if (type.equals("LINES")) {
-            return GL20.GL_LINES;
-        } else if (type.equals("POINTS")) {
-            return GL20.GL_POINTS;
-        } else if (type.equals("TRIANGLE_STRIP")) {
-            return GL20.GL_TRIANGLE_STRIP;
-        } else if (type.equals("LINE_STRIP")) {
-            return GL20.GL_LINE_STRIP;
-        } else {
-            throw new GdxRuntimeException(
-                    "Unknown primitive type '" + type +
-                            "', should be one of triangle, trianglestrip, line, linestrip or point");
+        switch (type) {
+            case "TRIANGLES":
+                return GL20.GL_TRIANGLES;
+            case "LINES":
+                return GL20.GL_LINES;
+            case "POINTS":
+                return GL20.GL_POINTS;
+            case "TRIANGLE_STRIP":
+                return GL20.GL_TRIANGLE_STRIP;
+            case "LINE_STRIP":
+                return GL20.GL_LINE_STRIP;
+            default:
+                throw new GdxRuntimeException(
+                        "Unknown primitive type '" + type +
+                                "', should be one of triangle, trianglestrip, line, linestrip or point");
         }
     }
 
@@ -150,26 +152,25 @@ public class G3dModelLoader {
         int blendWeightCount = 0;
         for (JsonValue value = attributes.child; value != null; value = value.next) {
             String attribute = value.asString();
-            String attr = (String) attribute;
-            if (attr.equals("POSITION")) {
+            if (attribute.equals("POSITION")) {
                 vertexAttributes.add(VertexAttribute.Position());
-            } else if (attr.equals("NORMAL")) {
+            } else if (attribute.equals("NORMAL")) {
                 vertexAttributes.add(VertexAttribute.Normal());
-            } else if (attr.equals("COLOR")) {
+            } else if (attribute.equals("COLOR")) {
                 vertexAttributes.add(VertexAttribute.ColorUnpacked());
-            } else if (attr.equals("COLORPACKED")) {
+            } else if (attribute.equals("COLORPACKED")) {
                 vertexAttributes.add(VertexAttribute.ColorPacked());
-            } else if (attr.equals("TANGENT")) {
+            } else if (attribute.equals("TANGENT")) {
                 vertexAttributes.add(VertexAttribute.Tangent());
-            } else if (attr.equals("BINORMAL")) {
+            } else if (attribute.equals("BINORMAL")) {
                 vertexAttributes.add(VertexAttribute.Binormal());
-            } else if (attr.startsWith("TEXCOORD")) {
+            } else if (attribute.startsWith("TEXCOORD")) {
                 vertexAttributes.add(VertexAttribute.TexCoords(unit++));
-            } else if (attr.startsWith("BLENDWEIGHT")) {
+            } else if (attribute.startsWith("BLENDWEIGHT")) {
                 vertexAttributes.add(VertexAttribute.BoneWeight(blendWeightCount++));
             } else {
                 throw new GdxRuntimeException(
-                        "Unknown vertex attribute '" + attr +
+                        "Unknown vertex attribute '" + attribute +
                                 "', should be one of position, normal, uv, tangent or binormal");
             }
         }
@@ -180,83 +181,84 @@ public class G3dModelLoader {
         JsonValue materials = json.get("materials");
         if (materials == null) {
             // we should probably create some default material in this case
-        } else {
-            model.materials.ensureCapacity(materials.size);
-            for (JsonValue material = materials.child; material != null; material = material.next) {
-                ModelMaterial jsonMaterial = new ModelMaterial();
+            return;
+        }
 
-                String id = material.getString("id", null);
-                if (id == null) {
-                    throw new GdxRuntimeException("Material needs an id.");
-                }
+//        model.materials.ensureCapacity(materials.size);
+        for (JsonValue material = materials.child; material != null; material = material.next) {
+            ModelMaterial jsonMaterial = new ModelMaterial();
 
-                jsonMaterial.id = id;
-
-                // Read material colors
-                final JsonValue diffuse = material.get("diffuse");
-                if (diffuse != null) {
-                    jsonMaterial.diffuse = parseColor(diffuse);
-                }
-                final JsonValue ambient = material.get("ambient");
-                if (ambient != null) {
-                    jsonMaterial.ambient = parseColor(ambient);
-                }
-                final JsonValue emissive = material.get("emissive");
-                if (emissive != null) {
-                    jsonMaterial.emissive = parseColor(emissive);
-                }
-                final JsonValue specular = material.get("specular");
-                if (specular != null) {
-                    jsonMaterial.specular = parseColor(specular);
-                }
-                final JsonValue reflection = material.get("reflection");
-                if (reflection != null) {
-                    jsonMaterial.reflection = parseColor(reflection);
-                }
-                // Read shininess
-                jsonMaterial.shininess = material.getFloat("shininess", 0.0f);
-                // Read opacity
-                jsonMaterial.opacity = material.getFloat("opacity", 1.0f);
-
-                // Read textures
-                JsonValue textures = material.get("textures");
-                if (textures != null) {
-                    for (JsonValue texture = textures.child; texture != null; texture = texture.next) {
-                        ModelTexture jsonTexture = new ModelTexture();
-
-                        String textureId = texture.getString("id", null);
-                        if (textureId == null) {
-                            throw new GdxRuntimeException("Texture has no id.");
-                        }
-                        jsonTexture.id = textureId;
-
-                        String fileName = texture.getString("filename", null);
-                        if (fileName == null) {
-                            throw new GdxRuntimeException("Texture needs filename.");
-                        }
-                        jsonTexture.fileName =
-                                materialDir + (materialDir.length() == 0 || materialDir.endsWith("/") ? "" : "/")
-                                        + fileName;
-
-                        jsonTexture.uvTranslation = readVector2(texture.get("uvTranslation"), 0f, 0f);
-                        jsonTexture.uvScaling = readVector2(texture.get("uvScaling"), 1f, 1f);
-
-                        String textureType = texture.getString("type", null);
-                        if (textureType == null) {
-                            throw new GdxRuntimeException("Texture needs type.");
-                        }
-
-                        jsonTexture.usage = parseTextureUsage(textureType);
-
-                        if (jsonMaterial.textures == null) {
-                            jsonMaterial.textures = new Array<ModelTexture>();
-                        }
-                        jsonMaterial.textures.add(jsonTexture);
-                    }
-                }
-
-                model.materials.add(jsonMaterial);
+            String id = material.getString("id", null);
+            if (id == null) {
+                throw new GdxRuntimeException("Material needs an id.");
             }
+
+            jsonMaterial.id = id;
+
+            // Read material colors
+            final JsonValue diffuse = material.get("diffuse");
+            if (diffuse != null) {
+                jsonMaterial.diffuse = parseColor(diffuse);
+            }
+            final JsonValue ambient = material.get("ambient");
+            if (ambient != null) {
+                jsonMaterial.ambient = parseColor(ambient);
+            }
+            final JsonValue emissive = material.get("emissive");
+            if (emissive != null) {
+                jsonMaterial.emissive = parseColor(emissive);
+            }
+            final JsonValue specular = material.get("specular");
+            if (specular != null) {
+                jsonMaterial.specular = parseColor(specular);
+            }
+            final JsonValue reflection = material.get("reflection");
+            if (reflection != null) {
+                jsonMaterial.reflection = parseColor(reflection);
+            }
+            // Read shininess
+            jsonMaterial.shininess = material.getFloat("shininess", 0.0f);
+            // Read opacity
+            jsonMaterial.opacity = material.getFloat("opacity", 1.0f);
+
+            // Read textures
+            JsonValue textures = material.get("textures");
+            if (textures != null) {
+                for (JsonValue texture = textures.child; texture != null; texture = texture.next) {
+                    ModelTexture jsonTexture = new ModelTexture();
+
+                    String textureId = texture.getString("id", null);
+                    if (textureId == null) {
+                        throw new GdxRuntimeException("Texture has no id.");
+                    }
+                    jsonTexture.id = textureId;
+
+                    String fileName = texture.getString("filename", null);
+                    if (fileName == null) {
+                        throw new GdxRuntimeException("Texture needs filename.");
+                    }
+                    jsonTexture.fileName =
+                            materialDir + (materialDir.isEmpty() || materialDir.endsWith("/") ? "" : "/")
+                                    + fileName;
+
+                    jsonTexture.uvTranslation = readVector2(texture.get("uvTranslation"), 0f, 0f);
+                    jsonTexture.uvScaling = readVector2(texture.get("uvScaling"), 1f, 1f);
+
+                    String textureType = texture.getString("type", null);
+                    if (textureType == null) {
+                        throw new GdxRuntimeException("Texture needs type.");
+                    }
+
+                    jsonTexture.usage = parseTextureUsage(textureType);
+
+                    if (jsonMaterial.textures == null) {
+                        jsonMaterial.textures = new Array<ModelTexture>();
+                    }
+                    jsonMaterial.textures.add(jsonTexture);
+                }
+            }
+
+            model.materials.add(jsonMaterial);
         }
     }
 
@@ -303,10 +305,10 @@ public class G3dModelLoader {
         }
     }
 
-    protected Array<ModelNode> parseNodes(ModelData model, JsonValue json) {
+    protected List<ModelNode> parseNodes(ModelData model, JsonValue json) {
         JsonValue nodes = json.get("nodes");
         if (nodes != null) {
-            model.nodes.ensureCapacity(nodes.size);
+//            model.nodes.ensureCapacity(nodes.size);
             for (JsonValue node = nodes.child; node != null; node = node.next) {
                 model.nodes.add(parseNodesRecursively(node));
             }
@@ -422,7 +424,7 @@ public class G3dModelLoader {
             return;
         }
 
-        model.animations.ensureCapacity(animations.size);
+//        model.animations.ensureCapacity(animations.size);
 
         for (JsonValue anim = animations.child; anim != null; anim = anim.next) {
             JsonValue nodes = anim.get("bones");
@@ -446,9 +448,9 @@ public class G3dModelLoader {
                         JsonValue translation = keyframe.get("translation");
                         if (translation != null && translation.size == 3) {
                             if (nodeAnim.translation == null) {
-                                nodeAnim.translation = new Array<ModelNodeKeyframe<Vector3>>();
+                                nodeAnim.translation = new Array<>();
                             }
-                            ModelNodeKeyframe<Vector3> tkf = new ModelNodeKeyframe<Vector3>();
+                            ModelNodeKeyframe<Vector3> tkf = new ModelNodeKeyframe<>();
                             tkf.keytime = keytime;
                             tkf.value = new Vector3(translation.getFloat(0), translation.getFloat(1),
                                     translation.getFloat(2));
@@ -457,9 +459,9 @@ public class G3dModelLoader {
                         JsonValue rotation = keyframe.get("rotation");
                         if (rotation != null && rotation.size == 4) {
                             if (nodeAnim.rotation == null) {
-                                nodeAnim.rotation = new Array<ModelNodeKeyframe<Quaternion>>();
+                                nodeAnim.rotation = new Array<>();
                             }
-                            ModelNodeKeyframe<Quaternion> rkf = new ModelNodeKeyframe<Quaternion>();
+                            ModelNodeKeyframe<Quaternion> rkf = new ModelNodeKeyframe<>();
                             rkf.keytime = keytime;
                             rkf.value = new Quaternion(rotation.getFloat(0), rotation.getFloat(1), rotation.getFloat(2),
                                     rotation.getFloat(3));
@@ -470,7 +472,7 @@ public class G3dModelLoader {
                             if (nodeAnim.scaling == null) {
                                 nodeAnim.scaling = new Array<ModelNodeKeyframe<Vector3>>();
                             }
-                            ModelNodeKeyframe<Vector3> skf = new ModelNodeKeyframe();
+                            ModelNodeKeyframe<Vector3> skf = new ModelNodeKeyframe<>();
                             skf.keytime = keytime;
                             skf.value = new Vector3(scale.getFloat(0), scale.getFloat(1), scale.getFloat(2));
                             nodeAnim.scaling.add(skf);

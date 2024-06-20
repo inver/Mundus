@@ -448,7 +448,7 @@ public class ModelInstance implements RenderableProvider {
                 animation.nodeAnimations.add(nodeAnim);
             }
         }
-        if (animation.nodeAnimations.size > 0) {
+        if (!animation.nodeAnimations.isEmpty()) {
             animations.add(animation);
         }
     }
@@ -461,7 +461,7 @@ public class ModelInstance implements RenderableProvider {
      * @param renderables the output array
      * @param pool        the pool to obtain Renderables from
      */
-    public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
+    public void getRenderables(List<Renderable> renderables, Pool<Renderable> pool) {
         for (Node node : nodes) {
             getRenderables(node, renderables, pool);
         }
@@ -494,7 +494,7 @@ public class ModelInstance implements RenderableProvider {
         return out;
     }
 
-    protected void getRenderables(Node node, Array<Renderable> renderables, Pool<Renderable> pool) {
+    protected void getRenderables(Node node, List<Renderable> renderables, Pool<Renderable> pool) {
         if (node.parts.size > 0) {
             for (NodePart nodePart : node.parts) {
                 if (nodePart.enabled) {
