@@ -16,7 +16,7 @@ import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.mbrlabs.mundus.commons.model.ImportedModel
 import com.mbrlabs.mundus.editor.core.shader.ShaderStorage
-import com.mbrlabs.mundus.editor.ui.widgets.FileChooserField
+import com.mbrlabs.mundus.editor.ui.widgets.chooser.file.FileChooserField
 import com.mbrlabs.mundus.editor.ui.widgets.RenderWidget
 import net.nevinsky.abyssus.core.ModelBatch
 import net.nevinsky.abyssus.core.ModelInstance

@@ -788,6 +788,7 @@
     default: {
       background: grey
       padTop: 8
+      space: 4
     }
   },
   com.mbrlabs.mundus.editor.ui.FormStyle$FormFieldStyle: {
@@ -800,21 +801,21 @@
   },
   TextButtonStyle: {
     noBg: {
-      font: font-symbol
+      font: font-symbol-regular
       pressedOffsetX: 1
       unpressedOffsetX: 0
       pressedOffsetY: -1
       fontColor: teal
     },
     active: {
-      font: font-symbol
+      font: font-symbol-regular
       pressedOffsetX: 1
       unpressedOffsetX: 0
       pressedOffsetY: -1
       fontColor: white
     },
     bg: {
-      font: font-symbol
+      font: font-symbol-regular
       pressedOffsetX: 1
       unpressedOffsetX: 0
       pressedOffsetY: -1
@@ -826,15 +827,15 @@
   },
   LabelStyle: {
     icon: {
-      font: font-symbol
+      font: font-symbol-small
       fontColor: white
     },
     tooltip: {
-      font: font-symbol
+      font: font-symbol-regular
       fontColor: teal
     },
     tooltipActive: {
-      font: font-symbol
+      font: font-symbol-regular
       fontColor: white
     }
   }

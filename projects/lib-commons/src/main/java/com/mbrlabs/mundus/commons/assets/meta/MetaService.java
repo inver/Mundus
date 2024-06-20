@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mbrlabs.mundus.commons.assets.exceptions.AssetNotFoundException;
 import com.mbrlabs.mundus.commons.assets.material.MaterialMeta;
 import com.mbrlabs.mundus.commons.assets.model.ModelMeta;
+import com.mbrlabs.mundus.commons.assets.pixmap.PixmapMeta;
 import com.mbrlabs.mundus.commons.assets.shader.ShaderMeta;
 import com.mbrlabs.mundus.commons.assets.skybox.SkyboxMeta;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainMeta;
@@ -46,7 +47,7 @@ public class MetaService {
 
     private final ObjectMapper mapper;
 
-    public Meta loadCommon(FileHandle assetFolderPath) {
+    public Meta<?> loadCommon(FileHandle assetFolderPath) {
         var metaHandle = assetFolderPath.child(META_FILE_NAME);
         if (!metaHandle.exists()) {
             throw new AssetNotFoundException(META_FILE_NAME + " not found in asset folder: " + assetFolderPath);
@@ -55,7 +56,7 @@ public class MetaService {
         return loadCommonMeta(metaHandle);
     }
 
-    private Meta loadCommonMeta(FileHandle handle) {
+    private Meta<?> loadCommonMeta(FileHandle handle) {
         if (handle.type() == Files.FileType.Classpath) {
             return FileUtils.readFromClassPath(mapper, handle, Meta.class).withFile(handle.parent());
         }
@@ -99,7 +100,12 @@ public class MetaService {
         }, metaHandle);
     }
 
-    @SuppressWarnings("unchecked")
+    public Meta<PixmapMeta> loadPixmapMeta(FileHandle assetFolderPath) {
+        var metaHandle = assetFolderPath.child(META_FILE_NAME);
+        return loadMeta(new TypeReference<>() {
+        }, metaHandle);
+    }
+
     private <T> Meta<T> loadMeta(TypeReference<Meta<T>> tr, FileHandle handle) {
         if (handle.type() == Files.FileType.Classpath) {
             return FileUtils.readFullFromClassPath(mapper, handle, tr).withFile(handle.parent());

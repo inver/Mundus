@@ -13,14 +13,19 @@ public class ModelObject implements RenderableSceneObject {
 
     @Getter
     private final String assetName;
+    @Getter
     private final transient Model model;
     @Getter
-    private final transient ModelInstance modelInstance;
+    private transient ModelInstance modelInstance;
 
     public ModelObject(String assetName, Model model) {
         this.assetName = assetName;
         this.model = model;
         modelInstance = new ModelInstance(model);
+    }
+
+    private void recalculateModel() {
+
     }
 
     @Override

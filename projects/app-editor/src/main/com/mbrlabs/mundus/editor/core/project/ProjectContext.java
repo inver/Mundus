@@ -113,6 +113,7 @@ public class ProjectContext implements Disposable {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public <T extends RenderableSceneObject> T getRenderableObject(Class<T> clazz, int entityId) {
         var delegate = currentScene.getWorld().getMapper(RenderComponent.class).get(entityId).getRenderable();
         if (!(delegate instanceof RenderableObjectDelegate)) {
@@ -137,6 +138,7 @@ public class ProjectContext implements Disposable {
         return Path.of(path).getFileName().toString();
     }
 
+    @SuppressWarnings("unchecked")
     public <T extends Asset<?>> T getAsset(AssetKey key) {
         return (T) projectAssets.get(key);
     }

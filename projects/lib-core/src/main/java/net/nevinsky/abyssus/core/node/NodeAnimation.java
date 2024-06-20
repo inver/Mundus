@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.g3d.model.NodeKeyframe;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+import net.nevinsky.abyssus.core.model.Model;
 
 /**
  * A NodeAnimation defines keyframes for a {@link net.nevinsky.abyssus.core.node.Node} in a {@link Model}. The keyframes

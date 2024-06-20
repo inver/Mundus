@@ -16,6 +16,7 @@
 
 package com.mbrlabs.mundus.editor.ui.widgets;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisLabel;
@@ -28,30 +29,33 @@ import com.kotcrab.vis.ui.widget.VisTextField;
  */
 public class TextFieldWithLabel extends VisTable {
 
-    private int width = -1;
-
+    protected String id;
     protected VisTextField textField;
     private final VisLabel label;
+    private final Cell<?> labelCell;
+    private final Cell<?> textFieldCell;
 
     public TextFieldWithLabel(String labelText, int width) {
         super();
-        this.width = width;
-        textField = new VisTextField();
         label = new VisLabel(labelText);
-        setupUI();
+        labelCell = add(label);
+        textField = new VisTextField();
+        textFieldCell = add(textField);
+
+        setWidth(width);
     }
 
     public TextFieldWithLabel(String labelText) {
         this(labelText, -1);
     }
 
-    private void setupUI() {
+    public void setWidth(int width) {
         if (width > 0) {
-            add(label).left().width(width * 0.2f);
-            add(textField).right().width(width * 0.8f).row();
+            labelCell.left().width(width * 0.2f);
+            textFieldCell.right().width(width * 0.8f).row();
         } else {
-            add(label).left().padRight(4f);
-            add(textField).growX().expandX().row();
+            labelCell.left().padRight(4f);
+            textFieldCell.growX().expandX().row();
         }
     }
 
@@ -77,6 +81,10 @@ public class TextFieldWithLabel extends VisTable {
     }
 
     public void setLabelText(String text) {
-        label.setText(toString());
+        label.setText(text);
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

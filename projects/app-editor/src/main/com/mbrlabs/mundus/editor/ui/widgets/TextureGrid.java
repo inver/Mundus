@@ -25,6 +25,8 @@ import com.kotcrab.vis.ui.widget.VisImage;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.mbrlabs.mundus.commons.utils.TextureProvider;
 
+import java.util.List;
+
 /**
  * @author Marcus Brummer
  * @version 30-01-2016
@@ -36,11 +38,11 @@ public class TextureGrid<T extends TextureProvider> extends VisTable {
 
     public TextureGrid(int imgSize, int spacing) {
         super();
-        this.grid = new GridGroup(imgSize, spacing);
+        grid = new GridGroup(imgSize, spacing);
         add(grid).expand().fill().row();
     }
 
-    public TextureGrid(int imgSize, int spacing, Array<T> textures) {
+    public TextureGrid(int imgSize, int spacing, List<T> textures) {
         this(imgSize, spacing);
         setTextures(textures);
     }
@@ -49,7 +51,7 @@ public class TextureGrid<T extends TextureProvider> extends VisTable {
         this.listener = listener;
     }
 
-    public void setTextures(Array<T> textures) {
+    public void setTextures(List<T> textures) {
         grid.clearChildren();
         for (T tex : textures) {
             grid.addActor(new TextureItem<>(tex));

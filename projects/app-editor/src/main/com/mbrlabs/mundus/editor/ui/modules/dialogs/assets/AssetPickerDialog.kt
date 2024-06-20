@@ -113,6 +113,14 @@ class AssetPickerDialog(
             }
             listAdapter.add(entry.value)
         }
+        for (entry in ctx.assetLibrary.entries) {
+            if (filter != null) {
+                if (filter!!.ignore(entry.value)) {
+                    continue
+                }
+            }
+            listAdapter.add(entry.value)
+        }
 
         listAdapter.itemsDataChanged()
     }

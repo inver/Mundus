@@ -2,6 +2,7 @@ package com.mbrlabs.mundus.commons.loader;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.mbrlabs.mundus.commons.BaseTest;
+import com.mbrlabs.mundus.commons.loader.assimp.AssimpLoader;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AssimpLoaderTest extends BaseTest {
 
-    private final AssimpWorker loader = new AssimpWorker();
+    private final AssimpLoader loader = new AssimpLoader();
 
     @Test
     public void testLoadOnlyObjFile() {
@@ -32,13 +33,13 @@ public class AssimpLoaderTest extends BaseTest {
     @Test
     public void testLoadObjFileToModelData() {
         var model = loader.loadModelData(UUID.randomUUID().toString(), getHandle("/obj/piper/piper_pa18.obj"),
-                AssimpWorker.FLAGS);
+                AssimpLoader.FLAGS);
         assertNotNull(model);
     }
 
     @Test
     public void testLoadOnlyAc3dFile() {
-        var model = loader.loadModelData(UUID.randomUUID().toString(), getHandle("/ac3d/sr22.ac"), AssimpWorker.FLAGS);
+        var model = loader.loadModelData(UUID.randomUUID().toString(), getHandle("/ac3d/sr22.ac"), AssimpLoader.FLAGS);
         assertNotNull(model);
     }
 }

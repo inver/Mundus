@@ -71,15 +71,19 @@ import java.util.Set;
 @NoArgsConstructor
 public class Model implements Disposable {
     /**
-     * root nodes of the model
+     * Root nodes of the model
      **/
     @Getter
     private final List<Node> nodes = new ArrayList<>();
     /**
-     * animations of the model, modifying node transformations
+     * Animations of the model, modifying node transformations
      **/
     @Getter
     private final List<Animation> animations = new ArrayList<>();
+    /**
+     * Materials of the model
+     */
+    private final Map<String, Material> materials = new HashMap<>();
     /**
      * Array of disposable resources like textures or meshes the Model is responsible for disposing
      **/
@@ -107,8 +111,8 @@ public class Model implements Disposable {
 
     protected void load(ModelData modelData, TextureProvider textureProvider) {
         var meshParts = loadMeshes(modelData.meshes);
-        var materials = loadMaterials(modelData.materials, textureProvider);
-        loadNodes(meshParts, materials, modelData.nodes);
+        loadMaterials(modelData.materials, textureProvider);
+        loadNodes(meshParts, modelData.nodes);
         loadAnimations(modelData.animations);
         calculateTransforms();
     }
@@ -128,8 +132,8 @@ public class Model implements Disposable {
                     nodeAnim.translation = new Array<>();
                     nodeAnim.translation.ensureCapacity(nanim.translation.size);
                     for (ModelNodeKeyframe<Vector3> kf : nanim.translation) {
-                        if (kf.keytime > animation.duration) {
-                            animation.duration = kf.keytime;
+                        if (kf.keytime > animation.getDuration()) {
+                            animation.setDuration(kf.keytime);
                         }
                         nodeAnim.translation.add(new NodeKeyframe<>(kf.keytime,
                                 new Vector3(kf.value == null ? node.translation : kf.value))
@@ -141,8 +145,8 @@ public class Model implements Disposable {
                     nodeAnim.rotation = new Array<>();
                     nodeAnim.rotation.ensureCapacity(nanim.rotation.size);
                     for (ModelNodeKeyframe<Quaternion> kf : nanim.rotation) {
-                        if (kf.keytime > animation.duration) {
-                            animation.duration = kf.keytime;
+                        if (kf.keytime > animation.getDuration()) {
+                            animation.setDuration(kf.keytime);
                         }
                         nodeAnim.rotation.add(new NodeKeyframe<>(kf.keytime,
                                 new Quaternion(kf.value == null ? node.rotation : kf.value))
@@ -154,8 +158,8 @@ public class Model implements Disposable {
                     nodeAnim.scaling = new Array<>();
                     nodeAnim.scaling.ensureCapacity(nanim.scaling.size);
                     for (ModelNodeKeyframe<Vector3> kf : nanim.scaling) {
-                        if (kf.keytime > animation.duration) {
-                            animation.duration = kf.keytime;
+                        if (kf.keytime > animation.getDuration()) {
+                            animation.setDuration(kf.keytime);
                         }
                         nodeAnim.scaling.add(new NodeKeyframe<>(kf.keytime,
                                 new Vector3(kf.value == null ? node.scale : kf.value))
@@ -177,8 +181,7 @@ public class Model implements Disposable {
 
     private final ObjectMap<NodePart, ArrayMap<String, Matrix4>> nodePartBones = new ObjectMap<>();
 
-    protected void loadNodes(Map<String, MeshPart> meshParts, Map<String, Material> materials,
-                             Iterable<ModelNode> modelNodes) {
+    protected void loadNodes(Map<String, MeshPart> meshParts, Iterable<ModelNode> modelNodes) {
         nodePartBones.clear();
         for (ModelNode node : modelNodes) {
             nodes.add(loadNode(meshParts, materials, node));
@@ -299,14 +302,11 @@ public class Model implements Disposable {
         }
     }
 
-    protected Map<String, Material> loadMaterials(Iterable<ModelMaterial> modelMaterials,
-                                                  TextureProvider textureProvider) {
-        var res = new HashMap<String, Material>();
+    protected void loadMaterials(Iterable<ModelMaterial> modelMaterials, TextureProvider textureProvider) {
         for (ModelMaterial mtl : modelMaterials) {
             var m = convertMaterial(mtl, textureProvider);
-            res.put(StringUtils.upperCase(m.id), m);
+            materials.put(StringUtils.upperCase(m.id), m);
         }
-        return res;
     }
 
     protected Material convertMaterial(ModelMaterial mtl, TextureProvider textureProvider) {

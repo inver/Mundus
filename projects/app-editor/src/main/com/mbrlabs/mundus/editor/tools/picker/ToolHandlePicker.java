@@ -17,44 +17,53 @@
 package com.mbrlabs.mundus.editor.tools.picker;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.glutils.HdpiUtils;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.core.shader.ShaderStorage;
 import com.mbrlabs.mundus.editor.tools.ToolHandle;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.nevinsky.abyssus.core.ModelBatch;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * @author Marcus Brummer
  * @version 07-03-2016
  */
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class ToolHandlePicker extends BasePicker {
     private final EditorCtx ctx;
     private final ModelBatch batch;
-    private final ShaderStorage shaderStorage;
 
-    public ToolHandle pick(ToolHandle[] handles, int screenX, int screenY) {
-        //todo may be needed to revert render of image, but it needs to thinks
-        var x = HdpiUtils.toBackBufferX(screenX);
-        var y = Gdx.graphics.getBackBufferHeight() - HdpiUtils.toBackBufferY(screenY);
+    public ToolHandlePicker(EditorCtx ctx, ShaderStorage shaderStorage) {
+        this.ctx = ctx;
+        batch = new ModelBatch(shaderStorage);
+    }
 
-        var pixmap = Pixmap.createFromFrameBuffer(x, y, 1, 1);
-        pixmap.getPixels().put(3, (byte) 255);
+    public ToolHandle pick(List<ToolHandle> handles, int screenX, int screenY) {
+        begin(ctx.getViewport());
+        renderPickableScene(handles);
+        end();
 
-        log.debug("Coordinates of pixel is {}:{}", x, y);
+        var pm = getFrameBufferPixmap(ctx.getViewport());
 
-        int id = new Color(pixmap.getPixel(0, 0)).toIntBits();
-        pixmap.dispose();
+//        PixmapIO.writePNG(new FileHandle(
+//                        "/Users/inv3r/Development/gamedev/Mundus/projects/app-editor/src/main/com/" +
+//                                "mbrlabs/mundus/editor/tools/picker/tool_handle_image.png"),
+//                pm);
+
+        int x = HdpiUtils.toBackBufferX(screenX - ctx.getViewport().getScreenX());
+        int y = HdpiUtils.toBackBufferY(screenY -
+                (Gdx.graphics.getHeight() - (ctx.getViewport().getScreenY() + ctx.getViewport().getScreenHeight())));
+
+        int id = new Color(pm.getPixel(x, y)).toIntBits();
+        pm.dispose();
+
         log.debug("Picking handle with id {}", id);
-        for (ToolHandle handle : handles) {
+        for (var handle : handles) {
             if (handle.getId() == id) {
                 return handle;
             }
@@ -63,17 +72,11 @@ public class ToolHandlePicker extends BasePicker {
         return null;
     }
 
-    private void renderPickableScene(ToolHandle[] handles, ModelBatch batch, Camera cam) {
-        batch.begin(cam);
+    private void renderPickableScene(List<ToolHandle> handles) {
+        batch.begin(ctx.getCurrent().getCamera());
         for (ToolHandle handle : handles) {
-            handle.renderPick(batch, shaderStorage);
+            handle.render(batch, environmentPool.obtain(), 0);
         }
         batch.end();
     }
-
-    @Override
-    public void dispose() {
-        fbo.dispose();
-    }
-
 }

@@ -17,9 +17,15 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTree;
 import com.mbrlabs.mundus.commons.Scene;
+import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.core.ecs.component.NameComponent;
 import com.mbrlabs.mundus.commons.core.ecs.component.ParentComponent;
+import com.mbrlabs.mundus.commons.core.ecs.component.TypeComponent;
+import com.mbrlabs.mundus.editor.core.project.AssetKey;
 import com.mbrlabs.mundus.editor.ui.AppUi;
+import com.mbrlabs.mundus.editor.ui.ClickButtonListener;
+import com.mbrlabs.mundus.editor.ui.IconUtils;
+import com.mbrlabs.mundus.editor.ui.widgets.icon.SymbolIcon;
 import com.mbrlabs.mundus.editor.utils.TextureUtils;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,6 +33,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.Map;
+
+import static com.mbrlabs.mundus.editor.ui.modules.outline.IdNode.NODE_ASSET;
+import static com.mbrlabs.mundus.editor.ui.modules.outline.IdNode.ROOT_NODE_ASSET;
+import static com.mbrlabs.mundus.editor.ui.modules.outline.IdNode.ROOT_NODE_SCENE;
+import static com.mbrlabs.mundus.editor.ui.modules.outline.IdNode.Type.ASSET;
+import static com.mbrlabs.mundus.editor.ui.modules.outline.IdNode.Type.OBJECT;
 
 @Slf4j
 @Component
@@ -63,6 +76,7 @@ public class Outline extends VisTable {
     @Getter
     private final MenuItem addDirectionalLight = new MenuItem("Directional Light");
 
+    private int assetNodeCounter = NODE_ASSET;
 
     public Outline(AppUi appUi, OutlinePresenter outlinePresenter) {
         this.appUi = appUi;
@@ -190,25 +204,22 @@ public class Outline extends VisTable {
 
         rcmRename.setDisabled(selectedEntityId < 0);
         rcmDelete.setDisabled(selectedEntityId < 0);
-
-
-        //todo
-        // terrainAsset can not be duplicated
-//            duplicate.isDisabled =
-//                selectedGO == null || ctx.current.currentScene.world.getEntity(selectedGO).getComponent()selectedGO!!
-//                .findComponentByType(Component.Type.TERRAIN) != null
     }
 
     /**
      * Building tree from game objects in sceneGraph, clearing previous
      * sceneGraph
      *
-     * @param scene: current scene
+     * @param scene         current scene
+     * @param projectAssets
      */
-    void buildTree(Scene scene) {
+    void buildTree(Scene scene, Map<AssetKey, Asset<?>> projectAssets) {
         tree.clearChildren();
-        var rootNode = new IdNode.RootNode();
-        tree.add(rootNode);
+        var sceneNode = new IdNode(ROOT_NODE_SCENE, "Scene", SymbolIcon.SCENE, IdNode.Type.ROOT, null);
+        var assetNode = new IdNode(ROOT_NODE_ASSET, "Assets", SymbolIcon.ASSET, IdNode.Type.ROOT, null);
+
+        tree.add(sceneNode);
+        tree.add(assetNode);
 
         var world = scene.getWorld();
         //process world for update all entities
@@ -220,9 +231,10 @@ public class Outline extends VisTable {
         }
         var parentMapper = world.getMapper(ParentComponent.class);
         var nameMapper = world.getMapper(NameComponent.class);
+        var typeMapper = world.getMapper(TypeComponent.class);
 
         var nodeMap = new HashMap<Integer, IdNode>();
-        nodeMap.put(-1, rootNode.getHierarchy());
+        nodeMap.put(-1, sceneNode);
 
         for (int i = 0; i < entityIds.size(); i++) {
             var entityId = entityIds.get(i);
@@ -243,6 +255,41 @@ public class Outline extends VisTable {
                 node.setExpanded(true);
             }
         }
+
+        fillAssetNodes(assetNode, projectAssets);
+    }
+
+    private IdNode.Type mapType(TypeComponent typeComponent) {
+        if (typeComponent == null) {
+            return IdNode.Type.NONE;
+        }
+
+        switch (typeComponent.getType()) {
+            case GROUP:
+                return IdNode.Type.GROUP;
+            case LIGHT_DIRECTIONAL:
+                break;
+            case LIGHT_POINT:
+                break;
+            case LIGHT_SPOT:
+                break;
+            case OBJECT:
+                return OBJECT;
+            case TERRAIN:
+                break;
+            case CAMERA:
+                break;
+            case HANDLE:
+                break;
+        }
+
+        return IdNode.Type.NONE;
+    }
+
+    private void fillAssetNodes(IdNode root, Map<AssetKey, Asset<?>> projectAssets) {
+        projectAssets.forEach((key, asset) -> {
+            root.add(new IdNode(assetNodeCounter--, asset.getName(), IconUtils.getIcon(asset), ASSET, asset));
+        });
     }
 
     private void addToParent(ComponentMapper<ParentComponent> parentMapper, HashMap<Integer, IdNode> nodeMap,
@@ -261,7 +308,7 @@ public class Outline extends VisTable {
     public void onEntitySelected(int entityId) {
         tree.getSelection().clear();
 
-        if (entityId < 0 && entityId != IdNode.RootNode.ROOT_NODE_ID) {
+        if (entityId < 0 && entityId >= ROOT_NODE_SCENE) {
             return;
         }
 

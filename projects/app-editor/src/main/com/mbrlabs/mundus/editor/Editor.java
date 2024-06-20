@@ -22,7 +22,7 @@ import com.mbrlabs.mundus.editor.input.InputService;
 import com.mbrlabs.mundus.editor.input.ShortcutController;
 import com.mbrlabs.mundus.editor.tools.ToolManager;
 import com.mbrlabs.mundus.editor.ui.AppUi;
-import com.mbrlabs.mundus.editor.ui.components.CoordinateSystemComponent;
+import com.mbrlabs.mundus.editor.ui.ecs.CoordinateSystemComponent;
 import com.mbrlabs.mundus.editor.ui.modules.StatusBar;
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.ExitDialog;
 import com.mbrlabs.mundus.editor.ui.modules.dock.DockBar;
@@ -172,13 +172,13 @@ public class Editor implements ProjectChangedEvent.ProjectChangedListener, Scene
                     }
                 }
                 batch.begin(camera);
-                scene.render(batch, scene.getEnvironment(), shaderStorage, Gdx.graphics.getDeltaTime());
-                wirePlane.render(batch, scene.getEnvironment(), shaderStorage, Gdx.graphics.getDeltaTime());
+                scene.render(batch, scene.getEnvironment(), Gdx.graphics.getDeltaTime());
+                wirePlane.render(batch, scene.getEnvironment(), Gdx.graphics.getDeltaTime());
                 //todo check current camera
 
                 batch.end();
 
-                toolManager.render(batch, scene.getEnvironment(), shaderStorage, Gdx.graphics.getDeltaTime());
+                toolManager.render(batch, scene.getEnvironment(), Gdx.graphics.getDeltaTime());
                 compass.render(batch, ShaderProvider.DEFAULT_SHADER_KEY);
             } catch (Exception e) {
                 log.error("ERROR", e);

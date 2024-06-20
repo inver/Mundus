@@ -1,9 +1,8 @@
 attribute vec3 a_position;
 
-uniform mat4 u_transMatrix;
-uniform mat4 u_projViewMatrix;
+uniform mat4 u_projViewTrans;
+uniform mat4 u_worldTrans;
 
 void main(void) {
-    vec4 worldPos = u_transMatrix * vec4(a_position, 1.0);
-    gl_Position = u_projViewMatrix * worldPos;
+    gl_Position = u_projViewTrans * u_worldTrans * vec4(a_position, 1.0);
 }

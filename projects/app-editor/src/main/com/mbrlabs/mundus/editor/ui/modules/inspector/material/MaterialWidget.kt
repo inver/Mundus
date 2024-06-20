@@ -1,0 +1,227 @@
+/*
+ * Copyright (c) 2016. See AUTHORS file.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.mbrlabs.mundus.editor.ui.modules.inspector.material
+
+import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.scenes.scene2d.Actor
+import com.badlogic.gdx.scenes.scene2d.InputEvent
+import com.badlogic.gdx.scenes.scene2d.Touchable
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import com.badlogic.gdx.utils.Align
+import com.kotcrab.vis.ui.util.FloatDigitsOnlyFilter
+import com.kotcrab.vis.ui.widget.*
+import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter
+import com.kotcrab.vis.ui.widget.spinner.SimpleFloatSpinnerModel
+import com.kotcrab.vis.ui.widget.spinner.Spinner
+import com.mbrlabs.mundus.commons.assets.material.MaterialAsset
+import com.mbrlabs.mundus.editor.assets.AssetMaterialFilter
+import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
+import com.mbrlabs.mundus.editor.core.project.EditorCtx
+import com.mbrlabs.mundus.editor.ui.AppUi
+import com.mbrlabs.mundus.editor.ui.PreviewGenerator
+import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
+import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerListener
+import com.mbrlabs.mundus.editor.ui.widgets.FloatFieldWithLabel
+import com.mbrlabs.mundus.editor.ui.widgets.ImprovedSlider
+import com.mbrlabs.mundus.editor.ui.widgets.chooser.asset.AssetChooserField
+import com.mbrlabs.mundus.editor.ui.widgets.chooser.color.ColorChooserField
+import com.mbrlabs.mundus.editor.ui.widgets.chooser.file.FileChooserField
+
+/**
+ * Displays all properties of a material.
+ *
+ * You can also edit materials and replace them with another materials by.
+ *
+ * @author Marcus Brummer
+ * @version 13-10-2016
+ */
+class MaterialWidget(
+    private val ctx: EditorCtx,
+    private val appUi: AppUi,
+    private val assetSelectionDialog: AssetPickerDialog,
+    private val assetManager: EditorAssetManager,
+    private val previewGenerator: PreviewGenerator
+) : VisTable() {
+
+    private val matFilter: AssetMaterialFilter = AssetMaterialFilter()
+    private val matChangedBtn: VisTextButton = VisTextButton("change")
+    private val matPickerListener: AssetPickerListener
+
+    private val matNameLabel: VisLabel = VisLabel()
+    val previewPathFiled = FileChooserField()
+    val diffuseTextureField = AssetChooserField()
+    val ambientOcclusionTextureField = AssetChooserField()
+    val albedoTextureField = AssetChooserField()
+    val heightTextureField = AssetChooserField()
+    val metallicTextureField = AssetChooserField()
+    val normalTextureField = AssetChooserField()
+    val roughnessTextureField = AssetChooserField()
+
+    val diffuseColorField  = ColorChooserField()
+//    private val emissiveColorField: ColorPickerField = ColorPickerField()
+//    private val diffuseAssetField: AssetSelectionField = AssetSelectionField()
+//    private val normalMapField: AssetSelectionField = AssetSelectionField()
+//    private val emissiveAssetField: AssetSelectionField = AssetSelectionField()
+//    private val metallicRoughnessAssetField: AssetSelectionField = AssetSelectionField()
+//    private val occlusionAssetField: AssetSelectionField = AssetSelectionField()
+
+    private val roughnessField = ImprovedSlider(0.0f, 1.0f, 0.01f)
+    private val metallicField = ImprovedSlider(0.0f, 1.0f, 0.01f)
+    private val opacityField = ImprovedSlider(0.0f, 1.0f, 0.01f)
+    private val alphaTestField = ImprovedSlider(0.0f, 1.0f, 0.01f)
+    private val normalScaleField = ImprovedSlider(0.5f, 5f, 0.01f)
+    private val shadowBiasField = ImprovedSlider(0.1f, 2f, 0.01f)
+
+    private val scaleUField = FloatFieldWithLabel("Scale U", -1, false)
+    private val scaleVField = FloatFieldWithLabel("Scale V", -1, false)
+    //slider moves in 11.25 degree steps
+    private val rotateUVField = Spinner("", SimpleFloatSpinnerModel(0f,0f, (Math.PI * 2f).toFloat(), (Math.PI / 16f).toFloat(), 8))
+    private val offsetUField = ImprovedSlider(0.0f, 1.0f, 0.01f)
+    private val offsetVField = ImprovedSlider(0.0f, 1.0f, 0.01f)
+
+//    private val cullFaceSelectBox: VisSelectBox<CullFace> = VisSelectBox()
+
+
+    val shininessField = VisTextField()
+
+    private val previewWidgetContainer = VisTable()
+
+    /**
+     * The currently active material of the widget.
+     */
+    var material: MaterialAsset? = null
+        set(value) {
+            if (value != null) {
+                field = value
+                diffuseColorField.selectedColor = value.diffuseColor
+//                diffuseAssetField.setAsset(value.diffuseTexture)
+                matNameLabel.setText(value.name)
+//                shininessField.text = value.shininess.toString()
+
+                previewWidgetContainer.clearChildren()
+                previewWidgetContainer.add(previewGenerator.createPreviewWidget(appUi, value)).expand().fill()
+            }
+        }
+
+    /**
+     * An optional listener for changing the material. If the property is null
+     * the user will not be able to change the material.
+     */
+    var matChangedListener: MaterialChangedListener? = null
+        set(value) {
+            field = value
+            matChangedBtn.touchable = if (value == null) Touchable.disabled else Touchable.enabled
+        }
+
+    init {
+        align(Align.topLeft)
+        matNameLabel.wrap = true
+
+        matPickerListener = AssetPickerListener { asset ->
+            material = asset as? MaterialAsset
+            matChangedListener?.materialChanged(material!!)
+        }
+
+        setupWidgets()
+    }
+
+    private fun setupWidgets() {
+        previewWidgetContainer.debugAll()
+        add(previewWidgetContainer).height(250f).width(250f).row()
+
+        val table = VisTable()
+        table.add(matNameLabel).grow()
+        table.add(matChangedBtn).padLeft(4f).right().row()
+        add(table).grow().row()
+
+        addSeparator().growX().row()
+
+        add(VisLabel("Diffuse color")).grow().row()
+        add(diffuseColorField).growX().row()
+        add(VisLabel("Diffuse texture")).grow().row()
+        add(diffuseTextureField).growX().row()
+        add(VisLabel("Shininess")).growX().row()
+        add(shininessField).growX().row()
+
+        matChangedBtn.addListener(object : ClickListener() {
+            override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                assetSelectionDialog.show(false, matFilter, matPickerListener)
+            }
+        })
+
+        // diffuse texture
+//        diffuseAssetField.assetFilter = AssetTextureFilter()
+//        diffuseAssetField.pickerListener = AssetPickerListener { asset ->
+////            material?.diffuseTexture = asset as? TextureAsset
+////            applyMaterialToModelAssets()
+////            applyMaterialToModelComponents()
+////            assetManager.dirty(material!!)
+//        }
+
+        // diffuse color
+        diffuseColorField.colorAdapter = object : ColorPickerAdapter() {
+            override fun finished(newColor: Color) {
+                material?.diffuseColor?.set(newColor)
+                applyMaterialToModelAssets()
+                applyMaterialToModelComponents()
+//                assetManager.dirty(material!!)
+            }
+        }
+
+        // shininess
+        shininessField.textFieldFilter = FloatDigitsOnlyFilter(false)
+        shininessField.addListener(object : ChangeListener() {
+            override fun changed(event: ChangeEvent?, actor: Actor?) {
+                if (shininessField.isInputValid && !shininessField.isEmpty) {
+//                    material?.shininess = shininessField.text.toFloat()
+//                    applyMaterialToModelAssets()
+//                    applyMaterialToModelComponents()
+//                    assetManager.dirty(material!!)
+                }
+            }
+        })
+
+    }
+
+    // TODO find better solution than iterating through all components
+    private fun applyMaterialToModelComponents() {
+//        val sceneGraph = ctx.current.currentScene.sceneGraph
+//        for (go in sceneGraph.gameObjects) {
+//            val mc = go.findComponentByType(Component.Type.MODEL)
+//            if (mc != null && mc is ModelComponent) {
+//                mc.applyMaterials()
+//            }
+//        }
+    }
+
+    // TODO find better solution than iterating through all assets
+    private fun applyMaterialToModelAssets() {
+//        for (modelAsset in assetManager.assets) {
+//            modelAsset.applyDependencies()
+//        }
+    }
+
+    /**
+     *
+     */
+    interface MaterialChangedListener {
+        fun materialChanged(materialAsset: MaterialAsset)
+    }
+
+
+}

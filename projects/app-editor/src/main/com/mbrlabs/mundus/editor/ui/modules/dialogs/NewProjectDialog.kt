@@ -24,8 +24,8 @@ import com.kotcrab.vis.ui.widget.VisTextField
 import com.kotcrab.vis.ui.widget.file.FileChooser
 import com.mbrlabs.mundus.editor.core.project.ProjectManager
 import com.mbrlabs.mundus.editor.ui.UiConstants
-import com.mbrlabs.mundus.editor.ui.widgets.FileChooserField
-import com.mbrlabs.mundus.editor.ui.widgets.presenter.FileChooserFieldPresenter
+import com.mbrlabs.mundus.editor.ui.widgets.chooser.file.FileChooserField
+import com.mbrlabs.mundus.editor.ui.widgets.chooser.file.FileChooserFieldPresenter
 import org.springframework.stereotype.Component
 
 /**
@@ -41,7 +41,8 @@ class NewProjectDialog(
 
     private val projectName = VisTextField()
     private val createBtn = VisTextButton("Create project")
-    private val locationPath = FileChooserField(300)
+    private val locationPath =
+        FileChooserField(300)
 
     init {
         isModal = true

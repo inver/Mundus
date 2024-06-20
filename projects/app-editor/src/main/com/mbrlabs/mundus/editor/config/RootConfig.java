@@ -13,10 +13,10 @@ import com.mbrlabs.mundus.editor.core.light.LightService;
 import com.mbrlabs.mundus.editor.core.project.ProjectStorage;
 import com.mbrlabs.mundus.editor.core.registry.Registry;
 import com.mbrlabs.mundus.editor.core.shader.ShaderStorage;
-import com.mbrlabs.mundus.editor.ui.components.RenderableDelegateSerializer;
-import com.mbrlabs.mundus.editor.ui.components.camera.CameraBodyRenderDelegate;
-import com.mbrlabs.mundus.editor.ui.components.camera.CameraService;
-import com.mbrlabs.mundus.editor.ui.components.light.LightRenderDelegate;
+import com.mbrlabs.mundus.editor.ui.ecs.RenderableDelegateSerializer;
+import com.mbrlabs.mundus.editor.ui.ecs.camera.CameraBodyRenderDelegate;
+import com.mbrlabs.mundus.editor.ui.ecs.camera.CameraService;
+import com.mbrlabs.mundus.editor.ui.ecs.light.LightRenderDelegate;
 import net.nevinsky.abyssus.core.ModelBatch;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.context.annotation.Bean;
@@ -51,12 +51,6 @@ public class RootConfig {
     public MetaService metaService(ObjectMapper mapper) {
         return new MetaService(mapper);
     }
-
-
-//    @Bean
-//    public CameraService cameraService() {
-//        return new CameraService(editorCtx(), ecsService);
-//    }
 
     @Bean
     public SceneConverter sceneConverter(ObjectMapper mapper) {

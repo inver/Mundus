@@ -27,6 +27,7 @@ public class InitListener extends Lwjgl3WindowAdapter implements ApplicationList
         widgetsHolder.init();
     }
 
+    //todo move all font preparing to FontGenerator
     private void initVisUI() {
         var generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/robotoRegular.ttf"));
         var params = new FreeTypeFontGenerator.FreeTypeFontParameter();
@@ -48,7 +49,6 @@ public class InitListener extends Lwjgl3WindowAdapter implements ApplicationList
         var fontTiny = generator.generateFont(params);
         generator.dispose();
 
-        //todo add several sizes of icons
         var symbolFontRenderer = new FontRenderer(Gdx.files.internal("fonts/materialSymbolsRounded.ttf"));
 
         // skin
@@ -56,7 +56,9 @@ public class InitListener extends Lwjgl3WindowAdapter implements ApplicationList
         skin.add("font-norm", fontNorm, BitmapFont.class);
         skin.add("font-small", fontSmall, BitmapFont.class);
         skin.add("font-tiny", fontTiny, BitmapFont.class);
-        skin.add("font-symbol", symbolFontRenderer.getFont(), BitmapFont.class);
+        skin.add("font-symbol-regular", symbolFontRenderer.getRegular(), BitmapFont.class);
+        skin.add("font-symbol-small", symbolFontRenderer.getSmall(), BitmapFont.class);
+        skin.add("font-symbol-tiny", symbolFontRenderer.getTiny(), BitmapFont.class);
 
         skin.addRegions(new TextureAtlas(Gdx.files.internal("ui/skin/uiskin.atlas")));
         skin.load(Gdx.files.internal("ui/skin/uiskin.json"));

@@ -11,7 +11,7 @@ import com.mbrlabs.mundus.editor.core.project.ProjectManager;
 import com.mbrlabs.mundus.editor.core.registry.Registry;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.SceneGraphChangedEvent;
-import com.mbrlabs.mundus.editor.ui.widgets.presenter.FileChooserFieldPresenter;
+import com.mbrlabs.mundus.editor.ui.widgets.chooser.file.FileChooserFieldPresenter;
 import com.mbrlabs.mundus.editor.utils.Toaster;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -24,7 +24,9 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.HdpiUtils;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.FlushablePool;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.mbrlabs.mundus.commons.env.SceneEnvironment;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.ByteBuffer;
@@ -37,10 +39,25 @@ import java.nio.ByteBuffer;
 public abstract class BasePicker implements Disposable {
 
     protected FrameBuffer fbo;
+    protected ByteBuffer pixelBuffer = null;
+    protected byte[] tmpArr = null;
+    protected final FlushablePool<SceneEnvironment> environmentPool = new FlushablePool<>() {
+        @Override
+        protected SceneEnvironment newObject() {
+            return new SceneEnvironment();
+        }
+
+        @Override
+        public SceneEnvironment obtain() {
+            var res = super.obtain();
+            res.clear();
+            return res;
+        }
+    };
 
     public BasePicker() {
-        int width = Gdx.graphics.getWidth();
-        int height = Gdx.graphics.getHeight();
+        int width = HdpiUtils.toBackBufferX(Gdx.graphics.getWidth());
+        int height = HdpiUtils.toBackBufferY(Gdx.graphics.getHeight());
 
         try {
             fbo = new FrameBuffer(Pixmap.Format.RGBA8888, width, height, true);
@@ -69,26 +86,31 @@ public abstract class BasePicker implements Disposable {
     }
 
     public Pixmap getFrameBufferPixmap(Viewport viewport) {
-        int w = viewport.getScreenWidth();
-        int h = viewport.getScreenHeight();
-        int x = viewport.getScreenX();
-        int y = viewport.getScreenY();
-        final ByteBuffer pixelBuffer = BufferUtils.newByteBuffer(w * h * 4);
+        int w = HdpiUtils.toBackBufferX(viewport.getScreenWidth());
+        int h = HdpiUtils.toBackBufferY(viewport.getScreenHeight());
+        int x = HdpiUtils.toBackBufferX(viewport.getScreenX());
+        int y = HdpiUtils.toBackBufferY(viewport.getScreenY());
+
+        var bufferSize = w * h * 4;
+        if (pixelBuffer == null || pixelBuffer.capacity() != bufferSize) {
+            pixelBuffer = BufferUtils.newByteBuffer(bufferSize);
+            tmpArr = new byte[bufferSize];
+        }
+
+        Pixmap pixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
 
         Gdx.gl.glBindFramebuffer(GL20.GL_FRAMEBUFFER, fbo.getFramebufferHandle());
         Gdx.gl.glReadPixels(x, y, w, h, GL30.GL_RGBA, GL30.GL_UNSIGNED_BYTE, pixelBuffer);
         Gdx.gl.glBindFramebuffer(GL20.GL_FRAMEBUFFER, 0);
 
-        final int numBytes = w * h * 4;
-        byte[] imgLines = new byte[numBytes];
+        //todo rework without tmpArr array
         final int numBytesPerLine = w * 4;
         for (int i = 0; i < h; i++) {
             pixelBuffer.position((h - i - 1) * numBytesPerLine);
-            pixelBuffer.get(imgLines, i * numBytesPerLine, numBytesPerLine);
+            pixelBuffer.get(tmpArr, i * numBytesPerLine, numBytesPerLine);
         }
 
-        Pixmap pixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
-        BufferUtils.copy(imgLines, 0, pixmap.getPixels(), imgLines.length);
+        BufferUtils.copy(tmpArr, 0, pixmap.getPixels(), tmpArr.length);
 
         return pixmap;
     }
@@ -97,5 +119,4 @@ public abstract class BasePicker implements Disposable {
     public void dispose() {
         fbo.dispose();
     }
-
 }

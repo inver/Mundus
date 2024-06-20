@@ -84,10 +84,12 @@ dependencies {
     // other
     implementation "com.kotcrab.vis:vis-ui:$visuiVersion"
     implementation "com.esotericsoftware:kryo:$kryoVersion"
+    implementation 'org.apache.commons:commons-text:1.10.0'
 
     // tests
     testImplementation libs.junit_jupiter_engine
     testImplementation libs.mockito_core
+    testImplementation libs.mockito_junit
     testImplementation 'org.springframework:spring-test:5.3.23'
     testImplementation 'com.badlogicgames.gdx:gdx-backend-headless:1.11.0'
 

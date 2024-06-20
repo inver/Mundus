@@ -1,11 +1,10 @@
 package com.mbrlabs.mundus.editor.utils;
 
 import com.mbrlabs.mundus.editor.tools.picker.PickerIDAttribute;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public final class PickerColorEncoder {
-
-    private PickerColorEncoder() {
-    }
 
     public static int decode(int rgba8888Code) {
         if ((rgba8888Code & 0x000000FF) != 255) {
@@ -22,12 +21,12 @@ public final class PickerColorEncoder {
     /**
      * Encodes a game object id to a GameObjectIdAttribute with rgb channels.
      *
-     * @param go game object, who's id must be encoded
+     * @param entityId id of entity to encode
      * @return the game object id, encoded as rgb values
      */
-    public static PickerIDAttribute encodeRaypickColorId(int entityId) {
+    public static PickerIDAttribute encodeRayPickColorId(int entityId) {
         PickerIDAttribute goIDa = new PickerIDAttribute();
-        encodeRaypickColorId(entityId, goIDa);
+        encodeRayPickColorId(entityId, goIDa);
         return goIDa;
     }
 
@@ -37,7 +36,7 @@ public final class PickerColorEncoder {
      * @param id  id
      * @param out encoded id as attribute
      */
-    public static void encodeRaypickColorId(int id, PickerIDAttribute out) {
+    public static void encodeRayPickColorId(int id, PickerIDAttribute out) {
         out.r = id & 0x000000FF;
         out.g = (id & 0x0000FF00) >>> 8;
         out.b = (id & 0x00FF0000) >>> 16;

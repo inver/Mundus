@@ -31,8 +31,9 @@ import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.history.commands.TerrainHeightCommand;
 import com.mbrlabs.mundus.editor.history.commands.TerrainPaintCommand;
 import com.mbrlabs.mundus.editor.tools.Tool;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import net.nevinsky.abyssus.core.ModelBatch;
-import net.nevinsky.abyssus.core.shader.ShaderProvider;
 
 /**
  * A Terrain Brush can modify the terrainAsset in various ways (BrushMode).
@@ -47,23 +48,28 @@ public abstract class TerrainBrush extends Tool {
     /**
      * Defines the draw mode of a brush.
      */
+    @RequiredArgsConstructor
     public enum BrushMode {
         /**
          * Raises or lowers the terrainAsset height.
          */
-        RAISE_LOWER,
+        RAISE_LOWER("Raise or lower"),
         /**
          * Sets all vertices of the selection to a specified height.
          */
-        FLATTEN,
+        FLATTEN("Flatten"),
         /**
          * TBD
          */
-        SMOOTH,
+        SMOOTH("Smooth"),
         /**
          * Paints on the splatmap of the terrainAsset.
          */
-        PAINT
+        PAINT("Paint"),
+        RAMP("Ramp");
+
+        @Getter
+        private final String text;
     }
 
     /**
@@ -345,7 +351,7 @@ public abstract class TerrainBrush extends Tool {
     }
 
     @Override
-    public void render(ModelBatch batch, SceneEnvironment environment, ShaderProvider shaders, float delta) {
+    public void render(ModelBatch batch, SceneEnvironment environment, String shaderKey, float delta) {
         // rendering of the brush is done in the editor terrain shader
     }
 
@@ -391,9 +397,6 @@ public abstract class TerrainBrush extends Tool {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-
-        //todo
-//        // get action
 //        final boolean primary = Gdx.input.isButtonPressed(BrushAction.PRIMARY.code);
 //        final boolean secondary = Gdx.input.isKeyPressed(BrushAction.SECONDARY.code);
 //        if (primary && secondary) {
@@ -414,7 +417,6 @@ public abstract class TerrainBrush extends Tool {
 //                paintCommand.setBefore(sm.getPixmap());
 //            }
 //        }
-
         return false;
     }
 

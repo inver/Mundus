@@ -21,7 +21,7 @@ allprojects {
     apply plugin: "java"
 
     ext {
-        appName = "Abyssus"
+        appName = "Scene Editor 3D"
         appVersion = "0.3.0"
 
         visuiVersion = '1.5.1'

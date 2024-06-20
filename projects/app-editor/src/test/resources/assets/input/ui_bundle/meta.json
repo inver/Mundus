@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "lastModified": 1663444124794,
+  "type": "UI_BUNDLE",
+  "additional": {
+    "inspectorWidget": "InspectorWidget.groovy",
+    "outlineRightClickMenu": {
+      "id": "addPlanetMenu",
+      "text": "i18n:AddPlanet"
+    }
+  }
+}

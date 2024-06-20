@@ -4,9 +4,9 @@ import com.artemis.Component;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @NoArgsConstructor
 public class RenderComponent extends Component {
-    @Getter
     private RenderableDelegate renderable;
 
     RenderComponent(RenderableDelegate renderable) {

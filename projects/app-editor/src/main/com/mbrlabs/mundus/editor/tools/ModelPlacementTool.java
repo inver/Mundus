@@ -36,7 +36,6 @@ import com.mbrlabs.mundus.editor.ui.AppUi;
 import com.mbrlabs.mundus.editor.ui.widgets.icon.SymbolIcon;
 import net.nevinsky.abyssus.core.ModelBatch;
 import net.nevinsky.abyssus.core.ModelInstance;
-import net.nevinsky.abyssus.core.shader.ShaderProvider;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -73,7 +72,7 @@ public class ModelPlacementTool extends Tool {
 
     //todo rethink this method. May by move copy and load asset to another place?
     public void setModel(ModelAsset asset) {
-        var currentProject = getCtx().getCurrent();
+        var currentProject = ctx.getCurrent();
         sceneStorage.copyAssetToProject(currentProject.getPath(), asset);
 
         var sceneAsset = assetManager.loadProjectAsset(currentProject.getPath(), asset.getName());
@@ -99,9 +98,9 @@ public class ModelPlacementTool extends Tool {
     }
 
     @Override
-    public void render(ModelBatch batch, SceneEnvironment environment, ShaderProvider shaders, float delta) {
+    public void render(ModelBatch batch, SceneEnvironment environment, String shaderKey, float delta) {
         if (modelInstance != null) {
-            batch.begin(getCtx().getCurrent().getCamera());
+            batch.begin(ctx.getCurrent().getCamera());
             batch.render(modelInstance, environment, getShaderKey());
             batch.end();
         }
@@ -121,7 +120,7 @@ public class ModelPlacementTool extends Tool {
 
         var id = modelService.createModelEntity(asset);
         modelInstance.transform.getTranslation(tempV3);
-        var positionComponent = getCtx().getComponentByEntityId(id, PositionComponent.class);
+        var positionComponent = ctx.getComponentByEntityId(id, PositionComponent.class);
         positionComponent.translate(tempV3);
 
 
@@ -137,9 +136,9 @@ public class ModelPlacementTool extends Tool {
             return false;
         }
 
-        final ProjectContext context = getCtx().getCurrent();
+        final ProjectContext context = ctx.getCurrent();
 
-        final Ray ray = getCtx().getViewport().getPickRay(screenX, screenY);
+        final Ray ray = ctx.getViewport().getPickRay(screenX, screenY);
         //todo add terrain processing
 //        if (context.getCurrentScene().terrains.size > 0 && modelInstance != null) {
 //            MeshPartBuilder.VertexInfo vi = TerrainUtils.getRayIntersectionAndUp
@@ -151,7 +150,7 @@ public class ModelPlacementTool extends Tool {
 //                modelInstance.transform.setTranslation(vi.position);
 //            }
 //        } else {
-        tempV3.set(getCtx().getCurrent().getCamera().position);
+        tempV3.set(ctx.getCurrent().getCamera().position);
         tempV3.add(ray.direction.nor().scl(200));
         modelInstance.transform.setTranslation(tempV3);
 //        }

@@ -9,7 +9,7 @@ import com.mbrlabs.mundus.editor.core.registry.Registry;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent;
 import com.mbrlabs.mundus.editor.events.SettingsChangedEvent;
-import com.mbrlabs.mundus.editor.ui.widgets.presenter.FileChooserFieldPresenter;
+import com.mbrlabs.mundus.editor.ui.widgets.chooser.file.FileChooserFieldPresenter;
 import com.mbrlabs.mundus.editor.utils.Toaster;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;

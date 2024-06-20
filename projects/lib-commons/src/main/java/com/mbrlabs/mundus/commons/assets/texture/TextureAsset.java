@@ -23,17 +23,17 @@ import com.mbrlabs.mundus.commons.utils.TextureProvider;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Map;
-
 /**
  * @author Marcus Brummer
  * @version 01-10-2016
  */
+@Getter
+@Setter
 public class TextureAsset extends Asset<TextureMeta> implements TextureProvider {
 
-    @Getter
-    @Setter
     private Texture texture;
+
+    private float size = 0f;
 
     public TextureAsset(Meta<TextureMeta> meta) {
         super(meta);
@@ -53,9 +53,4 @@ public class TextureAsset extends Asset<TextureMeta> implements TextureProvider 
             texture.dispose();
         }
     }
-
-//    @Override
-//    public boolean usesAsset(Asset assetToCheck) {
-//        return false;
-//    }
 }

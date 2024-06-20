@@ -6,17 +6,18 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.kotcrab.vis.ui.util.dialog.InputDialogAdapter;
 import com.kotcrab.vis.ui.util.dialog.InputDialogListener;
 import com.kotcrab.vis.ui.widget.VisTree;
+import com.mbrlabs.mundus.commons.assets.Asset;
 import com.mbrlabs.mundus.commons.assets.AssetType;
 import com.mbrlabs.mundus.commons.core.ecs.component.NameComponent;
 import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
 import com.mbrlabs.mundus.commons.core.ecs.component.TypeComponent;
 import com.mbrlabs.mundus.editor.core.assets.AssetsStorage;
-import com.mbrlabs.mundus.editor.core.assets.EditorTerrainService;
 import com.mbrlabs.mundus.editor.core.ecs.EcsService;
 import com.mbrlabs.mundus.editor.core.light.LightService;
 import com.mbrlabs.mundus.editor.core.project.AssetKey;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
-import com.mbrlabs.mundus.editor.core.project.ProjectManager;
+import com.mbrlabs.mundus.editor.events.AssetImportEvent;
+import com.mbrlabs.mundus.editor.events.AssetSelectedEvent;
 import com.mbrlabs.mundus.editor.events.EntitySelectedEvent;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.events.ProjectChangedEvent;
@@ -24,13 +25,15 @@ import com.mbrlabs.mundus.editor.events.SceneChangedEvent;
 import com.mbrlabs.mundus.editor.events.SceneGraphChangedEvent;
 import com.mbrlabs.mundus.editor.tools.ToolManager;
 import com.mbrlabs.mundus.editor.ui.AppUi;
-import com.mbrlabs.mundus.editor.ui.components.camera.CameraService;
+import com.mbrlabs.mundus.editor.ui.ecs.camera.CameraService;
 import com.mbrlabs.mundus.editor.ui.modules.dialogs.terrain.AddTerrainDialog;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
+
+import static com.mbrlabs.mundus.editor.ui.modules.outline.IdNode.NODE_ASSET;
 
 @Component
 @RequiredArgsConstructor
@@ -43,8 +46,6 @@ public class OutlinePresenter {
     private final ToolManager toolManager;
     private final AssetsStorage assetsStorage;
     private final CameraService cameraService;
-    private final EditorTerrainService terrainService;
-    private final ProjectManager projectManager;
     private final LightService lightService;
     private final EcsService ecsService;
     private final AddTerrainDialog addTerrainDialog;
@@ -52,30 +53,38 @@ public class OutlinePresenter {
     public void init(@NotNull Outline outline) {
         eventBus.register((ProjectChangedEvent.ProjectChangedListener) event -> {
             log.trace("Project changed. Building scene graph.");
-            outline.buildTree(ctx.getCurrent().getCurrentScene());
+            outline.buildTree(ctx.getCurrent().getCurrentScene(), ctx.getCurrent().getProjectAssets());
         });
         eventBus.register((SceneChangedEvent.SceneChangedListener) event -> {
             log.trace("Scene changed. Building scene graph.");
-            outline.buildTree(ctx.getCurrent().getCurrentScene());
+            outline.buildTree(ctx.getCurrent().getCurrentScene(), ctx.getCurrent().getProjectAssets());
         });
         eventBus.register((SceneGraphChangedEvent.SceneGraphChangedListener) event -> {
             log.trace("SceneGraph changed. Building scene graph.");
-            outline.buildTree(ctx.getCurrent().getCurrentScene());
+            outline.buildTree(ctx.getCurrent().getCurrentScene(), ctx.getCurrent().getProjectAssets());
         });
         eventBus.register((EntitySelectedEvent.EntitySelectedListener) event -> {
             outline.onEntitySelected(event.getEntityId());
         });
-
 
         outline.getTree().addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 var selection = outline.getTree().getSelection();
                 if (selection == null || selection.isEmpty()) {
+                    ctx.selectEntity(-1);
                     return;
                 }
 
                 var entityId = selection.first().getValue();
+                if (entityId < NODE_ASSET) {
+                    ctx.selectEntity(-1);
+                    eventBus.post(new EntitySelectedEvent(entityId));
+                    eventBus.post(new AssetSelectedEvent((Asset<?>) selection.first().getData()));
+
+                    return;
+                }
+
                 ctx.selectEntity(entityId);
                 toolManager.getTranslateTool().entitySelected(entityId);
 

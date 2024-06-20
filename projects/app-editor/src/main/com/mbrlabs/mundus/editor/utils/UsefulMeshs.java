@@ -106,18 +106,14 @@ public class UsefulMeshs {
                     double cos = Math.cos(t * twopi / divisionsU);
                     double sin = Math.sin(t * twopi / divisionsU);
                     curr1.position.set(
-                            (float) ((width + height * Math.cos(s * twopi / divisionsV))
-                                    * cos),
-                            (float) ((width + height * Math.cos(s * twopi / divisionsV))
-                                    * sin),
+                            (float) ((width + height * Math.cos(s * twopi / divisionsV)) * cos),
+                            (float) ((width + height * Math.cos(s * twopi / divisionsV)) * sin),
                             (float) (height * Math.sin(s * twopi / divisionsV)));
                     k--;
                     s = (i + k) % divisionsV + 0.5;
                     curr2.position.set(
-                            (float) ((width + height * Math.cos(s * twopi / divisionsV))
-                                    * cos),
-                            (float) ((width + height * Math.cos(s * twopi / divisionsV))
-                                    * sin),
+                            (float) ((width + height * Math.cos(s * twopi / divisionsV)) * cos),
+                            (float) ((width + height * Math.cos(s * twopi / divisionsV)) * sin),
                             (float) (height * Math.sin(s * twopi / divisionsV)));
                     // curr2.uv.set((float) s, 0);
                     i1 = builder.vertex(curr1);

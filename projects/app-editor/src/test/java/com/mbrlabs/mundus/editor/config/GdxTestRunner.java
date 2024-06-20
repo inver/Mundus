@@ -14,8 +14,6 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.kotcrab.vis.ui.VisUI;
 import com.mbrlabs.mundus.editor.ui.widgets.icon.FontRenderer;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.nio.IntBuffer;
@@ -90,7 +88,9 @@ public class GdxTestRunner extends SpringExtension {
         skin.add("font-norm", fontNorm, BitmapFont.class);
         skin.add("font-small", fontSmall, BitmapFont.class);
         skin.add("font-tiny", fontTiny, BitmapFont.class);
-        skin.add("font-symbol", symbolFontRenderer.getFont(), BitmapFont.class);
+        skin.add("font-symbol-regular", symbolFontRenderer.getRegular(), BitmapFont.class);
+        skin.add("font-symbol-small", symbolFontRenderer.getSmall(), BitmapFont.class);
+        skin.add("font-symbol-tiny", symbolFontRenderer.getTiny(), BitmapFont.class);
 
         skin.addRegions(new TextureAtlas(Gdx.files.internal("ui/skin/uiskin.atlas")));
         skin.load(Gdx.files.internal("ui/skin/uiskin.json"));

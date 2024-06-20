@@ -141,7 +141,7 @@ class BundledTerrainShader extends DefaultShader {
         // base texture
         SplatTexture st = terrainTexture.getTexture(SplatTexture.Channel.BASE)
         if (st != null) {
-            set(UNIFORM_TEXTURE_BASE, st.texture.getTexture())
+            set(UNIFORM_TEXTURE_BASE, st.texture)
             set(UNIFORM_TEXTURE_HAS_DIFFUSE, 1)
         } else {
             set(UNIFORM_TEXTURE_HAS_DIFFUSE, 0)
@@ -153,19 +153,19 @@ class BundledTerrainShader extends DefaultShader {
             set(UNIFORM_TEXTURE_SPLAT, terrainTexture.getSplatMap().getTexture())
             st = terrainTexture.getTexture(SplatTexture.Channel.R)
             if (st != null) {
-                set(UNIFORM_TEXTURE_R, st.texture.getTexture())
+                set(UNIFORM_TEXTURE_R, st.texture)
             }
             st = terrainTexture.getTexture(SplatTexture.Channel.G)
             if (st != null) {
-                set(UNIFORM_TEXTURE_G, st.texture.getTexture())
+                set(UNIFORM_TEXTURE_G, st.texture)
             }
             st = terrainTexture.getTexture(SplatTexture.Channel.B)
             if (st != null) {
-                set(UNIFORM_TEXTURE_B, st.texture.getTexture())
+                set(UNIFORM_TEXTURE_B, st.texture)
             }
             st = terrainTexture.getTexture(SplatTexture.Channel.A)
             if (st != null) {
-                set(UNIFORM_TEXTURE_A, st.texture.getTexture())
+                set(UNIFORM_TEXTURE_A, st.texture)
             }
         } else {
             set(UNIFORM_TEXTURE_HAS_SPLATMAP, 0)

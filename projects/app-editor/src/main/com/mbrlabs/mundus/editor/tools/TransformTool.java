@@ -17,12 +17,17 @@
 package com.mbrlabs.mundus.editor.tools;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector3;
+import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
 import com.mbrlabs.mundus.editor.events.EntityModifiedEvent;
 import com.mbrlabs.mundus.editor.events.EventBus;
 import com.mbrlabs.mundus.editor.history.CommandHistory;
 import com.mbrlabs.mundus.editor.tools.picker.EntityPicker;
 import com.mbrlabs.mundus.editor.tools.picker.ToolHandlePicker;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Marcus Brummer
@@ -47,21 +52,47 @@ public abstract class TransformTool extends SelectionTool {
     protected static final int XZ_HANDLE_ID = COLOR_XZ.toIntBits();
     protected static final int XYZ_HANDLE_ID = 4;
 
+    protected final Vector3 temp0 = new Vector3();
+    protected final Vector3 temp1 = new Vector3();
+
     protected ToolHandlePicker handlePicker;
-    protected EntityModifiedEvent entityModifiedEvent;
+    protected EntityModifiedEvent entityModifiedEvent = new EntityModifiedEvent(-1);
+
+    protected final List<ToolHandle> handles = new ArrayList<>();
+    protected TransformState state = TransformState.IDLE;
 
     public TransformTool(EditorCtx ctx, String shaderKey, EntityPicker picker, ToolHandlePicker handlePicker,
-                         CommandHistory history, EventBus eventBus, String name) {
+                         CommandHistory history, EventBus eventBus) {
         super(ctx, shaderKey, picker, history, eventBus);
         this.handlePicker = handlePicker;
+    }
 
-        entityModifiedEvent = new EntityModifiedEvent(-1);
+    @Override
+    public void entitySelected(int entityId) {
+        super.entitySelected(entityId);
+
+        rotateHandles();
+        scaleHandles();
+        translateHandles();
     }
 
     protected abstract void scaleHandles();
 
-    protected abstract void translateHandles();
+    protected void translateHandles() {
+        if (ctx.getSelectedEntityId() < 0 ||
+                ctx.getSelectedEntity().getComponent(PositionComponent.class) == null) {
+            return;
+        }
 
-    protected abstract void rotateHandles();
+        ctx.getSelectedEntity().getComponent(PositionComponent.class).getPosition(temp0);
+        handles.forEach(handle -> {
+            handle.getPosition().set(temp0);
+            handle.applyTransform();
+        });
+    }
+
+    protected void rotateHandles() {
+        //do nothing by default
+    }
 
 }

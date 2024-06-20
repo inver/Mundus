@@ -17,6 +17,7 @@
 package com.mbrlabs.mundus.editor.events;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -76,14 +77,17 @@ public class EventBus {
         var current = System.currentTimeMillis();
 
         var methods = methodsMap.get(event.getClass());
-        if (methods == null || methods.size() == 0) {
+        if (CollectionUtils.isEmpty(methods)) {
             return;
         }
 
-        for (var pair : methods) {
+        long ts;
+        for (var pair : new ArrayList<>(methods)) {
             try {
+                ts = System.currentTimeMillis();
                 pair.getRight().invoke(pair.getLeft(), event);
-                log.debug("Event {} to {} delivered", event, pair.getLeft());
+                log.debug("Event {} to {} delivered in {} ms", event, pair.getLeft(),
+                        (System.currentTimeMillis() - ts));
             } catch (IllegalAccessException | InvocationTargetException e) {
                 log.error("ERROR", e);
             }

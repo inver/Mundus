@@ -88,6 +88,16 @@ public class EditorCtx implements Disposable {
         return getCurrent().getCurrentScene().getWorld().getEntity(entityId).getComponent(clazz);
     }
 
+    public boolean entityExists(int entityId) {
+
+        try {
+            return getCurrent().getCurrentScene().getWorld().getEntity(entityId) != null;
+        } catch (IndexOutOfBoundsException e) {
+            //do nothing
+        }
+        return false;
+    }
+
     @SuppressWarnings("unchecked")
     public <T extends Asset<?>> T getAsset(AssetKey key) {
         return (T) editorAssets.get(key);

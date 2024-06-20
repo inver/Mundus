@@ -18,7 +18,7 @@ public class ToolManagerTest extends BaseCtxTest {
     @Autowired
     private ToolManager manager;
     private final Tool nonSelectionTool = mock(Tool.class);
-    private final SelectionTool mockTool = spy(mock(SelectionTool.class));
+    private final SelectionTool mockTool = mock(SelectionTool.class);
 
     @Test
     void testActivateTool() {
@@ -50,11 +50,11 @@ public class ToolManagerTest extends BaseCtxTest {
     void testRender() {
         manager.activateTool(mockTool);
         manager.render(null, null, null, 0f);
-        verify(mockTool, times(1)).render(any(), any(), any(), eq(0f));
+        verify(mockTool, times(1)).render(any(), any(), eq(0f));
 
         manager.deactivateTool();
         manager.render(null, null, null, 0f);
-        verify(mockTool, times(1)).render(any(), any(), any(), eq(0f));
+        verify(mockTool, times(1)).render(any(), any(), eq(0f));
     }
 
     @Test

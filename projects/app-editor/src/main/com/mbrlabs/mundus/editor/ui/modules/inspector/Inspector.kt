@@ -19,33 +19,14 @@ package com.mbrlabs.mundus.editor.ui.modules.inspector
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.badlogic.gdx.utils.Align
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisScrollPane
 import com.kotcrab.vis.ui.widget.VisTable
-import com.kotcrab.vis.ui.widget.file.FileChooser
-import com.mbrlabs.mundus.commons.core.ecs.component.TypeComponent
-import com.mbrlabs.mundus.editor.ui.UiComponentHolder
-import com.mbrlabs.mundus.editor.core.assets.EditorAssetManager
-import com.mbrlabs.mundus.editor.core.project.EditorCtx
-import com.mbrlabs.mundus.editor.events.AssetSelectedEvent
-import com.mbrlabs.mundus.editor.events.EntitySelectedEvent
-import com.mbrlabs.mundus.editor.events.EventBus
-import com.mbrlabs.mundus.editor.events.GameObjectModifiedEvent
-import com.mbrlabs.mundus.editor.history.CommandHistory
-import com.mbrlabs.mundus.editor.input.InputService
-import com.mbrlabs.mundus.editor.tools.ToolManager
 import com.mbrlabs.mundus.editor.ui.AppUi
-import com.mbrlabs.mundus.editor.ui.PreviewGenerator
 import com.mbrlabs.mundus.editor.ui.UiConstants
-import com.mbrlabs.mundus.editor.ui.modules.dialogs.assets.AssetPickerDialog
-import com.mbrlabs.mundus.editor.ui.modules.inspector.components.terrain.TerrainWidgetPresenter
-import com.mbrlabs.mundus.editor.ui.modules.inspector.scene.SceneInspector
-import com.mbrlabs.mundus.editor.ui.modules.inspector.scene.SceneInspectorPresenter
-import com.mbrlabs.mundus.editor.ui.modules.outline.IdNode.RootNode
-import com.mbrlabs.mundus.editor.ui.widgets.colorPicker.ColorPickerPresenter
-import org.slf4j.LoggerFactory.getLogger
+import com.mbrlabs.mundus.editor.ui.dsl.UiDslCreator
+import com.mbrlabs.mundus.editor.ui.widgets.dsl.UiFormTable
 import org.springframework.stereotype.Component
 
 /**
@@ -54,74 +35,31 @@ import org.springframework.stereotype.Component
  */
 @Component
 class Inspector(
-    private val ctx: EditorCtx,
     private val appUi: AppUi,
-    eventBus: EventBus,
-    assetManager: EditorAssetManager,
-    uiComponentHolder: UiComponentHolder,
-    assetPickerDialog: AssetPickerDialog,
-    inputService: InputService,
-    toolManager: ToolManager,
-    terrainWidgetPresenter: TerrainWidgetPresenter,
-    history: CommandHistory,
-    previewGenerator: PreviewGenerator,
-    colorPickerPresenter: ColorPickerPresenter,
-    sceneInspectorPresenter: SceneInspectorPresenter,
-) : VisTable(),
-    GameObjectModifiedEvent.GameObjectModifiedListener,
-    AssetSelectedEvent.AssetSelectedListener,
-    EntitySelectedEvent.EntitySelectedListener {
+    uiDslCreator: UiDslCreator
+) : VisTable() {
 
-    companion object {
-        @JvmStatic
-        private val log = getLogger(Inspector::class.java)
-    }
-
-    enum class InspectorMode {
-        GAME_OBJECT, ASSET, SCENE, EMPTY
-    }
-
-    private var mode = InspectorMode.EMPTY
     private val root = VisTable()
     private val scrollPane = VisScrollPane(root)
 
-    private val goInspector: GameObjectInspector
-    private val assetInspector: AssetInspector
-    private val sceneInspector = SceneInspector(uiComponentHolder, sceneInspectorPresenter)
-//    private val cameraInspector = CameraInspector(previewGenerator, appUi)
+    private val identifierWidget =
+        uiDslCreator.create<UiComponentWidget>("com/mbrlabs/mundus/editor/ui/modules/inspector/identifier/IdentifierWidget.groovy");
+    private val transformWidget =
+        uiDslCreator.create<UiComponentWidget>("com/mbrlabs/mundus/editor/ui/modules/inspector/transform/TransformWidget.groovy");
+    private val sceneInspector =
+        uiDslCreator.create<UiFormTable>("com/mbrlabs/mundus/editor/ui/modules/inspector/scene/SceneWidget.groovy")
+    private val textureWidget =
+        uiDslCreator.create<UiComponentWidget>("com/mbrlabs/mundus/editor/ui/modules/inspector/texture/TextureWidget.groovy")
+    private val materialWidget =
+        uiDslCreator.create<UiComponentWidget>("com/mbrlabs/mundus/editor/ui/modules/inspector/material/MaterialWidget.groovy")
+    private val terrainWidget =
+        uiDslCreator.create<UiComponentWidget>("com/mbrlabs/mundus/editor/ui/modules/inspector/terrain/TerrainWidget.groovy");
+    private val modelComponentWidgetDsl =
+        uiDslCreator.create<UiComponentWidget>("com/mbrlabs/mundus/editor/ui/modules/inspector/model/ModelWidget.groovy");
 
     init {
-        eventBus.register(this)
-
-        goInspector = GameObjectInspector(
-            ctx,
-            appUi,
-            uiComponentHolder,
-            assetPickerDialog,
-            assetManager,
-            history,
-            terrainWidgetPresenter,
-            previewGenerator,
-            colorPickerPresenter
-        )
-        assetInspector = AssetInspector(
-            ctx,
-            appUi,
-            assetManager,
-            assetPickerDialog,
-            inputService,
-            toolManager,
-            previewGenerator,
-            colorPickerPresenter,
-            uiComponentHolder
-        )
-
-        init()
-    }
-
-    fun init() {
         setBackground("window-bg")
-        add(VisLabel("Inspector")).expandX().fillX().pad(3f).row()
+        add(VisLabel("Inspector")).expandX().fillX().padLeft(8f).row()
         addSeparator().row()
         root.align(Align.top).padLeft(UiConstants.PAD).padRight(UiConstants.PAD).padTop(4f)
         scrollPane.setScrollingDisabled(true, false)
@@ -137,43 +75,14 @@ class Inspector(
             }
         })
 
-        add<ScrollPane>(scrollPane).expand().fill().top()
+        add(scrollPane).expand().fill().top()
+
+        root.add(identifierWidget.actor).top().growX().expandX().fillX().row()
+        root.add(transformWidget.actor).top().growX().expandX().fillX().row()
+        root.add(sceneInspector.actor).top().growX().expandX().fillX().row()
+        root.add(terrainWidget.actor).top().growX().expandX().fillX().row()
+        root.add(materialWidget.actor).top().growX().expandX().fillX().row()
+        root.add(textureWidget.actor).top().growX().expandX().fillX().row()
+        add(modelComponentWidgetDsl.actor).growX().pad(8f).row()
     }
-
-    override fun onEntitySelected(event: EntitySelectedEvent) {
-        if (event.entityId == RootNode.ROOT_NODE_ID && mode != InspectorMode.SCENE) {
-            mode = InspectorMode.SCENE
-            root.clear()
-            root.add(sceneInspector).grow().row()
-            goInspector.setEntity(event.entityId)
-            return
-        }
-
-        val type = ctx.getComponentByEntityId(event.entityId, TypeComponent::class.java)?.type
-
-        if (type != TypeComponent.Type.CAMERA && type != TypeComponent.Type.GROUP
-            && type != TypeComponent.Type.HANDLE && mode != InspectorMode.GAME_OBJECT
-        ) {
-            mode = InspectorMode.GAME_OBJECT
-            root.clear()
-            root.add(goInspector).grow().row()
-            goInspector.setEntity(event.entityId)
-            return
-        }
-    }
-
-    override fun onGameObjectModified(event: GameObjectModifiedEvent) {
-        goInspector.updateGameObject()
-    }
-
-    override fun onAssetSelected(event: AssetSelectedEvent) {
-        log.debug(event.asset.toString())
-        if (mode != InspectorMode.ASSET) {
-            mode = InspectorMode.ASSET
-            root.clear()
-            root.add(assetInspector).grow().row()
-        }
-        assetInspector.asset = event.asset
-    }
-
 }

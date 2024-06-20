@@ -2,6 +2,7 @@ package com.mbrlabs.mundus.editor;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import com.badlogic.gdx.graphics.glutils.HdpiMode;
 import com.kotcrab.vis.ui.util.OsUtils;
 import com.mbrlabs.mundus.editor.config.InitListener;
 import com.mbrlabs.mundus.editor.utils.AppUtils;
@@ -17,6 +18,7 @@ public class Main {
         // Set initial window size. See https://github.com/mbrlabs/Mundus/issues/11
         var dm = Lwjgl3ApplicationConfiguration.getDisplayMode();
         if (OsUtils.isMac()) {
+//            config.setHdpiMode(HdpiMode.Logical);
             config.setWindowedMode(
                     Float.valueOf(dm.width * 0.80f).intValue(), Float.valueOf(dm.height * 0.80f).intValue());
         } else {
