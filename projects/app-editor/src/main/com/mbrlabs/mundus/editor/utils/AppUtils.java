@@ -3,17 +3,16 @@ package com.mbrlabs.mundus.editor.utils;
 import com.mbrlabs.mundus.editor.Main;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
+@UtilityClass
 @Slf4j
 public final class AppUtils {
-
-    private AppUtils() {
-    }
 
     public static Version getAppVersion() {
         Properties prop = new Properties();

@@ -207,7 +207,6 @@ public class Model implements Disposable {
         if (modelNode.scale != null) {
             node.scale.set(modelNode.scale);
         }
-        // TODO create temporary maps for faster lookup?
         if (modelNode.parts != null) {
             for (ModelNodePart modelNodePart : modelNode.parts) {
                 MeshPart meshPart = null;

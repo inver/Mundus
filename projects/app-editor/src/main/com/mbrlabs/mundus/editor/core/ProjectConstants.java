@@ -1,8 +1,10 @@
 package com.mbrlabs.mundus.editor.core;
 
 import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
+import lombok.experimental.UtilityClass;
 import net.nevinsky.abyssus.core.shader.ShaderProvider;
 
+@UtilityClass
 public final class ProjectConstants {
 
 

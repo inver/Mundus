@@ -3,12 +3,14 @@ package com.mbrlabs.mundus.commons.utils;
 import com.badlogic.gdx.files.FileHandle;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.FileReader;
 import java.util.List;
 
 @Slf4j
+@UtilityClass
 public final class FileUtils {
 
     public static <T> T readFullFromFileSystem(ObjectMapper mapper, FileHandle handle, TypeReference<T> tr) {

@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import static com.badlogic.gdx.graphics.g3d.model.data.ModelTexture.USAGE_DIFFUSE;
 import static com.badlogic.gdx.graphics.g3d.model.data.ModelTexture.USAGE_UNKNOWN;
 import static org.lwjgl.assimp.Assimp.aiGetMaterialColor;
 import static org.lwjgl.assimp.Assimp.aiGetMaterialTexture;
@@ -303,7 +304,7 @@ public class AssimpWorker{
         mesh.attributes = attributes.toArray(new VertexAttribute[]{});
         mesh.parts = new ModelMeshPart[]{processParts(aiMesh)};
 
-        String materialId = modelData.materials.get(aiMesh.mMaterialIndex()).id;
+        var materialId = modelData.materials.get(aiMesh.mMaterialIndex()).id;
         node.parts = new ModelNodePart[mesh.parts.length];
         for (int i = 0; i < mesh.parts.length; i++) {
             var nodePart = new ModelNodePart();

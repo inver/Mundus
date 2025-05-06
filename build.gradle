@@ -12,12 +12,16 @@ buildscript {
     }
 }
 
+plugins {
+    id "org.sonarqube" version "4.0.0.2929"
+}
+
 allprojects {
     apply from: "$rootDir/gradle/dependencies.gradle"
 
     apply plugin: "jacoco"
-    apply plugin: 'info.solidsoft.pitest'
-    apply plugin: 'checkstyle'
+    apply plugin: "info.solidsoft.pitest"
+    apply plugin: "checkstyle"
     apply plugin: "java"
 
     ext {

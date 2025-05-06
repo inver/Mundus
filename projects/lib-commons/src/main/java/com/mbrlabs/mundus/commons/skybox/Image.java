@@ -5,9 +5,12 @@
 
 package com.mbrlabs.mundus.commons.skybox;
 
+import lombok.experimental.UtilityClass;
+
 /**
  * STB Image demo.
  */
+@UtilityClass
 public final class Image {
 //
 //    private final ByteBuffer image;

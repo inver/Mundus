@@ -3,9 +3,10 @@ package com.mbrlabs.mundus.editor.core.shader;
 /**
  * Class holds default shader names
  */
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public final class ShaderConstants {
-    private ShaderConstants() {
-    }
 
     public static final String WIREFRAME = "wireframe";
     public static final String TERRAIN = "terrain";
