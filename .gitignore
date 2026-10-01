@@ -67,3 +67,5 @@ build/
 # packr
 packr/jdks/
 packr/build/
+
+.kotlin

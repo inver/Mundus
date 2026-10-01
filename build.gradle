@@ -2,13 +2,13 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
-    ext.kotlinVersion = '1.8.21'
     repositories {
         mavenCentral()
+        gradlePluginPortal()
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-        classpath 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.9.11'
+        classpath 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.19.0'
     }
 }
 
@@ -19,6 +19,7 @@ allprojects {
     apply plugin: 'info.solidsoft.pitest'
     apply plugin: 'checkstyle'
     apply plugin: "java"
+//    apply plugin: 'kotlin.lombok'
 
     ext {
         appName = "Scene Editor 3D"
@@ -103,5 +104,8 @@ allprojects {
         }
         finalizedBy(jacocoTestReport)
     }
+}
+dependencies {
+    testImplementation "org.jetbrains.kotlin:kotlin-test:$kotlinVersion"
 }
 
