@@ -31,7 +31,6 @@ uniform vec2 u_terrainSize;
 varying vec2 v_texCoord0;
 varying vec2 splatPosition;
 varying float v_fog;
-varying vec4 v_lighting;
 varying vec3 v_normal;
 
 #ifdef PICKER
@@ -43,12 +42,19 @@ void main(void) {
     vec4 worldPos = u_transMatrix * vec4(a_position, 1.0);
     gl_Position = u_projViewMatrix * worldPos;
 
-    // normal for lighting
-    v_normal = normalize((u_transMatrix * vec4(a_normal, 0.0)).xyz);
+    // normal for lighting: transformed by the cofactor matrix (inverse transpose) so non uniform scale is correct
+    // (GLSL 110 has no mat3(mat4), so the columns are used directly)
+    vec3 c0 = u_transMatrix[0].xyz;
+    vec3 c1 = u_transMatrix[1].xyz;
+    vec3 c2 = u_transMatrix[2].xyz;
+    vec3 cofactor0 = cross(c1, c2);
+    float handedness = dot(c0, cofactor0) < 0.0 ? -1.0 : 1.0;
+    mat3 normalMatrix = mat3(cofactor0, cross(c2, c0), cross(c0, c1));
+    v_normal = normalize(normalMatrix * a_normal) * handedness;
 
     // texture stuff
     v_texCoord0 = a_texCoord0;
-    splatPosition = vec2(a_position.x / u_terrainSize.x, a_position.z / u_terrainSize);
+    splatPosition = vec2(a_position.x / u_terrainSize.x, a_position.z / u_terrainSize.y);
 
     // fog
     if(u_fogDensity > 0.0 && u_fogGradient > 0.0) {

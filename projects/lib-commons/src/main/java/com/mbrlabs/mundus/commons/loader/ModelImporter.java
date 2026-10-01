@@ -1,7 +1,6 @@
 package com.mbrlabs.mundus.commons.loader;
 
 import com.badlogic.gdx.files.FileHandle;
-import com.mbrlabs.mundus.commons.loader.assimp.AssimpLoader;
 import com.mbrlabs.mundus.commons.model.ImportedModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class ModelImporter {
-    private final AssimpLoader assimpWorker;
+    private final AssimpModelLoader assimpWorker;
     private final G3dModelLoader g3dModelLoader;
     private final G3dModelLoader g3dbModelLoader;
 

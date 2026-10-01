@@ -1,0 +1,17 @@
+dependencies {
+    implementation project(":lib-core")
+
+    implementation 'org.lwjgl:lwjgl-assimp:3.3.1'
+    implementation 'org.lwjgl:lwjgl-assimp:3.3.1:natives-linux'
+    implementation 'org.lwjgl:lwjgl-assimp:3.3.1:natives-macos'
+    implementation 'org.lwjgl:lwjgl-assimp:3.3.1:natives-macos-arm64'
+    implementation 'org.lwjgl:lwjgl-assimp:3.3.1:natives-windows'
+
+    implementation libs.gdx
+
+    testImplementation libs.junit_jupiter_engine
+    testImplementation libs.mockito_core
+    testImplementation libs.gdx_backend_lwjgl3
+    testImplementation libs.gdx_platform
+    testImplementation libs.logback_classic
+}

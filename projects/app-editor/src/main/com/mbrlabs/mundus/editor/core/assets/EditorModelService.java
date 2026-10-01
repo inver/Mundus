@@ -10,17 +10,17 @@ import com.mbrlabs.mundus.commons.core.ecs.component.PositionComponent;
 import com.mbrlabs.mundus.commons.core.ecs.component.TypeComponent;
 import com.mbrlabs.mundus.commons.core.ecs.delegate.RenderableObjectDelegate;
 import com.mbrlabs.mundus.commons.loader.ModelImporter;
-import com.mbrlabs.mundus.commons.loader.assimp.AssimpLoader;
+import com.mbrlabs.mundus.commons.loader.AssimpModelLoader;
 import com.mbrlabs.mundus.commons.model.ImportedModel;
 import com.mbrlabs.mundus.commons.model.ModelService;
 import com.mbrlabs.mundus.editor.core.ecs.EcsService;
 import com.mbrlabs.mundus.editor.core.ecs.PickableComponent;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
+import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import static net.nevinsky.abyssus.core.shader.ShaderProvider.DEFAULT_SHADER_KEY;
 
 @Slf4j
 @Component
@@ -33,7 +33,7 @@ public class EditorModelService extends ModelService {
     private final EditorCtx ctx;
     private final EcsService ecsService;
 
-    public EditorModelService(AssimpLoader assimpWorker, MetaService metaService, AssetsStorage assetsStorage,
+    public EditorModelService(AssimpModelLoader assimpWorker, MetaService metaService, AssetsStorage assetsStorage,
                               ModelImporter modelImporter, ModelAssetLoader modelAssetLoader, EditorCtx ctx,
                               EcsService ecsService) {
         super(assimpWorker);
@@ -84,7 +84,7 @@ public class EditorModelService extends ModelService {
         ecsService.addEntityBaseComponents(world, id, -1, "Model " + id,
                 new PositionComponent(),
                 PickableComponent.of(id),
-                new RenderableObjectDelegate(model, DEFAULT_SHADER_KEY).asComponent(),
+                new RenderableObjectDelegate(model, ShaderConstants.forModel(model.getModel())).asComponent(),
                 new TypeComponent(TypeComponent.Type.OBJECT)
         );
         return id;

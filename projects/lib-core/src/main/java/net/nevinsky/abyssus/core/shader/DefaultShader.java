@@ -39,8 +39,10 @@ import java.util.function.Supplier;
 @Slf4j
 public class DefaultShader extends BaseShader {
     private static final long optionalAttributes = IntAttribute.CullFace | DepthTestAttribute.Type;
-    protected static long implementedFlags = BlendingAttribute.Type | TextureAttribute.Diffuse | ColorAttribute.Diffuse
-            | ColorAttribute.Specular | FloatAttribute.Shininess;
+    protected static long implementedFlags = BlendingAttribute.Type | FloatAttribute.AlphaTest
+            | FloatAttribute.Shininess | ColorAttribute.Diffuse | ColorAttribute.Specular | ColorAttribute.Emissive
+            | TextureAttribute.Diffuse | TextureAttribute.Specular | TextureAttribute.Emissive
+            | TextureAttribute.Normal;
 
     protected String vertexShader;
     protected String fragmentShader;
@@ -144,8 +146,10 @@ public class DefaultShader extends BaseShader {
 
     public DefaultShader(ShaderConfig config, Renderable renderable) {
         this.config = config;
-        this.vertexShader = config.getVertexShader();
-        this.fragmentShader = config.getFragmentShader();
+        this.vertexShader = config.getVertexShader() != null ? config.getVertexShader()
+                : ShaderSources.read(ShaderSources.DEFAULT_VERTEX);
+        this.fragmentShader = config.getFragmentShader() != null ? config.getFragmentShader()
+                : ShaderSources.read(ShaderSources.DEFAULT_FRAGMENT);
         this.lighting = renderable.environment != null;
 
         final var attributes = combineAttributes(renderable);
@@ -285,7 +289,7 @@ public class DefaultShader extends BaseShader {
         u_normalTexture = materialPart.textureUniform;
         u_normalUVTransform = materialPart.uVTransformUniform;
 
-        materialPart = initMaterialPart("ambient", false, -1, TextureAttribute.Normal);
+        materialPart = initMaterialPart("ambient", false, -1, TextureAttribute.Ambient);
         u_ambientTexture = materialPart.textureUniform;
         u_ambientUVTransform = materialPart.uVTransformUniform;
 

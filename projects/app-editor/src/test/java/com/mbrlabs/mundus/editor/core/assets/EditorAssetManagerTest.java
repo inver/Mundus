@@ -4,6 +4,7 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.files.FileHandle;
 import com.mbrlabs.mundus.commons.assets.AppFileHandle;
 import com.mbrlabs.mundus.commons.assets.Asset;
+import com.mbrlabs.mundus.commons.assets.AssetType;
 import com.mbrlabs.mundus.commons.assets.material.MaterialAsset;
 import com.mbrlabs.mundus.commons.assets.model.ModelAsset;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAsset;
@@ -11,6 +12,7 @@ import com.mbrlabs.mundus.editor.config.AppEnvironment;
 import com.mbrlabs.mundus.editor.config.BaseCtxTest;
 import com.mbrlabs.mundus.editor.core.project.AssetKey;
 import com.mbrlabs.mundus.editor.core.project.EditorCtx;
+import com.mbrlabs.mundus.editor.core.shader.ShaderConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -20,6 +22,7 @@ import java.io.File;
 import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class EditorAssetManagerTest extends BaseCtxTest {
     @Autowired
@@ -34,7 +37,9 @@ public class EditorAssetManagerTest extends BaseCtxTest {
         var assets = new HashMap<AssetKey, Asset<?>>();
         assetManager.loadStandardAssets(assets);
 
-        assertEquals(23, assets.size());
+        assertEquals(24, assets.size());
+        assertTrue(assets.containsKey(new AssetKey(AssetType.SHADER, ShaderConstants.PBR)),
+                "bundled PBR shader must be discovered");
     }
 
     @Test

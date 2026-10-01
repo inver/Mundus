@@ -1,0 +1,4 @@
+newmtl mat
+Kd 1 1 1
+map_Kd textures/diffuse.png
+map_bump textures/bump.png

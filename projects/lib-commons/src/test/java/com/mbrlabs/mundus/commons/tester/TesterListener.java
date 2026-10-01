@@ -14,7 +14,7 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.utils.UBJsonReader;
 import com.mbrlabs.mundus.commons.assets.AppFileHandle;
-import com.mbrlabs.mundus.commons.loader.assimp.AssimpLoader;
+import com.mbrlabs.mundus.commons.loader.AssimpModelLoader;
 import com.mbrlabs.mundus.commons.loader.G3dModelLoader;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +38,7 @@ public class TesterListener extends Lwjgl3WindowAdapter implements ApplicationLi
     public CameraInputController camController;
 
     private final Environment environment = new Environment();
-    private final AssimpLoader loader = new AssimpLoader();
+    private final AssimpModelLoader loader = new AssimpModelLoader();
 
     private final G3dModelLoader g3dModelLoader = new G3dModelLoader(new UBJsonReader());
 

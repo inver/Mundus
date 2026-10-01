@@ -51,4 +51,19 @@ public class ShaderConfig {
         this.vertexShader = vertexShader;
         this.fragmentShader = fragmentShader;
     }
+
+    /**
+     * @return a copy of this config
+     */
+    public ShaderConfig copy() {
+        var res = new ShaderConfig(vertexShader, fragmentShader);
+        res.numDirectionalLights = numDirectionalLights;
+        res.numPointLights = numPointLights;
+        res.numSpotLights = numSpotLights;
+        res.numBones = numBones;
+        res.ignoreUnimplemented = ignoreUnimplemented;
+        res.defaultCullFace = defaultCullFace;
+        res.defaultDepthFunc = defaultDepthFunc;
+        return res;
+    }
 }

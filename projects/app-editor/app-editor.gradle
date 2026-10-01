@@ -95,6 +95,33 @@ dependencies {
 
 }
 
+// The bundled GLSL files below are copies of the shaders of lib-core, which are the single source of truth.
+// Run this task after changing them. BundledShadersInSyncTest fails if a copy is out of date.
+// bundled file (relative to assets/bundled/shaders) -> file in lib-core/src/main/resources/shader
+project.ext.bundledShaderSources = [
+        'defaultShader/default.vert.glsl'              : 'default.vertex.glsl',
+        'defaultShader/default.frag.glsl'              : 'default.fragment.glsl',
+        'model/model.vert.glsl'                        : 'default.vertex.glsl',
+        'model/model.frag.glsl'                        : 'default.fragment.glsl',
+        'material_preview/material_preview.vert.glsl'  : 'default.vertex.glsl',
+        'material_preview/material_preview.frag.glsl'  : 'default.fragment.glsl',
+        'pbr/pbr.vert.glsl'                            : 'default.vertex.glsl',
+        'pbr/pbr.frag.glsl'                            : 'pbr.fragment.glsl',
+]
+
+tasks.register("syncBundledShaders") {
+    group = 'build'
+    description = 'Copies the shaders of lib-core to the bundled editor shaders'
+    doLast {
+        def source = project(':lib-core').file('src/main/resources/shader')
+        project.bundledShaderSources.each { target, name ->
+            def targetFile = file("assets/bundled/shaders/$target")
+            targetFile.text = new File(source, name).text
+            logger.lifecycle("Synced $target")
+        }
+    }
+}
+
 build {
     finalizedBy("distEditor")
 }

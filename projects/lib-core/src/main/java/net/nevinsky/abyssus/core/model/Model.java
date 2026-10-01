@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.IntAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.model.NodeKeyframe;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelAnimation;
@@ -32,6 +33,9 @@ import com.badlogic.gdx.utils.ObjectMap;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.mgsx.gltf.scene3d.attributes.PBRColorAttribute;
+import net.mgsx.gltf.scene3d.attributes.PBRFloatAttribute;
+import net.mgsx.gltf.scene3d.attributes.PBRTextureAttribute;
 import net.nevinsky.abyssus.core.ModelInstance;
 import net.nevinsky.abyssus.core.mesh.Mesh;
 import net.nevinsky.abyssus.core.mesh.MeshPart;
@@ -39,7 +43,6 @@ import net.nevinsky.abyssus.core.node.Animation;
 import net.nevinsky.abyssus.core.node.Node;
 import net.nevinsky.abyssus.core.node.NodeAnimation;
 import net.nevinsky.abyssus.core.node.NodePart;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -221,11 +224,13 @@ public class Model implements Disposable {
                 }
 
                 if (modelNodePart.materialId != null) {
-                    meshMaterial = materials.get(StringUtils.upperCase(modelNodePart.materialId));
+                    meshMaterial = materials.get(modelNodePart.materialId);
                 }
 
                 if (meshPart == null || meshMaterial == null) {
-                    throw new GdxRuntimeException("Invalid node: " + node.id);
+                    throw new GdxRuntimeException("Invalid node: " + node.id
+                            + (meshPart == null ? ", mesh part not found: " + modelNodePart.meshPartId : "")
+                            + (meshMaterial == null ? ", material not found: " + modelNodePart.materialId : ""));
                 }
 
                 NodePart nodePart = new NodePart();
@@ -274,6 +279,7 @@ public class Model implements Disposable {
         mesh.getIndicesBuffer().clear();
 
         boolean hasBoundingBox = true;
+        var meshParts = new ArrayList<MeshPart>();
         for (ModelMeshPart part : modelMesh.parts) {
             MeshPart meshPart = new MeshPart();
             meshPart.id = part.id;
@@ -291,12 +297,12 @@ public class Model implements Disposable {
                 meshPart.update(part.getBoundingBox());
             }
             res.put(meshPart.id, meshPart);
+            meshParts.add(meshPart);
         }
         mesh.getIndicesBuffer().position(0);
         if (!hasBoundingBox) {
-            //hack, for loaded model without bounding box
-            //todo why for each mesh recalculated all map of mesh???
-            for (MeshPart part : res.values()) {
+            // loaded model without bounding box: calculate it for the parts of this mesh
+            for (MeshPart part : meshParts) {
                 part.update();
             }
         }
@@ -305,7 +311,7 @@ public class Model implements Disposable {
     protected void loadMaterials(Iterable<ModelMaterial> modelMaterials, TextureProvider textureProvider) {
         for (ModelMaterial mtl : modelMaterials) {
             var m = convertMaterial(mtl, textureProvider);
-            materials.put(StringUtils.upperCase(m.id), m);
+            materials.put(m.id, m);
         }
     }
 
@@ -334,9 +340,12 @@ public class Model implements Disposable {
             result.set(new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA, mtl.opacity));
         }
 
+        if (mtl instanceof PbrModelMaterial) {
+            applyPbrProperties((PbrModelMaterial) mtl, result);
+        }
+
         ObjectMap<String, Texture> textures = new ObjectMap<>();
 
-        // TODO uvScaling/uvTranslation totally ignored
         if (mtl.textures != null) {
             for (ModelTexture tex : mtl.textures) {
                 Texture texture;
@@ -389,11 +398,117 @@ public class Model implements Disposable {
                                 new TextureAttribute(TextureAttribute.Reflection, descriptor, offsetU, offsetV, scaleU,
                                         scaleV));
                         break;
+                    case PbrModelMaterial.USAGE_METALLIC_ROUGHNESS:
+                        result.set(pbrTexture(PBRTextureAttribute.MetallicRoughnessTexture, descriptor, offsetU,
+                                offsetV, scaleU, scaleV));
+                        break;
+                    case PbrModelMaterial.USAGE_OCCLUSION:
+                        result.set(pbrTexture(PBRTextureAttribute.OcclusionTexture, descriptor, offsetU, offsetV,
+                                scaleU, scaleV));
+                        break;
+                    default:
+                        log.debug("Texture usage {} of material '{}' is not supported", tex.usage, mtl.id);
+                        break;
+                }
+                if (mtl instanceof PbrModelMaterial) {
+                    // PBR shaders read their own attributes, keep the legacy ones for the non PBR shaders
+                    addPbrAlias(result, tex.usage, descriptor, offsetU, offsetV, scaleU, scaleV);
                 }
             }
         }
 
         return result;
+    }
+
+    private static PBRTextureAttribute pbrTexture(long type, TextureDescriptor<Texture> descriptor, float offsetU,
+                                                  float offsetV, float scaleU, float scaleV) {
+        var attribute = new PBRTextureAttribute(type, descriptor);
+        attribute.offsetU = offsetU;
+        attribute.offsetV = offsetV;
+        attribute.scaleU = scaleU;
+        attribute.scaleV = scaleV;
+        return attribute;
+    }
+
+    private static void addPbrAlias(Material result, int usage, TextureDescriptor<Texture> descriptor, float offsetU,
+                                    float offsetV, float scaleU, float scaleV) {
+        long type;
+        switch (usage) {
+            case ModelTexture.USAGE_DIFFUSE:
+                type = PBRTextureAttribute.BaseColorTexture;
+                break;
+            case ModelTexture.USAGE_NORMAL:
+                type = PBRTextureAttribute.NormalTexture;
+                break;
+            case ModelTexture.USAGE_EMISSIVE:
+                type = PBRTextureAttribute.EmissiveTexture;
+                break;
+            default:
+                return;
+        }
+        result.set(pbrTexture(type, descriptor, offsetU, offsetV, scaleU, scaleV));
+    }
+
+    private static void applyPbrProperties(PbrModelMaterial mtl, Material result) {
+        if (mtl.baseColor != null) {
+            result.set(PBRColorAttribute.createBaseColorFactor(mtl.baseColor));
+            if (!result.has(ColorAttribute.Diffuse)) {
+                // the shaders read the base color factor from the diffuse color
+                result.set(new ColorAttribute(ColorAttribute.Diffuse, mtl.baseColor));
+            }
+        }
+        if (mtl.metallic != null) {
+            result.set(PBRFloatAttribute.createMetallic(mtl.metallic));
+        }
+        if (mtl.roughness != null) {
+            result.set(PBRFloatAttribute.createRoughness(mtl.roughness));
+        }
+        if (mtl.doubleSided) {
+            result.set(IntAttribute.createCullFace(GL20.GL_NONE));
+        }
+        if (mtl.alphaMode == PbrModelMaterial.AlphaMode.MASK) {
+            result.set(FloatAttribute.createAlphaTest(mtl.alphaCutoff));
+        } else if (mtl.alphaMode == PbrModelMaterial.AlphaMode.BLEND && !result.has(BlendingAttribute.Type)) {
+            result.set(new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA, mtl.opacity));
+        }
+    }
+
+    /**
+     * @return {@code true} if any material has PBR (metallic or roughness) properties, so the PBR shader should be
+     * used for this model
+     */
+    public boolean hasPbrMaterials() {
+        for (var material : materials.values()) {
+            if (material.has(PBRFloatAttribute.Metallic) || material.has(PBRFloatAttribute.Roughness)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @return the largest number of bones used by a single node part, 0 if the model is not skinned. Use it to size
+     * {@code ShaderConfig#numBones} for the model.
+     */
+    public int getMaxBones() {
+        int max = 0;
+        for (var node : nodes) {
+            max = Math.max(max, maxBones(node));
+        }
+        return max;
+    }
+
+    private static int maxBones(Node node) {
+        int max = 0;
+        for (var part : node.parts) {
+            if (part.invBoneBindTransforms != null) {
+                max = Math.max(max, part.invBoneBindTransforms.size);
+            }
+        }
+        for (var child : node.getChildren()) {
+            max = Math.max(max, maxBones(child));
+        }
+        return max;
     }
 
     /**

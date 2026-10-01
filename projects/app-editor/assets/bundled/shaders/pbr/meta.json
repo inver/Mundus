@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "lastModified": 1663444124794,
+  "type": "SHADER",
+  "additional": {
+    "vertex": "pbr.vert.glsl",
+    "fragment": "pbr.frag.glsl",
+    "shaderClass": "BundledPbrShader.groovy"
+  }
+}

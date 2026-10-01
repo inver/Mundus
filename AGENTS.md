@@ -21,6 +21,12 @@ Uses the Gradle wrapper (JDK 11+; CI uses Corretto 11).
 - Tests for one module: `./gradlew :lib-core:test`
 - Single test class / method: `./gradlew :app-editor:test --tests 'com.mbrlabs.mundus.editor.core.SomeTest.someMethod'`
 - Checkstyle only: `./gradlew checkstyleMain` (config in `config/checkstyle/`)
+- Shader check: `./gradlew :lib-core:shaderCheck` compiles the shaders for many vertex/material/environment variants and
+  renders test quads in a hidden OpenGL window, comparing pixel values. It needs a display, so it is not part of `check`.
+  Run it after any GLSL change.
+- Bundled shaders: the GLSL of `defaultShader`, `model`, `material_preview` and `pbr` in
+  `projects/app-editor/assets/bundled/shaders` is copied from `projects/lib-core/src/main/resources/shader` (the source
+  of truth). After editing it run `./gradlew :app-editor:syncBundledShaders`; `BundledShadersInSyncTest` fails on drift.
 
 Tests use JUnit 5 (+ Mockito); every `Test` task is finalized by `jacocoTestReport`. Pitest is applied to all modules.
 

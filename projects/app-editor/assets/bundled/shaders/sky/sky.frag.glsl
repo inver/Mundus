@@ -2,7 +2,9 @@
 #define iSteps 16
 #define jSteps 8
 
+#ifdef GL_ES
 precision highp float;
+#endif
 
 varying vec3 v_position;
 

@@ -18,3 +18,14 @@ dependencies {
     testImplementation libs.gdx_platform
     testImplementation libs.logback_classic
 }
+// Compiles all shaders for many variants in a hidden OpenGL window (the legacy GL 2.1 context the editor uses).
+// Needs a display, so it is not part of 'check'.
+tasks.register('shaderCheck', JavaExec) {
+    group = 'verification'
+    description = 'Compiles shader variants in a hidden OpenGL window'
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'net.nevinsky.abyssus.core.shader.ShaderCompileCheck'
+    if (org.gradle.internal.os.OperatingSystem.current().isMacOsX()) {
+        jvmArgs '-XstartOnFirstThread'
+    }
+}

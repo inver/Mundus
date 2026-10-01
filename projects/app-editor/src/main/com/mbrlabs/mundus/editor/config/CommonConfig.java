@@ -9,7 +9,7 @@ import com.mbrlabs.mundus.commons.assets.shader.ShaderAssetLoader;
 import com.mbrlabs.mundus.commons.assets.skybox.SkyboxAssetLoader;
 import com.mbrlabs.mundus.commons.assets.terrain.TerrainAssetLoader;
 import com.mbrlabs.mundus.commons.assets.texture.TextureAssetLoader;
-import com.mbrlabs.mundus.commons.loader.assimp.AssimpLoader;
+import com.mbrlabs.mundus.commons.loader.AssimpModelLoader;
 import com.mbrlabs.mundus.commons.loader.G3dModelLoader;
 import com.mbrlabs.mundus.commons.loader.ModelImporter;
 import org.springframework.context.annotation.Bean;
@@ -53,8 +53,8 @@ public class CommonConfig {
     }
 
     @Bean
-    public AssimpLoader assimpModelLoader() {
-        return new AssimpLoader();
+    public AssimpModelLoader assimpModelLoader() {
+        return new AssimpModelLoader();
     }
 
     @Bean

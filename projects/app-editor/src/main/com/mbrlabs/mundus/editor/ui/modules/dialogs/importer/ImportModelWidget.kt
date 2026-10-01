@@ -15,6 +15,7 @@ import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.mbrlabs.mundus.commons.model.ImportedModel
+import com.mbrlabs.mundus.editor.core.shader.ShaderConstants
 import com.mbrlabs.mundus.editor.core.shader.ShaderStorage
 import com.mbrlabs.mundus.editor.ui.widgets.chooser.file.FileChooserField
 import com.mbrlabs.mundus.editor.ui.widgets.RenderWidget
@@ -40,6 +41,7 @@ class ImportModelWidget(
     var importedModel: ImportedModel? = null
     private var modelBatch: ModelBatch? = null
     var previewInstance: ModelInstance? = null
+    private var shaderKey = ShaderProvider.DEFAULT_SHADER_KEY
 
     init {
         cam.position.set(0f, 5f, 5f)
@@ -62,7 +64,7 @@ class ImportModelWidget(
             previewInstance!!.transform.rotate(0f, 1f, 0f, -1f)
 
             modelBatch?.begin(camera)
-            modelBatch?.render(previewInstance!!, env, ShaderProvider.DEFAULT_SHADER_KEY)
+            modelBatch?.render(previewInstance!!, env, shaderKey)
             modelBatch?.end()
         }
 
@@ -89,12 +91,14 @@ class ImportModelWidget(
         modelInput.setEditable(false)
         modelInput.setCallback { fileHandle ->
             if (fileHandle.exists()) {
+                disposePreviewModel()
                 importedModel = importModelPresenter.importModelFromFile(fileHandle)
                 if (importedModel == null) {
                     Dialogs.showErrorDialog(stage, "Import error\nPlease make sure you specified the right files")
                     return@setCallback
                 }
                 previewInstance = ModelInstance(importedModel?.model)
+                shaderKey = ShaderConstants.forModel(importedModel!!.model)
                 showPreview()
             }
         }
@@ -115,10 +119,14 @@ class ImportModelWidget(
         previewInstance!!.transform.scl(2f / maxDim)
     }
 
+    private fun disposePreviewModel() {
+        previewInstance = null
+        importedModel?.model?.dispose()
+        importedModel = null
+    }
+
     override fun dispose() {
-        if (previewInstance != null) {
-            previewInstance = null
-        }
+        disposePreviewModel()
         modelInput.clear()
     }
 }

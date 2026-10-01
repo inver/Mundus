@@ -44,6 +44,12 @@ public class DefaultShaderProvider extends AbstractShaderProvider<ShaderHolder> 
         if (!DEFAULT_SHADER_KEY.equals(holder.getKey())) {
             return null;
         }
+        if (PbrShader.isPbr(renderable)) {
+            // the configured fragment shader is meant for the default shader: PBR uses its own
+            var pbrConfig = config.copy();
+            pbrConfig.setFragmentShader(null);
+            return new PbrShader(pbrConfig, renderable);
+        }
         return new DefaultShader(config, renderable);
     }
 }

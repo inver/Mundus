@@ -47,7 +47,6 @@ varying vec3 v_pos;
 uniform vec4 u_fogColor;
 
 // light
-varying vec4 v_lighting;
 varying vec3 v_normal;
 
 varying vec2 v_texCoord0;
@@ -70,7 +69,8 @@ uniform DirectionalLight u_directionalLight;
 
 void main(void) {
 
-    // blend textures
+    // blend textures, neutral gray without any texture
+    gl_FragColor = COLOR_BRIGHT;
     if (u_texture_has_diffuse == 1) {
         gl_FragColor = texture2D(u_texture_base, v_texCoord0);
     }
@@ -86,7 +86,7 @@ void main(void) {
     //                          Lighting
     // =================================================================
     vec4 diffuse_light = u_directionalLight.color
-    * (dot(- u_directionalLight.direction, v_normal) * u_directionalLight.intensity);
+    * (max(dot(-u_directionalLight.direction, normalize(v_normal)), 0.0) * u_directionalLight.intensity);
 
     // ambient light
     diffuse_light += u_ambientLight.color * u_ambientLight.intensity;
