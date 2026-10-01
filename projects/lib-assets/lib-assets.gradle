@@ -15,3 +15,8 @@ dependencies {
     testImplementation libs.gdx_platform
     testImplementation libs.logback_classic
 }
+
+test {
+    // the sample models live in <root>/samples
+    systemProperty 'samples.dir', rootProject.file('samples').absolutePath
+}

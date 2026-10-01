@@ -144,7 +144,12 @@ public class DefaultShader extends BaseShader {
     private float time;
     private boolean lightsSet;
 
-    public DefaultShader(ShaderConfig config, Renderable renderable) {
+    /**
+     * @param requestedConfig the config of the shader. If the renderable has more bones than
+     *                        {@link ShaderConfig#getNumBones()} the shader gets room for all of them.
+     */
+    public DefaultShader(ShaderConfig requestedConfig, Renderable renderable) {
+        final ShaderConfig config = fitBones(requestedConfig, renderable);
         this.config = config;
         this.vertexShader = config.getVertexShader() != null ? config.getVertexShader()
                 : ShaderSources.read(ShaderSources.DEFAULT_VERTEX);
@@ -170,16 +175,25 @@ public class DefaultShader extends BaseShader {
             throw new GdxRuntimeException("Some attributes not implemented yet (" + attributesMask + ")");
         }
 
-        if (renderable.bones != null && renderable.bones.length > config.getNumBones()) {
-            throw new GdxRuntimeException(String.format("too many bones: %d, max configured: %d",
-                    renderable.bones.length, config.getNumBones())
-            );
-        }
-
         initGlobalUniforms();
         initObjectUniforms(renderable);
         initMaterialUniforms();
         initLightUniforms();
+    }
+
+    private static final int BONES_STEP = 8;
+
+    /**
+     * The bone array of the shader has a fixed size. Skinned models often have more bones than the default, so the
+     * size is raised to the number of bones of the renderable (in steps, so similar models share a shader).
+     */
+    private static ShaderConfig fitBones(ShaderConfig config, Renderable renderable) {
+        if (renderable.bones == null || renderable.bones.length <= config.getNumBones()) {
+            return config;
+        }
+        var fitted = config.copy();
+        fitted.setNumBones((renderable.bones.length + BONES_STEP - 1) / BONES_STEP * BONES_STEP);
+        return fitted;
     }
 
     private <T> T[] createAndInit(int length, Function<Integer, T[]> arrayCreator, Supplier<T> instanceCreator) {

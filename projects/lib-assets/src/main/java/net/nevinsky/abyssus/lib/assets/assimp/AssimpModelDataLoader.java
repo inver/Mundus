@@ -17,6 +17,21 @@ import java.util.Map;
 @Slf4j
 public class AssimpModelDataLoader {
 
+    private final boolean convertUnits;
+
+    public AssimpModelDataLoader() {
+        this(false);
+    }
+
+    /**
+     * @param convertUnits scale models to meters if the file reports its unit (FBX). Off by default: the units of FBX
+     *                     files are used inconsistently, so a conversion can make models a hundred times smaller.
+     *                     The up axis is always converted to Y.
+     */
+    public AssimpModelDataLoader(boolean convertUnits) {
+        this.convertUnits = convertUnits;
+    }
+
     public ModelData load(String modelId, FileHandle file) {
         return load(modelId, file, AssimpFlags.DEFAULT);
     }
@@ -31,13 +46,14 @@ public class AssimpModelDataLoader {
     public ModelData load(String modelId, FileHandle file, int flags, FileHandle embeddedTextureDir) {
         var start = System.currentTimeMillis();
         try (var imported = AssimpImporter.importScene(file.path(), flags)) {
-            var data = convert(modelId, imported.scene(), parentDir(file), embeddedTextureDir);
+            var data = convert(modelId, imported.scene(), parentDir(file), embeddedTextureDir, convertUnits);
             log.debug("Model {} loaded in {} ms", modelId, System.currentTimeMillis() - start);
             return data;
         }
     }
 
-    static ModelData convert(String modelId, AIScene scene, String modelDir, FileHandle embeddedTextureDir) {
+    static ModelData convert(String modelId, AIScene scene, String modelDir, FileHandle embeddedTextureDir,
+                             boolean convertUnits) {
         var data = new ModelData();
         data.id = modelId;
 
@@ -70,7 +86,9 @@ public class AssimpModelDataLoader {
         }
 
         var nodeProcessor = new NodeProcessor(meshes, materialIds, skins);
-        data.nodes.add(nodeProcessor.process(scene.mRootNode()));
+        var root = nodeProcessor.process(scene.mRootNode());
+        SceneNormalizer.apply(root, SceneNormalizer.correction(scene, convertUnits));
+        data.nodes.add(root);
         data.animations.addAll(new AnimationProcessor(nodeProcessor).process(scene));
         return data;
     }

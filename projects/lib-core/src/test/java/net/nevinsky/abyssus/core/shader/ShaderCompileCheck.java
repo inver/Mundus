@@ -103,6 +103,8 @@ public final class ShaderCompileCheck extends ApplicationAdapter {
         layouts.put("skinned", () -> new VertexAttribute[]{VertexAttribute.Position(), VertexAttribute.Normal(),
                 VertexAttribute.TexCoords(0), VertexAttribute.BoneWeight(0), VertexAttribute.BoneWeight(1),
                 VertexAttribute.BoneWeight(2), VertexAttribute.BoneWeight(3)});
+        // more bones than ShaderConfig.numBones (12): the shader must make room for them
+        layouts.put("skinned 40 bones", layouts.get("skinned"));
 
         Map<String, Supplier<Material>> materials = new LinkedHashMap<>();
         materials.put("empty", Material::new);
@@ -153,7 +155,7 @@ public final class ShaderCompileCheck extends ApplicationAdapter {
                         var name = shaderEntry.getKey() + " | " + layout.getKey() + " | " + material.getKey() + " | "
                                 + env.getKey();
                         compile(name, shaderEntry.getValue(), layout.getValue().get(), material.getValue().get(),
-                                env.getValue().get(), layout.getKey().equals("skinned"));
+                                env.getValue().get(), boneCount(layout.getKey()));
                     }
                 }
             }
@@ -503,15 +505,23 @@ public final class ShaderCompileCheck extends ApplicationAdapter {
         }
     }
 
+    private static int boneCount(String layout) {
+        if (layout.equals("skinned")) {
+            return 2;
+        }
+        return layout.equals("skinned 40 bones") ? 40 : 0;
+    }
+
     private void compile(String name, BiFunction<ShaderConfig, Renderable, DefaultShader> factory,
-                         VertexAttribute[] attributes, Material material, Environment environment, boolean skinned) {
+                         VertexAttribute[] attributes, Material material, Environment environment, int bones) {
         var mesh = new Mesh(true, 3, 3, attributes);
         var renderable = new Renderable();
         renderable.meshPart.set("part", mesh, 0, 3, com.badlogic.gdx.graphics.GL20.GL_TRIANGLES);
         renderable.material = material;
         renderable.environment = environment;
-        if (skinned) {
-            renderable.bones = new Matrix4[]{new Matrix4(), new Matrix4()};
+        if (bones > 0) {
+            renderable.bones = new Matrix4[bones];
+            java.util.Arrays.setAll(renderable.bones, i -> new Matrix4());
         }
         try {
             var shader = factory.apply(new ShaderConfig(), renderable);

@@ -2,6 +2,7 @@ package net.nevinsky.abyssus.lib.assets.assimp;
 
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttribute;
+import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
@@ -142,7 +143,137 @@ final class MeshProcessor {
         mesh.vertices = vertices;
         mesh.parts = new ModelMeshPart[]{processPart(aiMesh, index, count == 0 ? new BoundingBox() :
                 new BoundingBox(min, max))};
+        sanitizeDirections(mesh);
         return mesh;
+    }
+
+    private static final float MIN_LENGTH2 = 1e-12f;
+
+    /**
+     * Degenerate triangles give zero length normals (and tangents), which turn into NaN as soon as a shader
+     * normalizes them. A zero normal is replaced by the average of the normals of the valid triangles that use the
+     * vertex, or by up if there is none. Zero tangents and binormals are replaced by directions perpendicular to the
+     * normal.
+     */
+    static void sanitizeDirections(ModelMesh mesh) {
+        int stride = 0;
+        int normalOffset = -1;
+        int tangentOffset = -1;
+        int binormalOffset = -1;
+        for (var attribute : mesh.attributes) {
+            if (attribute.usage == VertexAttributes.Usage.Normal) {
+                normalOffset = stride;
+            } else if (attribute.usage == VertexAttributes.Usage.Tangent) {
+                tangentOffset = stride;
+            } else if (attribute.usage == VertexAttributes.Usage.BiNormal) {
+                binormalOffset = stride;
+            }
+            stride += attribute.numComponents;
+        }
+        if (normalOffset < 0) {
+            return;
+        }
+        var v = mesh.vertices;
+        int count = v.length / stride;
+
+        var broken = new boolean[count];
+        boolean anyBroken = false;
+        for (int i = 0; i < count; i++) {
+            broken[i] = !isValid(v, i * stride + normalOffset);
+            anyBroken |= broken[i];
+        }
+        if (anyBroken) {
+            fixNormals(mesh, stride, normalOffset, broken);
+        }
+
+        var normal = new Vector3();
+        var other = new Vector3();
+        var binormal = new Vector3();
+        for (int i = 0; i < count; i++) {
+            normal.set(v[i * stride + normalOffset], v[i * stride + normalOffset + 1],
+                    v[i * stride + normalOffset + 2]);
+            if (tangentOffset >= 0 && !isValid(v, i * stride + tangentOffset)) {
+                perpendicular(normal, other);
+                set(v, i * stride + tangentOffset, other);
+            }
+            if (binormalOffset >= 0 && !isValid(v, i * stride + binormalOffset)) {
+                if (tangentOffset >= 0) {
+                    other.set(v[i * stride + tangentOffset], v[i * stride + tangentOffset + 1],
+                            v[i * stride + tangentOffset + 2]);
+                } else {
+                    perpendicular(normal, other);
+                }
+                binormal.set(normal).crs(other).nor();
+                set(v, i * stride + binormalOffset, binormal);
+            }
+        }
+    }
+
+    private static void fixNormals(ModelMesh mesh, int stride, int normalOffset, boolean[] broken) {
+        var v = mesh.vertices;
+        int count = broken.length;
+        var sums = new float[count * 3];
+        var a = new Vector3();
+        var b = new Vector3();
+        var c = new Vector3();
+        for (var part : mesh.parts) {
+            var indices = part.indices;
+            for (int t = 0; t + 2 < indices.length; t += 3) {
+                if (!(broken[indices[t]] || broken[indices[t + 1]] || broken[indices[t + 2]])) {
+                    continue;
+                }
+                position(v, indices[t] * stride, a);
+                position(v, indices[t + 1] * stride, b);
+                position(v, indices[t + 2] * stride, c);
+                b.sub(a);
+                c.sub(a);
+                b.crs(c);
+                if (b.len2() < MIN_LENGTH2) {
+                    continue; // degenerate triangle, no direction
+                }
+                b.nor();
+                for (int k = 0; k < 3; k++) {
+                    int vertex = indices[t + k];
+                    sums[vertex * 3] += b.x;
+                    sums[vertex * 3 + 1] += b.y;
+                    sums[vertex * 3 + 2] += b.z;
+                }
+            }
+        }
+        for (int i = 0; i < count; i++) {
+            if (!broken[i]) {
+                continue;
+            }
+            a.set(sums[i * 3], sums[i * 3 + 1], sums[i * 3 + 2]);
+            if (a.len2() < MIN_LENGTH2) {
+                a.set(0f, 1f, 0f);
+            }
+            set(v, i * stride + normalOffset, a.nor());
+        }
+    }
+
+    private static boolean isValid(float[] data, int offset) {
+        float x = data[offset];
+        float y = data[offset + 1];
+        float z = data[offset + 2];
+        float len2 = x * x + y * y + z * z;
+        return Float.isFinite(len2) && len2 >= MIN_LENGTH2;
+    }
+
+    private static void position(float[] data, int vertexOffset, Vector3 out) {
+        out.set(data[vertexOffset], data[vertexOffset + 1], data[vertexOffset + 2]);
+    }
+
+    private static void set(float[] data, int offset, Vector3 value) {
+        data[offset] = value.x;
+        data[offset + 1] = value.y;
+        data[offset + 2] = value.z;
+    }
+
+    /** Any unit vector perpendicular to the normal. */
+    private static void perpendicular(Vector3 normal, Vector3 out) {
+        var axis = Math.abs(normal.x) < 0.9f ? Vector3.X : Vector3.Y;
+        out.set(normal).crs(axis).nor();
     }
 
     private static Skin readSkin(AIMesh aiMesh) {
